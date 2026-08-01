@@ -2876,7 +2876,7 @@ static void run_episode(int verbose) {
             token_print(stdout, corpus[source_pos + CONTEXT + i], &line);
 
         line = 1;
-        printf("\n  postgpt mirror: ");
+        printf("\n  oracle: ");
         for (int i = 0; i < ROLLOUT; ++i)
             token_print(stdout, oracle[i], &line);
 
