@@ -5,7 +5,7 @@ the falsifier returned, and what must remain uncertain.
 
 ## Research law
 
-A mechanism is not accepted because it is beautiful.
+A code isn't accepted because it is beautiful.
 
 1. Every major organ needs a matched control.
 2. Seeds, source positions and compute budgets are held equal.
@@ -267,3 +267,289 @@ She does now distinguish:
 - and beautiful mechanisms that failed their falsifier.
 
 That is a better foundation than simulated certainty.
+
+---
+
+## Pro pass: v0.17 — neighbours, learning frontier and evolved plasticity
+
+The registered experiments after causal glyphs were no longer speculative:
+plasticity evolution and an autonomous curriculum were built, measured and
+allowed to fail. A third organ emerged from the literature review: causal
+glyphs required topology, not only isolated nearest-centroid assignment.
+
+### The neighbour question
+
+The remembered phrase "neighbor neurons networks" resolved into two nearby but
+different research lines.
+
+Neural Nearest Neighbours (N3) makes neighbour selection differentiable inside a
+trained neural network. It was not transplanted: Netta has no gradient training
+and does not need a differentiable KNN relaxation.
+
+The relevant mechanism was growing recurrent self-organisation: winner and
+runner-up states define a local edge; edges age; nearby states share limited
+plasticity; the map grows with experience. Netta's version operates over
+predictive causal glyphs rather than image vectors.
+
+### Causal Neural Gas
+
+For each real source-world state:
+
+1. identify the closest and second-closest mature causal glyphs;
+2. connect them;
+3. age the winner's older edges and remove stale links;
+4. update the winner directly;
+5. let trustworthy neighbours receive a smaller update;
+6. blend neighbouring predictive votes during action selection.
+
+The first implementation allowed all neighbours to adapt. A later interaction
+test showed that curriculum and topology could blur local language structure.
+Neighbour consolidation is now gated by the earned semantic authority of both
+glyphs. Topology may exist before trust; semantic contagion may not.
+
+#### Three-seed falsifier
+
+Seeds: `10101`, `90909`, `424242`. Games: 1200. Fixed 128-position read-only
+exam. Control: identical causal glyphs without topology.
+
+Mean paired changes:
+
+| coordinate | topology − baseline |
+|---|---:|
+| fixed coherence | +0.0068 |
+| first-token accuracy | +0.0104 |
+| token accuracy | +0.0052 |
+| corpus bigram validity | +0.0035 |
+| corpus trigram validity | +0.0124 |
+| prophecy fulfillment | +0.0079 |
+| world stability | +0.0043 |
+| rollout stability | +0.0057 |
+| world debt delta | -0.0140 |
+
+Fixed coherence improved on 3/3 seeds; debt settlement improved on 3/3. The
+organ is load-bearing on its intended target.
+
+### Autocurriculum v1 — learning its own examination
+
+The first curriculum partitioned the 82k-token island into 64-token regions.
+That created roughly 1280 regions for only 600 waking games. Most regions were
+seen once, so `fast − slow` was not learning progress; it was another name for
+novelty.
+
+After enlarging regions, the first winner-take-all frontier increased coherence
+on the regions it selected but reduced the fixed read-only examination. Netta
+had learned to win her own syllabus rather than the general coherence game.
+
+Verdict: rejected.
+
+### Autocurriculum v2 — the learning frontier with world coverage
+
+The corrected curriculum uses 256-token regions. Netta makes two complete,
+deterministic surveys before frontier selection begins. Afterwards:
+
+- 35% of games remain uniform forever;
+- 65% are sampled proportionally from a softened frontier distribution;
+- priority combines scaled learning progress, competence frontier, surprise,
+  staleness, visit scarcity and learnable debt;
+- no region receives winner-take-all control.
+
+The fixed exam is seed-independent and read-only. It does not update Core,
+policy, glyphs, memories or RNG state.
+
+#### Three-seed falsifier
+
+Mean paired changes over baseline:
+
+| coordinate | curriculum − uniform |
+|---|---:|
+| fixed coherence | +0.0060 |
+| first-token accuracy | +0.0104 |
+| token accuracy | +0.0039 |
+| corpus bigram validity | +0.0084 |
+| corpus trigram validity | +0.0186 |
+| rollout stability | +0.0042 |
+| world debt delta | -0.0036 |
+
+Fixed coherence and trigram validity improved on 3/3 seeds. The curriculum
+continued visiting nearly the complete island rather than collapsing onto a few
+regions. The organ is load-bearing.
+
+### Evolution experiment 2 — plasticity rules, not preferences
+
+The previous evolutionary null mutated static taste over finished coherence
+scores. v0.17 instead creates eight compact plasticity genomes. Each genome owns
+a shadow copy of the recurrent Core and receives the same real action,
+pre-action state and observed destiny.
+
+The tested genome controls only mechanisms visible to its shadow experiment:
+
+- output-readout learning rate;
+- input and recurrent Hebbian rates;
+- surprise threshold and width;
+- error clipping;
+- input and recurrent decay;
+- debt modulation.
+
+A serious audit caught an invalid first design: mutations of embedding rate,
+experience-market rates and neighbour gain could have entered the live organism
+even though shadow fitness never evaluated them. Those genes were frozen before
+results were accepted.
+
+The authority test was then strengthened again. Low prequential MSE is not the
+same as coherent language. Each generation therefore uses two gates:
+
+1. prediction advantage over an immutable baseline genome;
+2. advantage on a rotating read-only shadow coherence exam.
+
+Only three consecutive dual wins can grant live authority. Every genome,
+lineage, rule, loss, audit and selection is fossilised in
+`netta.plasticity.tsv`.
+
+#### Result
+
+Across the original three-seed 1200-game matrix, plasticity evolution earned no
+authority and live behaviour was exactly baseline. A later Pareto-selection run
+on seed `10101` produced one striking first generation — prediction advantage
+`+0.1018`, shadow-coherence advantage `+0.0168` — but the result did not repeat.
+Nine generations ended with authority `0` and the fixed probe remained exactly
+baseline.
+
+Verdict: **null at the tested horizon**.
+
+The code remains behind `--evolve-plasticity` because the experiment is now
+properly isolated and falsifiable. It is off by default. The next evolutionary
+target may need longer lives, cross-island fitness, or rules that include glyph
+birth/split/merge and dream consolidation rather than only recurrent plasticity.
+
+### Interaction: accepted organs can still interfere
+
+The full v35 organism combined topology, curriculum and shadow evolution.
+Plasticity remained silent, so the interaction was topology × curriculum.
+
+Mean full-organism change versus baseline:
+
+- fixed coherence: `+0.0043` on 3/3 seeds;
+- first-token accuracy: `+0.0156`;
+- world debt delta: `-0.0079`;
+- trigram validity: `-0.0029` on average.
+
+The combination won, but less than either accepted organ alone. New mechanisms
+are not additive by default. Curriculum changes the distribution of source
+states that builds the glyph topology; topology then shares that biased
+plasticity across neighbours.
+
+Earned-neighbour consolidation is the first correction: links may form, but
+neighbour updates are multiplied by predictive authority. On seed `10101`, this
+repaired full-organism trigram validity from `0.535` to `0.568` while retaining a
+coherence gain over baseline. This correction remains provisional until it
+receives a full multi-seed falsifier.
+
+### The immutable examination
+
+`--probe N` was added because any adaptive curriculum can learn its own test.
+Probe locations and generation RNG are fixed independently of the organism's
+birth seed. Probe mode saves and restores the live Core and RNG and suppresses
+all learning.
+
+A SHA-256 state check before and after a probe was identical.
+
+### Snapshot identity
+
+A restart bug was discovered despite correctly saving RNG state. Hash-chain
+lists for edges and trigrams were reconstructed in reverse creation order. The
+probability distribution was unchanged, but the same random draw traversed
+candidates in a different order and chose another future.
+
+Reconstruction now preserves uninterrupted iteration order.
+
+Verified:
+
+```text
+60 uninterrupted games == 30 + restart + 30
+140 full-organism games == 70 + restart + 70
+```
+
+The episode ledgers are byte-identical. A snapshot is now the same organism,
+not a statistically similar twin.
+
+### The vocabulary wall
+
+The Q-derived Netta world occupied 8153 of 8192 raw-word slots. A system that
+speaks of unbounded language while standing 39 words from silent truncation is
+not honest.
+
+Immediate correction:
+
+- vocabulary capacity doubled to 16,384;
+- state-loader vocabulary scratch storage moved from stack to heap;
+- startup reports capacity usage and warns above 90%;
+- a 40-game equivalence test confirmed that enlarging capacity did not alter
+  behaviour on the existing world.
+
+This is headroom, not infinity. Dynamic vocabulary, BPE or paged world memory
+remain open engineering work.
+
+### Current accepted / rejected boundary
+
+Accepted as load-bearing:
+
+- source/agent reality separation;
+- earned causal glyphs;
+- Causal Neural Gas topology;
+- learning-frontier curriculum v2;
+- fixed read-only examination;
+- exact snapshot continuity.
+
+Present but provisional:
+
+- earned-neighbour consolidation;
+- the interaction of curriculum and topology.
+
+Experimental and off by default:
+
+- evolved recurrent plasticity.
+
+Rejected but preserved in history:
+
+- immediate one-shot glyph birth;
+- curriculum as winner-take-all frontier;
+- static policy-weight evolution;
+- untested plasticity genes entering a live organism.
+
+---
+
+## Registered next experiments after v0.17
+
+### 1. Frontier-conditioned consolidation
+
+The interaction between curriculum and topology must be tested directly. A
+neighbour update should depend not only on glyph authority but on whether the
+source region is currently learning, stable or being revisited after
+forgetting.
+
+Control: same topology and same selected regions, but no frontier-conditioned
+plasticity.
+
+### 2. Cross-island examination
+
+The strongest test of language-independent causal glyphs is transfer to a new
+text island. State-space reuse, vocabulary growth and catastrophic reinterpretation
+must be measured separately.
+
+### 3. Longer-horizon plasticity evolution
+
+The current null may be a real ceiling or a horizon problem. A valid rerun must
+use the dual authority gate, rotating coherence audit, immutable baseline and
+per-genome fossil ledger already present in the code.
+
+### 4. Recursive glyph composition
+
+Higher-order glyphs remain gated behind cross-island predictive gain. Frequency
+alone is not enough. A compound must compress experience, improve future
+prediction and avoid creating a new population-level attractor.
+
+### 5. Dynamic world memory
+
+The next corpus expansion should not be solved by repeatedly doubling static
+arrays. Vocabulary pages, immutable source shards and state-compatible growth
+must preserve snapshot identity.
