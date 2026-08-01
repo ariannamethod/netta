@@ -1,4 +1,4 @@
-# NETTA's Empirical Text Training Architecture | by Arianna Method
+# NETTA's Empirical Topological Training Architecture | by Arianna Method
 
 > netta : atten : recursive neural network  
 
