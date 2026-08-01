@@ -52,31 +52,20 @@ them as facts. Output is a corpus-grounded continuation. Interactive exchanges
 become experience, not new source truth.
 
 ### Intended use
-
+  
 Netta is intended for research into continual learning, predictive-state
 abstraction, recursive inference, non-backprop plasticity, autonomous curricula
 and small stateful agents. The architecture may be scaled or connected to tools,
 retrieval sources and other models, provided provenance remains explicit.
-
+  
 ### Current evidence
-
+  
 Across three deterministic births and 1200 autonomous games per birth, the
 stable organism reached mean fixed coherence `0.6254`, trigram validity `0.5807`
 and world-debt change `-0.0828` on a read-only 128-position exam. These are
 internal research coordinates. Netta does not yet produce consistently fluent
 or factually reliable language.
-
-### Limitations
-
-- one English-dominant source island;
-- fixed-size in-memory tables;
-- word-level vocabulary;
-- no calibrated factuality or safety layer;
-- short counterfactual horizon;
-- no demonstrated cross-island transfer;
-- persistent phrase-level attractors despite high full-line diversity;
-- no claim of consciousness, agency equivalence or general intelligence.
-
+  
 ### Research rule
 
 A mechanism does not enter the stable organism because it is elegant. It must
