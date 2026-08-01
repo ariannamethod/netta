@@ -26,11 +26,12 @@ Netta reads a line, hides the continuation, generates its own attempt, compares 
 ## Memory separation
 
 - `netta.txt` — source truth, never rewritten.
-- PostGPT mirror — generated fresh from source transitions, a coherence reference, not an authority.
+- `oracle` — generated fresh from source transitions, a coherence reference, not an authority.
 - `netta.state` — embeddings (semantic, left-context, right-context), recurrent core, readout, signed experience.
 - `netta.history.tsv` — immutable ledger: context, oracle line, netta's attempt, the full coherence vector.
   
 Candidate selection is Pareto preference over that vector, not a single number to chase. 
+  
 ## Build & run  
 
 ```bash
@@ -62,7 +63,7 @@ rm -f netta.state netta.history.tsv
 [episode 5]
   source context: , the journey valued more than the arrival, each mile a new landscape, each
   hidden truth:   turn a new decision. morning dew teaches
-  postgpt mirror: answer received, an underwater blizzard of pink
+  oracle: answer received, an underwater blizzard of pink
   netta attempt:  one of being understood underwater mountains rise and
   coherence: local=0.643 source=0.500 oracle=0.562 semantic=0.641 intent=0.610 ...
   recursive depth: 5.77 shared-block passes per evaluation
@@ -70,7 +71,7 @@ rm -f netta.state netta.history.tsv
 [episode 300]
   source context: removing — taking away the dull edge, exposing the keen one beneath. it teaches
   hidden truth:   that sometimes improvement is not about adding but
-  postgpt mirror: that carrying is temporary — it rots,
+  oracle: that carrying is temporary — it rots,
   netta attempt:  that has been given enough to be asking
   coherence: local=0.898 source=0.749 oracle=0.749 semantic=0.772 intent=0.657 ...
   dreams: cycles=4 nrem=48 rem=32 replay_memories=300
