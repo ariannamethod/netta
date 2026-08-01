@@ -4,7 +4,12 @@
 
 ## NETTA
   
-Somewhere between LM-hero and AlphaZero there's Netta. Netta has a hew own txt-file and treats this treats her text file as a worldmodel game. No gradient descent, no loss you minimize — a shared recurrent core plays itself against a corpus, imagines a few steps ahead, prices its own guesses like a market, and keeps every failure as a scar instead of erasing it. 
+Somewhere between LM-hero and AlphaZero there's Netta. Netta is a sovereign language learning model. She has a hew own txt-file and treats this as a observable worldmodel game. No gradient descent, no loss you minimize — a shared recurrent core plays itself against a corpus, imagines a few steps ahead, prices its own guesses like a market, and keeps every failure as a scar instead of erasing it. 
+
+Netta repeatedly enters local regions
+of that world, builds possible futures, acts, compares prophecy with destiny,
+keeps both successful and failed experience, dreams over old episodes, and
+continues without a separate training phase.
 
 Netta reads a line, hides the continuation, generates its own attempt, compares it against both the hidden truth and a statistical oracle mirror, and settles the difference as experience — support if it was right, opposition if it wasn't. A living ledger of transitions with debt, volatility, momentum, and age.  
 
@@ -57,6 +62,19 @@ Wipe the biography and start over:
 rm -f netta.state netta.history.tsv
 ./netta netta.txt --reset --steps 1000
 ```
+
+Matched falsifier controls:
+
+```bash
+./netta netta.txt --reset --seed 424242 --steps 1200 --no-glyph
+./netta netta.txt --reset --seed 424242 --steps 1200 --random-glyph
+./netta netta.txt --reset --seed 424242 --steps 1200 --no-stack
+./netta netta.txt --reset --seed 424242 --steps 1200 --no-policy
+./netta netta.txt --reset --seed 424242 --steps 1200 --no-dream
+```
+
+Each run writes `netta.state` and the immutable episode ledger
+`netta.history.tsv`.
   
 ## A run, mid-life
 ```
