@@ -1,6 +1,7 @@
 # netta
-netta : atten : recursive language neural network 
-**NETTA — NETTA's Experiential Text Training Architecture**
+netta : atten : recursive language neural network  
+
+**NETTA's Experiential Text Training Architecture**
 
 Netta treats a text file as a game worldmodel. A statistical oracle acts as a permanent coherence mirror. NETTA generates its own line,
 compares it with both the hidden source continuation and the oracle, then stores positive and negative experience separately.
