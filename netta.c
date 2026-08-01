@@ -2,7 +2,7 @@
  * netta.c — NETTA's Experiential Text Training Architecture
  *
  * A sovereign recursive language learner.
- * No backpropagation. No external ML library.
+ * No backpropagation. 
  *
  * Build:
  *   cc -O2 -std=c11 -Wall -Wextra -o netta netta.c -lm
@@ -19,7 +19,7 @@
  *   netta.state        persistent learned state
  *   netta.history.tsv  immutable episode ledger
  *
- * The source corpus, PostGPT-like oracle line, and Netta attempt are
+ * The source corpus, Oracle line, and Netta attempt are
  * kept separate. Negative experience is remembered but never promoted
  * into source truth.
  */
