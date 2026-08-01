@@ -36,6 +36,41 @@ Netta reads a line, hides the continuation, generates its own attempt, compares 
 - `netta.history.tsv` — immutable ledger: context, oracle line, netta's attempt, the full coherence vector.
   
 Candidate selection is Pareto preference over that vector, not a single number to chase. 
+
+  
+### Coherence mirror and search teacher
+
+An oracle is a permanent coherence mirror. Candidate moves are screened cheaply; finalists receive recursive and counterfactual evaluation.
+Search leaves a soft improved policy rather than one mandatory sentence.
+
+### Prophecy Stack
+
+Sparse future obligations are carried at three horizons:
+
+- near: 1 token;
+- clause: 2–5 tokens;
+- discourse: 6–16 tokens.
+
+A move pays some obligations, leaves others overdue and opens new ones. The difference between prophecy and destiny becomes dynamic debt.
+
+### Recurrent core
+
+A small shared MLP may pass over the same state several times. Debt and volatility buy additional depth. Its readout and slow recurrent dynamics change through local reward-modulated Hebbian updates rather than backpropagation.
+
+### Language-independent causal glyphs
+
+A causal glyph is an online equivalence class of source histories that promise similar futures. A candidate state first enters a nursery. A glyph matures only after repeated rediscovery. It learns only from real source trajectories; agent-generated histories receive read-only projection into glyph space.
+
+A glyph has no automatic authority. Its semantic voice remains exactly neutraluntil its **prequential prediction** beats the corpus-wide future prior. Meaning must earn the right to affect action.
+
+### Experience market
+
+Each transition carries a changing quote, prophetic debt, momentum, volatility, support and opposition. Old success decays without confirmation. Negative experience remains in biography but is never promoted into source truth.
+
+### Dream Replay
+
+- **NREM:** replays surprising or unresolved source-grounded trajectories and consolidates delayed destiny.
+- **REM:** recombines related memories and evaluates imagined bridges without inserting them into the corpus.
   
 ## Build & run  
 
