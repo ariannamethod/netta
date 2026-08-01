@@ -5,7 +5,7 @@ the falsifier returned, and what must remain uncertain.
 
 ## Research law
 
-A code is not accepted because it is beautiful.
+A code isn't accepted because it is beautiful.
 
 1. Every major organ needs a matched control.
 2. Seeds, source positions and compute budgets are held equal.
@@ -553,3 +553,141 @@ prediction and avoid creating a new population-level attractor.
 The next corpus expansion should not be solved by repeatedly doubling static
 arrays. Vocabulary pages, immutable source shards and state-compatible growth
 must preserve snapshot identity.
+
+
+---
+
+## Stability pass: v0.18 — one organism, no dormant organs
+
+This pass deliberately stopped architectural expansion. Its purpose was to
+separate the living organism from experimental branches, repair persistence and
+source-boundary bugs, and verify that restart, probing and interaction preserve
+the same world.
+
+### AlphaGo decomposition
+
+AlphaGo's useful lesson was the separation of policy, position value and search.
+Several direct transplants were tested rather than accepted by analogy.
+
+A Gumbel/sequential-halving root search reduced fixed coherence from `0.6361` to
+`0.5923`, trigram validity from `0.5908` to `0.5000`, and almost stopped debt
+settlement (`-0.0147` versus `-0.1029`). It was rejected.
+
+Regret policy alone improved local trigram structure but weakened prophecy and
+debt. Combined with a value critic it created a population attractor. It was
+rejected from main.
+
+A topological coherence-value critic was promising on seed `424242`:
+`0.6603` fixed coherence and `0.6621` trigram validity, versus `0.6380` and
+`0.6035` for the legacy search. A crowding-adjusted variant reached `0.6611`
+and `0.6719`. However, both required substantially more inference, reduced
+rollout stability and repeatedly rediscovered the phrase `is the rarest gift`.
+The critic remains an experiment until it passes a multi-seed cost-matched
+falsifier without an attractor.
+
+The stable organism therefore retains the lightweight selective search that has
+already passed its controls. Rejected search code lives in `experiments/`, not
+behind sleeping switches in main.
+
+### The interaction source leak
+
+Interactive generation still used `glyph_assign()` after Netta's own tokens had
+entered context. A counterfactual street could therefore update the predictive
+map of the source world.
+
+Interactive continuations now use `glyph_lookup()` only. Human input is an
+observation; Netta's continuation may update experiential action memory and her
+state, but cannot train source-world causal signatures.
+
+Verified after a 240-game life and a prompt:
+
+- glyph count and births unchanged;
+- source-predictive glyph hash unchanged;
+- action-memory hash and visits changed.
+
+### State publication and identity
+
+Snapshots are now written to `netta.state.tmp`, checked, flushed, `fsync`ed and
+atomically renamed. SIGINT and SIGTERM request a graceful final publication.
+Corrupt or incompatible state is refused rather than partially loaded.
+
+Verified:
+
+```text
+160 uninterrupted games == 80 + restart + 80
+state SHA-256 identical
+read-only probe state SHA-256 unchanged
+ASan + UBSan + leak check clean
+```
+
+### Prompt physics
+
+Prompt text now uses the same punctuation-aware tokenizer as the corpus.
+Unknown prompt tokens are reported and ignored; they are not silently inserted
+into source truth.
+
+### Shadow plasticity leaves main
+
+The evolutionary plasticity population completed nine generations on each of
+three seeds. It earned zero authority and produced exactly the same actions,
+behavioural ledger and external probes as the immutable rule, while increasing
+runtime by an average factor of `1.227`.
+
+The local reward-modulated plasticity rule remains load-bearing. The evolutionary
+population has been moved to `experiments/`. This is not a rejection of
+meta-learning; it is a refusal to make every ordinary life pay for a mechanism
+that has not yet changed the game.
+
+### Stable boundary
+
+Main contains no default-off architectural organ. Ablation switches remain for
+accepted mechanisms because they are scientific controls, not hidden alternate
+bodies.
+
+The stable organism consists of:
+
+- corpus metaweights and oracle;
+- recurrent local-plasticity core;
+- experience market;
+- Prophecy Stack;
+- selective counterfactual search and soft policy distillation;
+- earned causal glyphs and Causal Neural Gas;
+- learning-frontier curriculum with permanent world coverage;
+- NREM/REM Dream Replay;
+- anti-attractor trajectory memory;
+- exact persistent biography.
+
+
+### Remaining language attractors
+
+Stable trajectory-level diversity does not eliminate phrase-level culture. In a
+seed `424242` life of 1200 games, all of the last 100 complete attempts were
+unique, yet the four-token phrase `is the world reduced` appeared five times.
+Across the full life, `the world reduced to` appeared 80 times and
+`of our finite time` 69 times.
+
+This is not hidden by the stability label. Netta currently learns recurring
+local poetic formulae faster than she learns clause-level novelty. The next
+language improvement should attack reusable semantic basins without destroying
+valid local structure or debt settlement.
+
+### Stable three-seed examination
+
+Seeds `10101`, `90909`, `424242`; 1200 games each; fixed 128-position read-only
+exam. Mean coordinates:
+
+```text
+first-token accuracy      0.2318
+token accuracy            0.0472
+corpus bigram validity    0.9702
+corpus trigram validity   0.5807
+prophecy fulfillment      0.3988
+world stability           0.5185
+rollout stability         0.5840
+world debt delta         -0.0828
+fixed coherence           0.6254
+```
+
+These are research coordinates, not claims of human-level language. Stable means
+that the surviving organism is reproducible, internally consistent and free of
+known experimental stowaways.
