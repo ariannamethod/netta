@@ -9,7 +9,7 @@ Somewhere between LM-hero and AlphaZero there's Netta. Netta has a hew own txt-f
 Netta reads a line, hides the continuation, generates its own attempt, compares it against both the hidden truth and a statistical oracle mirror, and settles the difference as experience — support if it was right, opposition if it wasn't. A living ledger of transitions with debt, volatility, momentum, and age.  
 
   
-## NETTA also have:
+## NETTA also has:
 
 - embeddings seeded from corpus co-occurrence; a small recurrent core predicts coherence dimensions, and only the readout learns, by reward-modulated Hebbian update.
 - transitions that quoted like a market — mark-to-market value, unresolved `prophetic debt`, volatility, momentum — revalued every move from the gap between what the core prophesied and what actually happened.
