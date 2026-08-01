@@ -2,7 +2,7 @@
  * netta.c — NETTA's Experiential Text Training Architecture
  *
  * A sovereign recursive language learner.
- * No backpropagation. 
+ * No backpropagation. No external ML library.
  *
  * Build:
  *   cc -O2 -std=c11 -Wall -Wextra -o netta netta.c -lm
@@ -19,7 +19,7 @@
  *   netta.state        persistent learned state
  *   netta.history.tsv  immutable episode ledger
  *
- * The source corpus, Oracle line, and Netta attempt are
+ * The source corpus, oracle line, and Netta attempt are
  * kept separate. Negative experience is remembered but never promoted
  * into source truth.
  */
@@ -44,7 +44,7 @@
 #define EMBED_DIM       24
 #define HIDDEN_DIM      32
 #define STATE_DIM       24
-#define SCORE_DIM       11
+#define SCORE_DIM       12
 #define CONTEXT         16
 #define ROLLOUT         8
 #define CANDIDATES      32
@@ -53,12 +53,19 @@
 #define TOP_SUCCESSORS  12
 #define PROPHECY_HORIZONS 3
 #define FUTURE_TOPK      12
+#define MAX_GLYPHS       128
+#define GLYPH_TOPK       12
+#define GLYPH_ACTION_TOPK 16
+#define GLYPH_RANDOM_BUCKETS MAX_GLYPHS
+#define GLYPH_SKETCH     256
+#define GLYPH_NURSERY    32
+#define GLYPH_SEED_HITS  4
 #define REPLAY_CAPACITY  1024
 #define DREAM_INTERVAL   64
 #define NREM_DREAMS      12
 #define REM_DREAMS       8
 #define STATE_MAGIC     0x4E455454u /* NETT */
-#define STATE_VERSION   23u
+#define STATE_VERSION   27u
 
 typedef struct {
     char text[MAX_TOKEN_LEN];
@@ -111,6 +118,7 @@ typedef struct {
     float semantic_continuity;
     float intent_fidelity;
     float search_policy;
+    float causal_glyph;
     float prophecy_fulfillment;
     float world_state_stability;
     float novelty;
@@ -137,6 +145,9 @@ typedef struct {
     ScoreVector immediate;
     float world_debt_before;
     float world_debt_after;
+    int glyph_id;
+    float glyph_gain;
+    float glyph_distance;
 } TrajectoryStep;
 
 typedef struct {
@@ -153,6 +164,57 @@ typedef struct {
     uint32_t replays;
     uint8_t valid;
 } ReplayEpisode;
+
+
+typedef struct {
+    /* Predictive-state signature used for assignment. */
+    int sig_token[PROPHECY_HORIZONS][GLYPH_TOPK];
+    float sig_prob[PROPHECY_HORIZONS][GLYPH_TOPK];
+    uint8_t sig_n[PROPHECY_HORIZONS];
+    float sig_debt[PROPHECY_HORIZONS];
+    float sig_conf[PROPHECY_HORIZONS];
+    float sig_future_emb[PROPHECY_HORIZONS][EMBED_DIM];
+
+    /* Destinies actually observed after contexts assigned to this glyph. */
+    int future_token[PROPHECY_HORIZONS][GLYPH_TOPK];
+    float future_weight[PROPHECY_HORIZONS][GLYPH_TOPK];
+    uint8_t future_n[PROPHECY_HORIZONS];
+    float future_total[PROPHECY_HORIZONS];
+    float future_sketch[PROPHECY_HORIZONS][GLYPH_SKETCH];
+    float future_emb_sum[PROPHECY_HORIZONS][EMBED_DIM];
+
+    /* Search-improved action memory inside the abstract state. */
+    int action_token[GLYPH_ACTION_TOPK];
+    float action_quote[GLYPH_ACTION_TOPK];
+    float action_debt[GLYPH_ACTION_TOPK];
+    uint32_t action_visits[GLYPH_ACTION_TOPK];
+    uint8_t action_n;
+
+    float context_centroid[EMBED_DIM];
+    float assignment_distance_ema;
+    float predictive_gain_ema;
+    float progress_ema;
+    uint32_t uses;
+    uint64_t born_episode;
+    uint64_t last_seen;
+    int16_t parent_a;
+    int16_t parent_b;
+    uint8_t generation;
+    uint8_t active;
+} CausalGlyph;
+
+typedef struct {
+    int sig_token[PROPHECY_HORIZONS][GLYPH_TOPK];
+    float sig_prob[PROPHECY_HORIZONS][GLYPH_TOPK];
+    uint8_t sig_n[PROPHECY_HORIZONS];
+    float sig_debt[PROPHECY_HORIZONS];
+    float sig_conf[PROPHECY_HORIZONS];
+    float sig_future_emb[PROPHECY_HORIZONS][EMBED_DIM];
+    float context_centroid[EMBED_DIM];
+    uint32_t hits;
+    uint64_t last_seen;
+    uint8_t active;
+} GlyphSeed;
 
 typedef struct {
     float wxh[HIDDEN_DIM][EMBED_DIM * 4 + STATE_DIM];
@@ -178,6 +240,13 @@ typedef struct {
     uint64_t nrem_replays;
     uint64_t rem_replays;
     uint64_t experiment_seed;
+    uint32_t glyph_mode;
+    uint32_t glyph_count;
+    uint64_t glyph_births;
+    uint64_t glyph_recycles;
+    uint64_t glyph_merges;
+    uint64_t glyph_seed_births;
+    uint64_t glyph_seed_promotions;
 } StateHeader;
 
 static Token vocab[MAX_VOCAB];
@@ -205,6 +274,19 @@ static uint8_t future_top_n[MAX_VOCAB][PROPHECY_HORIZONS];
 static float future_conf[MAX_VOCAB][PROPHECY_HORIZONS];
 static float global_future_weight[PROPHECY_HORIZONS][MAX_VOCAB];
 static float global_future_total[PROPHECY_HORIZONS];
+
+enum { GLYPH_OFF = 0, GLYPH_CAUSAL = 1, GLYPH_RANDOM = 2 };
+static CausalGlyph causal_glyphs[MAX_GLYPHS];
+static GlyphSeed glyph_nursery[GLYPH_NURSERY];
+static float global_glyph_sketch[PROPHECY_HORIZONS][GLYPH_SKETCH];
+static int glyph_mode = GLYPH_CAUSAL;
+static int glyph_count = 0;
+static uint64_t glyph_births = 0;
+static uint64_t glyph_recycles = 0;
+static uint64_t glyph_merges = 0;
+static uint64_t glyph_seed_births = 0;
+static uint64_t glyph_seed_promotions = 0;
+static float glyph_birth_threshold = 0.31f;
 
 static Core core;
 static uint64_t episode_count = 0;
@@ -623,6 +705,7 @@ static void build_future_fields(void) {
     memset(future_conf, 0, sizeof(future_conf));
     memset(global_future_weight, 0, sizeof(global_future_weight));
     memset(global_future_total, 0, sizeof(global_future_total));
+    memset(global_glyph_sketch, 0, sizeof(global_glyph_sketch));
 
     static float evidence[MAX_VOCAB][PROPHECY_HORIZONS];
     memset(evidence, 0, sizeof(evidence));
@@ -642,6 +725,15 @@ static void build_future_fields(void) {
             global_future_weight[h][future] += w;
             global_future_total[h] += w;
             future_top_update(source, h, future, w);
+        }
+    }
+
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        for (int t = 0; t < vocab_size; ++t) {
+            uint64_t key = (uint64_t)(uint32_t)t ^
+                           (0x9E3779B97F4A7C15ULL * (uint64_t)(h + 1));
+            int bucket = (int)(mix64(key) & (GLYPH_SKETCH - 1));
+            global_glyph_sketch[h][bucket] += global_future_weight[h][t];
         }
     }
 
@@ -908,6 +1000,805 @@ static void prophecy_stack_step(ProphecyStack *stack, int chosen,
     *stack = next;
     if (paid_out) *paid_out = paid;
     if (after_out) *after_out = prophecy_stack_total_debt(stack);
+}
+
+
+/* ───────────────────── Emergent causal glyphs ─────────────────────
+ *
+ * A glyph is not a human semantic label. It is an online equivalence class
+ * of histories that promise similar observable futures. The causal control
+ * clusters ProphecyStack signatures; the random control gets exactly the
+ * same memory and update rules but hashes contexts into arbitrary buckets.
+ */
+
+static void context_embedding(const int *ctx, int n, float *out);
+
+static float glyph_sparse_lookup(const int *tok, const float *prob,
+                                 int n, int target) {
+    for (int i = 0; i < n; ++i)
+        if (tok[i] == target) return prob[i];
+    return 0.0f;
+}
+
+static void glyph_sparse_normalize(float *prob, int n) {
+    float total = 0.0f;
+    for (int i = 0; i < n; ++i) total += prob[i];
+    if (total <= 1e-12f) return;
+    for (int i = 0; i < n; ++i) prob[i] /= total;
+}
+
+static void glyph_sparse_add(int *tok, float *value, uint8_t *n,
+                             int target, float mass, int cap) {
+    if (mass <= 0.0f || target < 0) return;
+    for (int i = 0; i < *n; ++i) {
+        if (tok[i] == target) {
+            value[i] += mass;
+            return;
+        }
+    }
+    if (*n < cap) {
+        int i = (*n)++;
+        tok[i] = target;
+        value[i] = mass;
+        return;
+    }
+    int weakest = 0;
+    for (int i = 1; i < cap; ++i)
+        if (value[i] < value[weakest]) weakest = i;
+    if (mass > value[weakest]) {
+        tok[weakest] = target;
+        value[weakest] = mass;
+    }
+}
+
+static float glyph_sparse_js(const int *a_tok, const float *a_prob, int an,
+                             const int *b_tok, const float *b_prob, int bn) {
+    float js = 0.0f;
+    for (int i = 0; i < an; ++i) {
+        float p = a_prob[i];
+        float q = glyph_sparse_lookup(b_tok, b_prob, bn, a_tok[i]);
+        float m = 0.5f * (p + q);
+        if (p > 1e-12f) js += 0.5f * p * logf(p / (m + 1e-12f));
+        if (q > 1e-12f) js += 0.5f * q * logf(q / (m + 1e-12f));
+    }
+    for (int i = 0; i < bn; ++i) {
+        if (glyph_sparse_lookup(a_tok, a_prob, an, b_tok[i]) > 0.0f) continue;
+        float q = b_prob[i];
+        float m = 0.5f * q;
+        if (q > 1e-12f) js += 0.5f * q * logf(q / (m + 1e-12f));
+    }
+    return clampf(js / 0.69314718056f, 0.0f, 1.0f);
+}
+
+
+static void glyph_stack_future_embedding(const ProphecyStack *stack,
+                                         int h, float *out) {
+    memset(out, 0, EMBED_DIM * sizeof(float));
+    if (!stack || h < 0 || h >= PROPHECY_HORIZONS) return;
+    for (int i = 0; i < stack->n[h]; ++i) {
+        int tok = stack->token[h][i];
+        if (tok < 0 || tok >= vocab_size) continue;
+        float p = stack->prob[h][i];
+        for (int d = 0; d < EMBED_DIM; ++d)
+            out[d] += p * vocab[tok].emb[d];
+    }
+    normalize(out, EMBED_DIM);
+}
+
+static float glyph_seed_distance(const ProphecyStack *stack,
+                                 const GlyphSeed *g) {
+    if (!g || !g->active || !stack) return 1.0f;
+    static const float hw[PROPHECY_HORIZONS] = {0.50f, 0.31f, 0.19f};
+    float js = 0.0f, semantic = 0.0f, debt = 0.0f, conf = 0.0f;
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        float emb[EMBED_DIM];
+        glyph_stack_future_embedding(stack, h, emb);
+        js += hw[h] * glyph_sparse_js(
+            stack->token[h], stack->prob[h], stack->n[h],
+            g->sig_token[h], g->sig_prob[h], g->sig_n[h]);
+        semantic += hw[h] *
+            0.5f * (1.0f - cosine(emb, g->sig_future_emb[h], EMBED_DIM));
+        debt += hw[h] * fabsf(stack->debt[h] - g->sig_debt[h]) * 0.5f;
+        conf += hw[h] * fabsf(stack->confidence[h] - g->sig_conf[h]);
+    }
+    return clampf(0.42f * js + 0.38f * semantic +
+                  0.13f * debt + 0.07f * conf, 0.0f, 1.0f);
+}
+
+static float glyph_signature_distance(const ProphecyStack *stack,
+                                      const CausalGlyph *g) {
+    if (!g || !g->active || !stack) return 1.0f;
+    static const float hw[PROPHECY_HORIZONS] = {0.50f, 0.31f, 0.19f};
+    float js = 0.0f, semantic = 0.0f, debt = 0.0f, conf = 0.0f;
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        float emb[EMBED_DIM];
+        glyph_stack_future_embedding(stack, h, emb);
+        js += hw[h] * glyph_sparse_js(
+            stack->token[h], stack->prob[h], stack->n[h],
+            g->sig_token[h], g->sig_prob[h], g->sig_n[h]);
+        semantic += hw[h] *
+            0.5f * (1.0f - cosine(emb, g->sig_future_emb[h], EMBED_DIM));
+        debt += hw[h] * fabsf(stack->debt[h] - g->sig_debt[h]) * 0.5f;
+        conf += hw[h] * fabsf(stack->confidence[h] - g->sig_conf[h]);
+    }
+    return clampf(0.42f * js + 0.38f * semantic +
+                  0.13f * debt + 0.07f * conf, 0.0f, 1.0f);
+}
+
+static float glyph_pair_distance(const CausalGlyph *a,
+                                 const CausalGlyph *b) {
+    if (!a || !b || !a->active || !b->active) return 1.0f;
+    static const float hw[PROPHECY_HORIZONS] = {0.50f, 0.31f, 0.19f};
+    float js = 0.0f, semantic = 0.0f, debt = 0.0f, conf = 0.0f;
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        js += hw[h] * glyph_sparse_js(
+            a->sig_token[h], a->sig_prob[h], a->sig_n[h],
+            b->sig_token[h], b->sig_prob[h], b->sig_n[h]);
+        semantic += hw[h] *
+            0.5f * (1.0f - cosine(a->sig_future_emb[h],
+                                  b->sig_future_emb[h], EMBED_DIM));
+        debt += hw[h] * fabsf(a->sig_debt[h] - b->sig_debt[h]) * 0.5f;
+        conf += hw[h] * fabsf(a->sig_conf[h] - b->sig_conf[h]);
+    }
+    return clampf(0.42f * js + 0.38f * semantic +
+                  0.13f * debt + 0.07f * conf, 0.0f, 1.0f);
+}
+
+static int glyph_weakest_slot(void) {
+    for (int i = 0; i < MAX_GLYPHS; ++i)
+        if (!causal_glyphs[i].active) return i;
+
+    int weakest = 0;
+    float weakest_score = 1e30f;
+    for (int i = 0; i < MAX_GLYPHS; ++i) {
+        CausalGlyph *g = &causal_glyphs[i];
+        float age = (float)(episode_count > g->last_seen ?
+                            episode_count - g->last_seen : 0);
+        float gain = clampf(g->predictive_gain_ema, -1.0f, 2.0f);
+        float retained = (1.0f + (float)g->uses) *
+                         (0.55f + 0.20f * gain) /
+                         (1.0f + age / 192.0f);
+        if (retained < weakest_score) {
+            weakest_score = retained;
+            weakest = i;
+        }
+    }
+    return weakest;
+}
+
+static void glyph_copy_signature(CausalGlyph *g,
+                                 const ProphecyStack *stack) {
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        g->sig_n[h] = stack ? stack->n[h] : 0;
+        for (int i = 0; i < g->sig_n[h]; ++i) {
+            g->sig_token[h][i] = stack->token[h][i];
+            g->sig_prob[h][i] = stack->prob[h][i];
+        }
+        g->sig_debt[h] = stack ? stack->debt[h] : 0.5f;
+        g->sig_conf[h] = stack ? stack->confidence[h] : 0.02f;
+        if (stack)
+            glyph_stack_future_embedding(stack, h, g->sig_future_emb[h]);
+    }
+}
+
+static int glyph_birth_at(int slot, const ProphecyStack *stack,
+                          const int *ctx, int ctx_n) {
+    if (slot < 0 || slot >= MAX_GLYPHS) return -1;
+    int recycled = causal_glyphs[slot].active;
+    if (recycled) {
+        glyph_recycles++;
+    } else {
+        glyph_count++;
+    }
+
+    CausalGlyph *g = &causal_glyphs[slot];
+    memset(g, 0, sizeof(*g));
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        for (int i = 0; i < GLYPH_TOPK; ++i) {
+            g->sig_token[h][i] = -1;
+            g->future_token[h][i] = -1;
+        }
+    }
+    for (int i = 0; i < GLYPH_ACTION_TOPK; ++i)
+        g->action_token[i] = -1;
+
+    glyph_copy_signature(g, stack);
+    if (ctx && ctx_n > 0)
+        context_embedding(ctx, ctx_n, g->context_centroid);
+    g->uses = 1;
+    g->born_episode = episode_count;
+    g->last_seen = episode_count;
+    g->parent_a = -1;
+    g->parent_b = -1;
+    g->active = 1;
+    glyph_births++;
+    return slot;
+}
+
+static void glyph_update_signature(int gid, const ProphecyStack *stack,
+                                   const int *ctx, int ctx_n,
+                                   float distance) {
+    if (gid < 0 || gid >= MAX_GLYPHS || !stack) return;
+    CausalGlyph *g = &causal_glyphs[gid];
+    if (!g->active) return;
+
+    float lr = clampf(1.0f / sqrtf((float)g->uses + 2.0f),
+                      0.025f, 0.18f);
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        for (int i = 0; i < g->sig_n[h]; ++i)
+            g->sig_prob[h][i] *= (1.0f - lr);
+        for (int i = 0; i < stack->n[h]; ++i)
+            glyph_sparse_add(g->sig_token[h], g->sig_prob[h],
+                             &g->sig_n[h], stack->token[h][i],
+                             lr * stack->prob[h][i], GLYPH_TOPK);
+        glyph_sparse_normalize(g->sig_prob[h], g->sig_n[h]);
+        g->sig_debt[h] =
+            (1.0f - lr) * g->sig_debt[h] + lr * stack->debt[h];
+        g->sig_conf[h] =
+            (1.0f - lr) * g->sig_conf[h] + lr * stack->confidence[h];
+        float emb[EMBED_DIM];
+        glyph_stack_future_embedding(stack, h, emb);
+        for (int d = 0; d < EMBED_DIM; ++d)
+            g->sig_future_emb[h][d] =
+                (1.0f - lr) * g->sig_future_emb[h][d] + lr * emb[d];
+        normalize(g->sig_future_emb[h], EMBED_DIM);
+    }
+
+    if (ctx && ctx_n > 0) {
+        float cemb[EMBED_DIM];
+        context_embedding(ctx, ctx_n, cemb);
+        for (int d = 0; d < EMBED_DIM; ++d)
+            g->context_centroid[d] =
+                (1.0f - lr) * g->context_centroid[d] + lr * cemb[d];
+        normalize(g->context_centroid, EMBED_DIM);
+    }
+
+    g->assignment_distance_ema =
+        g->uses > 1 ? 0.96f * g->assignment_distance_ema +
+                      0.04f * distance : distance;
+    g->uses++;
+    g->last_seen = episode_count;
+}
+
+static uint64_t glyph_context_hash(const int *ctx, int ctx_n) {
+    uint64_t h = 0xCBF29CE484222325ULL;
+    int start = ctx_n - 8;
+    if (start < 0) start = 0;
+    for (int i = start; i < ctx_n; ++i) {
+        h ^= mix64((uint64_t)(uint32_t)ctx[i] +
+                   0x9E3779B97F4A7C15ULL * (uint64_t)(i - start + 1));
+        h *= 0x100000001B3ULL;
+    }
+    return mix64(h);
+}
+
+static int glyph_seed_slot(void) {
+    for (int i = 0; i < GLYPH_NURSERY; ++i)
+        if (!glyph_nursery[i].active) return i;
+    int weakest = 0;
+    float weakest_score = 1e30f;
+    for (int i = 0; i < GLYPH_NURSERY; ++i) {
+        GlyphSeed *g = &glyph_nursery[i];
+        float age = (float)(episode_count > g->last_seen ?
+                            episode_count - g->last_seen : 0);
+        float retained = (float)g->hits / (1.0f + age / 64.0f);
+        if (retained < weakest_score) {
+            weakest_score = retained;
+            weakest = i;
+        }
+    }
+    return weakest;
+}
+
+static void glyph_seed_init(int slot, const ProphecyStack *stack,
+                            const int *ctx, int ctx_n) {
+    GlyphSeed *g = &glyph_nursery[slot];
+    memset(g, 0, sizeof(*g));
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        g->sig_n[h] = stack->n[h];
+        for (int i = 0; i < stack->n[h]; ++i) {
+            g->sig_token[h][i] = stack->token[h][i];
+            g->sig_prob[h][i] = stack->prob[h][i];
+        }
+        g->sig_debt[h] = stack->debt[h];
+        g->sig_conf[h] = stack->confidence[h];
+        glyph_stack_future_embedding(stack, h, g->sig_future_emb[h]);
+    }
+    if (ctx && ctx_n > 0)
+        context_embedding(ctx, ctx_n, g->context_centroid);
+    g->hits = 1;
+    g->last_seen = episode_count;
+    g->active = 1;
+    glyph_seed_births++;
+}
+
+static void glyph_seed_update(GlyphSeed *g, const ProphecyStack *stack,
+                              const int *ctx, int ctx_n) {
+    float lr = clampf(1.0f / sqrtf((float)g->hits + 2.0f),
+                      0.08f, 0.28f);
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        for (int i = 0; i < g->sig_n[h]; ++i)
+            g->sig_prob[h][i] *= (1.0f - lr);
+        for (int i = 0; i < stack->n[h]; ++i)
+            glyph_sparse_add(g->sig_token[h], g->sig_prob[h],
+                             &g->sig_n[h], stack->token[h][i],
+                             lr * stack->prob[h][i], GLYPH_TOPK);
+        glyph_sparse_normalize(g->sig_prob[h], g->sig_n[h]);
+        g->sig_debt[h] =
+            (1.0f - lr) * g->sig_debt[h] + lr * stack->debt[h];
+        g->sig_conf[h] =
+            (1.0f - lr) * g->sig_conf[h] + lr * stack->confidence[h];
+
+        float emb[EMBED_DIM];
+        glyph_stack_future_embedding(stack, h, emb);
+        for (int d = 0; d < EMBED_DIM; ++d)
+            g->sig_future_emb[h][d] =
+                (1.0f - lr) * g->sig_future_emb[h][d] + lr * emb[d];
+        normalize(g->sig_future_emb[h], EMBED_DIM);
+    }
+    if (ctx && ctx_n > 0) {
+        float cemb[EMBED_DIM];
+        context_embedding(ctx, ctx_n, cemb);
+        for (int d = 0; d < EMBED_DIM; ++d)
+            g->context_centroid[d] =
+                (1.0f - lr) * g->context_centroid[d] + lr * cemb[d];
+        normalize(g->context_centroid, EMBED_DIM);
+    }
+    g->hits++;
+    g->last_seen = episode_count;
+}
+
+static int glyph_promote_seed(int seed_slot) {
+    GlyphSeed *seed = &glyph_nursery[seed_slot];
+    if (!seed->active || seed->hits < GLYPH_SEED_HITS) return -1;
+
+    ProphecyStack stack;
+    memset(&stack, 0, sizeof(stack));
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        stack.n[h] = seed->sig_n[h];
+        for (int i = 0; i < stack.n[h]; ++i) {
+            stack.token[h][i] = seed->sig_token[h][i];
+            stack.prob[h][i] = seed->sig_prob[h][i];
+        }
+        stack.debt[h] = seed->sig_debt[h];
+        stack.confidence[h] = seed->sig_conf[h];
+    }
+
+    int slot = glyph_weakest_slot();
+    int gid = glyph_birth_at(slot, &stack, NULL, 0);
+    if (gid >= 0) {
+        CausalGlyph *g = &causal_glyphs[gid];
+        memcpy(g->context_centroid, seed->context_centroid,
+               sizeof(g->context_centroid));
+        for (int h = 0; h < PROPHECY_HORIZONS; ++h)
+            memcpy(g->sig_future_emb[h], seed->sig_future_emb[h],
+                   sizeof(g->sig_future_emb[h]));
+        g->uses = seed->hits;
+        glyph_seed_promotions++;
+    }
+    memset(seed, 0, sizeof(*seed));
+    return gid;
+}
+
+static int glyph_nursery_observe(const int *ctx, int ctx_n,
+                                 const ProphecyStack *stack) {
+    int best = -1;
+    float best_distance = 1e30f;
+    for (int i = 0; i < GLYPH_NURSERY; ++i) {
+        if (!glyph_nursery[i].active) continue;
+        float d = glyph_seed_distance(stack, &glyph_nursery[i]);
+        if (d < best_distance) {
+            best_distance = d;
+            best = i;
+        }
+    }
+
+    const float nursery_threshold = 0.18f;
+    if (best < 0 || best_distance > nursery_threshold) {
+        best = glyph_seed_slot();
+        glyph_seed_init(best, stack, ctx, ctx_n);
+    } else {
+        glyph_seed_update(&glyph_nursery[best], stack, ctx, ctx_n);
+    }
+
+    if (glyph_nursery[best].hits >= GLYPH_SEED_HITS)
+        return glyph_promote_seed(best);
+    return -1;
+}
+
+static int glyph_assign(const int *ctx, int ctx_n,
+                        const ProphecyStack *stack,
+                        float *distance_out) {
+    if (distance_out) *distance_out = 0.0f;
+    if (glyph_mode == GLYPH_OFF || !stack || !prophecy_stack_enabled)
+        return -1;
+
+    if (glyph_mode == GLYPH_RANDOM) {
+        int slot = (int)(glyph_context_hash(ctx, ctx_n) %
+                         GLYPH_RANDOM_BUCKETS);
+        int born = !causal_glyphs[slot].active;
+        if (born)
+            glyph_birth_at(slot, stack, ctx, ctx_n);
+        float d = glyph_signature_distance(stack, &causal_glyphs[slot]);
+        if (!born)
+            glyph_update_signature(slot, stack, ctx, ctx_n, d);
+        if (distance_out) *distance_out = d;
+        return slot;
+    }
+
+    if (glyph_count == 0) {
+        int gid = glyph_birth_at(glyph_weakest_slot(), stack, ctx, ctx_n);
+        if (distance_out) *distance_out = 0.0f;
+        return gid;
+    }
+
+    int best = -1;
+    float best_distance = 1e30f;
+    for (int i = 0; i < MAX_GLYPHS; ++i) {
+        if (!causal_glyphs[i].active) continue;
+        float d = glyph_signature_distance(stack, &causal_glyphs[i]);
+        if (d < best_distance) {
+            best_distance = d;
+            best = i;
+        }
+    }
+
+    float threshold = glyph_birth_threshold +
+        0.035f * expf(-(float)episode_count / 900.0f);
+
+    if (best_distance > threshold) {
+        int promoted = glyph_nursery_observe(ctx, ctx_n, stack);
+        if (distance_out) *distance_out = best_distance;
+        return promoted;
+    }
+
+    glyph_update_signature(best, stack, ctx, ctx_n, best_distance);
+    if (distance_out) *distance_out = best_distance;
+    return best;
+}
+
+
+/*
+ * Read-only projection of an agent-generated history into the learned world
+ * abstraction.  This function may consult causal glyphs, but it may never
+ * create or update one.  Source trajectories teach the world's physics;
+ * counterfactual trajectories only ask the world what state they resemble.
+ */
+static int glyph_lookup(const int *ctx, int ctx_n,
+                        const ProphecyStack *stack,
+                        float *distance_out) {
+    if (distance_out) *distance_out = 0.0f;
+    if (glyph_mode == GLYPH_OFF || !stack || !prophecy_stack_enabled)
+        return -1;
+
+    if (glyph_mode == GLYPH_RANDOM) {
+        int slot = (int)(glyph_context_hash(ctx, ctx_n) %
+                         GLYPH_RANDOM_BUCKETS);
+        if (!causal_glyphs[slot].active)
+            return -1;
+        float d = glyph_signature_distance(stack, &causal_glyphs[slot]);
+        if (distance_out) *distance_out = d;
+        return slot;
+    }
+
+    int best = -1;
+    float best_distance = 1e30f;
+    for (int i = 0; i < MAX_GLYPHS; ++i) {
+        if (!causal_glyphs[i].active) continue;
+        float d = glyph_signature_distance(stack, &causal_glyphs[i]);
+        if (d < best_distance) {
+            best_distance = d;
+            best = i;
+        }
+    }
+
+    /*
+     * Counterfactual states are allowed a wider projection radius than
+     * source-state birth.  Beyond it Netta admits that this part of the
+     * imagined world has no learned glyph yet.
+     */
+    float birth_threshold = glyph_birth_threshold +
+        0.035f * expf(-(float)episode_count / 900.0f);
+    float projection_threshold = clampf(1.35f * birth_threshold,
+                                        birth_threshold, 0.58f);
+    if (best < 0 || best_distance > projection_threshold) {
+        if (distance_out) *distance_out = best_distance;
+        return -1;
+    }
+
+    if (distance_out) *distance_out = best_distance;
+    return best;
+}
+
+static int glyph_sketch_bucket(int h, int tok) {
+    uint64_t key = (uint64_t)(uint32_t)tok ^
+                   (0x9E3779B97F4A7C15ULL * (uint64_t)(h + 1));
+    return (int)(mix64(key) & (GLYPH_SKETCH - 1));
+}
+
+static float glyph_global_future_prob(int h, int tok) {
+    if (h < 0 || h >= PROPHECY_HORIZONS ||
+        tok < 0 || tok >= vocab_size ||
+        global_future_total[h] <= 1e-12f)
+        return 1.0f / (float)GLYPH_SKETCH;
+    int bucket = glyph_sketch_bucket(h, tok);
+    return global_glyph_sketch[h][bucket] /
+           (global_future_total[h] + 1e-12f);
+}
+
+static float glyph_future_prob(int gid, int h, int tok) {
+    float base = glyph_global_future_prob(h, tok);
+    if (gid < 0 || gid >= MAX_GLYPHS ||
+        !causal_glyphs[gid].active)
+        return base;
+
+    CausalGlyph *g = &causal_glyphs[gid];
+    int bucket = glyph_sketch_bucket(h, tok);
+    float local = g->future_sketch[h][bucket] /
+                  (g->future_total[h] + 1e-12f);
+    float maturity = g->future_total[h] /
+                     (g->future_total[h] + 10.0f);
+    return (1.0f - maturity) * base + maturity * local;
+}
+
+static void glyph_future_add(CausalGlyph *g, int h, int tok, float weight) {
+    if (!g || h < 0 || h >= PROPHECY_HORIZONS ||
+        tok < 0 || weight <= 0.0f) return;
+    glyph_sparse_add(g->future_token[h], g->future_weight[h],
+                     &g->future_n[h], tok, weight, GLYPH_TOPK);
+    int bucket = glyph_sketch_bucket(h, tok);
+    g->future_sketch[h][bucket] += weight;
+    for (int d = 0; d < EMBED_DIM; ++d)
+        g->future_emb_sum[h][d] += weight * vocab[tok].emb[d];
+    g->future_total[h] += weight;
+}
+
+static float glyph_predictive_gain(int gid, int truth) {
+    if (gid < 0 || truth < 0 || truth >= vocab_size) return 0.0f;
+    CausalGlyph *g = &causal_glyphs[gid];
+    if (!g->active || g->future_total[0] < 2.0f) return 0.0f;
+    float pg = glyph_future_prob(gid, 0, truth);
+    float pb = glyph_global_future_prob(0, truth);
+    return clampf(logf((pg + 1e-9f) / (pb + 1e-9f)),
+                  -6.0f, 6.0f);
+}
+
+static void glyph_observe_destiny(int gid, const int *future, int n,
+                                  float predictive_gain,
+                                  float debt_progress) {
+    if (gid < 0 || gid >= MAX_GLYPHS || !future || n <= 0) return;
+    CausalGlyph *g = &causal_glyphs[gid];
+    if (!g->active) return;
+
+    int limit = n < 16 ? n : 16;
+    for (int i = 0; i < limit; ++i) {
+        int h = i == 0 ? 0 : (i < 5 ? 1 : 2);
+        float w = h == 0 ? 1.0f :
+            (h == 1 ? 1.0f / sqrtf((float)i) :
+                      0.55f / sqrtf((float)(i - 4)));
+        glyph_future_add(g, h, future[i], w);
+    }
+    g->predictive_gain_ema =
+        0.96f * g->predictive_gain_ema + 0.04f * predictive_gain;
+    g->progress_ema =
+        0.94f * g->progress_ema + 0.06f * debt_progress;
+}
+
+static int glyph_action_slot(CausalGlyph *g, int tok, int create) {
+    for (int i = 0; i < g->action_n; ++i)
+        if (g->action_token[i] == tok) return i;
+    if (!create) return -1;
+    if (g->action_n < GLYPH_ACTION_TOPK) {
+        int i = g->action_n++;
+        g->action_token[i] = tok;
+        g->action_quote[i] = 0.5f;
+        g->action_debt[i] = 0.5f;
+        g->action_visits[i] = 0;
+        return i;
+    }
+    int weakest = 0;
+    float weakest_score = 1e30f;
+    for (int i = 0; i < GLYPH_ACTION_TOPK; ++i) {
+        float score = g->action_quote[i] -
+                      0.25f * g->action_debt[i] +
+                      0.02f * log1pf((float)g->action_visits[i]);
+        if (score < weakest_score) {
+            weakest_score = score;
+            weakest = i;
+        }
+    }
+    g->action_token[weakest] = tok;
+    g->action_quote[weakest] = 0.5f;
+    g->action_debt[weakest] = 0.5f;
+    g->action_visits[weakest] = 0;
+    return weakest;
+}
+
+static float glyph_action_score(int gid, int tok) {
+    if (gid < 0 || gid >= MAX_GLYPHS ||
+        !causal_glyphs[gid].active) return 0.5f;
+    CausalGlyph *g = &causal_glyphs[gid];
+    int i = glyph_action_slot(g, tok, 0);
+    if (i < 0 || g->action_visits[i] == 0) return 0.5f;
+    float confidence =
+        1.0f - expf(-(float)g->action_visits[i] / 6.0f);
+    return clampf(0.5f + confidence *
+                  (g->action_quote[i] -
+                   0.22f * g->action_debt[i] - 0.5f),
+                  0.0f, 1.0f);
+}
+
+static void glyph_action_mark(int gid, int tok, float target) {
+    if (gid < 0 || gid >= MAX_GLYPHS ||
+        !causal_glyphs[gid].active) return;
+    CausalGlyph *g = &causal_glyphs[gid];
+    int i = glyph_action_slot(g, tok, 1);
+    float old = g->action_quote[i];
+    float delta = target - old;
+    g->action_quote[i] =
+        0.90f * g->action_quote[i] + 0.10f * target;
+    g->action_debt[i] =
+        0.94f * g->action_debt[i] + 0.06f * fabsf(delta);
+    g->action_visits[i]++;
+}
+
+static float glyph_future_overlap(int gid, int gh,
+                                  int source, int sh) {
+    if (gid < 0 || gid >= MAX_GLYPHS ||
+        !causal_glyphs[gid].active ||
+        source < 0 || source >= vocab_size)
+        return 0.0f;
+    float overlap = 0.0f;
+    int n = future_top_n[source][sh];
+    for (int i = 0; i < n; ++i) {
+        int tok = future_top_tokens[source][sh][i];
+        float a = future_top_prob[source][sh][i];
+        float b = glyph_future_prob(gid, gh, tok);
+        overlap += a < b ? a : b;
+    }
+    return clampf(overlap, 0.0f, 1.0f);
+}
+
+static float glyph_candidate_score(int gid, int candidate) {
+    if (glyph_mode == GLYPH_OFF || gid < 0 ||
+        gid >= MAX_GLYPHS || !causal_glyphs[gid].active)
+        return 0.5f;
+
+    CausalGlyph *g = &causal_glyphs[gid];
+    float max_near = glyph_global_future_prob(0, candidate);
+    for (int i = 0; i < g->future_n[0]; ++i) {
+        float p = glyph_future_prob(gid, 0, g->future_token[0][i]);
+        if (p > max_near) max_near = p;
+    }
+    float near_exact = glyph_future_prob(gid, 0, candidate) /
+                       (max_near + 1e-9f);
+    float near_semantic = 0.5f;
+    if (vec_norm(g->future_emb_sum[0], EMBED_DIM) > 1e-6f)
+        near_semantic =
+            0.5f * (1.0f + cosine(vocab[candidate].emb,
+                                  g->future_emb_sum[0], EMBED_DIM));
+    float near = 0.58f * near_exact + 0.42f * near_semantic;
+
+    float clause = 0.55f * glyph_future_overlap(gid, 1, candidate, 0) +
+                   0.45f * glyph_future_overlap(gid, 1, candidate, 1);
+    float discourse =
+        0.62f * glyph_future_overlap(gid, 2, candidate, 2) +
+        0.38f * glyph_future_overlap(gid, 2, candidate, 1);
+    float action = glyph_action_score(gid, candidate);
+
+    float raw = 0.39f * near + 0.23f * clause +
+                0.13f * discourse + 0.25f * action;
+
+    /*
+     * Earned semantic voice.
+     *
+     * A causal abstraction does not gain authority merely by existing for a
+     * long time.  Its online, prequential prediction must first beat the
+     * corpus-wide future prior.  Until then the glyph is remembered and
+     * trained, but its vote is exactly neutral.
+     */
+    float evidence = 1.0f - expf(-(float)g->uses / 24.0f);
+    float gain_gate = clampf(
+        (g->predictive_gain_ema - 0.02f) / 0.32f, 0.0f, 1.0f);
+    float assignment_reliability =
+        expf(-2.2f * clampf(g->assignment_distance_ema, 0.0f, 1.0f));
+    float authority =
+        evidence * gain_gate * assignment_reliability;
+
+    return clampf(0.5f + authority * (raw - 0.5f),
+                  0.0f, 1.0f);
+}
+
+static void glyph_merge_into(int keep, int remove) {
+    if (keep < 0 || remove < 0 || keep == remove) return;
+    CausalGlyph *a = &causal_glyphs[keep];
+    CausalGlyph *b = &causal_glyphs[remove];
+    if (!a->active || !b->active) return;
+
+    float wa = (float)(a->uses + 1);
+    float wb = (float)(b->uses + 1);
+    float total = wa + wb;
+    float alpha = wb / total;
+
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        for (int i = 0; i < a->sig_n[h]; ++i)
+            a->sig_prob[h][i] *= (1.0f - alpha);
+        for (int i = 0; i < b->sig_n[h]; ++i)
+            glyph_sparse_add(a->sig_token[h], a->sig_prob[h],
+                             &a->sig_n[h], b->sig_token[h][i],
+                             alpha * b->sig_prob[h][i], GLYPH_TOPK);
+        glyph_sparse_normalize(a->sig_prob[h], a->sig_n[h]);
+        a->sig_debt[h] =
+            (wa * a->sig_debt[h] + wb * b->sig_debt[h]) / total;
+        a->sig_conf[h] =
+            (wa * a->sig_conf[h] + wb * b->sig_conf[h]) / total;
+
+        for (int i = 0; i < b->future_n[h]; ++i)
+            glyph_future_add(a, h, b->future_token[h][i],
+                             b->future_weight[h][i]);
+    }
+
+    for (int i = 0; i < b->action_n; ++i) {
+        int slot = glyph_action_slot(a, b->action_token[i], 1);
+        float visits_a = (float)a->action_visits[slot];
+        float visits_b = (float)b->action_visits[i];
+        float denom = visits_a + visits_b;
+        if (denom > 0.0f) {
+            a->action_quote[slot] =
+                (visits_a * a->action_quote[slot] +
+                 visits_b * b->action_quote[i]) / denom;
+            a->action_debt[slot] =
+                (visits_a * a->action_debt[slot] +
+                 visits_b * b->action_debt[i]) / denom;
+        }
+        a->action_visits[slot] += b->action_visits[i];
+    }
+
+    for (int d = 0; d < EMBED_DIM; ++d)
+        a->context_centroid[d] =
+            (wa * a->context_centroid[d] +
+             wb * b->context_centroid[d]) / total;
+    normalize(a->context_centroid, EMBED_DIM);
+    a->predictive_gain_ema =
+        (wa * a->predictive_gain_ema +
+         wb * b->predictive_gain_ema) / total;
+    a->progress_ema =
+        (wa * a->progress_ema + wb * b->progress_ema) / total;
+    a->uses += b->uses;
+    a->generation =
+        (uint8_t)((a->generation > b->generation ?
+                   a->generation : b->generation) + 1);
+    a->parent_a = (int16_t)keep;
+    a->parent_b = (int16_t)remove;
+
+    memset(b, 0, sizeof(*b));
+    glyph_count--;
+    glyph_merges++;
+}
+
+static void glyph_maintenance(void) {
+    if (glyph_mode != GLYPH_CAUSAL || glyph_count < 12) return;
+    int ai = -1, bi = -1;
+    float best = 1.0f;
+    for (int a = 0; a < MAX_GLYPHS; ++a) {
+        if (!causal_glyphs[a].active || causal_glyphs[a].uses < 8) continue;
+        for (int b = a + 1; b < MAX_GLYPHS; ++b) {
+            if (!causal_glyphs[b].active || causal_glyphs[b].uses < 8) continue;
+            float d = glyph_pair_distance(&causal_glyphs[a],
+                                          &causal_glyphs[b]);
+            if (d < best) {
+                best = d;
+                ai = a;
+                bi = b;
+            }
+        }
+    }
+    if (ai >= 0 && best < 0.055f) {
+        int keep = causal_glyphs[ai].uses >= causal_glyphs[bi].uses ?
+                   ai : bi;
+        int remove = keep == ai ? bi : ai;
+        glyph_merge_into(keep, remove);
+    }
 }
 
 static void build_source_graph(void) {
@@ -1249,7 +2140,8 @@ static ScoreVector observe_score(const int *ctx, int ctx_n, int candidate,
                                  int oracle, int truth,
                                  const float *intent,
                                  float intent_debt,
-                                 const ProphecyStack *world) {
+                                 const ProphecyStack *world,
+                                 int glyph_id) {
     ScoreVector s;
     memset(&s, 0, sizeof(s));
 
@@ -1285,6 +2177,7 @@ static ScoreVector observe_score(const int *ctx, int ctx_n, int candidate,
     float absolute_score = 0.5f * (1.0f + after_intent);
     s.intent_fidelity = 0.78f * progress_score + 0.22f * absolute_score;
     s.search_policy = context_policy_score(ctx, ctx_n, candidate);
+    s.causal_glyph = glyph_candidate_score(glyph_id, candidate);
     prophecy_stack_preview(world, candidate,
                            &s.prophecy_fulfillment,
                            &s.world_state_stability, NULL);
@@ -1326,6 +2219,7 @@ static ScoreVector observe_score(const int *ctx, int ctx_n, int candidate,
         s.semantic_continuity *= 0.10f;
         s.intent_fidelity *= 0.10f;
         s.search_policy *= 0.10f;
+        s.causal_glyph *= 0.10f;
         s.prophecy_fulfillment *= 0.10f;
         s.world_state_stability *= 0.10f;
         s.novelty *= 0.05f;
@@ -1343,11 +2237,12 @@ static void score_to_array(ScoreVector s, float out[SCORE_DIM]) {
     out[3] = s.semantic_continuity;
     out[4] = s.intent_fidelity;
     out[5] = s.search_policy;
-    out[6] = s.prophecy_fulfillment;
-    out[7] = s.world_state_stability;
-    out[8] = s.novelty;
-    out[9] = s.rollout_stability;
-    out[10] = s.anti_repetition;
+    out[6] = s.causal_glyph;
+    out[7] = s.prophecy_fulfillment;
+    out[8] = s.world_state_stability;
+    out[9] = s.novelty;
+    out[10] = s.rollout_stability;
+    out[11] = s.anti_repetition;
 }
 
 /*
@@ -1676,7 +2571,7 @@ static float counterfactual_rollout_score(const int *ctx, int ctx_n,
 
 static void prior_score(const int *ctx, int ctx_n, int candidate, int oracle,
                         const float *intent, const ProphecyStack *world,
-                        float out[SCORE_DIM]) {
+                        int glyph_id, float out[SCORE_DIM]) {
     int prev = ctx[ctx_n - 1];
     int e = find_edge(prev, candidate);
     uint32_t src = e >= 0 ? edges[e].source_count : 0;
@@ -1700,7 +2595,8 @@ static void prior_score(const int *ctx, int ctx_n, int candidate, int oracle,
 
     out[4] = intent_progress_for(ctx, ctx_n, candidate, intent);
     out[5] = context_policy_score(ctx, ctx_n, candidate);
-    prophecy_stack_preview(world, candidate, &out[6], &out[7], NULL);
+    out[6] = glyph_candidate_score(glyph_id, candidate);
+    prophecy_stack_preview(world, candidate, &out[7], &out[8], NULL);
 
     if (!content) {
         out[1] *= 0.20f;
@@ -1709,6 +2605,7 @@ static void prior_score(const int *ctx, int ctx_n, int candidate, int oracle,
         out[5] *= 0.10f;
         out[6] *= 0.10f;
         out[7] *= 0.10f;
+        out[8] *= 0.10f;
     }
 
     float freq = (float)vocab[candidate].count / (float)(corpus_n + 1);
@@ -1720,11 +2617,11 @@ static void prior_score(const int *ctx, int ctx_n, int candidate, int oracle,
         semantic_cycle_freshness(ctx, ctx_n, candidate);
     float global_fresh =
         global_ngram_freshness(ctx, ctx_n, candidate);
-    out[8] = lexical_novelty * phrase_novelty * basin_novelty *
+    out[9] = lexical_novelty * phrase_novelty * basin_novelty *
              (0.65f + 0.35f * cycle) *
              (0.55f + 0.45f * semantic_cycle) *
              (0.55f + 0.45f * global_fresh);
-    if (!content) out[8] *= 0.05f;
+    if (!content) out[9] *= 0.05f;
 
     int rollout_ctx[CONTEXT + 1];
     int rollout_n = ctx_n < CONTEXT ? ctx_n : CONTEXT;
@@ -1735,63 +2632,47 @@ static void prior_score(const int *ctx, int ctx_n, int candidate, int oracle,
     float mirror_future =
         0.5f * (1.0f + cosine(vocab[next].emb,
                               vocab[oracle].emb, EMBED_DIM));
-    out[9] = mirror_future * (0.5f + 0.5f * basin_novelty);
+    out[10] = mirror_future * (0.5f + 0.5f * basin_novelty);
 
     int rep = repeated_recently(ctx, ctx_n, candidate);
-    out[10] = (1.0f / (1.0f + (float)rep)) *
+    out[11] = (1.0f / (1.0f + (float)rep)) *
               phrase_novelty * cycle * semantic_cycle * global_fresh;
-    if (!content) out[10] *= 0.10f;
+    if (!content) out[11] *= 0.10f;
 }
 
-static int vector_prefer(const float a[SCORE_DIM], const float b[SCORE_DIM]) {
-    int a_better = 0, b_better = 0;
-    for (int d = 0; d < SCORE_DIM; ++d) {
-        if (a[d] > b[d] + 0.025f) a_better = 1;
-        if (b[d] > a[d] + 0.025f) b_better = 1;
-    }
-    if (a_better && !b_better) return 1;
-    if (b_better && !a_better) return 0;
-
-    /* Lexicographic coherence priorities, not one stored scalar loss. */
-    static const int order[SCORE_DIM] = {0, 3, 5, 6, 7, 4, 1, 2, 10, 9, 8};
-    for (int k = 0; k < SCORE_DIM; ++k) {
-        int d = order[k];
-        if (a[d] > b[d] + 0.015f) return 1;
-        if (b[d] > a[d] + 0.015f) return 0;
-    }
-    return 0;
-}
 
 
 static float screening_utility(const float score[SCORE_DIM]) {
-    return 0.11f * score[0] +
-           0.07f * score[1] +
-           0.08f * score[2] +
-           0.12f * score[3] +
-           0.09f * score[4] +
-           0.13f * score[5] +
-           0.13f * score[6] +
+    return 0.10f * score[0] +
+           0.06f * score[1] +
+           0.07f * score[2] +
+           0.11f * score[3] +
+           0.08f * score[4] +
+           0.11f * score[5] +
+           0.10f * score[6] +
            0.12f * score[7] +
-           0.05f * score[8] +
-           0.06f * score[9] +
-           0.04f * score[10];
+           0.11f * score[8] +
+           0.05f * score[9] +
+           0.05f * score[10] +
+           0.04f * score[11];
 }
 
 static float survival_utility(const float score[SCORE_DIM]) {
-    return 0.12f * score[0] +  /* local language physics */
-           0.13f * score[1] +  /* lived source grounding */
-           0.12f * score[2] +  /* coherence mirror parity */
-           0.14f * score[3] +  /* semantic/order continuity */
-           0.08f * score[4] +  /* discourse intent */
-           0.14f * score[6] +  /* prophecy fulfillment */
-           0.15f * score[7] +  /* world-state stability */
-           0.12f * score[9];   /* imagined future */
+    return 0.11f * score[0] +  /* local language physics */
+           0.12f * score[1] +  /* lived source grounding */
+           0.11f * score[2] +  /* coherence mirror parity */
+           0.13f * score[3] +  /* semantic/order continuity */
+           0.07f * score[4] +  /* discourse intent */
+           0.10f * score[6] +  /* emergent causal state */
+           0.13f * score[7] +  /* prophecy fulfillment */
+           0.14f * score[8] +  /* world-state stability */
+           0.09f * score[10];  /* imagined future */
 }
 
 static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
                             const float *intent, float intent_debt,
-                            const ProphecyStack *world, int explore,
-                            ScoreVector *observed_out,
+                            const ProphecyStack *world, int glyph_id,
+                            int explore, ScoreVector *observed_out,
                             float predicted_out[SCORE_DIM]) {
     int candidates[CANDIDATES];
     int n = 0;
@@ -1903,7 +2784,7 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
             continue;
 
         float prior[SCORE_DIM], mlp[SCORE_DIM], mix[SCORE_DIM];
-        prior_score(ctx, ctx_n, cand, oracle, intent, world, prior);
+        prior_score(ctx, ctx_n, cand, oracle, intent, world, glyph_id, prior);
         core_predict_recursive(ctx_emb, intent, intent_debt,
                                prev, cand, oracle, prior, mlp, 0);
 
@@ -1916,7 +2797,8 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
         float utility =
             screening_utility(mix) +
             0.09f * clampf(intent_debt, 0.0f, 1.5f) * mix[4] +
-            0.10f * clampf(world_debt, 0.0f, 2.0f) * mix[6];
+            0.08f * clampf(world_debt, 0.0f, 2.0f) * mix[7] +
+            0.08f * mix[6];
         /* Global freshness is not a reward. It is applied only after
            predictive-survival finalists have been established. */
         float global_fresh =
@@ -1958,12 +2840,12 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
     if (final_n == 0) {
         int fallback = oracle;
         float prior[SCORE_DIM], mlp[SCORE_DIM];
-        prior_score(ctx, ctx_n, fallback, oracle, intent, world, prior);
+        prior_score(ctx, ctx_n, fallback, oracle, intent, world, glyph_id, prior);
         core_predict_recursive(ctx_emb, intent, intent_debt,
                                prev, fallback, oracle, prior, mlp, 0);
         *observed_out =
             observe_score(ctx, ctx_n, fallback, oracle, truth,
-                          intent, intent_debt, world);
+                          intent, intent_debt, world, glyph_id);
         if (policy_enabled) {
             float fallback_target = 1.0f;
             policy_mark(ctx[ctx_n - 2], ctx[ctx_n - 1],
@@ -1987,7 +2869,7 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
         memcpy(final_deep[i], final_mix[i], sizeof(final_deep[i]));
         float future = counterfactual_rollout_score(
             ctx, ctx_n, final_tok[i], intent, intent_debt, world);
-        final_deep[i][9] = 0.58f * final_deep[i][9] + 0.42f * future;
+        final_deep[i][10] = 0.58f * final_deep[i][10] + 0.42f * future;
         final_survival[i] = survival_utility(final_deep[i]);
         if (final_survival[i] > max_survival)
             max_survival = final_survival[i];
@@ -2006,9 +2888,11 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
         float choice =
             final_survival[i] +
             0.020f * final_deep[i][5] +
-            0.020f * final_deep[i][8] +
+            0.018f * final_deep[i][6] +
+            0.018f * final_deep[i][9] +
             0.042f * global_fresh +
-            0.018f * final_deep[i][10];
+            0.018f * final_deep[i][11];
+
         if (choice > best_choice) {
             best_choice = choice;
             best_idx = i;
@@ -2061,7 +2945,7 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
 
     *observed_out =
         observe_score(ctx, ctx_n, best, oracle, truth,
-                      intent, intent_debt, world);
+                      intent, intent_debt, world, glyph_id);
     if (policy_enabled)
         observed_out->search_policy = policy_target[best_idx];
     memcpy(predicted_out, final_mlp[best_idx], SCORE_DIM * sizeof(float));
@@ -2070,7 +2954,7 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
 
 static void learn_local(const int *ctx, int ctx_n, int chosen, int oracle,
                         const float *intent, float intent_debt,
-                        const ProphecyStack *world,
+                        const ProphecyStack *world, int glyph_id,
                         ScoreVector observed, const float predicted[SCORE_DIM]) {
     float target[SCORE_DIM];
     score_to_array(observed, target);
@@ -2083,7 +2967,7 @@ static void learn_local(const int *ctx, int ctx_n, int chosen, int oracle,
     float dummy[SCORE_DIM];
     float local_prior[SCORE_DIM];
     int prev_for_depth = ctx[ctx_n - 1];
-    prior_score(ctx, ctx_n, chosen, oracle, intent, world, local_prior);
+    prior_score(ctx, ctx_n, chosen, oracle, intent, world, glyph_id, local_prior);
     core_predict_recursive(ctx_emb, intent, intent_debt,
                            prev_for_depth, chosen, oracle,
                            local_prior, dummy, 1);
@@ -2270,7 +3154,9 @@ static void history_append(uint64_t ep, int source_pos,
                            const ScoreVector *scores,
                            float avg_recursive_depth,
                            float world_debt_start,
-                           float world_debt_end) {
+                           float world_debt_end,
+                           float avg_glyph_gain,
+                           float avg_glyph_distance) {
     FILE *f = fopen("netta.history.tsv", "ab");
     if (!f) return;
 
@@ -2290,12 +3176,18 @@ static void history_append(uint64_t ep, int source_pos,
 
     fprintf(f,
         "%llu\t%d\t%s\t%s\t%s\t%s\t"
-        "%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\n",
+        "%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t"
+        "%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%d\t%llu\t%llu\t%llu\n",
         (unsigned long long)ep, source_pos,
         ctx_text, truth_text, oracle_text, attempt_text,
         avg[0], avg[1], avg[2], avg[3], avg[4], avg[5], avg[6], avg[7],
-        avg[8], avg[9], avg[10], avg_recursive_depth,
-        world_debt_start, world_debt_end);
+        avg[8], avg[9], avg[10], avg[11], avg_recursive_depth,
+        world_debt_start, world_debt_end,
+        avg_glyph_gain, avg_glyph_distance,
+        glyph_count,
+        (unsigned long long)glyph_births,
+        (unsigned long long)glyph_recycles,
+        (unsigned long long)glyph_merges);
     fclose(f);
 }
 
@@ -2322,6 +3214,13 @@ static void save_state(const char *path) {
     h.nrem_replays = nrem_replays;
     h.rem_replays = rem_replays;
     h.experiment_seed = experiment_seed;
+    h.glyph_mode = (uint32_t)glyph_mode;
+    h.glyph_count = (uint32_t)glyph_count;
+    h.glyph_births = glyph_births;
+    h.glyph_recycles = glyph_recycles;
+    h.glyph_merges = glyph_merges;
+    h.glyph_seed_births = glyph_seed_births;
+    h.glyph_seed_promotions = glyph_seed_promotions;
 
     fwrite(&h, sizeof(h), 1, f);
     fwrite(vocab, sizeof(Token), (size_t)vocab_size, f);
@@ -2332,6 +3231,8 @@ static void save_state(const char *path) {
     fwrite(basin_memory, sizeof(float), BASIN_MEMORY * EMBED_DIM, f);
     fwrite(basin_uses, sizeof(uint32_t), BASIN_MEMORY, f);
     fwrite(replay_buffer, sizeof(ReplayEpisode), REPLAY_CAPACITY, f);
+    fwrite(causal_glyphs, sizeof(CausalGlyph), MAX_GLYPHS, f);
+    fwrite(glyph_nursery, sizeof(GlyphSeed), GLYPH_NURSERY, f);
     fclose(f);
 }
 
@@ -2343,7 +3244,8 @@ static int load_state(const char *path) {
     if (fread(&h, sizeof(h), 1, f) != 1 ||
         h.magic != STATE_MAGIC ||
         h.version != STATE_VERSION ||
-        h.vocab_size != (uint32_t)vocab_size) {
+        h.vocab_size != (uint32_t)vocab_size ||
+        h.glyph_mode != (uint32_t)glyph_mode) {
         fclose(f);
         return 0;
     }
@@ -2394,6 +3296,12 @@ static int load_state(const char *path) {
     nrem_replays = h.nrem_replays;
     rem_replays = h.rem_replays;
     experiment_seed = h.experiment_seed;
+    glyph_count = (int)h.glyph_count;
+    glyph_births = h.glyph_births;
+    glyph_recycles = h.glyph_recycles;
+    glyph_merges = h.glyph_merges;
+    glyph_seed_births = h.glyph_seed_births;
+    glyph_seed_promotions = h.glyph_seed_promotions;
 
     if (fread(phrase_counts, sizeof(uint32_t), PHRASE_TABLE, f) != PHRASE_TABLE ||
         fread(global_ngram_counts, sizeof(uint32_t), PHRASE_TABLE, f) !=
@@ -2402,7 +3310,11 @@ static int load_state(const char *path) {
             BASIN_MEMORY * EMBED_DIM ||
         fread(basin_uses, sizeof(uint32_t), BASIN_MEMORY, f) != BASIN_MEMORY ||
         fread(replay_buffer, sizeof(ReplayEpisode),
-              REPLAY_CAPACITY, f) != REPLAY_CAPACITY) {
+              REPLAY_CAPACITY, f) != REPLAY_CAPACITY ||
+        fread(causal_glyphs, sizeof(CausalGlyph),
+              MAX_GLYPHS, f) != MAX_GLYPHS ||
+        fread(glyph_nursery, sizeof(GlyphSeed),
+              GLYPH_NURSERY, f) != GLYPH_NURSERY) {
         fclose(f);
         return 0;
     }
@@ -2436,23 +3348,24 @@ static void print_score_average(const ScoreVector *scores, int n) {
     for (int d = 0; d < SCORE_DIM; ++d) a[d] /= (float)n;
 
     printf("  coherence: local=%.3f source=%.3f oracle=%.3f semantic=%.3f "
-           "intent=%.3f policy=%.3f prophecy=%.3f world=%.3f "
+           "intent=%.3f policy=%.3f glyph=%.3f prophecy=%.3f world=%.3f "
            "novelty=%.3f rollout=%.3f anti-repeat=%.3f\n",
            a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7],
-           a[8], a[9], a[10]);
+           a[8], a[9], a[10], a[11]);
 }
 
 
 static float trajectory_value(ScoreVector s) {
-    return 0.14f * s.syntax_local +
-           0.17f * s.source_grounding +
-           0.13f * s.oracle_parity +
-           0.16f * s.semantic_continuity +
-           0.12f * s.intent_fidelity +
-           0.11f * s.search_policy +
-           0.11f * s.prophecy_fulfillment +
+    return 0.13f * s.syntax_local +
+           0.16f * s.source_grounding +
+           0.12f * s.oracle_parity +
+           0.15f * s.semantic_continuity +
+           0.10f * s.intent_fidelity +
+           0.09f * s.search_policy +
+           0.09f * s.causal_glyph +
+           0.10f * s.prophecy_fulfillment +
            0.10f * s.world_state_stability +
-           0.04f * s.novelty +
+           0.03f * s.novelty +
            0.06f * s.rollout_stability +
            0.02f * s.anti_repetition;
 }
@@ -2658,6 +3571,8 @@ static void nrem_consolidate(ReplayEpisode *r) {
 
         float value = trajectory_value(step->immediate);
         float signed_value = 2.0f * value - 1.0f;
+        if (step->glyph_id >= 0)
+            glyph_action_mark(step->glyph_id, step->chosen, value);
 
         edges[e].quote =
             0.985f * edges[e].quote +
@@ -2761,7 +3676,7 @@ static void dream_replay_cycle(void) {
 }
 
 static void run_episode(int verbose) {
-    int max_start = corpus_n - CONTEXT - ROLLOUT - 1;
+    int max_start = corpus_n - CONTEXT - 17;
     int source_pos = source_position_for_episode(episode_count, max_start);
 
     int seq[CONTEXT + ROLLOUT];
@@ -2770,6 +3685,9 @@ static void run_episode(int verbose) {
     ScoreVector scores[ROLLOUT];
     TrajectoryStep trace[ROLLOUT];
     float episode_emb[EMBED_DIM] = {0};
+    float glyph_gain_sum = 0.0f;
+    float glyph_distance_sum = 0.0f;
+    int glyph_steps = 0;
 
     memcpy(seq, &corpus[source_pos], CONTEXT * sizeof(int));
     int seq_n = CONTEXT;
@@ -2803,9 +3721,35 @@ static void run_episode(int verbose) {
         int *ctx = &seq[seq_n - ctx_n];
 
         float world_before = prophecy_stack_total_debt(&world);
+
+        /*
+         * Two realities, never silently mixed:
+         *
+         * source_state is the actual observed trajectory of the text island.
+         * It alone may birth/update a causal glyph and teach its future.
+         *
+         * world is Netta's counterfactual trajectory after her own moves.
+         * It may project into the learned glyph space and use its policy,
+         * but it may never rewrite the world's predictive physics.
+         */
+        const int *source_ctx = &corpus[source_pos + step];
+        ProphecyStack source_state;
+        prophecy_stack_init(source_ctx, CONTEXT, &source_state);
+
+        float glyph_distance = 0.0f;
+        int source_glyph_id =
+            glyph_assign(source_ctx, CONTEXT, &source_state,
+                         &glyph_distance);
+        float glyph_gain =
+            glyph_predictive_gain(source_glyph_id, truth);
+
+        int agent_glyph_id =
+            glyph_lookup(ctx, ctx_n, &world, NULL);
+
         int chosen = choose_candidate(ctx, ctx_n, oracle_tok, truth,
-                                      intent, intent_debt, &world, 0,
-                                      &scores[step], pred);
+                                      intent, intent_debt, &world,
+                                      agent_glyph_id,
+                                      1, &scores[step], pred);
         attempt[step] = chosen;
 
         trace[step].prev = ctx[ctx_n - 1];
@@ -2813,15 +3757,41 @@ static void run_episode(int verbose) {
         trace[step].oracle = oracle_tok;
         trace[step].immediate = scores[step];
         trace[step].world_debt_before = world_before;
+        trace[step].glyph_id = agent_glyph_id;
+        trace[step].glyph_gain = glyph_gain;
+        trace[step].glyph_distance = glyph_distance;
         memcpy(trace[step].predicted, pred, SCORE_DIM * sizeof(float));
 
         seq[seq_n++] = chosen;
 
         learn_local(ctx, ctx_n, chosen, oracle_tok,
-                    intent, intent_debt, &world, scores[step], pred);
+                    intent, intent_debt, &world, agent_glyph_id,
+                    scores[step], pred);
         intent_update(intent, &intent_debt, chosen);
         prophecy_stack_step(&world, chosen, NULL, NULL);
-        trace[step].world_debt_after = prophecy_stack_total_debt(&world);
+        float world_after = prophecy_stack_total_debt(&world);
+        trace[step].world_debt_after = world_after;
+
+        float score_arr[SCORE_DIM];
+        score_to_array(scores[step], score_arr);
+        float debt_progress = world_before - world_after;
+        float debt_target =
+            clampf(0.5f + 2.0f * debt_progress, 0.0f, 1.0f);
+        float action_target = clampf(
+            0.72f * survival_utility(score_arr) +
+            0.28f * debt_target, 0.0f, 1.0f);
+        glyph_action_mark(agent_glyph_id, chosen, action_target);
+
+        int future_index = source_pos + CONTEXT + step;
+        int future_n = corpus_n - future_index;
+        glyph_observe_destiny(source_glyph_id,
+                              &corpus[future_index], future_n,
+                              glyph_gain, debt_progress);
+        if (source_glyph_id >= 0) {
+            glyph_gain_sum += glyph_gain;
+            glyph_distance_sum += glyph_distance;
+            glyph_steps++;
+        }
 
         for (int d = 0; d < EMBED_DIM; ++d)
             episode_emb[d] += vocab[chosen].emb[d];
@@ -2850,6 +3820,13 @@ static void run_episode(int verbose) {
 
     if (dreams_enabled && episode_count % DREAM_INTERVAL == 0)
         dream_replay_cycle();
+    if (episode_count % DREAM_INTERVAL == 0)
+        glyph_maintenance();
+
+    float avg_glyph_gain =
+        glyph_steps ? glyph_gain_sum / (float)glyph_steps : 0.0f;
+    float avg_glyph_distance =
+        glyph_steps ? glyph_distance_sum / (float)glyph_steps : 0.0f;
 
     uint64_t depth_used = recursive_depth_total - depth_start;
     uint64_t calls_used = recursive_call_total - calls_start;
@@ -2861,7 +3838,8 @@ static void run_episode(int verbose) {
                    &corpus[source_pos + CONTEXT],
                    oracle, attempt, ROLLOUT, scores,
                    avg_recursive_depth,
-                   world_debt_start, world_debt_end);
+                   world_debt_start, world_debt_end,
+                   avg_glyph_gain, avg_glyph_distance);
 
     if (verbose) {
         int line = 1;
@@ -2890,6 +3868,18 @@ static void run_episode(int verbose) {
                avg_recursive_depth);
         printf("  world debt: start=%.3f end=%.3f\n",
                world_debt_start, world_debt_end);
+        printf("  glyphs: mode=%s active=%d births=%llu recycle=%llu merge=%llu "
+               "gain=%.3f distance=%.3f\n",
+               glyph_mode == GLYPH_CAUSAL ? "causal" :
+               (glyph_mode == GLYPH_RANDOM ? "random" : "off"),
+               glyph_count,
+               (unsigned long long)glyph_births,
+               (unsigned long long)glyph_recycles,
+               (unsigned long long)glyph_merges,
+               avg_glyph_gain, avg_glyph_distance);
+        printf("  glyph nursery: seeds=%llu promotions=%llu\n",
+               (unsigned long long)glyph_seed_births,
+               (unsigned long long)glyph_seed_promotions);
         printf("  dreams: cycles=%llu nrem=%llu rem=%llu replay_memories=%d\n",
                (unsigned long long)dream_cycles,
                (unsigned long long)nrem_replays,
@@ -2949,23 +3939,40 @@ static void interactive_prompt(const char *text) {
         /* In interactive mode truth is unknown; the oracle is used only
            as a coherence reference, never copied as mandatory truth. */
         int *live_ctx = &generated[gen_n - ctx_n];
+        float glyph_distance = 0.0f;
+        int glyph_id = glyph_assign(live_ctx, ctx_n, &world,
+                                    &glyph_distance);
         int chosen = choose_candidate(live_ctx, ctx_n,
                                       oracle, oracle, intent, intent_debt,
-                                      &world, 0, &score, pred);
+                                      &world, glyph_id, 0, &score, pred);
 
         live_trace[live_n].prev = live_ctx[ctx_n - 1];
         live_trace[live_n].chosen = chosen;
         live_trace[live_n].oracle = oracle;
         live_trace[live_n].immediate = score;
+        live_trace[live_n].glyph_id = glyph_id;
+        live_trace[live_n].glyph_gain = 0.0f;
+        live_trace[live_n].glyph_distance = glyph_distance;
         memcpy(live_trace[live_n].predicted, pred,
                SCORE_DIM * sizeof(float));
         live_n++;
 
         generated[gen_n++] = chosen;
+        float world_before = prophecy_stack_total_debt(&world);
         learn_local(live_ctx, ctx_n, chosen, oracle,
-                    intent, intent_debt, &world, score, pred);
+                    intent, intent_debt, &world, glyph_id, score, pred);
         intent_update(intent, &intent_debt, chosen);
         prophecy_stack_step(&world, chosen, NULL, NULL);
+        float world_after = prophecy_stack_total_debt(&world);
+
+        float score_arr[SCORE_DIM];
+        score_to_array(score, score_arr);
+        float action_target = clampf(
+            0.72f * survival_utility(score_arr) +
+            0.28f * clampf(0.5f + 2.0f *
+                           (world_before - world_after), 0.0f, 1.0f),
+            0.0f, 1.0f);
+        glyph_action_mark(glyph_id, chosen, action_target);
 
         if (live_n == ROLLOUT) {
             trajectory_revalue(live_trace, live_n);
@@ -3006,7 +4013,17 @@ int main(int argc, char **argv) {
             prophecy_stack_enabled = 0;
         else if (strcmp(argv[i], "--no-dream") == 0)
             dreams_enabled = 0;
+        else if (strcmp(argv[i], "--no-glyph") == 0)
+            glyph_mode = GLYPH_OFF;
+        else if (strcmp(argv[i], "--random-glyph") == 0)
+            glyph_mode = GLYPH_RANDOM;
+        else if (strcmp(argv[i], "--glyph-threshold") == 0 &&
+                 i + 1 < argc)
+            glyph_birth_threshold = strtof(argv[++i], NULL);
     }
+
+    if (!prophecy_stack_enabled)
+        glyph_mode = GLYPH_OFF;
 
     if (!seed_given)
         experiment_seed = (uint64_t)time(NULL);
@@ -3015,11 +4032,15 @@ int main(int argc, char **argv) {
 
     printf("NETTA — NETTA's Experiential Text Training Architecture\n");
     printf("sovereign recursive coherence game; no backpropagation\n");
-    printf("seed=%llu search_policy=%s prophecy_stack=%s dreams=%s\n\n",
+    printf("seed=%llu search_policy=%s prophecy_stack=%s dreams=%s "
+           "causal_glyphs=%s threshold=%.3f\n\n",
            (unsigned long long)experiment_seed,
            policy_enabled ? "on" : "off",
            prophecy_stack_enabled ? "on" : "off",
-           dreams_enabled ? "on" : "off");
+           dreams_enabled ? "on" : "off",
+           glyph_mode == GLYPH_CAUSAL ? "causal" :
+           (glyph_mode == GLYPH_RANDOM ? "random-control" : "off"),
+           glyph_birth_threshold);
 
     if (!load_corpus(corpus_path)) return 1;
 
@@ -3037,8 +4058,10 @@ int main(int argc, char **argv) {
         if (f) {
             fputs("episode\tsource_pos\tcontext\ttruth\toracle\tnetta\t"
                   "local\tsource\toracle_parity\tsemantic\tintent\tsearch_policy\t"
-                  "prophecy_fulfillment\tworld_stability\tnovelty\trollout\t"
-                  "anti_repetition\tavg_recursive_depth\tworld_debt_start\tworld_debt_end\n", f);
+                  "causal_glyph\tprophecy_fulfillment\tworld_stability\tnovelty\t"
+                  "rollout\tanti_repetition\tavg_recursive_depth\t"
+                  "world_debt_start\tworld_debt_end\tglyph_gain\tglyph_distance\t"
+                  "glyph_count\tglyph_births\tglyph_recycles\tglyph_merges\n", f);
             fclose(f);
         }
     }
