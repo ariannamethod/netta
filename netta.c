@@ -51,8 +51,12 @@
 #define PHRASE_TABLE    131072
 #define BASIN_MEMORY    256
 #define TOP_SUCCESSORS  12
+#define REPLAY_CAPACITY  1024
+#define DREAM_INTERVAL   64
+#define NREM_DREAMS      12
+#define REM_DREAMS       8
 #define STATE_MAGIC     0x4E455454u /* NETT */
-#define STATE_VERSION   13u
+#define STATE_VERSION   14u
 
 typedef struct {
     char text[MAX_TOKEN_LEN];
@@ -109,6 +113,19 @@ typedef struct {
 } TrajectoryStep;
 
 typedef struct {
+    TrajectoryStep steps[ROLLOUT];
+    float intent_start[EMBED_DIM];
+    float intent_end[EMBED_DIM];
+    float priority;
+    float surprise;
+    float debt;
+    float novelty;
+    uint64_t episode;
+    uint32_t replays;
+    uint8_t valid;
+} ReplayEpisode;
+
+typedef struct {
     float wxh[HIDDEN_DIM][EMBED_DIM * 4 + STATE_DIM];
     float whh[HIDDEN_DIM][HIDDEN_DIM];
     float who[SCORE_DIM][HIDDEN_DIM];
@@ -125,6 +142,11 @@ typedef struct {
     Core core;
     int32_t basin_count;
     int32_t basin_cursor;
+    int32_t replay_count;
+    int32_t replay_cursor;
+    uint64_t dream_cycles;
+    uint64_t nrem_replays;
+    uint64_t rem_replays;
 } StateHeader;
 
 static Token vocab[MAX_VOCAB];
@@ -149,6 +171,13 @@ static uint64_t episode_count = 0;
 static uint64_t rng_state = 0x9E3779B97F4A7C15ull;
 static uint64_t recursive_depth_total = 0;
 static uint64_t recursive_call_total = 0;
+
+static ReplayEpisode replay_buffer[REPLAY_CAPACITY];
+static int replay_count = 0;
+static int replay_cursor = 0;
+static uint64_t dream_cycles = 0;
+static uint64_t nrem_replays = 0;
+static uint64_t rem_replays = 0;
 
 /* Anti-cheat memory: generated phrase trajectories and recent semantic basins. */
 static uint32_t phrase_counts[PHRASE_TABLE];
@@ -1670,6 +1699,11 @@ static void save_state(const char *path) {
     h.core = core;
     h.basin_count = basin_count;
     h.basin_cursor = basin_cursor;
+    h.replay_count = replay_count;
+    h.replay_cursor = replay_cursor;
+    h.dream_cycles = dream_cycles;
+    h.nrem_replays = nrem_replays;
+    h.rem_replays = rem_replays;
 
     fwrite(&h, sizeof(h), 1, f);
     fwrite(vocab, sizeof(Token), (size_t)vocab_size, f);
@@ -1677,6 +1711,7 @@ static void save_state(const char *path) {
     fwrite(phrase_counts, sizeof(uint32_t), PHRASE_TABLE, f);
     fwrite(basin_memory, sizeof(float), BASIN_MEMORY * EMBED_DIM, f);
     fwrite(basin_uses, sizeof(uint32_t), BASIN_MEMORY, f);
+    fwrite(replay_buffer, sizeof(ReplayEpisode), REPLAY_CAPACITY, f);
     fclose(f);
 }
 
@@ -1721,11 +1756,18 @@ static int load_state(const char *path) {
     core = h.core;
     basin_count = h.basin_count;
     basin_cursor = h.basin_cursor;
+    replay_count = h.replay_count;
+    replay_cursor = h.replay_cursor;
+    dream_cycles = h.dream_cycles;
+    nrem_replays = h.nrem_replays;
+    rem_replays = h.rem_replays;
 
     if (fread(phrase_counts, sizeof(uint32_t), PHRASE_TABLE, f) != PHRASE_TABLE ||
         fread(basin_memory, sizeof(float), BASIN_MEMORY * EMBED_DIM, f) !=
             BASIN_MEMORY * EMBED_DIM ||
-        fread(basin_uses, sizeof(uint32_t), BASIN_MEMORY, f) != BASIN_MEMORY) {
+        fread(basin_uses, sizeof(uint32_t), BASIN_MEMORY, f) != BASIN_MEMORY ||
+        fread(replay_buffer, sizeof(ReplayEpisode),
+              REPLAY_CAPACITY, f) != REPLAY_CAPACITY) {
         fclose(f);
         return 0;
     }
@@ -1816,6 +1858,249 @@ static void trajectory_revalue(TrajectoryStep *trace, int n) {
     }
 }
 
+
+static float replay_episode_priority(const TrajectoryStep *trace, int n,
+                                     const float *intent_start,
+                                     const float *intent_end) {
+    float surprise = 0.0f;
+    float debt = 0.0f;
+    float novelty = 0.0f;
+
+    for (int i = 0; i < n; ++i) {
+        float target[SCORE_DIM];
+        score_to_array(trace[i].immediate, target);
+
+        for (int d = 0; d < SCORE_DIM; ++d) {
+            float prophecy = 0.5f * (trace[i].predicted[d] + 1.0f);
+            surprise += fabsf(target[d] - prophecy);
+        }
+
+        int e = find_edge(trace[i].prev, trace[i].chosen);
+        if (e >= 0)
+            debt += edges[e].debt + 0.5f * edges[e].volatility;
+
+        novelty += trace[i].immediate.novelty;
+    }
+
+    surprise /= (float)(n * SCORE_DIM);
+    debt /= (float)n;
+    novelty /= (float)n;
+
+    float unresolved_intent =
+        0.5f * (1.0f - cosine(intent_start, intent_end, EMBED_DIM));
+
+    return 0.34f * surprise +
+           0.31f * clampf(debt / 2.0f, 0.0f, 1.0f) +
+           0.20f * unresolved_intent +
+           0.15f * novelty;
+}
+
+static void replay_store(const TrajectoryStep *trace, int n,
+                         const float *intent_start,
+                         const float *intent_end,
+                         uint64_t episode) {
+    int slot;
+    if (replay_count < REPLAY_CAPACITY) {
+        slot = replay_count++;
+    } else {
+        slot = replay_cursor;
+        float weakest = 1e30f;
+        for (int k = 0; k < 24; ++k) {
+            int idx = (replay_cursor + k * 37) % REPLAY_CAPACITY;
+            ReplayEpisode *r = &replay_buffer[idx];
+            float age =
+                (float)(episode_count > r->episode ?
+                        episode_count - r->episode : 0);
+            float retained =
+                r->priority / (1.0f + 0.0008f * age + 0.12f * r->replays);
+            if (retained < weakest) {
+                weakest = retained;
+                slot = idx;
+            }
+        }
+        replay_cursor = (slot + 1) % REPLAY_CAPACITY;
+    }
+
+    ReplayEpisode *r = &replay_buffer[slot];
+    memset(r, 0, sizeof(*r));
+    memcpy(r->steps, trace, (size_t)n * sizeof(TrajectoryStep));
+    memcpy(r->intent_start, intent_start, EMBED_DIM * sizeof(float));
+    memcpy(r->intent_end, intent_end, EMBED_DIM * sizeof(float));
+    r->episode = episode;
+    r->priority =
+        replay_episode_priority(trace, n, intent_start, intent_end);
+    r->surprise = r->priority;
+    r->valid = 1;
+}
+
+static int replay_select_priority(int exclude) {
+    int best = -1;
+    float best_score = -1e30f;
+
+    for (int i = 0; i < replay_count; ++i) {
+        if (i == exclude || !replay_buffer[i].valid) continue;
+
+        ReplayEpisode *r = &replay_buffer[i];
+        float age =
+            (float)(episode_count > r->episode ?
+                    episode_count - r->episode : 0);
+        float freshness = 1.0f / sqrtf(1.0f + age / 256.0f);
+        float scarcity = 1.0f / sqrtf(1.0f + (float)r->replays);
+        float jitter = 0.92f + 0.16f * randf();
+        float score = r->priority * freshness * scarcity * jitter;
+
+        if (score > best_score) {
+            best_score = score;
+            best = i;
+        }
+    }
+    return best;
+}
+
+static int replay_select_related(const ReplayEpisode *anchor, int exclude) {
+    int best = -1;
+    float best_score = -1e30f;
+
+    for (int i = 0; i < replay_count; ++i) {
+        if (i == exclude || !replay_buffer[i].valid) continue;
+
+        ReplayEpisode *r = &replay_buffer[i];
+        float related =
+            0.5f * (1.0f + cosine(anchor->intent_start,
+                                  r->intent_start, EMBED_DIM));
+        float different_ending =
+            0.5f * (1.0f - cosine(anchor->intent_end,
+                                  r->intent_end, EMBED_DIM));
+        float score =
+            0.58f * related +
+            0.27f * different_ending +
+            0.15f * r->priority +
+            0.03f * randf();
+
+        if (score > best_score) {
+            best_score = score;
+            best = i;
+        }
+    }
+    return best;
+}
+
+static void nrem_consolidate(ReplayEpisode *r) {
+    trajectory_revalue(r->steps, ROLLOUT);
+
+    float dream_strength =
+        clampf(r->priority / (1.0f + 0.18f * r->replays),
+               0.0f, 1.0f);
+
+    for (int i = 0; i < ROLLOUT; ++i) {
+        TrajectoryStep *step = &r->steps[i];
+        int e = get_edge(step->prev, step->chosen, 1);
+        if (e < 0) continue;
+
+        float value = trajectory_value(step->immediate);
+        float signed_value = 2.0f * value - 1.0f;
+
+        edges[e].quote =
+            0.985f * edges[e].quote +
+            0.015f * dream_strength * signed_value;
+
+        if (signed_value >= 0.0f)
+            edges[e].support +=
+                0.025f * dream_strength * signed_value;
+        else
+            edges[e].opposition +=
+                0.035f * dream_strength * (-signed_value);
+
+        float weakness =
+            clampf(edges[e].debt + edges[e].volatility, 0.0f, 2.0f);
+        float rate = 0.0012f * dream_strength * (0.4f + 0.6f * weakness);
+
+        for (int d = 0; d < EMBED_DIM; ++d) {
+            vocab[step->prev].right_emb[d] +=
+                rate * vocab[step->chosen].emb[d];
+            vocab[step->chosen].left_emb[d] +=
+                rate * vocab[step->prev].emb[d];
+        }
+        normalize(vocab[step->prev].right_emb, EMBED_DIM);
+        normalize(vocab[step->chosen].left_emb, EMBED_DIM);
+    }
+
+    r->priority *= 0.84f;
+    r->replays++;
+    nrem_replays++;
+}
+
+static void rem_recombine(ReplayEpisode *a, ReplayEpisode *b) {
+    TrajectoryStep hybrid[ROLLOUT];
+    int cut = 2 + (int)(rng_u64() % (ROLLOUT - 3));
+
+    for (int i = 0; i < cut; ++i)
+        hybrid[i] = a->steps[i];
+
+    for (int i = cut; i < ROLLOUT; ++i) {
+        hybrid[i] = b->steps[i];
+
+        int bridge_prev = hybrid[i - 1].chosen;
+        int bridge_next = hybrid[i].chosen;
+
+        float direction =
+            directional_compatibility(bridge_prev, bridge_next);
+        float semantic =
+            0.5f * (1.0f + cosine(vocab[bridge_prev].emb,
+                                  vocab[bridge_next].emb, EMBED_DIM));
+        int e = get_edge(bridge_prev, bridge_next, 1);
+        if (e >= 0) {
+            float plausibility =
+                0.62f * direction + 0.38f * semantic;
+
+            if (plausibility > 0.62f) {
+                edges[e].quote +=
+                    0.018f * (plausibility - 0.62f);
+                edges[e].debt *= 0.992f;
+                edges[e].support +=
+                    0.012f * (plausibility - 0.62f);
+            } else {
+                edges[e].opposition +=
+                    0.020f * (0.62f - plausibility);
+                edges[e].debt =
+                    clampf(edges[e].debt +
+                           0.015f * (0.62f - plausibility),
+                           0.0f, 4.0f);
+            }
+        }
+    }
+
+    trajectory_revalue(hybrid, ROLLOUT);
+
+    a->priority *= 0.93f;
+    b->priority *= 0.95f;
+    a->replays++;
+    b->replays++;
+    rem_replays++;
+}
+
+static void dream_replay_cycle(void) {
+    if (replay_count < 32) return;
+
+    dream_cycles++;
+
+    for (int i = 0; i < NREM_DREAMS; ++i) {
+        int idx = replay_select_priority(-1);
+        if (idx >= 0)
+            nrem_consolidate(&replay_buffer[idx]);
+    }
+
+    for (int i = 0; i < REM_DREAMS; ++i) {
+        int a_idx = replay_select_priority(-1);
+        if (a_idx < 0) break;
+        int b_idx =
+            replay_select_related(&replay_buffer[a_idx], a_idx);
+        if (b_idx >= 0)
+            rem_recombine(&replay_buffer[a_idx],
+                          &replay_buffer[b_idx]);
+    }
+}
+
 static void run_episode(int verbose) {
     int max_start = corpus_n - CONTEXT - ROLLOUT - 1;
     int source_pos = (int)(rng_u64() % (uint64_t)max_start);
@@ -1831,8 +2116,10 @@ static void run_episode(int verbose) {
     int seq_n = CONTEXT;
 
     float intent[EMBED_DIM];
+    float intent_start[EMBED_DIM];
     float intent_debt = 1.0f;
     intent_from_context(seq, CONTEXT, intent);
+    memcpy(intent_start, intent, sizeof(intent_start));
 
     int oracle_seq[CONTEXT + ROLLOUT];
     memcpy(oracle_seq, seq, CONTEXT * sizeof(int));
@@ -1884,11 +2171,18 @@ static void run_episode(int verbose) {
 
     trajectory_revalue(trace, ROLLOUT);
 
+    replay_store(trace, ROLLOUT, intent_start, intent,
+                 episode_count + 1);
+
     for (int d = 0; d < EMBED_DIM; ++d)
         episode_emb[d] /= (float)ROLLOUT;
     basin_remember(episode_emb);
 
     episode_count++;
+
+    if (episode_count % DREAM_INTERVAL == 0)
+        dream_replay_cycle();
+
     uint64_t depth_used = recursive_depth_total - depth_start;
     uint64_t calls_used = recursive_call_total - calls_start;
     float avg_recursive_depth =
@@ -1924,6 +2218,11 @@ static void run_episode(int verbose) {
         print_score_average(scores, ROLLOUT);
         printf("  recursive depth: %.2f shared-block passes per evaluation\n",
                avg_recursive_depth);
+        printf("  dreams: cycles=%llu nrem=%llu rem=%llu replay_memories=%d\n",
+               (unsigned long long)dream_cycles,
+               (unsigned long long)nrem_replays,
+               (unsigned long long)rem_replays,
+               replay_count);
     }
 }
 
