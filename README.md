@@ -33,7 +33,7 @@ Sovereign continuous mode:
 Prompt after some autonomous experience:
 
 ```bash
-./netta netta.txt --prompt "Bianca"
+./netta netta.txt --prompt "Netta"
 ```
 
 Reset learned biography:
