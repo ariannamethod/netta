@@ -1,8 +1,8 @@
 /*
- * netta.c — NETTA's Experiential Text Training Architecture
+ * netta.c — NETTA's Empirical Topological Training Architecture
  *
  * A sovereign recursive language learner.
- * No backpropagation. 
+ * No backpropagation.  
  *
  * Build:
  *   cc -O2 -std=c11 -Wall -Wextra -o netta netta.c -lm
@@ -12,7 +12,7 @@
  *
  * Optional:
  *   ./netta netta.txt --steps 5000
- *   ./netta netta.txt --prompt "Netta"
+ *   ./netta netta.txt --prompt "Bianca"
  *   ./netta netta.txt --reset
  *
  * Files:
