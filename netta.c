@@ -2,7 +2,7 @@
  * netta.c — NETTA's Experiential Text Training Architecture
  *
  * A sovereign recursive language learner.
- * No backpropagation.  
+ * No backpropagation. No external ML library.
  *
  * Build:
  *   cc -O2 -std=c11 -Wall -Wextra -o netta netta.c -lm
@@ -35,7 +35,7 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_VOCAB       8192
+#define MAX_VOCAB       16384
 #define MAX_TOKEN_LEN   48
 #define MAX_CORPUS      300000
 #define MAX_EDGES       500000
@@ -60,12 +60,25 @@
 #define GLYPH_SKETCH     256
 #define GLYPH_NURSERY    32
 #define GLYPH_SEED_HITS  4
+#define GLYPH_LINK_MAX_AGE 64
+#define CURRICULUM_REGION_SPAN 256
+#define MAX_CURRICULUM_REGIONS ((MAX_CORPUS + CURRICULUM_REGION_SPAN - 1) / CURRICULUM_REGION_SPAN)
+#define CURRICULUM_WARMUP_PASSES 2
+#define CURRICULUM_UNIFORM_MILLIS 350
+#define PLASTICITY_POP 8
+#define PLASTICITY_WINDOW_STEPS 1024
+#define PLASTICITY_AUTHORITY_STREAK 3
+#define PLASTICITY_AUDIT_PROBES 8
+#define PLASTICITY_AUDIT_CHALLENGERS 3
+#define PLASTICITY_COHERENCE_THRESHOLD 0.0015f
+#define COHERENCE_PROBE_SEED 0x6E6574746150524FULL
+#define PLASTICITY_AUDIT_SEED 0x706C617374696369ULL
 #define REPLAY_CAPACITY  1024
 #define DREAM_INTERVAL   64
 #define NREM_DREAMS      12
 #define REM_DREAMS       8
 #define STATE_MAGIC     0x4E455454u /* NETT */
-#define STATE_VERSION   27u
+#define STATE_VERSION   40u
 
 typedef struct {
     char text[MAX_TOKEN_LEN];
@@ -194,6 +207,9 @@ typedef struct {
     float assignment_distance_ema;
     float predictive_gain_ema;
     float progress_ema;
+    float topology_error_ema;
+    float topology_utility_ema;
+    uint32_t topology_wins;
     uint32_t uses;
     uint64_t born_episode;
     uint64_t last_seen;
@@ -217,12 +233,48 @@ typedef struct {
 } GlyphSeed;
 
 typedef struct {
+    float fast;
+    float slow;
+    float progress;
+    float surprise;
+    float debt;
+    float priority;
+    uint32_t visits;
+    uint64_t last_seen;
+} CurriculumRegion;
+
+typedef struct {
+    float readout_lr;
+    float input_lr;
+    float recurrent_lr;
+    float surprise_threshold;
+    float surprise_width;
+    float error_clip;
+    float input_decay;
+    float recurrent_decay;
+    float debt_modulation;
+    float embedding_lr;
+    float quote_rate;
+    float debt_rate;
+    float neighbor_gain;
+} PlasticityRule;
+
+typedef struct {
     float wxh[HIDDEN_DIM][EMBED_DIM * 4 + STATE_DIM];
     float whh[HIDDEN_DIM][HIDDEN_DIM];
     float who[SCORE_DIM][HIDDEN_DIM];
     float hidden[HIDDEN_DIM];
     float state[STATE_DIM];
 } Core;
+
+typedef struct {
+    PlasticityRule rule;
+    Core shadow;
+    double loss_sum;
+    double calibration_sum;
+    uint32_t samples;
+    uint32_t lineage;
+} PlasticityGenome;
 
 typedef struct {
     uint32_t magic;
@@ -240,6 +292,7 @@ typedef struct {
     uint64_t nrem_replays;
     uint64_t rem_replays;
     uint64_t experiment_seed;
+    uint64_t runtime_rng_state;
     uint32_t glyph_mode;
     uint32_t glyph_count;
     uint64_t glyph_births;
@@ -247,6 +300,17 @@ typedef struct {
     uint64_t glyph_merges;
     uint64_t glyph_seed_births;
     uint64_t glyph_seed_promotions;
+    uint32_t curriculum_count;
+    uint32_t curriculum_enabled;
+    uint32_t neighbor_enabled;
+    uint32_t plasticity_evolution_enabled;
+    uint64_t plasticity_generation;
+    float plasticity_advantage;
+    float plasticity_coherence_advantage;
+    float plasticity_authority;
+    uint32_t plasticity_win_streak;
+    uint32_t active_plasticity_lineage;
+    uint64_t plasticity_rng_state;
 } StateHeader;
 
 static Token vocab[MAX_VOCAB];
@@ -278,6 +342,7 @@ static float global_future_total[PROPHECY_HORIZONS];
 enum { GLYPH_OFF = 0, GLYPH_CAUSAL = 1, GLYPH_RANDOM = 2 };
 static CausalGlyph causal_glyphs[MAX_GLYPHS];
 static GlyphSeed glyph_nursery[GLYPH_NURSERY];
+static uint16_t glyph_link_age[MAX_GLYPHS][MAX_GLYPHS];
 static float global_glyph_sketch[PROPHECY_HORIZONS][GLYPH_SKETCH];
 static int glyph_mode = GLYPH_CAUSAL;
 static int glyph_count = 0;
@@ -287,6 +352,30 @@ static uint64_t glyph_merges = 0;
 static uint64_t glyph_seed_births = 0;
 static uint64_t glyph_seed_promotions = 0;
 static float glyph_birth_threshold = 0.31f;
+static int neighbor_enabled = 1;
+
+static CurriculumRegion curriculum_regions[MAX_CURRICULUM_REGIONS];
+static int curriculum_count = 0;
+static int curriculum_enabled = 1;
+static int curriculum_region_span = CURRICULUM_REGION_SPAN;
+static int last_curriculum_region = -1;
+static float last_curriculum_priority = 0.0f;
+static float last_curriculum_progress = 0.0f;
+static float last_episode_coherence = 0.0f;
+
+static PlasticityGenome plasticity_population[PLASTICITY_POP];
+static PlasticityRule baseline_plasticity_rule;
+static PlasticityRule active_plasticity_rule;
+static int plasticity_population_ready = 0;
+static int plasticity_evolution_enabled = 0;
+static int evaluation_mode = 0;
+static uint64_t plasticity_generation = 0;
+static float plasticity_advantage = 0.0f;
+static float plasticity_coherence_advantage = 0.0f;
+static float plasticity_authority = 0.0f;
+static int plasticity_win_streak = 0;
+static uint32_t active_plasticity_lineage = 0;
+static uint64_t plasticity_rng_state = 0xD1B54A32D192ED03ULL;
 
 static Core core;
 static uint64_t episode_count = 0;
@@ -335,10 +424,177 @@ static uint64_t mix64(uint64_t x) {
     return x;
 }
 
-static int source_position_for_episode(uint64_t episode, int max_start) {
-    uint64_t x = mix64(experiment_seed ^
-                       (episode + 1) * 0x9E3779B97F4A7C15ULL);
-    return (int)(x % (uint64_t)max_start);
+static float clampf(float x, float lo, float hi);
+
+static void curriculum_init(int max_start) {
+    int count =
+        (max_start + curriculum_region_span - 1) /
+        curriculum_region_span;
+    if (count < 1) count = 1;
+    if (count > MAX_CURRICULUM_REGIONS)
+        count = MAX_CURRICULUM_REGIONS;
+
+    if (curriculum_count == 0) {
+        memset(curriculum_regions, 0, sizeof(curriculum_regions));
+        for (int i = 0; i < count; ++i) {
+            curriculum_regions[i].fast = 0.5f;
+            curriculum_regions[i].slow = 0.5f;
+            curriculum_regions[i].priority = 0.5f;
+        }
+    }
+    curriculum_count = count;
+}
+
+static float curriculum_priority_for(int region) {
+    if (region < 0 || region >= curriculum_count) return 0.0f;
+    CurriculumRegion *r = &curriculum_regions[region];
+
+    float raw_progress =
+        0.65f * fabsf(r->fast - r->slow) +
+        0.35f * fmaxf(0.0f, r->fast - r->slow);
+    float progress =
+        1.0f - expf(-raw_progress / 0.025f);
+    float frontier =
+        clampf(4.0f * r->fast * (1.0f - r->fast), 0.0f, 1.0f);
+    float staleness =
+        r->visits == 0 ? 1.0f :
+        1.0f - expf(-(float)(episode_count - r->last_seen) / 192.0f);
+    float novelty = 1.0f / sqrtf(1.0f + (float)r->visits);
+    float surprise =
+        1.0f - expf(-r->surprise / 0.10f);
+    float learnable_debt =
+        expf(-2.2f * fabsf(r->debt - 0.55f));
+
+    return clampf(
+        0.42f * progress +
+        0.18f * frontier +
+        0.14f * staleness +
+        0.08f * novelty +
+        0.10f * surprise +
+        0.08f * learnable_debt,
+        0.0f, 1.0f);
+}
+
+static uint64_t curriculum_hash(uint64_t episode, uint64_t stream) {
+    return mix64(experiment_seed ^
+                 0xC6BC279692B5CC83ULL ^
+                 (episode + 1) * 0x9E3779B97F4A7C15ULL ^
+                 stream * 0xD1B54A32D192ED03ULL);
+}
+
+static int curriculum_source_position(uint64_t episode, int max_start) {
+    if (curriculum_count <= 0)
+        curriculum_init(max_start);
+
+    uint64_t warmup =
+        (uint64_t)CURRICULUM_WARMUP_PASSES *
+        (uint64_t)curriculum_count;
+    int in_warmup = episode < warmup;
+    int use_uniform =
+        !curriculum_enabled ||
+        in_warmup ||
+        (curriculum_hash(episode, 1) % 1000ULL) <
+            CURRICULUM_UNIFORM_MILLIS;
+
+    int region;
+    if (in_warmup) {
+        /*
+         * Two complete deterministic surveys before frontier selection.
+         * An offset changes the starting neighbourhood by seed, while the
+         * modulo walk guarantees every region is visited equally often.
+         */
+        uint64_t offset =
+            curriculum_hash(0, 0xC011AB1EULL) %
+            (uint64_t)curriculum_count;
+        region = (int)((episode + offset) %
+                       (uint64_t)curriculum_count);
+    } else if (use_uniform) {
+        region = (int)(curriculum_hash(episode, 2) %
+                       (uint64_t)curriculum_count);
+    } else {
+        /*
+         * Prioritized replay without winner-take-all collapse.
+         * Regions are sampled in proportion to softened learning-frontier
+         * mass, while the permanent uniform branch preserves world coverage.
+         */
+        double total = 0.0;
+        for (int i = 0; i < curriculum_count; ++i) {
+            float p = curriculum_priority_for(i);
+            total += 0.02 + (double)p * sqrt((double)p + 1e-12);
+        }
+
+        double u =
+            (double)(curriculum_hash(episode, 0xF20AULL) >> 11) *
+            (1.0 / 9007199254740992.0);
+        double target = u * total;
+        double cumulative = 0.0;
+        region = curriculum_count - 1;
+        for (int i = 0; i < curriculum_count; ++i) {
+            float p = curriculum_priority_for(i);
+            cumulative +=
+                0.02 + (double)p * sqrt((double)p + 1e-12);
+            if (cumulative >= target) {
+                region = i;
+                break;
+            }
+        }
+    }
+
+    int lo = region * curriculum_region_span;
+    int hi = lo + curriculum_region_span;
+    if (hi > max_start) hi = max_start;
+    if (hi <= lo) {
+        lo = 0;
+        hi = max_start;
+        region = 0;
+    }
+    int width = hi - lo;
+    int pos = lo + (int)(curriculum_hash(episode, 999) %
+                         (uint64_t)(width > 0 ? width : 1));
+
+    last_curriculum_region = region;
+    last_curriculum_priority = curriculum_priority_for(region);
+    last_curriculum_progress = curriculum_regions[region].progress;
+    return pos;
+}
+
+static void curriculum_update(int source_pos,
+                              float outcome,
+                              float debt,
+                              float surprise) {
+    if (curriculum_count <= 0) return;
+    int region = source_pos / curriculum_region_span;
+    if (region < 0 || region >= curriculum_count) return;
+
+    CurriculumRegion *r = &curriculum_regions[region];
+    float old_fast = r->fast;
+    if (r->visits == 0) {
+        r->fast = outcome;
+        r->slow = outcome;
+    } else {
+        r->fast = 0.84f * r->fast + 0.16f * outcome;
+        r->slow = 0.985f * r->slow + 0.015f * outcome;
+    }
+    float signed_progress = r->fast - r->slow;
+    float absolute_progress = fabsf(signed_progress);
+    r->progress =
+        0.80f * r->progress +
+        0.20f * (0.70f * absolute_progress +
+                 0.30f * fmaxf(0.0f, signed_progress));
+    r->surprise =
+        0.90f * r->surprise +
+        0.10f * (0.55f * fabsf(outcome - old_fast) +
+                 0.45f * surprise);
+    r->debt = r->visits == 0 ? debt :
+              0.94f * r->debt + 0.06f * debt;
+    r->visits++;
+    r->last_seen = episode_count;
+    r->priority = curriculum_priority_for(region);
+
+    last_curriculum_region = region;
+    last_curriculum_priority = r->priority;
+    last_curriculum_progress = r->progress;
+    last_episode_coherence = outcome;
 }
 
 static float randn(float scale) {
@@ -352,6 +608,8 @@ static float clampf(float x, float lo, float hi) {
 }
 
 static float screening_utility(const float score[SCORE_DIM]);
+static PlasticityRule plasticity_effective_rule(void);
+static float glyph_semantic_authority(const CausalGlyph *g);
 
 static float vec_dot(const float *a, const float *b, int n) {
     float s = 0.0f;
@@ -586,7 +844,7 @@ static float context_policy_score(const int *ctx, int ctx_n, int candidate) {
 }
 
 static void policy_mark(int a, int b, int candidate, float target) {
-    if (!policy_enabled) return;
+    if (!policy_enabled || evaluation_mode) return;
     int t = get_trigram(a, b, candidate, 1);
     if (t < 0) return;
 
@@ -1181,6 +1439,8 @@ static void glyph_copy_signature(CausalGlyph *g,
     }
 }
 
+static void glyph_topology_clear(int gid);
+
 static int glyph_birth_at(int slot, const ProphecyStack *stack,
                           const int *ctx, int ctx_n) {
     if (slot < 0 || slot >= MAX_GLYPHS) return -1;
@@ -1191,6 +1451,7 @@ static int glyph_birth_at(int slot, const ProphecyStack *stack,
         glyph_count++;
     }
 
+    glyph_topology_clear(slot);
     CausalGlyph *g = &causal_glyphs[slot];
     memset(g, 0, sizeof(*g));
     for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
@@ -1215,15 +1476,21 @@ static int glyph_birth_at(int slot, const ProphecyStack *stack,
     return slot;
 }
 
-static void glyph_update_signature(int gid, const ProphecyStack *stack,
-                                   const int *ctx, int ctx_n,
-                                   float distance) {
+static void glyph_adapt_signature(int gid,
+                                  const ProphecyStack *stack,
+                                  const int *ctx, int ctx_n,
+                                  float distance,
+                                  float scale,
+                                  int direct_observation) {
     if (gid < 0 || gid >= MAX_GLYPHS || !stack) return;
     CausalGlyph *g = &causal_glyphs[gid];
     if (!g->active) return;
 
-    float lr = clampf(1.0f / sqrtf((float)g->uses + 2.0f),
-                      0.025f, 0.18f);
+    float base_lr = clampf(
+        1.0f / sqrtf((float)g->uses + 2.0f),
+        0.025f, 0.18f);
+    float lr = clampf(base_lr * scale, 0.001f, 0.18f);
+
     for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
         for (int i = 0; i < g->sig_n[h]; ++i)
             g->sig_prob[h][i] *= (1.0f - lr);
@@ -1236,6 +1503,7 @@ static void glyph_update_signature(int gid, const ProphecyStack *stack,
             (1.0f - lr) * g->sig_debt[h] + lr * stack->debt[h];
         g->sig_conf[h] =
             (1.0f - lr) * g->sig_conf[h] + lr * stack->confidence[h];
+
         float emb[EMBED_DIM];
         glyph_stack_future_embedding(stack, h, emb);
         for (int d = 0; d < EMBED_DIM; ++d)
@@ -1253,11 +1521,112 @@ static void glyph_update_signature(int gid, const ProphecyStack *stack,
         normalize(g->context_centroid, EMBED_DIM);
     }
 
-    g->assignment_distance_ema =
-        g->uses > 1 ? 0.96f * g->assignment_distance_ema +
-                      0.04f * distance : distance;
-    g->uses++;
-    g->last_seen = episode_count;
+    if (direct_observation) {
+        g->assignment_distance_ema =
+            g->uses > 1 ?
+            0.96f * g->assignment_distance_ema +
+            0.04f * distance : distance;
+        g->topology_error_ema =
+            0.97f * g->topology_error_ema +
+            0.03f * distance;
+        g->topology_wins++;
+        g->uses++;
+        g->last_seen = episode_count;
+    }
+}
+
+static void glyph_update_signature(int gid, const ProphecyStack *stack,
+                                   const int *ctx, int ctx_n,
+                                   float distance) {
+    glyph_adapt_signature(gid, stack, ctx, ctx_n,
+                          distance, 1.0f, 1);
+}
+
+static void glyph_topology_clear(int gid) {
+    if (gid < 0 || gid >= MAX_GLYPHS) return;
+    for (int i = 0; i < MAX_GLYPHS; ++i) {
+        glyph_link_age[gid][i] = 0;
+        glyph_link_age[i][gid] = 0;
+    }
+}
+
+static void glyph_topology_connect(int a, int b) {
+    if (!neighbor_enabled || glyph_mode != GLYPH_CAUSAL ||
+        a < 0 || b < 0 || a == b ||
+        a >= MAX_GLYPHS || b >= MAX_GLYPHS)
+        return;
+    glyph_link_age[a][b] = 1;
+    glyph_link_age[b][a] = 1;
+}
+
+static void glyph_topology_observe(int best, int second,
+                                   float best_distance,
+                                   float second_distance,
+                                   const ProphecyStack *stack,
+                                   const int *ctx, int ctx_n) {
+    if (!neighbor_enabled || glyph_mode != GLYPH_CAUSAL ||
+        best < 0 || best >= MAX_GLYPHS)
+        return;
+
+    for (int n = 0; n < MAX_GLYPHS; ++n) {
+        uint16_t age = glyph_link_age[best][n];
+        if (!age) continue;
+        if (age >= GLYPH_LINK_MAX_AGE ||
+            !causal_glyphs[n].active) {
+            glyph_link_age[best][n] = 0;
+            glyph_link_age[n][best] = 0;
+        } else {
+            glyph_link_age[best][n] = age + 1;
+            glyph_link_age[n][best] = age + 1;
+        }
+    }
+
+    if (second >= 0)
+        glyph_topology_connect(best, second);
+
+    CausalGlyph *winner = &causal_glyphs[best];
+    float gap = second >= 0 ?
+        clampf(second_distance - best_distance, 0.0f, 1.0f) :
+        0.0f;
+    winner->topology_utility_ema =
+        0.97f * winner->topology_utility_ema + 0.03f * gap;
+
+    PlasticityRule rule = plasticity_effective_rule();
+    float neighbor_gain = rule.neighbor_gain;
+
+    for (int n = 0; n < MAX_GLYPHS; ++n) {
+        uint16_t age = glyph_link_age[best][n];
+        if (!age || !causal_glyphs[n].active) continue;
+
+        float age_weight =
+            expf(-(float)(age - 1) / 24.0f);
+        float similarity =
+            1.0f - glyph_pair_distance(&causal_glyphs[best],
+                                       &causal_glyphs[n]);
+        float winner_authority =
+            glyph_semantic_authority(winner);
+        float neighbor_authority =
+            glyph_semantic_authority(&causal_glyphs[n]);
+        float earned_bridge = sqrtf(
+            (0.02f + 0.98f * winner_authority) *
+            (0.02f + 0.98f * neighbor_authority));
+        float scale =
+            neighbor_gain * age_weight *
+            clampf(similarity, 0.0f, 1.0f) *
+            earned_bridge;
+        if (scale > 0.0005f)
+            glyph_adapt_signature(n, stack, ctx, ctx_n,
+                                  best_distance, scale, 0);
+    }
+}
+
+
+static int glyph_topology_edge_count(void) {
+    int count = 0;
+    for (int a = 0; a < MAX_GLYPHS; ++a)
+        for (int b = a + 1; b < MAX_GLYPHS; ++b)
+            if (glyph_link_age[a][b]) count++;
+    return count;
 }
 
 static uint64_t glyph_context_hash(const int *ctx, int ctx_n) {
@@ -1432,14 +1801,19 @@ static int glyph_assign(const int *ctx, int ctx_n,
         return gid;
     }
 
-    int best = -1;
-    float best_distance = 1e30f;
+    int best = -1, second = -1;
+    float best_distance = 1e30f, second_distance = 1e30f;
     for (int i = 0; i < MAX_GLYPHS; ++i) {
         if (!causal_glyphs[i].active) continue;
         float d = glyph_signature_distance(stack, &causal_glyphs[i]);
         if (d < best_distance) {
+            second = best;
+            second_distance = best_distance;
             best_distance = d;
             best = i;
+        } else if (d < second_distance) {
+            second_distance = d;
+            second = i;
         }
     }
 
@@ -1448,11 +1822,16 @@ static int glyph_assign(const int *ctx, int ctx_n,
 
     if (best_distance > threshold) {
         int promoted = glyph_nursery_observe(ctx, ctx_n, stack);
+        if (promoted >= 0)
+            glyph_topology_connect(promoted, best);
         if (distance_out) *distance_out = best_distance;
         return promoted;
     }
 
     glyph_update_signature(best, stack, ctx, ctx_n, best_distance);
+    glyph_topology_observe(best, second,
+                           best_distance, second_distance,
+                           stack, ctx, ctx_n);
     if (distance_out) *distance_out = best_distance;
     return best;
 }
@@ -1659,7 +2038,20 @@ static float glyph_future_overlap(int gid, int gh,
     return clampf(overlap, 0.0f, 1.0f);
 }
 
-static float glyph_candidate_score(int gid, int candidate) {
+static float glyph_semantic_authority(const CausalGlyph *g) {
+    if (!g || !g->active) return 0.0f;
+    float evidence = 1.0f - expf(-(float)g->uses / 24.0f);
+    float gain_gate = clampf(
+        (g->predictive_gain_ema - 0.02f) / 0.32f, 0.0f, 1.0f);
+    float assignment_reliability =
+        expf(-2.2f *
+             clampf(g->assignment_distance_ema, 0.0f, 1.0f));
+    return clampf(
+        evidence * gain_gate * assignment_reliability,
+        0.0f, 1.0f);
+}
+
+static float glyph_candidate_score_single(int gid, int candidate) {
     if (glyph_mode == GLYPH_OFF || gid < 0 ||
         gid >= MAX_GLYPHS || !causal_glyphs[gid].active)
         return 0.5f;
@@ -1697,16 +2089,43 @@ static float glyph_candidate_score(int gid, int candidate) {
      * corpus-wide future prior.  Until then the glyph is remembered and
      * trained, but its vote is exactly neutral.
      */
-    float evidence = 1.0f - expf(-(float)g->uses / 24.0f);
-    float gain_gate = clampf(
-        (g->predictive_gain_ema - 0.02f) / 0.32f, 0.0f, 1.0f);
-    float assignment_reliability =
-        expf(-2.2f * clampf(g->assignment_distance_ema, 0.0f, 1.0f));
-    float authority =
-        evidence * gain_gate * assignment_reliability;
+    float authority = glyph_semantic_authority(g);
 
     return clampf(0.5f + authority * (raw - 0.5f),
                   0.0f, 1.0f);
+}
+
+
+static float glyph_candidate_score(int gid, int candidate) {
+    float own = glyph_candidate_score_single(gid, candidate);
+    if (!neighbor_enabled || glyph_mode != GLYPH_CAUSAL ||
+        gid < 0 || gid >= MAX_GLYPHS ||
+        !causal_glyphs[gid].active)
+        return own;
+
+    PlasticityRule rule = plasticity_effective_rule();
+    float total = 1.0f;
+    float value = own;
+
+    for (int n = 0; n < MAX_GLYPHS; ++n) {
+        uint16_t age = glyph_link_age[gid][n];
+        if (!age || !causal_glyphs[n].active) continue;
+
+        float similarity =
+            1.0f - glyph_pair_distance(&causal_glyphs[gid],
+                                       &causal_glyphs[n]);
+        float age_weight =
+            expf(-(float)(age - 1) / 24.0f);
+        float w = rule.neighbor_gain * age_weight *
+                  clampf(similarity, 0.0f, 1.0f);
+        if (w <= 0.002f) continue;
+
+        float neighbor =
+            glyph_candidate_score_single(n, candidate);
+        value += w * neighbor;
+        total += w;
+    }
+    return clampf(value / total, 0.0f, 1.0f);
 }
 
 static void glyph_merge_into(int keep, int remove) {
@@ -1770,6 +2189,20 @@ static void glyph_merge_into(int keep, int remove) {
                    a->generation : b->generation) + 1);
     a->parent_a = (int16_t)keep;
     a->parent_b = (int16_t)remove;
+
+    if (neighbor_enabled) {
+        for (int n = 0; n < MAX_GLYPHS; ++n) {
+            if (n == keep || n == remove) continue;
+            uint16_t age = glyph_link_age[remove][n];
+            if (!age) continue;
+            uint16_t existing = glyph_link_age[keep][n];
+            uint16_t merged_age =
+                existing && existing < age ? existing : age;
+            glyph_link_age[keep][n] = merged_age;
+            glyph_link_age[n][keep] = merged_age;
+        }
+        glyph_topology_clear(remove);
+    }
 
     memset(b, 0, sizeof(*b));
     glyph_count--;
@@ -1859,6 +2292,190 @@ static void core_init(void) {
     for (int o = 0; o < SCORE_DIM; ++o)
         for (int h = 0; h < HIDDEN_DIM; ++h)
             core.who[o][h] = randn(0.04f);
+}
+
+
+static uint64_t plasticity_rng_u64(void) {
+    uint64_t x = plasticity_rng_state;
+    x ^= x >> 12;
+    x ^= x << 25;
+    x ^= x >> 27;
+    plasticity_rng_state = x;
+    return x * 2685821657736338717ULL;
+}
+
+static float plasticity_randf(void) {
+    return (float)((plasticity_rng_u64() >> 40) & 0xFFFFFFu) /
+           16777216.0f;
+}
+
+static float plasticity_randn(void) {
+    float u1 = plasticity_randf() + 1e-7f;
+    float u2 = plasticity_randf();
+    return sqrtf(-2.0f * logf(u1)) *
+           cosf(6.28318530718f * u2);
+}
+
+static PlasticityRule plasticity_baseline(void) {
+    PlasticityRule r;
+    r.readout_lr = 0.025f;
+    r.input_lr = 0.00035f;
+    r.recurrent_lr = 0.00008f;
+    r.surprise_threshold = 0.04f;
+    r.surprise_width = 0.24f;
+    r.error_clip = 0.20f;
+    r.input_decay = 0.999999f;
+    r.recurrent_decay = 0.9999995f;
+    r.debt_modulation = 0.35f;
+    r.embedding_lr = 0.008f;
+    r.quote_rate = 0.10f;
+    r.debt_rate = 0.06f;
+    r.neighbor_gain = 0.12f;
+    return r;
+}
+
+static void plasticity_rule_clamp(PlasticityRule *r) {
+    r->readout_lr = clampf(r->readout_lr, 0.002f, 0.08f);
+    r->input_lr = clampf(r->input_lr, 0.00002f, 0.0015f);
+    r->recurrent_lr = clampf(r->recurrent_lr, 0.000005f, 0.00045f);
+    r->surprise_threshold =
+        clampf(r->surprise_threshold, 0.0f, 0.25f);
+    r->surprise_width = clampf(r->surprise_width, 0.04f, 0.60f);
+    r->error_clip = clampf(r->error_clip, 0.05f, 0.50f);
+    r->input_decay = clampf(r->input_decay, 0.9990f, 1.0f);
+    r->recurrent_decay = clampf(r->recurrent_decay, 0.9990f, 1.0f);
+    r->debt_modulation = clampf(r->debt_modulation, -0.5f, 1.5f);
+    /*
+     * These four parameters are currently outside the shadow-core
+     * falsifier. They remain part of the runtime rule for one source of
+     * truth, but evolution is not allowed to move them.
+     */
+    r->embedding_lr = baseline_plasticity_rule.embedding_lr > 0.0f ?
+        baseline_plasticity_rule.embedding_lr : 0.008f;
+    r->quote_rate = baseline_plasticity_rule.quote_rate > 0.0f ?
+        baseline_plasticity_rule.quote_rate : 0.10f;
+    r->debt_rate = baseline_plasticity_rule.debt_rate > 0.0f ?
+        baseline_plasticity_rule.debt_rate : 0.06f;
+    r->neighbor_gain = baseline_plasticity_rule.neighbor_gain >= 0.0f ?
+        baseline_plasticity_rule.neighbor_gain : 0.12f;
+}
+
+static float plasticity_mutate_positive(float x, float sigma) {
+    return x * expf(sigma * plasticity_randn());
+}
+
+static PlasticityRule plasticity_mutate_rule(const PlasticityRule *parent,
+                                              float sigma) {
+    PlasticityRule r = *parent;
+    r.readout_lr = plasticity_mutate_positive(r.readout_lr, sigma);
+    r.input_lr = plasticity_mutate_positive(r.input_lr, sigma);
+    r.recurrent_lr = plasticity_mutate_positive(r.recurrent_lr, sigma);
+    r.surprise_threshold += 0.025f * sigma * plasticity_randn();
+    r.surprise_width = plasticity_mutate_positive(r.surprise_width, sigma);
+    r.error_clip = plasticity_mutate_positive(r.error_clip, sigma);
+    r.input_decay = 1.0f -
+        plasticity_mutate_positive(1.0f - r.input_decay, sigma);
+    r.recurrent_decay = 1.0f -
+        plasticity_mutate_positive(1.0f - r.recurrent_decay, sigma);
+    r.debt_modulation += 0.20f * sigma * plasticity_randn();
+    /* Fitness does not observe embeddings, market EMA, or topology. */
+    r.embedding_lr = baseline_plasticity_rule.embedding_lr;
+    r.quote_rate = baseline_plasticity_rule.quote_rate;
+    r.debt_rate = baseline_plasticity_rule.debt_rate;
+    r.neighbor_gain = baseline_plasticity_rule.neighbor_gain;
+    plasticity_rule_clamp(&r);
+    return r;
+}
+
+static void plasticity_shadow_reset(PlasticityGenome *g) {
+    g->shadow = core;
+    g->loss_sum = 0.0;
+    g->calibration_sum = 0.0;
+    g->samples = 0;
+}
+
+static void plasticity_population_init(void) {
+    baseline_plasticity_rule = plasticity_baseline();
+    active_plasticity_rule = baseline_plasticity_rule;
+    plasticity_rng_state =
+        mix64(experiment_seed ^ 0xD1B54A32D192ED03ULL);
+    if (plasticity_rng_state == 0)
+        plasticity_rng_state = 0xD1B54A32D192ED03ULL;
+
+    memset(plasticity_population, 0, sizeof(plasticity_population));
+    for (int i = 0; i < PLASTICITY_POP; ++i) {
+        plasticity_population[i].rule =
+            i == 0 ? baseline_plasticity_rule :
+            plasticity_mutate_rule(&baseline_plasticity_rule, 0.28f);
+        plasticity_population[i].lineage = (uint32_t)i;
+        plasticity_shadow_reset(&plasticity_population[i]);
+    }
+    plasticity_population_ready = 1;
+}
+
+static void shadow_core_predict(Core *c,
+                                const float *ctx_emb,
+                                const float *intent,
+                                int candidate, int oracle,
+                                float out[SCORE_DIM],
+                                float *input_out,
+                                float *hidden_out) {
+    float input[EMBED_DIM * 4 + STATE_DIM];
+    int k = 0;
+    for (int d = 0; d < EMBED_DIM; ++d) input[k++] = ctx_emb[d];
+    for (int d = 0; d < EMBED_DIM; ++d)
+        input[k++] = vocab[candidate].emb[d];
+    for (int d = 0; d < EMBED_DIM; ++d)
+        input[k++] = vocab[oracle].emb[d];
+    for (int d = 0; d < EMBED_DIM; ++d) input[k++] = intent[d];
+    for (int d = 0; d < STATE_DIM; ++d) input[k++] = c->state[d];
+
+    float next_hidden[HIDDEN_DIM];
+    for (int h = 0; h < HIDDEN_DIM; ++h) {
+        float z = vec_dot(c->wxh[h], input, k);
+        z += vec_dot(c->whh[h], c->hidden, HIDDEN_DIM);
+        next_hidden[h] = tanhf(z);
+    }
+
+    for (int o = 0; o < SCORE_DIM; ++o)
+        out[o] = tanhf(vec_dot(c->who[o], next_hidden, HIDDEN_DIM));
+
+    memcpy(c->hidden, next_hidden, sizeof(next_hidden));
+    for (int d = 0; d < STATE_DIM; ++d)
+        c->state[d] =
+            0.94f * c->state[d] +
+            0.06f * next_hidden[d % HIDDEN_DIM];
+
+    if (input_out)
+        memcpy(input_out, input, sizeof(input));
+    if (hidden_out)
+        memcpy(hidden_out, next_hidden, sizeof(next_hidden));
+}
+
+static PlasticityRule plasticity_effective_rule(void) {
+    PlasticityRule a = baseline_plasticity_rule;
+    if (!plasticity_evolution_enabled || plasticity_authority <= 0.0f)
+        return a;
+
+#define BLEND_FIELD(name) \
+    a.name = (1.0f - plasticity_authority) * baseline_plasticity_rule.name + \
+             plasticity_authority * active_plasticity_rule.name
+    BLEND_FIELD(readout_lr);
+    BLEND_FIELD(input_lr);
+    BLEND_FIELD(recurrent_lr);
+    BLEND_FIELD(surprise_threshold);
+    BLEND_FIELD(surprise_width);
+    BLEND_FIELD(error_clip);
+    BLEND_FIELD(input_decay);
+    BLEND_FIELD(recurrent_decay);
+    BLEND_FIELD(debt_modulation);
+#undef BLEND_FIELD
+    a.embedding_lr = baseline_plasticity_rule.embedding_lr;
+    a.quote_rate = baseline_plasticity_rule.quote_rate;
+    a.debt_rate = baseline_plasticity_rule.debt_rate;
+    a.neighbor_gain = baseline_plasticity_rule.neighbor_gain;
+    plasticity_rule_clamp(&a);
+    return a;
 }
 
 static void context_embedding(const int *ctx, int n, float *out) {
@@ -2669,6 +3286,309 @@ static float survival_utility(const float score[SCORE_DIM]) {
            0.09f * score[10];  /* imagined future */
 }
 
+
+static void plasticity_shadow_update(PlasticityGenome *g,
+                                     const int *ctx, int ctx_n,
+                                     int chosen, int oracle,
+                                     const float *intent,
+                                     float debt_progress,
+                                     const float target[SCORE_DIM]) {
+    float ctx_emb[EMBED_DIM];
+    context_embedding(ctx, ctx_n, ctx_emb);
+
+    float pred[SCORE_DIM];
+    float input[EMBED_DIM * 4 + STATE_DIM];
+    float hidden[HIDDEN_DIM];
+    shadow_core_predict(&g->shadow, ctx_emb, intent,
+                        chosen, oracle, pred, input, hidden);
+
+    float error[SCORE_DIM];
+    float mean_error = 0.0f;
+    float surprise = 0.0f;
+    float loss = 0.0f;
+    for (int o = 0; o < SCORE_DIM; ++o) {
+        float p01 = 0.5f * (pred[o] + 1.0f);
+        error[o] = target[o] - p01;
+        mean_error += error[o];
+        surprise += fabsf(error[o]);
+        loss += error[o] * error[o];
+    }
+    mean_error /= (float)SCORE_DIM;
+    surprise /= (float)SCORE_DIM;
+    loss /= (float)SCORE_DIM;
+
+    g->loss_sum += (double)loss;
+    g->calibration_sum += (double)surprise;
+    g->samples++;
+
+    PlasticityRule *r = &g->rule;
+    float width = r->surprise_width > 1e-5f ?
+                  r->surprise_width : 1e-5f;
+    float gate = clampf((surprise - r->surprise_threshold) / width,
+                        0.0f, 1.0f);
+    float modulator = clampf(
+        mean_error + r->debt_modulation * debt_progress,
+        -r->error_clip, r->error_clip) * gate;
+
+    for (int o = 0; o < SCORE_DIM; ++o)
+        for (int h = 0; h < HIDDEN_DIM; ++h)
+            g->shadow.who[o][h] +=
+                r->readout_lr * gate * error[o] * hidden[h];
+
+    int input_n = EMBED_DIM * 4 + STATE_DIM;
+    for (int h = 0; h < HIDDEN_DIM; ++h) {
+        for (int i = 0; i < input_n; ++i)
+            g->shadow.wxh[h][i] =
+                r->input_decay * g->shadow.wxh[h][i] +
+                r->input_lr * modulator * hidden[h] * input[i];
+        for (int j = 0; j < HIDDEN_DIM; ++j)
+            g->shadow.whh[h][j] =
+                r->recurrent_decay * g->shadow.whh[h][j] +
+                r->recurrent_lr * modulator *
+                hidden[h] * g->shadow.hidden[j];
+    }
+}
+
+static float plasticity_shadow_coherence(const Core *candidate,
+                                         uint64_t generation,
+                                         int count);
+
+static int plasticity_ranked_index(int rank,
+                                   const float loss[PLASTICITY_POP]) {
+    int used[PLASTICITY_POP] = {0};
+    int chosen = 0;
+    for (int r = 0; r <= rank; ++r) {
+        float best = 1e30f;
+        int best_i = 0;
+        for (int i = 0; i < PLASTICITY_POP; ++i) {
+            if (!used[i] && loss[i] < best) {
+                best = loss[i];
+                best_i = i;
+            }
+        }
+        used[best_i] = 1;
+        chosen = best_i;
+    }
+    return chosen;
+}
+
+static void plasticity_finish_generation(void) {
+    if (!plasticity_population_ready ||
+        plasticity_population[0].samples == 0)
+        return;
+
+    float loss[PLASTICITY_POP];
+    float pred_adv[PLASTICITY_POP];
+    float coh_adv[PLASTICITY_POP];
+    float fitness[PLASTICITY_POP];
+    int audited_flag[PLASTICITY_POP] = {0};
+    for (int i = 0; i < PLASTICITY_POP; ++i) {
+        loss[i] = plasticity_population[i].samples ?
+            (float)(plasticity_population[i].loss_sum /
+                    (double)plasticity_population[i].samples) :
+            1e9f;
+        pred_adv[i] = 0.0f;
+        coh_adv[i] = NAN;
+        fitness[i] = -1e30f;
+    }
+
+    float base_loss = loss[0] > 1e-9f ? loss[0] : 1e-9f;
+    for (int i = 0; i < PLASTICITY_POP; ++i)
+        pred_adv[i] = (base_loss - loss[i]) / base_loss;
+    coh_adv[0] = 0.0f;
+    fitness[0] = 0.0f;
+    audited_flag[0] = 1;
+    float baseline_coherence =
+        plasticity_shadow_coherence(
+            &plasticity_population[0].shadow,
+            plasticity_generation,
+            PLASTICITY_AUDIT_PROBES);
+
+    /*
+     * Prediction error is the cheap first stage. Coherence is the actual
+     * game. Audit the baseline and the three strongest prediction
+     * challengers on identical rotating positions. This spends the same
+     * 32 probe lives as the old baseline-vs-one-candidate design.
+     */
+    int audited[1 + PLASTICITY_AUDIT_CHALLENGERS];
+    int audited_n = 1;
+    audited[0] = 0;
+    for (int rank = 0;
+         rank < PLASTICITY_POP &&
+         audited_n < 1 + PLASTICITY_AUDIT_CHALLENGERS;
+         ++rank) {
+        int idx = plasticity_ranked_index(rank, loss);
+        if (idx == 0) continue;
+        audited[audited_n++] = idx;
+    }
+
+    int best_challenger = audited_n > 1 ? audited[1] : 0;
+    int second_challenger = best_challenger;
+    float best_fitness = -1e30f;
+    float second_fitness = -1e30f;
+
+    for (int a = 1; a < audited_n; ++a) {
+        int idx = audited[a];
+        audited_flag[idx] = 1;
+        float coherence =
+            plasticity_shadow_coherence(
+                &plasticity_population[idx].shadow,
+                plasticity_generation,
+                PLASTICITY_AUDIT_PROBES);
+        coh_adv[idx] = coherence - baseline_coherence;
+
+        /*
+         * A candidate may trade a tiny amount of calibration for a real
+         * coherence gain, but a materially worse predictor is ineligible.
+         */
+        if (pred_adv[idx] >= -0.003f)
+            fitness[idx] =
+                coh_adv[idx] + 0.10f * pred_adv[idx];
+
+        if (fitness[idx] > best_fitness) {
+            second_fitness = best_fitness;
+            second_challenger = best_challenger;
+            best_fitness = fitness[idx];
+            best_challenger = idx;
+        } else if (fitness[idx] > second_fitness) {
+            second_fitness = fitness[idx];
+            second_challenger = idx;
+        }
+    }
+
+    FILE *pf = fopen("netta.plasticity.tsv", "ab+");
+    if (pf) {
+        fseek(pf, 0, SEEK_END);
+        long bytes = ftell(pf);
+        if (bytes == 0) {
+            fputs("generation\tgenome\tlineage\taudited\tselected\t"
+                  "loss\tprediction_advantage\tcoherence_advantage\t"
+                  "fitness\treadout_lr\tinput_lr\trecurrent_lr\t"
+                  "surprise_threshold\tsurprise_width\terror_clip\t"
+                  "input_decay\trecurrent_decay\tdebt_modulation\n", pf);
+        }
+        for (int i = 0; i < PLASTICITY_POP; ++i) {
+            PlasticityRule *r = &plasticity_population[i].rule;
+            fprintf(pf,
+                    "%llu\t%d\t%u\t%d\t%d\t%.9f\t%.9f\t%.9f\t%.9f\t"
+                    "%.9g\t%.9g\t%.9g\t%.9g\t%.9g\t%.9g\t"
+                    "%.9g\t%.9g\t%.9g\n",
+                    (unsigned long long)(plasticity_generation + 1),
+                    i, plasticity_population[i].lineage,
+                    audited_flag[i],
+                    i == best_challenger,
+                    loss[i], pred_adv[i], coh_adv[i], fitness[i],
+                    r->readout_lr, r->input_lr, r->recurrent_lr,
+                    r->surprise_threshold, r->surprise_width,
+                    r->error_clip, r->input_decay,
+                    r->recurrent_decay, r->debt_modulation);
+        }
+        fclose(pf);
+    }
+
+    plasticity_advantage = pred_adv[best_challenger];
+    plasticity_coherence_advantage = coh_adv[best_challenger];
+    plasticity_generation++;
+
+    const float prediction_threshold = 0.002f;
+    if (best_challenger != 0 &&
+        plasticity_advantage > prediction_threshold &&
+        plasticity_coherence_advantage >
+            PLASTICITY_COHERENCE_THRESHOLD) {
+        plasticity_win_streak++;
+        if (plasticity_win_streak >= PLASTICITY_AUTHORITY_STREAK) {
+            PlasticityRule winner =
+                plasticity_population[best_challenger].rule;
+#define ADOPT_FIELD(name) \
+            active_plasticity_rule.name = \
+                0.72f * active_plasticity_rule.name + \
+                0.28f * winner.name
+            ADOPT_FIELD(readout_lr);
+            ADOPT_FIELD(input_lr);
+            ADOPT_FIELD(recurrent_lr);
+            ADOPT_FIELD(surprise_threshold);
+            ADOPT_FIELD(surprise_width);
+            ADOPT_FIELD(error_clip);
+            ADOPT_FIELD(input_decay);
+            ADOPT_FIELD(recurrent_decay);
+            ADOPT_FIELD(debt_modulation);
+#undef ADOPT_FIELD
+            plasticity_rule_clamp(&active_plasticity_rule);
+            plasticity_authority =
+                clampf(plasticity_authority + 0.18f, 0.0f, 1.0f);
+            active_plasticity_lineage =
+                plasticity_population[best_challenger].lineage;
+            plasticity_win_streak = 0;
+        }
+    } else {
+        plasticity_win_streak = 0;
+        plasticity_authority *= 0.995f;
+    }
+
+    PlasticityRule old_rule[PLASTICITY_POP];
+    uint32_t old_lineage[PLASTICITY_POP];
+    for (int i = 0; i < PLASTICITY_POP; ++i) {
+        old_rule[i] = plasticity_population[i].rule;
+        old_lineage[i] = plasticity_population[i].lineage;
+    }
+
+    float sigma = clampf(
+        0.24f / sqrtf(1.0f +
+                      0.08f * (float)plasticity_generation),
+        0.08f, 0.24f);
+
+    plasticity_population[0].rule = baseline_plasticity_rule;
+    plasticity_population[0].lineage = 0;
+
+    if (best_challenger == 0)
+        best_challenger = plasticity_ranked_index(1, loss);
+    if (second_challenger == 0 ||
+        second_challenger == best_challenger)
+        second_challenger = 0;
+
+    plasticity_population[1].rule = old_rule[best_challenger];
+    plasticity_population[1].lineage =
+        old_lineage[best_challenger];
+
+    for (int i = 2; i < PLASTICITY_POP; ++i) {
+        int parent;
+        if (i % 3 == 0)
+            parent = second_challenger;
+        else if (i & 1)
+            parent = best_challenger;
+        else
+            parent = 0;
+        plasticity_population[i].rule =
+            plasticity_mutate_rule(&old_rule[parent], sigma);
+        plasticity_population[i].lineage =
+            (uint32_t)(plasticity_generation * PLASTICITY_POP + i);
+    }
+
+    for (int i = 0; i < PLASTICITY_POP; ++i)
+        plasticity_shadow_reset(&plasticity_population[i]);
+}
+
+static void plasticity_evolution_observe(const int *ctx, int ctx_n,
+                                         int chosen, int oracle,
+                                         const float *intent,
+                                         float debt_progress,
+                                         ScoreVector observed) {
+    if (!plasticity_evolution_enabled) return;
+    if (!plasticity_population_ready)
+        plasticity_population_init();
+
+    float target[SCORE_DIM];
+    score_to_array(observed, target);
+    for (int i = 0; i < PLASTICITY_POP; ++i)
+        plasticity_shadow_update(&plasticity_population[i],
+                                 ctx, ctx_n, chosen, oracle,
+                                 intent, debt_progress, target);
+
+    if (plasticity_population[0].samples >=
+        PLASTICITY_WINDOW_STEPS)
+        plasticity_finish_generation();
+}
+
 static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
                             const float *intent, float intent_debt,
                             const ProphecyStack *world, int glyph_id,
@@ -2958,6 +3878,7 @@ static void learn_local(const int *ctx, int ctx_n, int chosen, int oracle,
                         ScoreVector observed, const float predicted[SCORE_DIM]) {
     float target[SCORE_DIM];
     score_to_array(observed, target);
+    PlasticityRule rule = plasticity_effective_rule();
 
     float ctx_emb[EMBED_DIM];
     context_embedding(ctx, ctx_n, ctx_emb);
@@ -2972,7 +3893,7 @@ static void learn_local(const int *ctx, int ctx_n, int chosen, int oracle,
                            prev_for_depth, chosen, oracle,
                            local_prior, dummy, 1);
 
-    float rate = 0.025f;
+    float rate = rule.readout_lr;
     float global_error = 0.0f;
     float global_surprise = 0.0f;
     for (int o = 0; o < SCORE_DIM; ++o) {
@@ -2998,22 +3919,27 @@ static void learn_local(const int *ctx, int ctx_n, int chosen, int oracle,
     for (int d = 0; d < EMBED_DIM; ++d) local_input[input_n++] = intent[d];
     for (int d = 0; d < STATE_DIM; ++d) local_input[input_n++] = core.state[d];
 
+    float surprise_width =
+        rule.surprise_width > 1e-5f ? rule.surprise_width : 1e-5f;
     float surprise_gate =
-        clampf((global_surprise - 0.04f) / 0.24f, 0.0f, 1.0f);
-    float modulation =
-        clampf(global_error, -0.20f, 0.20f) * surprise_gate;
-    float input_rate = 0.00035f;
-    float recurrent_rate = 0.00008f;
+        clampf((global_surprise - rule.surprise_threshold) /
+               surprise_width, 0.0f, 1.0f);
+    float modulation = clampf(
+        global_error +
+        rule.debt_modulation * (observed.world_state_stability - 0.5f),
+        -rule.error_clip, rule.error_clip) * surprise_gate;
+    float input_rate = rule.input_lr;
+    float recurrent_rate = rule.recurrent_lr;
 
     for (int h = 0; h < HIDDEN_DIM; ++h) {
         for (int i = 0; i < input_n; ++i) {
             core.wxh[h][i] =
-                0.999999f * core.wxh[h][i] +
+                rule.input_decay * core.wxh[h][i] +
                 input_rate * modulation * core.hidden[h] * local_input[i];
         }
         for (int j = 0; j < HIDDEN_DIM; ++j) {
             core.whh[h][j] =
-                0.9999995f * core.whh[h][j] +
+                rule.recurrent_decay * core.whh[h][j] +
                 recurrent_rate * modulation * core.hidden[h] * core.hidden[j];
         }
     }
@@ -3047,9 +3973,11 @@ static void learn_local(const int *ctx, int ctx_n, int chosen, int oracle,
         edges[e].momentum =
             0.82f * edges[e].momentum + 0.18f * signed_surprise;
         edges[e].quote =
-            0.90f * edges[e].quote + 0.10f * signed_surprise;
+            (1.0f - rule.quote_rate) * edges[e].quote +
+            rule.quote_rate * signed_surprise;
         edges[e].debt =
-            0.94f * edges[e].debt + 0.06f * debt_now;
+            (1.0f - rule.debt_rate) * edges[e].debt +
+            rule.debt_rate * debt_now;
         edges[e].volatility =
             0.92f * edges[e].volatility +
             0.08f * fabsf(edges[e].quote - previous_quote);
@@ -3086,7 +4014,7 @@ static void learn_local(const int *ctx, int ctx_n, int chosen, int oracle,
          observed.source_grounding +
          observed.semantic_continuity) / 3.0f;
     float direction = valence >= 0.5f ? 1.0f : -0.35f;
-    float erate = 0.008f * direction;
+    float erate = rule.embedding_lr * direction;
 
     for (int d = 0; d < EMBED_DIM; ++d) {
         vocab[chosen].emb[d] += erate * ctx_emb[d];
@@ -3177,7 +4105,7 @@ static void history_append(uint64_t ep, int source_pos,
     fprintf(f,
         "%llu\t%d\t%s\t%s\t%s\t%s\t"
         "%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t"
-        "%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%d\t%llu\t%llu\t%llu\n",
+        "%.5f\t%.5f\t%.5f\t%.5f\t%.5f\t%d\t%llu\t%llu\t%llu",
         (unsigned long long)ep, source_pos,
         ctx_text, truth_text, oracle_text, attempt_text,
         avg[0], avg[1], avg[2], avg[3], avg[4], avg[5], avg[6], avg[7],
@@ -3188,6 +4116,18 @@ static void history_append(uint64_t ep, int source_pos,
         (unsigned long long)glyph_births,
         (unsigned long long)glyph_recycles,
         (unsigned long long)glyph_merges);
+    fprintf(f,
+        "\t%d\t%.5f\t%.5f\t%.5f\t%llu\t%.6f\t%.6f\t%.5f\t%u\t%d\n",
+        last_curriculum_region,
+        last_curriculum_priority,
+        last_curriculum_progress,
+        last_episode_coherence,
+        (unsigned long long)plasticity_generation,
+        plasticity_advantage,
+        plasticity_coherence_advantage,
+        plasticity_authority,
+        active_plasticity_lineage,
+        glyph_topology_edge_count());
     fclose(f);
 }
 
@@ -3214,6 +4154,7 @@ static void save_state(const char *path) {
     h.nrem_replays = nrem_replays;
     h.rem_replays = rem_replays;
     h.experiment_seed = experiment_seed;
+    h.runtime_rng_state = rng_state;
     h.glyph_mode = (uint32_t)glyph_mode;
     h.glyph_count = (uint32_t)glyph_count;
     h.glyph_births = glyph_births;
@@ -3221,6 +4162,19 @@ static void save_state(const char *path) {
     h.glyph_merges = glyph_merges;
     h.glyph_seed_births = glyph_seed_births;
     h.glyph_seed_promotions = glyph_seed_promotions;
+    h.curriculum_count = (uint32_t)curriculum_count;
+    h.curriculum_enabled = (uint32_t)curriculum_enabled;
+    h.neighbor_enabled = (uint32_t)neighbor_enabled;
+    h.plasticity_evolution_enabled =
+        (uint32_t)plasticity_evolution_enabled;
+    h.plasticity_generation = plasticity_generation;
+    h.plasticity_advantage = plasticity_advantage;
+    h.plasticity_coherence_advantage =
+        plasticity_coherence_advantage;
+    h.plasticity_authority = plasticity_authority;
+    h.plasticity_win_streak = (uint32_t)plasticity_win_streak;
+    h.active_plasticity_lineage = active_plasticity_lineage;
+    h.plasticity_rng_state = plasticity_rng_state;
 
     fwrite(&h, sizeof(h), 1, f);
     fwrite(vocab, sizeof(Token), (size_t)vocab_size, f);
@@ -3233,6 +4187,14 @@ static void save_state(const char *path) {
     fwrite(replay_buffer, sizeof(ReplayEpisode), REPLAY_CAPACITY, f);
     fwrite(causal_glyphs, sizeof(CausalGlyph), MAX_GLYPHS, f);
     fwrite(glyph_nursery, sizeof(GlyphSeed), GLYPH_NURSERY, f);
+    fwrite(glyph_link_age, sizeof(uint16_t),
+           MAX_GLYPHS * MAX_GLYPHS, f);
+    fwrite(curriculum_regions, sizeof(CurriculumRegion),
+           MAX_CURRICULUM_REGIONS, f);
+    fwrite(plasticity_population, sizeof(PlasticityGenome),
+           PLASTICITY_POP, f);
+    fwrite(&baseline_plasticity_rule, sizeof(PlasticityRule), 1, f);
+    fwrite(&active_plasticity_rule, sizeof(PlasticityRule), 1, f);
     fclose(f);
 }
 
@@ -3250,8 +4212,14 @@ static int load_state(const char *path) {
         return 0;
     }
 
-    Token saved[MAX_VOCAB];
+    Token *saved =
+        (Token *)malloc((size_t)h.vocab_size * sizeof(Token));
+    if (!saved) {
+        fclose(f);
+        return 0;
+    }
     if (fread(saved, sizeof(Token), h.vocab_size, f) != h.vocab_size) {
+        free(saved);
         fclose(f);
         return 0;
     }
@@ -3259,6 +4227,7 @@ static int load_state(const char *path) {
     /* Refuse state if vocabulary identity changed. */
     for (uint32_t i = 0; i < h.vocab_size; ++i) {
         if (strncmp(saved[i].text, vocab[i].text, MAX_TOKEN_LEN) != 0) {
+            free(saved);
             fclose(f);
             return 0;
         }
@@ -3271,6 +4240,7 @@ static int load_state(const char *path) {
         memcpy(vocab[i].right_emb, saved[i].right_emb,
                sizeof(vocab[i].right_emb));
     }
+    free(saved);
 
     if (h.edge_count > MAX_EDGES ||
         fread(edges, sizeof(Edge), h.edge_count, f) != h.edge_count) {
@@ -3296,12 +4266,27 @@ static int load_state(const char *path) {
     nrem_replays = h.nrem_replays;
     rem_replays = h.rem_replays;
     experiment_seed = h.experiment_seed;
+    rng_state = h.runtime_rng_state;
+    if (rng_state == 0) rng_state = 1;
     glyph_count = (int)h.glyph_count;
     glyph_births = h.glyph_births;
     glyph_recycles = h.glyph_recycles;
     glyph_merges = h.glyph_merges;
     glyph_seed_births = h.glyph_seed_births;
     glyph_seed_promotions = h.glyph_seed_promotions;
+    curriculum_count = (int)h.curriculum_count;
+    curriculum_enabled = (int)h.curriculum_enabled;
+    neighbor_enabled = (int)h.neighbor_enabled;
+    plasticity_evolution_enabled =
+        (int)h.plasticity_evolution_enabled;
+    plasticity_generation = h.plasticity_generation;
+    plasticity_advantage = h.plasticity_advantage;
+    plasticity_coherence_advantage =
+        h.plasticity_coherence_advantage;
+    plasticity_authority = h.plasticity_authority;
+    plasticity_win_streak = (int)h.plasticity_win_streak;
+    active_plasticity_lineage = h.active_plasticity_lineage;
+    plasticity_rng_state = h.plasticity_rng_state;
 
     if (fread(phrase_counts, sizeof(uint32_t), PHRASE_TABLE, f) != PHRASE_TABLE ||
         fread(global_ngram_counts, sizeof(uint32_t), PHRASE_TABLE, f) !=
@@ -3314,20 +4299,40 @@ static int load_state(const char *path) {
         fread(causal_glyphs, sizeof(CausalGlyph),
               MAX_GLYPHS, f) != MAX_GLYPHS ||
         fread(glyph_nursery, sizeof(GlyphSeed),
-              GLYPH_NURSERY, f) != GLYPH_NURSERY) {
+              GLYPH_NURSERY, f) != GLYPH_NURSERY ||
+        fread(glyph_link_age, sizeof(uint16_t),
+              MAX_GLYPHS * MAX_GLYPHS, f) !=
+              MAX_GLYPHS * MAX_GLYPHS ||
+        fread(curriculum_regions, sizeof(CurriculumRegion),
+              MAX_CURRICULUM_REGIONS, f) !=
+              MAX_CURRICULUM_REGIONS ||
+        fread(plasticity_population, sizeof(PlasticityGenome),
+              PLASTICITY_POP, f) != PLASTICITY_POP ||
+        fread(&baseline_plasticity_rule,
+              sizeof(PlasticityRule), 1, f) != 1 ||
+        fread(&active_plasticity_rule,
+              sizeof(PlasticityRule), 1, f) != 1) {
         fclose(f);
         return 0;
     }
+    plasticity_population_ready = 1;
 
+    /*
+     * get_edge/get_trigram prepend newly-created entries. Rebuild in
+     * ascending creation order so the final linked-list order matches the
+     * uninterrupted process exactly. Descending reconstruction silently
+     * reversed equal-probability iteration and changed oracle destiny after
+     * a restart even with an identical RNG state.
+     */
     memset(first_edge, 0xFF, sizeof(first_edge));
-    for (int e = edge_count - 1; e >= 0; --e) {
+    for (int e = 0; e < edge_count; ++e) {
         int from = (int)edges[e].from;
         edges[e].next_from = first_edge[from];
         first_edge[from] = e;
     }
 
     memset(first_trigram, 0xFF, sizeof(first_trigram));
-    for (int t = trigram_count_total - 1; t >= 0; --t) {
+    for (int t = 0; t < trigram_count_total; ++t) {
         unsigned bucket = trigram_bucket((int)trigrams[t].a,
                                          (int)trigrams[t].b);
         trigrams[t].next_bucket = first_trigram[bucket];
@@ -3675,9 +4680,194 @@ static void dream_replay_cycle(void) {
     }
 }
 
+
+static float episode_external_coherence(const int *source_context,
+                                        const int *truth,
+                                        const int *attempt,
+                                        const ScoreVector *scores,
+                                        float debt_start,
+                                        float debt_end,
+                                        float *surprise_out,
+                                        const TrajectoryStep *trace) {
+    int chain[2 + ROLLOUT];
+    chain[0] = source_context[CONTEXT - 2];
+    chain[1] = source_context[CONTEXT - 1];
+    for (int i = 0; i < ROLLOUT; ++i)
+        chain[i + 2] = attempt[i];
+
+    float bigram = 0.0f;
+    int bigram_n = 0;
+    for (int i = 0; i + 1 < 2 + ROLLOUT; ++i) {
+        int e = find_edge(chain[i], chain[i + 1]);
+        bigram += e >= 0 && edges[e].source_count > 0 ? 1.0f : 0.0f;
+        bigram_n++;
+    }
+    if (bigram_n) bigram /= (float)bigram_n;
+
+    float trigram = 0.0f;
+    int trigram_n = 0;
+    for (int i = 0; i + 2 < 2 + ROLLOUT; ++i) {
+        trigram += source_trigram_count(
+            chain[i], chain[i + 1], chain[i + 2]) > 0 ? 1.0f : 0.0f;
+        trigram_n++;
+    }
+    if (trigram_n) trigram /= (float)trigram_n;
+
+    float source = 0.0f, oracle_score = 0.0f;
+    float semantic = 0.0f, prophecy = 0.0f;
+    float world = 0.0f, rollout = 0.0f;
+    float surprise = 0.0f;
+    for (int i = 0; i < ROLLOUT; ++i) {
+        source += scores[i].source_grounding;
+        oracle_score += scores[i].oracle_parity;
+        semantic += scores[i].semantic_continuity;
+        prophecy += scores[i].prophecy_fulfillment;
+        world += scores[i].world_state_stability;
+        rollout += scores[i].rollout_stability;
+
+        float target[SCORE_DIM];
+        score_to_array(scores[i], target);
+        for (int d = 0; d < SCORE_DIM; ++d) {
+            float pred = 0.5f * (trace[i].predicted[d] + 1.0f);
+            surprise += fabsf(target[d] - pred);
+        }
+    }
+    source /= (float)ROLLOUT;
+    oracle_score /= (float)ROLLOUT;
+    semantic /= (float)ROLLOUT;
+    prophecy /= (float)ROLLOUT;
+    world /= (float)ROLLOUT;
+    rollout /= (float)ROLLOUT;
+    surprise /= (float)(ROLLOUT * SCORE_DIM);
+
+    float first = attempt[0] == truth[0] ? 1.0f : 0.0f;
+    float debt_progress =
+        clampf(0.5f + 2.0f * (debt_start - debt_end),
+               0.0f, 1.0f);
+
+    float outcome =
+        0.16f * first +
+        0.13f * bigram +
+        0.15f * trigram +
+        0.13f * source +
+        0.08f * oracle_score +
+        0.10f * semantic +
+        0.08f * prophecy +
+        0.07f * world +
+        0.05f * rollout +
+        0.05f * debt_progress;
+
+    if (surprise_out) *surprise_out = surprise;
+    return clampf(outcome, 0.0f, 1.0f);
+}
+
+
+static float plasticity_shadow_coherence(const Core *candidate,
+                                         uint64_t generation,
+                                         int count) {
+    if (!candidate || count <= 0) return 0.0f;
+    int max_start = corpus_n - CONTEXT - 17;
+    if (max_start <= 0) return 0.0f;
+
+    Core saved_core = core;
+    uint64_t saved_rng = rng_state;
+    uint64_t saved_depth = recursive_depth_total;
+    uint64_t saved_calls = recursive_call_total;
+    int saved_eval = evaluation_mode;
+
+    core = *candidate;
+    evaluation_mode = 1;
+    double total_coherence = 0.0;
+
+    for (int probe = 0; probe < count; ++probe) {
+        uint64_t h = mix64(
+            PLASTICITY_AUDIT_SEED ^
+            (generation + 1ULL) * 0xD1B54A32D192ED03ULL ^
+            ((uint64_t)probe + 1ULL) * 0x9E3779B97F4A7C15ULL);
+        int source_pos = (int)(h % (uint64_t)max_start);
+        rng_state = mix64(h ^ 0xA24BAED4963EE407ULL);
+        if (!rng_state) rng_state = 1;
+
+        int seq[CONTEXT + ROLLOUT];
+        int attempt[ROLLOUT];
+        ScoreVector scores[ROLLOUT];
+        TrajectoryStep trace[ROLLOUT];
+
+        memcpy(seq, &corpus[source_pos], CONTEXT * sizeof(int));
+        int seq_n = CONTEXT;
+
+        float intent[EMBED_DIM];
+        float intent_debt = 1.0f;
+        ProphecyStack world;
+        intent_from_context(seq, CONTEXT, intent);
+        prophecy_stack_init(seq, CONTEXT, &world);
+        float debt_start = prophecy_stack_total_debt(&world);
+
+        int oracle_seq[CONTEXT + ROLLOUT];
+        memcpy(oracle_seq, seq, CONTEXT * sizeof(int));
+        int oracle_seq_n = CONTEXT;
+
+        for (int step = 0; step < ROLLOUT; ++step) {
+            int truth = corpus[source_pos + CONTEXT + step];
+            int oracle_ctx_n =
+                oracle_seq_n < CONTEXT ? oracle_seq_n : CONTEXT;
+            int oracle_tok = oracle_next_context(
+                &oracle_seq[oracle_seq_n - oracle_ctx_n],
+                oracle_ctx_n);
+            oracle_seq[oracle_seq_n++] = oracle_tok;
+
+            int ctx_n = seq_n < CONTEXT ? seq_n : CONTEXT;
+            int *ctx = &seq[seq_n - ctx_n];
+            int gid = glyph_lookup(ctx, ctx_n, &world, NULL);
+            float pred[SCORE_DIM];
+
+            int chosen = choose_candidate(
+                ctx, ctx_n, oracle_tok, truth,
+                intent, intent_debt, &world, gid,
+                0, &scores[step], pred);
+            attempt[step] = chosen;
+
+            trace[step].prev = ctx[ctx_n - 1];
+            trace[step].chosen = chosen;
+            trace[step].oracle = oracle_tok;
+            trace[step].immediate = scores[step];
+            trace[step].world_debt_before =
+                prophecy_stack_total_debt(&world);
+            trace[step].glyph_id = gid;
+            trace[step].glyph_gain = 0.0f;
+            trace[step].glyph_distance = 0.0f;
+            memcpy(trace[step].predicted, pred,
+                   SCORE_DIM * sizeof(float));
+
+            seq[seq_n++] = chosen;
+            prophecy_stack_step(&world, chosen, NULL, NULL);
+            trace[step].world_debt_after =
+                prophecy_stack_total_debt(&world);
+            intent_update(intent, &intent_debt, chosen);
+        }
+
+        float debt_end = prophecy_stack_total_debt(&world);
+        float surprise = 0.0f;
+        total_coherence += episode_external_coherence(
+            &corpus[source_pos],
+            &corpus[source_pos + CONTEXT],
+            attempt, scores,
+            debt_start, debt_end,
+            &surprise, trace);
+    }
+
+    core = saved_core;
+    rng_state = saved_rng;
+    recursive_depth_total = saved_depth;
+    recursive_call_total = saved_calls;
+    evaluation_mode = saved_eval;
+    return (float)(total_coherence / (double)count);
+}
+
 static void run_episode(int verbose) {
     int max_start = corpus_n - CONTEXT - 17;
-    int source_pos = source_position_for_episode(episode_count, max_start);
+    int source_pos =
+        curriculum_source_position(episode_count, max_start);
 
     int seq[CONTEXT + ROLLOUT];
     int oracle[ROLLOUT];
@@ -3764,17 +4954,29 @@ static void run_episode(int verbose) {
 
         seq[seq_n++] = chosen;
 
+        /*
+         * Destiny is previewed before any plastic update. Every competing
+         * plasticity rule therefore receives the same pre-action state and
+         * the same observed consequence.
+         */
+        ProphecyStack world_next = world;
+        prophecy_stack_step(&world_next, chosen, NULL, NULL);
+        float world_after = prophecy_stack_total_debt(&world_next);
+        float debt_progress = world_before - world_after;
+
+        plasticity_evolution_observe(
+            ctx, ctx_n, chosen, oracle_tok, intent,
+            debt_progress, scores[step]);
+
         learn_local(ctx, ctx_n, chosen, oracle_tok,
                     intent, intent_debt, &world, agent_glyph_id,
                     scores[step], pred);
         intent_update(intent, &intent_debt, chosen);
-        prophecy_stack_step(&world, chosen, NULL, NULL);
-        float world_after = prophecy_stack_total_debt(&world);
+        world = world_next;
         trace[step].world_debt_after = world_after;
 
         float score_arr[SCORE_DIM];
         score_to_array(scores[step], score_arr);
-        float debt_progress = world_before - world_after;
         float debt_target =
             clampf(0.5f + 2.0f * debt_progress, 0.0f, 1.0f);
         float action_target = clampf(
@@ -3808,6 +5010,15 @@ static void run_episode(int verbose) {
     trajectory_revalue(trace, ROLLOUT);
 
     float world_debt_end = prophecy_stack_total_debt(&world);
+    float episode_surprise = 0.0f;
+    float episode_coherence =
+        episode_external_coherence(
+            &corpus[source_pos],
+            &corpus[source_pos + CONTEXT],
+            attempt, scores,
+            world_debt_start, world_debt_end,
+            &episode_surprise, trace);
+
     replay_store(trace, ROLLOUT, intent_start, intent,
                  world_debt_start, world_debt_end,
                  episode_count + 1);
@@ -3817,6 +5028,8 @@ static void run_episode(int verbose) {
     basin_remember(episode_emb);
 
     episode_count++;
+    curriculum_update(source_pos, episode_coherence,
+                      world_debt_end, episode_surprise);
 
     if (dreams_enabled && episode_count % DREAM_INTERVAL == 0)
         dream_replay_cycle();
@@ -3868,6 +5081,23 @@ static void run_episode(int verbose) {
                avg_recursive_depth);
         printf("  world debt: start=%.3f end=%.3f\n",
                world_debt_start, world_debt_end);
+        printf("  curriculum: region=%d priority=%.3f progress=%.3f "
+               "coherence=%.3f\n",
+               last_curriculum_region,
+               last_curriculum_priority,
+               last_curriculum_progress,
+               last_episode_coherence);
+        printf("  plasticity: generation=%llu prediction_adv=%.5f "
+               "coherence_adv=%.5f authority=%.3f lineage=%u "
+               "neighbor=%.3f\n",
+               (unsigned long long)plasticity_generation,
+               plasticity_advantage,
+               plasticity_coherence_advantage,
+               plasticity_authority,
+               active_plasticity_lineage,
+               plasticity_effective_rule().neighbor_gain);
+        printf("  glyph topology: edges=%d\n",
+               glyph_topology_edge_count());
         printf("  glyphs: mode=%s active=%d births=%llu recycle=%llu merge=%llu "
                "gain=%.3f distance=%.3f\n",
                glyph_mode == GLYPH_CAUSAL ? "causal" :
@@ -3886,6 +5116,218 @@ static void run_episode(int verbose) {
                (unsigned long long)rem_replays,
                replay_count);
     }
+}
+
+
+static void run_probe_suite(int count) {
+    if (count <= 0) return;
+    int max_start = corpus_n - CONTEXT - 17;
+    if (max_start <= 0) return;
+
+    Core saved_core = core;
+    uint64_t saved_rng = rng_state;
+    uint64_t saved_depth = recursive_depth_total;
+    uint64_t saved_calls = recursive_call_total;
+    int saved_eval = evaluation_mode;
+    evaluation_mode = 1;
+
+    FILE *f = fopen("netta.probe.tsv", "wb");
+    if (f) {
+        fputs("probe\tsource_pos\tfirst_token\ttoken_accuracy\texact_sequence\t"
+              "bigram_validity\ttrigram_validity\tsource_grounding\t"
+              "oracle_parity\tsemantic\tprophecy_fulfillment\t"
+              "world_stability\trollout\tdebt_delta\tcoherence\n", f);
+    }
+
+    double sum_first = 0.0, sum_token = 0.0, sum_exact = 0.0;
+    double sum_bigram = 0.0, sum_trigram = 0.0;
+    double sum_source = 0.0, sum_oracle = 0.0, sum_semantic = 0.0;
+    double sum_prophecy = 0.0, sum_world = 0.0, sum_rollout = 0.0;
+    double sum_debt = 0.0, sum_coherence = 0.0;
+
+    for (int probe = 0; probe < count; ++probe) {
+        uint64_t position_hash = mix64(
+            COHERENCE_PROBE_SEED ^
+            ((uint64_t)probe + 1ULL) *
+            0xD1B54A32D192ED03ULL);
+        int source_pos =
+            (int)(position_hash % (uint64_t)max_start);
+
+        rng_state = mix64(
+            COHERENCE_PROBE_SEED ^
+            0xA24BAED4963EE407ULL ^
+            (uint64_t)probe * 0x9FB21C651E98DF25ULL);
+        if (!rng_state) rng_state = 1;
+
+        int seq[CONTEXT + ROLLOUT];
+        int attempt[ROLLOUT];
+        ScoreVector scores[ROLLOUT];
+        TrajectoryStep trace[ROLLOUT];
+
+        memcpy(seq, &corpus[source_pos], CONTEXT * sizeof(int));
+        int seq_n = CONTEXT;
+
+        float intent[EMBED_DIM];
+        float intent_debt = 1.0f;
+        ProphecyStack world;
+        intent_from_context(seq, CONTEXT, intent);
+        prophecy_stack_init(seq, CONTEXT, &world);
+        float debt_start = prophecy_stack_total_debt(&world);
+
+        int oracle_seq[CONTEXT + ROLLOUT];
+        memcpy(oracle_seq, seq, CONTEXT * sizeof(int));
+        int oracle_seq_n = CONTEXT;
+
+        for (int step = 0; step < ROLLOUT; ++step) {
+            int truth = corpus[source_pos + CONTEXT + step];
+            int oracle_ctx_n =
+                oracle_seq_n < CONTEXT ? oracle_seq_n : CONTEXT;
+            int oracle_tok = oracle_next_context(
+                &oracle_seq[oracle_seq_n - oracle_ctx_n],
+                oracle_ctx_n);
+            oracle_seq[oracle_seq_n++] = oracle_tok;
+
+            int ctx_n = seq_n < CONTEXT ? seq_n : CONTEXT;
+            int *ctx = &seq[seq_n - ctx_n];
+            float pred[SCORE_DIM];
+            int gid = glyph_lookup(ctx, ctx_n, &world, NULL);
+
+            int chosen = choose_candidate(
+                ctx, ctx_n, oracle_tok, truth,
+                intent, intent_debt, &world, gid,
+                0, &scores[step], pred);
+            attempt[step] = chosen;
+
+            trace[step].prev = ctx[ctx_n - 1];
+            trace[step].chosen = chosen;
+            trace[step].oracle = oracle_tok;
+            trace[step].immediate = scores[step];
+            trace[step].world_debt_before =
+                prophecy_stack_total_debt(&world);
+            trace[step].glyph_id = gid;
+            trace[step].glyph_gain = 0.0f;
+            trace[step].glyph_distance = 0.0f;
+            memcpy(trace[step].predicted, pred,
+                   SCORE_DIM * sizeof(float));
+
+            seq[seq_n++] = chosen;
+            prophecy_stack_step(&world, chosen, NULL, NULL);
+            trace[step].world_debt_after =
+                prophecy_stack_total_debt(&world);
+            intent_update(intent, &intent_debt, chosen);
+        }
+
+        float debt_end = prophecy_stack_total_debt(&world);
+        float surprise = 0.0f;
+        float coherence = episode_external_coherence(
+            &corpus[source_pos],
+            &corpus[source_pos + CONTEXT],
+            attempt, scores, debt_start, debt_end,
+            &surprise, trace);
+
+        float first =
+            attempt[0] == corpus[source_pos + CONTEXT] ? 1.0f : 0.0f;
+        float token_acc = 0.0f;
+        int exact = 1;
+        for (int i = 0; i < ROLLOUT; ++i) {
+            int same =
+                attempt[i] == corpus[source_pos + CONTEXT + i];
+            token_acc += same ? 1.0f : 0.0f;
+            if (!same) exact = 0;
+        }
+        token_acc /= (float)ROLLOUT;
+
+        int chain[2 + ROLLOUT];
+        chain[0] = corpus[source_pos + CONTEXT - 2];
+        chain[1] = corpus[source_pos + CONTEXT - 1];
+        for (int i = 0; i < ROLLOUT; ++i)
+            chain[i + 2] = attempt[i];
+
+        float bigram = 0.0f;
+        for (int i = 0; i + 1 < 2 + ROLLOUT; ++i) {
+            int e = find_edge(chain[i], chain[i + 1]);
+            bigram += e >= 0 && edges[e].source_count > 0 ?
+                      1.0f : 0.0f;
+        }
+        bigram /= (float)(ROLLOUT + 1);
+
+        float trigram = 0.0f;
+        for (int i = 0; i + 2 < 2 + ROLLOUT; ++i)
+            trigram += source_trigram_count(
+                chain[i], chain[i + 1], chain[i + 2]) > 0 ?
+                1.0f : 0.0f;
+        trigram /= (float)ROLLOUT;
+
+        float source = 0.0f, oracle_avg = 0.0f, semantic = 0.0f;
+        float prophecy = 0.0f, world_avg = 0.0f, rollout = 0.0f;
+        for (int i = 0; i < ROLLOUT; ++i) {
+            source += scores[i].source_grounding;
+            oracle_avg += scores[i].oracle_parity;
+            semantic += scores[i].semantic_continuity;
+            prophecy += scores[i].prophecy_fulfillment;
+            world_avg += scores[i].world_state_stability;
+            rollout += scores[i].rollout_stability;
+        }
+        source /= (float)ROLLOUT;
+        oracle_avg /= (float)ROLLOUT;
+        semantic /= (float)ROLLOUT;
+        prophecy /= (float)ROLLOUT;
+        world_avg /= (float)ROLLOUT;
+        rollout /= (float)ROLLOUT;
+        float debt_delta = debt_end - debt_start;
+
+        sum_first += first;
+        sum_token += token_acc;
+        sum_exact += exact ? 1.0 : 0.0;
+        sum_bigram += bigram;
+        sum_trigram += trigram;
+        sum_source += source;
+        sum_oracle += oracle_avg;
+        sum_semantic += semantic;
+        sum_prophecy += prophecy;
+        sum_world += world_avg;
+        sum_rollout += rollout;
+        sum_debt += debt_delta;
+        sum_coherence += coherence;
+
+        if (f) {
+            fprintf(f,
+                    "%d\t%d\t%.6f\t%.6f\t%d\t%.6f\t%.6f\t"
+                    "%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t"
+                    "%.6f\t%.6f\n",
+                    probe + 1, source_pos, first, token_acc, exact,
+                    bigram, trigram, source, oracle_avg, semantic,
+                    prophecy, world_avg, rollout, debt_delta,
+                    coherence);
+        }
+
+        core = saved_core;
+    }
+
+    if (f) fclose(f);
+
+    double denom = (double)count;
+    printf("\n[READ-ONLY COHERENCE PROBE] n=%d\n", count);
+    printf("  first-token accuracy: %.4f\n", sum_first / denom);
+    printf("  token accuracy:       %.4f\n", sum_token / denom);
+    printf("  exact 8-token line:   %.4f\n", sum_exact / denom);
+    printf("  corpus bigrams:       %.4f\n", sum_bigram / denom);
+    printf("  corpus trigrams:      %.4f\n", sum_trigram / denom);
+    printf("  source grounding:     %.4f\n", sum_source / denom);
+    printf("  oracle parity:        %.4f\n", sum_oracle / denom);
+    printf("  semantic continuity:  %.4f\n", sum_semantic / denom);
+    printf("  prophecy fulfillment: %.4f\n", sum_prophecy / denom);
+    printf("  world stability:      %.4f\n", sum_world / denom);
+    printf("  rollout stability:    %.4f\n", sum_rollout / denom);
+    printf("  world debt delta:     %.4f\n", sum_debt / denom);
+    printf("  coherence outcome:    %.4f\n", sum_coherence / denom);
+    printf("  probe ledger: netta.probe.tsv\n");
+
+    core = saved_core;
+    rng_state = saved_rng;
+    recursive_depth_total = saved_depth;
+    recursive_call_total = saved_calls;
+    evaluation_mode = saved_eval;
 }
 
 static void interactive_prompt(const char *text) {
@@ -3996,12 +5438,22 @@ int main(int argc, char **argv) {
     const char *prompt = NULL;
     int reset = 0;
     int seed_given = 0;
+    int probe_count = 0;
+    int override_policy = -1;
+    int override_stack = -1;
+    int override_dream = -1;
+    int override_plasticity = -1;
+    int override_neighbor = -1;
+    int override_curriculum = -1;
+    int override_glyph = -1;
 
     for (int i = 2; i < argc; ++i) {
         if (strcmp(argv[i], "--steps") == 0 && i + 1 < argc)
             steps = strtol(argv[++i], NULL, 10);
         else if (strcmp(argv[i], "--prompt") == 0 && i + 1 < argc)
             prompt = argv[++i];
+        else if (strcmp(argv[i], "--probe") == 0 && i + 1 < argc)
+            probe_count = atoi(argv[++i]);
         else if (strcmp(argv[i], "--reset") == 0)
             reset = 1;
         else if (strcmp(argv[i], "--seed") == 0 && i + 1 < argc) {
@@ -4009,14 +5461,38 @@ int main(int argc, char **argv) {
             seed_given = 1;
         } else if (strcmp(argv[i], "--no-policy") == 0)
             policy_enabled = 0;
-        else if (strcmp(argv[i], "--no-stack") == 0)
+        else if (strcmp(argv[i], "--no-stack") == 0) {
             prophecy_stack_enabled = 0;
-        else if (strcmp(argv[i], "--no-dream") == 0)
+            override_stack = 0;
+        }
+        else if (strcmp(argv[i], "--no-dream") == 0) {
             dreams_enabled = 0;
-        else if (strcmp(argv[i], "--no-glyph") == 0)
+            override_dream = 0;
+        }
+        else if (strcmp(argv[i], "--evolve-plasticity") == 0) {
+            plasticity_evolution_enabled = 1;
+            override_plasticity = 1;
+        }
+        else if (strcmp(argv[i], "--no-plasticity-evo") == 0) {
+            plasticity_evolution_enabled = 0;
+            override_plasticity = 0;
+        }
+        else if (strcmp(argv[i], "--no-neighbor") == 0) {
+            neighbor_enabled = 0;
+            override_neighbor = 0;
+        }
+        else if (strcmp(argv[i], "--uniform-curriculum") == 0) {
+            curriculum_enabled = 0;
+            override_curriculum = 0;
+        }
+        else if (strcmp(argv[i], "--no-glyph") == 0) {
             glyph_mode = GLYPH_OFF;
-        else if (strcmp(argv[i], "--random-glyph") == 0)
+            override_glyph = GLYPH_OFF;
+        }
+        else if (strcmp(argv[i], "--random-glyph") == 0) {
             glyph_mode = GLYPH_RANDOM;
+            override_glyph = GLYPH_RANDOM;
+        }
         else if (strcmp(argv[i], "--glyph-threshold") == 0 &&
                  i + 1 < argc)
             glyph_birth_threshold = strtof(argv[++i], NULL);
@@ -4032,28 +5508,41 @@ int main(int argc, char **argv) {
 
     printf("NETTA — NETTA's Experiential Text Training Architecture\n");
     printf("sovereign recursive coherence game; no backpropagation\n");
-    printf("seed=%llu search_policy=%s prophecy_stack=%s dreams=%s "
-           "causal_glyphs=%s threshold=%.3f\n\n",
-           (unsigned long long)experiment_seed,
-           policy_enabled ? "on" : "off",
-           prophecy_stack_enabled ? "on" : "off",
-           dreams_enabled ? "on" : "off",
-           glyph_mode == GLYPH_CAUSAL ? "causal" :
-           (glyph_mode == GLYPH_RANDOM ? "random-control" : "off"),
-           glyph_birth_threshold);
 
     if (!load_corpus(corpus_path)) return 1;
 
-    printf("corpus: %d tokens, %d vocabulary items\n", corpus_n, vocab_size);
+    printf("corpus: %d tokens, %d vocabulary items "
+           "(%.1f%% of capacity)\n",
+           corpus_n, vocab_size,
+           100.0 * (double)vocab_size / (double)MAX_VOCAB);
+    if (vocab_size > (int)(0.90 * (double)MAX_VOCAB))
+        fprintf(stderr,
+                "netta: vocabulary above 90%% capacity; "
+                "new words may become inedible\n");
 
+    curriculum_init(corpus_n - CONTEXT - 17);
     build_source_graph();
     core_init();
+    plasticity_population_init();
 
-    if (!reset && load_state("netta.state")) {
+    int resumed = !reset && load_state("netta.state");
+    if (resumed) {
+        if (override_policy >= 0) policy_enabled = override_policy;
+        if (override_stack >= 0) prophecy_stack_enabled = override_stack;
+        if (override_dream >= 0) dreams_enabled = override_dream;
+        if (override_plasticity >= 0)
+            plasticity_evolution_enabled = override_plasticity;
+        if (override_neighbor >= 0) neighbor_enabled = override_neighbor;
+        if (override_curriculum >= 0)
+            curriculum_enabled = override_curriculum;
+        if (override_glyph >= 0) glyph_mode = override_glyph;
+        if (!prophecy_stack_enabled) glyph_mode = GLYPH_OFF;
         printf("state: resumed after %llu episodes\n",
                (unsigned long long)episode_count);
     } else {
         printf("state: new organism\n");
+        FILE *pf = fopen("netta.plasticity.tsv", "wb");
+        if (pf) fclose(pf);
         FILE *f = fopen("netta.history.tsv", "wb");
         if (f) {
             fputs("episode\tsource_pos\tcontext\ttruth\toracle\tnetta\t"
@@ -4061,14 +5550,34 @@ int main(int argc, char **argv) {
                   "causal_glyph\tprophecy_fulfillment\tworld_stability\tnovelty\t"
                   "rollout\tanti_repetition\tavg_recursive_depth\t"
                   "world_debt_start\tworld_debt_end\tglyph_gain\tglyph_distance\t"
-                  "glyph_count\tglyph_births\tglyph_recycles\tglyph_merges\n", f);
+                  "glyph_count\tglyph_births\tglyph_recycles\tglyph_merges\t"
+                  "curriculum_region\tcurriculum_priority\tcurriculum_progress\t"
+                  "episode_coherence\tplasticity_generation\tplasticity_advantage\t"
+                  "plasticity_coherence_advantage\tplasticity_authority\t"
+                  "active_plasticity_lineage\tglyph_topology_edges\n", f);
             fclose(f);
         }
     }
 
+    printf("active seed=%llu search_policy=%s prophecy_stack=%s dreams=%s "
+           "causal_glyphs=%s neighbors=%s curriculum=%s plasticity_evo=%s "
+           "threshold=%.3f\n\n",
+           (unsigned long long)experiment_seed,
+           policy_enabled ? "on" : "off",
+           prophecy_stack_enabled ? "on" : "off",
+           dreams_enabled ? "on" : "off",
+           glyph_mode == GLYPH_CAUSAL ? "causal" :
+           (glyph_mode == GLYPH_RANDOM ? "random-control" : "off"),
+           neighbor_enabled ? "on" : "off",
+           curriculum_enabled ? "learning-progress" : "uniform",
+           plasticity_evolution_enabled ? "on" : "off",
+           glyph_birth_threshold);
+
     if (prompt) {
         interactive_prompt(prompt);
         save_state("netta.state");
+        if (probe_count > 0)
+            run_probe_suite(probe_count);
         return 0;
     }
 
@@ -4090,6 +5599,8 @@ int main(int argc, char **argv) {
     }
 
     save_state("netta.state");
+    if (probe_count > 0)
+        run_probe_suite(probe_count);
     printf("\ncomplete: %llu lifetime episodes\n",
            (unsigned long long)episode_count);
     printf("memory: netta.state\nledger: netta.history.tsv\n");
