@@ -5,7 +5,7 @@ the falsifier returned, and what must remain uncertain.
 
 ## Research law
 
-A code isn't accepted because it is beautiful.
+A code is not accepted because it is beautiful.
 
 1. Every major organ needs a matched control.
 2. Seeds, source positions and compute budgets are held equal.
