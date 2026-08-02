@@ -28,12 +28,15 @@
 
 #include <ctype.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <math.h>
+#include <signal.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #define MAX_VOCAB       16384
 #define MAX_TOKEN_LEN   48
@@ -4131,14 +4134,64 @@ static void history_append(uint64_t ep, int source_pos,
     fclose(f);
 }
 
+static volatile sig_atomic_t stop_requested = 0;
+
+static void request_stop(int sig) {
+    (void)sig;
+    stop_requested = 1;
+}
+
+static size_t state_expected_size(uint32_t vocab_n, uint32_t edge_n,
+                                  uint32_t tri_n) {
+    return sizeof(StateHeader) +
+           (size_t)vocab_n * sizeof(Token) +
+           (size_t)edge_n * sizeof(Edge) +
+           (size_t)tri_n * sizeof(TrigramEdge) +
+           (size_t)PHRASE_TABLE * sizeof(uint32_t) * 2 +
+           (size_t)BASIN_MEMORY * EMBED_DIM * sizeof(float) +
+           (size_t)BASIN_MEMORY * sizeof(uint32_t) +
+           (size_t)REPLAY_CAPACITY * sizeof(ReplayEpisode) +
+           (size_t)MAX_GLYPHS * sizeof(CausalGlyph) +
+           (size_t)GLYPH_NURSERY * sizeof(GlyphSeed) +
+           (size_t)MAX_GLYPHS * MAX_GLYPHS * sizeof(uint16_t) +
+           (size_t)MAX_CURRICULUM_REGIONS * sizeof(CurriculumRegion) +
+           (size_t)PLASTICITY_POP * sizeof(PlasticityGenome) +
+           2u * sizeof(PlasticityRule);
+}
+
+/* A snapshot becomes visible only once it is whole on disk. */
+static void fsync_parent_dir(const char *path) {
+    char dir[512];
+    const char *slash = strrchr(path, '/');
+    if (slash && slash != path) {
+        size_t n = (size_t)(slash - path);
+        if (n >= sizeof(dir)) n = sizeof(dir) - 1;
+        memcpy(dir, path, n);
+        dir[n] = '\0';
+    } else {
+        snprintf(dir, sizeof(dir), "%s", slash ? "/" : ".");
+    }
+    int fd = open(dir, O_RDONLY);
+    if (fd >= 0) {
+        fsync(fd);
+        close(fd);
+    }
+}
+
 static void save_state(const char *path) {
-    FILE *f = fopen(path, "wb");
+    char tmp[512];
+    snprintf(tmp, sizeof(tmp), "%s.tmp", path);
+
+    FILE *f = fopen(tmp, "wb");
     if (!f) {
         fprintf(stderr, "netta: cannot save state: %s\n", strerror(errno));
         return;
     }
 
+    /* Alignment padding is part of the published bytes: leaving it
+       uninitialised made the snapshot hash depend on stack residue. */
     StateHeader h;
+    memset(&h, 0, sizeof(h));
     h.magic = STATE_MAGIC;
     h.version = STATE_VERSION;
     h.vocab_size = (uint32_t)vocab_size;
@@ -4176,26 +4229,57 @@ static void save_state(const char *path) {
     h.active_plasticity_lineage = active_plasticity_lineage;
     h.plasticity_rng_state = plasticity_rng_state;
 
-    fwrite(&h, sizeof(h), 1, f);
-    fwrite(vocab, sizeof(Token), (size_t)vocab_size, f);
-    fwrite(edges, sizeof(Edge), (size_t)edge_count, f);
-    fwrite(trigrams, sizeof(TrigramEdge), (size_t)trigram_count_total, f);
-    fwrite(phrase_counts, sizeof(uint32_t), PHRASE_TABLE, f);
-    fwrite(global_ngram_counts, sizeof(uint32_t), PHRASE_TABLE, f);
-    fwrite(basin_memory, sizeof(float), BASIN_MEMORY * EMBED_DIM, f);
-    fwrite(basin_uses, sizeof(uint32_t), BASIN_MEMORY, f);
-    fwrite(replay_buffer, sizeof(ReplayEpisode), REPLAY_CAPACITY, f);
-    fwrite(causal_glyphs, sizeof(CausalGlyph), MAX_GLYPHS, f);
-    fwrite(glyph_nursery, sizeof(GlyphSeed), GLYPH_NURSERY, f);
-    fwrite(glyph_link_age, sizeof(uint16_t),
-           MAX_GLYPHS * MAX_GLYPHS, f);
-    fwrite(curriculum_regions, sizeof(CurriculumRegion),
-           MAX_CURRICULUM_REGIONS, f);
-    fwrite(plasticity_population, sizeof(PlasticityGenome),
-           PLASTICITY_POP, f);
-    fwrite(&baseline_plasticity_rule, sizeof(PlasticityRule), 1, f);
-    fwrite(&active_plasticity_rule, sizeof(PlasticityRule), 1, f);
-    fclose(f);
+    int ok = 1;
+    ok = ok && fwrite(&h, sizeof(h), 1, f) == 1;
+    ok = ok && fwrite(vocab, sizeof(Token), (size_t)vocab_size, f) ==
+               (size_t)vocab_size;
+    ok = ok && fwrite(edges, sizeof(Edge), (size_t)edge_count, f) ==
+               (size_t)edge_count;
+    ok = ok && fwrite(trigrams, sizeof(TrigramEdge),
+                      (size_t)trigram_count_total, f) ==
+               (size_t)trigram_count_total;
+    ok = ok && fwrite(phrase_counts, sizeof(uint32_t),
+                      PHRASE_TABLE, f) == PHRASE_TABLE;
+    ok = ok && fwrite(global_ngram_counts, sizeof(uint32_t),
+                      PHRASE_TABLE, f) == PHRASE_TABLE;
+    ok = ok && fwrite(basin_memory, sizeof(float),
+                      BASIN_MEMORY * EMBED_DIM, f) ==
+               BASIN_MEMORY * EMBED_DIM;
+    ok = ok && fwrite(basin_uses, sizeof(uint32_t),
+                      BASIN_MEMORY, f) == BASIN_MEMORY;
+    ok = ok && fwrite(replay_buffer, sizeof(ReplayEpisode),
+                      REPLAY_CAPACITY, f) == REPLAY_CAPACITY;
+    ok = ok && fwrite(causal_glyphs, sizeof(CausalGlyph),
+                      MAX_GLYPHS, f) == MAX_GLYPHS;
+    ok = ok && fwrite(glyph_nursery, sizeof(GlyphSeed),
+                      GLYPH_NURSERY, f) == GLYPH_NURSERY;
+    ok = ok && fwrite(glyph_link_age, sizeof(uint16_t),
+                      MAX_GLYPHS * MAX_GLYPHS, f) ==
+               MAX_GLYPHS * MAX_GLYPHS;
+    ok = ok && fwrite(curriculum_regions, sizeof(CurriculumRegion),
+                      MAX_CURRICULUM_REGIONS, f) ==
+               MAX_CURRICULUM_REGIONS;
+    ok = ok && fwrite(plasticity_population, sizeof(PlasticityGenome),
+                      PLASTICITY_POP, f) == PLASTICITY_POP;
+    ok = ok && fwrite(&baseline_plasticity_rule,
+                      sizeof(PlasticityRule), 1, f) == 1;
+    ok = ok && fwrite(&active_plasticity_rule,
+                      sizeof(PlasticityRule), 1, f) == 1;
+
+    if (ok) ok = fflush(f) == 0 && fsync(fileno(f)) == 0;
+    if (fclose(f) != 0) ok = 0;
+
+    if (!ok) {
+        fprintf(stderr, "netta: state not published: %s\n", strerror(errno));
+        remove(tmp);
+        return;
+    }
+    if (rename(tmp, path) != 0) {
+        fprintf(stderr, "netta: state rename failed: %s\n", strerror(errno));
+        remove(tmp);
+        return;
+    }
+    fsync_parent_dir(path);
 }
 
 static int load_state(const char *path) {
@@ -4208,6 +4292,25 @@ static int load_state(const char *path) {
         h.version != STATE_VERSION ||
         h.vocab_size != (uint32_t)vocab_size ||
         h.glyph_mode != (uint32_t)glyph_mode) {
+        fclose(f);
+        return 0;
+    }
+
+    /*
+     * A truncated or foreign snapshot is refused before a single byte of
+     * the living organism is overwritten.
+     */
+    long after_header = ftell(f);
+    if (after_header < 0 || fseek(f, 0, SEEK_END) != 0) {
+        fclose(f);
+        return 0;
+    }
+    long file_size = ftell(f);
+    if (file_size < 0 ||
+        (size_t)file_size != state_expected_size(h.vocab_size,
+                                                 h.edge_count,
+                                                 h.trigram_count) ||
+        fseek(f, after_header, SEEK_SET) != 0) {
         fclose(f);
         return 0;
     }
@@ -4233,17 +4336,9 @@ static int load_state(const char *path) {
         }
     }
 
-    for (uint32_t i = 0; i < h.vocab_size; ++i) {
-        memcpy(vocab[i].emb, saved[i].emb, sizeof(vocab[i].emb));
-        memcpy(vocab[i].left_emb, saved[i].left_emb,
-               sizeof(vocab[i].left_emb));
-        memcpy(vocab[i].right_emb, saved[i].right_emb,
-               sizeof(vocab[i].right_emb));
-    }
-    free(saved);
-
     if (h.edge_count > MAX_EDGES ||
         fread(edges, sizeof(Edge), h.edge_count, f) != h.edge_count) {
+        free(saved);
         fclose(f);
         return 0;
     }
@@ -4252,6 +4347,7 @@ static int load_state(const char *path) {
     if (h.trigram_count > MAX_TRIGRAMS ||
         fread(trigrams, sizeof(TrigramEdge), h.trigram_count, f) !=
             h.trigram_count) {
+        free(saved);
         fclose(f);
         return 0;
     }
@@ -4312,10 +4408,22 @@ static int load_state(const char *path) {
               sizeof(PlasticityRule), 1, f) != 1 ||
         fread(&active_plasticity_rule,
               sizeof(PlasticityRule), 1, f) != 1) {
+        free(saved);
         fclose(f);
         return 0;
     }
     plasticity_population_ready = 1;
+
+    /* Learned geometry is applied last: every earlier refusal leaves the
+       freshly built vocabulary untouched. */
+    for (uint32_t i = 0; i < h.vocab_size; ++i) {
+        memcpy(vocab[i].emb, saved[i].emb, sizeof(vocab[i].emb));
+        memcpy(vocab[i].left_emb, saved[i].left_emb,
+               sizeof(vocab[i].left_emb));
+        memcpy(vocab[i].right_emb, saved[i].right_emb,
+               sizeof(vocab[i].right_emb));
+    }
+    free(saved);
 
     /*
      * get_edge/get_trigram prepend newly-created entries. Rebuild in
@@ -5501,6 +5609,13 @@ int main(int argc, char **argv) {
     if (!prophecy_stack_enabled)
         glyph_mode = GLYPH_OFF;
 
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = request_stop;
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGTERM, &sa, NULL);
+
     if (!seed_given)
         experiment_seed = (uint64_t)time(NULL);
     rng_state = mix64(experiment_seed ^ 0xA0761D6478BD642FULL);
@@ -5583,15 +5698,20 @@ int main(int argc, char **argv) {
 
     if (steps < 0) {
         /* Sovereign mode: live until interrupted. */
-        for (;;) {
+        while (!stop_requested) {
             int verbose = (episode_count < 10 || episode_count % 100 == 0);
             run_episode(verbose);
             if (episode_count % 100 == 0)
                 save_state("netta.state");
         }
+        save_state("netta.state");
+        printf("\ncomplete: %llu lifetime episodes\n",
+               (unsigned long long)episode_count);
+        printf("memory: netta.state\nledger: netta.history.tsv\n");
+        return 0;
     }
 
-    for (long i = 0; i < steps; ++i) {
+    for (long i = 0; i < steps && !stop_requested; ++i) {
         int verbose = (i < 5 || (i + 1) % 100 == 0);
         run_episode(verbose);
         if ((i + 1) % 100 == 0)
