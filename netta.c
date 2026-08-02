@@ -4134,6 +4134,64 @@ static void history_append(uint64_t ep, int source_pos,
     fclose(f);
 }
 
+/*
+ * Two separate fingerprints of the glyph population. The source-predictive
+ * one covers everything only real source trajectories are allowed to teach;
+ * the experiential one covers action memory, which a counterfactual street
+ * may legitimately move. Interaction must change the second and not the
+ * first — that boundary is otherwise invisible.
+ */
+static uint64_t fnv_bytes(uint64_t h, const void *data, size_t n) {
+    const unsigned char *p = (const unsigned char *)data;
+    for (size_t i = 0; i < n; ++i) {
+        h ^= p[i];
+        h *= 0x100000001B3ULL;
+    }
+    return h;
+}
+
+static void glyph_fingerprints(uint64_t *source_out, uint64_t *action_out) {
+    uint64_t s = 0xCBF29CE484222325ULL;
+    uint64_t a = 0xCBF29CE484222325ULL;
+
+    s = fnv_bytes(s, &glyph_count, sizeof(glyph_count));
+    s = fnv_bytes(s, &glyph_births, sizeof(glyph_births));
+    s = fnv_bytes(s, &glyph_seed_promotions, sizeof(glyph_seed_promotions));
+
+    for (int i = 0; i < MAX_GLYPHS; ++i) {
+        const CausalGlyph *g = &causal_glyphs[i];
+        s = fnv_bytes(s, &g->active, sizeof(g->active));
+        if (!g->active) continue;
+        s = fnv_bytes(s, g->sig_token, sizeof(g->sig_token));
+        s = fnv_bytes(s, g->sig_prob, sizeof(g->sig_prob));
+        s = fnv_bytes(s, g->sig_n, sizeof(g->sig_n));
+        s = fnv_bytes(s, g->sig_debt, sizeof(g->sig_debt));
+        s = fnv_bytes(s, g->sig_conf, sizeof(g->sig_conf));
+        s = fnv_bytes(s, g->sig_future_emb, sizeof(g->sig_future_emb));
+        s = fnv_bytes(s, g->future_token, sizeof(g->future_token));
+        s = fnv_bytes(s, g->future_weight, sizeof(g->future_weight));
+        s = fnv_bytes(s, g->future_n, sizeof(g->future_n));
+        s = fnv_bytes(s, g->future_total, sizeof(g->future_total));
+        s = fnv_bytes(s, g->future_sketch, sizeof(g->future_sketch));
+        s = fnv_bytes(s, g->future_emb_sum, sizeof(g->future_emb_sum));
+        s = fnv_bytes(s, g->context_centroid, sizeof(g->context_centroid));
+        s = fnv_bytes(s, &g->uses, sizeof(g->uses));
+        s = fnv_bytes(s, &g->predictive_gain_ema,
+                      sizeof(g->predictive_gain_ema));
+        s = fnv_bytes(s, &g->assignment_distance_ema,
+                      sizeof(g->assignment_distance_ema));
+
+        a = fnv_bytes(a, g->action_token, sizeof(g->action_token));
+        a = fnv_bytes(a, g->action_quote, sizeof(g->action_quote));
+        a = fnv_bytes(a, g->action_debt, sizeof(g->action_debt));
+        a = fnv_bytes(a, g->action_visits, sizeof(g->action_visits));
+        a = fnv_bytes(a, &g->action_n, sizeof(g->action_n));
+    }
+
+    if (source_out) *source_out = s;
+    if (action_out) *action_out = a;
+}
+
 static volatile sig_atomic_t stop_requested = 0;
 
 static void request_stop(int sig) {
@@ -5438,27 +5496,64 @@ static void run_probe_suite(int count) {
     evaluation_mode = saved_eval;
 }
 
-static void interactive_prompt(const char *text) {
-    int prompt[CONTEXT];
+/*
+ * Prompt text is cut by the same physics as the corpus: punctuation is a
+ * token, ASCII is lowered, UTF-8 survives. An unknown word is reported and
+ * dropped — human input is an observation, never a new fact of the world.
+ */
+static int prompt_emit(const char *word, int *prompt, int *n, int *unknown) {
+    if (word[0] == '\0') return 1;
+    int id = token_id(word, 0);
+    if (id < 0) {
+        fprintf(stderr, "netta: unknown prompt token '%s' ignored\n", word);
+        (*unknown)++;
+        return 1;
+    }
+    if (*n >= CONTEXT) return 0;
+    prompt[(*n)++] = id;
+    return 1;
+}
+
+static int tokenize_prompt(const char *text, int *prompt, int *unknown) {
+    char buf[MAX_TOKEN_LEN];
+    int len = 0;
     int n = 0;
 
-    char copy[1024];
-    snprintf(copy, sizeof(copy), "%s", text);
+    for (const char *p = text; *p; ++p) {
+        unsigned char c = (unsigned char)*p;
 
-    char *save = NULL;
-    for (char *p = strtok_r(copy, " \t\r\n", &save);
-         p && n < CONTEXT;
-         p = strtok_r(NULL, " \t\r\n", &save)) {
-        for (char *q = p; *q; ++q)
-            if ((unsigned char)*q < 128) *q = (char)tolower((unsigned char)*q);
-        int id = token_id(p, 0);
-        if (id >= 0) prompt[n++] = id;
+        if (isspace(c) || is_punct_token(c)) {
+            buf[len] = '\0';
+            if (len > 0 && !prompt_emit(buf, prompt, &n, unknown)) return n;
+            len = 0;
+            if (is_punct_token(c)) {
+                char single[2] = {(char)c, '\0'};
+                if (!prompt_emit(single, prompt, &n, unknown)) return n;
+            }
+            continue;
+        }
+
+        if (len < MAX_TOKEN_LEN - 1)
+            buf[len++] = c < 128 ? (char)tolower(c) : (char)c;
     }
+
+    buf[len] = '\0';
+    if (len > 0) prompt_emit(buf, prompt, &n, unknown);
+    return n;
+}
+
+static void interactive_prompt(const char *text) {
+    int prompt[CONTEXT];
+    int unknown = 0;
+    int n = tokenize_prompt(text, prompt, &unknown);
 
     if (n == 0) {
         fprintf(stderr, "netta: prompt contains no known tokens\n");
         return;
     }
+    if (unknown)
+        fprintf(stderr, "netta: %d prompt token(s) unknown to this world\n",
+                unknown);
 
     float intent[EMBED_DIM];
     float intent_debt = 1.0f;
@@ -5490,7 +5585,9 @@ static void interactive_prompt(const char *text) {
            as a coherence reference, never copied as mandatory truth. */
         int *live_ctx = &generated[gen_n - ctx_n];
         float glyph_distance = 0.0f;
-        int glyph_id = glyph_assign(live_ctx, ctx_n, &world,
+        /* A counterfactual street may ask the world what state it
+           resembles; it may not teach the world a new one. */
+        int glyph_id = glyph_lookup(live_ctx, ctx_n, &world,
                                     &glyph_distance);
         int chosen = choose_candidate(live_ctx, ctx_n,
                                       oracle, oracle, intent, intent_debt,
@@ -5554,6 +5651,7 @@ int main(int argc, char **argv) {
     int override_neighbor = -1;
     int override_curriculum = -1;
     int override_glyph = -1;
+    int glyph_hash_only = 0;
 
     for (int i = 2; i < argc; ++i) {
         if (strcmp(argv[i], "--steps") == 0 && i + 1 < argc)
@@ -5604,6 +5702,8 @@ int main(int argc, char **argv) {
         else if (strcmp(argv[i], "--glyph-threshold") == 0 &&
                  i + 1 < argc)
             glyph_birth_threshold = strtof(argv[++i], NULL);
+        else if (strcmp(argv[i], "--glyph-hash") == 0)
+            glyph_hash_only = 1;
     }
 
     if (!prophecy_stack_enabled)
@@ -5687,6 +5787,20 @@ int main(int argc, char **argv) {
            curriculum_enabled ? "learning-progress" : "uniform",
            plasticity_evolution_enabled ? "on" : "off",
            glyph_birth_threshold);
+
+    if (glyph_hash_only) {
+        uint64_t source_hash = 0, action_hash = 0;
+        glyph_fingerprints(&source_hash, &action_hash);
+        printf("glyph source-predictive hash: %016llx\n",
+               (unsigned long long)source_hash);
+        printf("glyph action-memory hash:     %016llx\n",
+               (unsigned long long)action_hash);
+        printf("glyphs=%d births=%llu promotions=%llu\n",
+               glyph_count,
+               (unsigned long long)glyph_births,
+               (unsigned long long)glyph_seed_promotions);
+        return 0;
+    }
 
     if (prompt) {
         interactive_prompt(prompt);
