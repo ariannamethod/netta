@@ -350,6 +350,10 @@ static uint64_t episode_count = 0;
 static uint64_t rng_state = 0x9E3779B97F4A7C15ull;
 static uint64_t experiment_seed = 42ull;
 static int policy_enabled = 1;
+/* Ablation controls for the two channels by which Netta's own moves reach
+   the geometry of her world. Both on by default: this is a measurement. */
+static int agent_embedding_enabled = 1;
+static int dream_embedding_enabled = 1;
 static int prophecy_stack_enabled = 1;
 static int dreams_enabled = 1;
 static uint64_t recursive_depth_total = 0;
@@ -3554,18 +3558,20 @@ static void learn_local(const int *ctx, int ctx_n, int chosen, int oracle,
     float direction = valence >= 0.5f ? 1.0f : -0.35f;
     float erate = rule.embedding_lr * direction;
 
-    for (int d = 0; d < EMBED_DIM; ++d) {
-        vocab[chosen].emb[d] += erate * ctx_emb[d];
+    if (agent_embedding_enabled) {
+        for (int d = 0; d < EMBED_DIM; ++d) {
+            vocab[chosen].emb[d] += erate * ctx_emb[d];
 
-        /* The chosen token learns what tends to precede it. */
-        vocab[chosen].left_emb[d] += erate * vocab[prev].emb[d];
+            /* The chosen token learns what tends to precede it. */
+            vocab[chosen].left_emb[d] += erate * vocab[prev].emb[d];
 
-        /* The previous token learns what tends to follow it. */
-        vocab[prev].right_emb[d] += erate * vocab[chosen].emb[d];
+            /* The previous token learns what tends to follow it. */
+            vocab[prev].right_emb[d] += erate * vocab[chosen].emb[d];
+        }
+        normalize(vocab[chosen].emb, EMBED_DIM);
+        normalize(vocab[chosen].left_emb, EMBED_DIM);
+        normalize(vocab[prev].right_emb, EMBED_DIM);
     }
-    normalize(vocab[chosen].emb, EMBED_DIM);
-    normalize(vocab[chosen].left_emb, EMBED_DIM);
-    normalize(vocab[prev].right_emb, EMBED_DIM);
     phrase_remember(ctx, ctx_n, chosen);
     global_ngram_remember(ctx, ctx_n, chosen);
 }
@@ -4263,14 +4269,16 @@ static void nrem_consolidate(ReplayEpisode *r) {
             clampf(edges[e].debt + edges[e].volatility, 0.0f, 2.0f);
         float rate = 0.0012f * dream_strength * (0.4f + 0.6f * weakness);
 
-        for (int d = 0; d < EMBED_DIM; ++d) {
-            vocab[step->prev].right_emb[d] +=
-                rate * vocab[step->chosen].emb[d];
-            vocab[step->chosen].left_emb[d] +=
-                rate * vocab[step->prev].emb[d];
+        if (dream_embedding_enabled) {
+            for (int d = 0; d < EMBED_DIM; ++d) {
+                vocab[step->prev].right_emb[d] +=
+                    rate * vocab[step->chosen].emb[d];
+                vocab[step->chosen].left_emb[d] +=
+                    rate * vocab[step->prev].emb[d];
+            }
+            normalize(vocab[step->prev].right_emb, EMBED_DIM);
+            normalize(vocab[step->chosen].left_emb, EMBED_DIM);
         }
-        normalize(vocab[step->prev].right_emb, EMBED_DIM);
-        normalize(vocab[step->chosen].left_emb, EMBED_DIM);
     }
 
     r->priority *= 0.84f;
@@ -5094,6 +5102,10 @@ int main(int argc, char **argv) {
             seed_given = 1;
         } else if (strcmp(argv[i], "--no-policy") == 0)
             policy_enabled = 0;
+        else if (strcmp(argv[i], "--no-agent-emb") == 0)
+            agent_embedding_enabled = 0;
+        else if (strcmp(argv[i], "--no-dream-emb") == 0)
+            dream_embedding_enabled = 0;
         else if (strcmp(argv[i], "--no-stack") == 0) {
             prophecy_stack_enabled = 0;
             override_stack = 0;

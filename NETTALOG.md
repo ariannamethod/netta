@@ -931,3 +931,62 @@ has to be re-run against thresholds declared for that purpose before the
 code is written.
 
 The next place to look for phrase culture is not the policy layer.
+
+---
+
+## Experiment: the self-echo channels into world geometry
+
+The stability pass left an open question about dream consolidation:
+`nrem_consolidate` moves directional embeddings along Netta's own
+replayed steps, which is a channel from her counterfactual behaviour
+into the geometry of her world. The two-reality contract holds for
+glyphs — source trajectories teach, agent trajectories only project —
+but it was never extended to embeddings.
+
+Reading the code first widened the question. `learn_local` moves
+`emb`, `left_emb` and `right_emb` on every waking step, and the token it
+moves them for is `chosen`, which comes from `choose_candidate`. That is
+Netta's own move, not the hidden truth. Dreaming is the second such
+channel, not the first, and an ablation of dreaming alone would have
+returned a false zero.
+
+Both channels received an ablation switch, off by default:
+`--no-agent-emb` and `--no-dream-emb`. Four configurations, three seeds,
+1200 games each, same pre-registered metric as the policy experiment.
+
+| configuration | repetition mass | types | trigram validity | fixed coherence |
+|---|---:|---:|---:|---:|
+| both channels (main) | 5225 | 396 | 0.5485 | 0.6200 |
+| dreaming silenced | 5188 | 402 | 0.5742 | 0.6253 |
+| waking silenced | 3779 | 252 | 0.5837 | 0.5699 |
+| both silenced | 3896 | 256 | 0.5879 | 0.5690 |
+
+Dreaming moves the metric by 0.7%. As a suspect for phrase-level
+culture it is **null**, and the registered hypothesis that dream echo
+co-causes attractors is not supported.
+
+The waking channel moves it by 27.7%, with the same sign on 3/3 seeds
+(`1344` / `1182` / `1253` against `1639` / `1642` / `1944`). Phrase
+culture is grown by Netta's own moves teaching her word geometry what
+follows what.
+
+### The finding is a trade, not a bug
+
+Silencing the waking channel also raises corpus trigram validity from
+`0.5485` to `0.5837` — her language becomes more corpus-valid — while
+fixed coherence falls from `0.6200` to `0.5699`, well below the `0.6150`
+control floor declared before the run.
+
+So the channel is not a defect to be removed. It is simultaneously the
+source of her repeated formulae and a load-bearing part of her
+coherence: the same mechanism that lets her reuse `world reduced to
+grow` is the one that lets her stay inside a discourse at all. A
+mechanism that pays for itself in one coordinate and charges in another
+is exactly what the research law means by earning authority — and
+nothing here has earned the right to change main.
+
+Neither switch alters default behaviour; both remain as scientific
+controls. The next place to look is glyph action memory, where
+`action_visits` only ever grows and a glyph gathers histories that
+promise the same future — the one remaining mechanism that could
+collapse distinct contexts onto one continuation.
