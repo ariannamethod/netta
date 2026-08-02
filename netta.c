@@ -701,8 +701,18 @@ static int is_punct_token(int c) {
            c == '"' || c == '\'' || c == '-' || c == '\n';
 }
 
+/* A world that claims probability continues beyond what it has seen may
+   not silently discard what it has seen. Both walls are counted. */
+static uint64_t corpus_dropped_vocab = 0;
+static uint64_t corpus_dropped_capacity = 0;
+
 static void emit_token(char *buf, int *len) {
-    if (*len <= 0 || corpus_n >= MAX_CORPUS) return;
+    if (*len <= 0) return;
+    if (corpus_n >= MAX_CORPUS) {
+        corpus_dropped_capacity++;
+        *len = 0;
+        return;
+    }
     buf[*len] = '\0';
 
     /* ASCII lowercase; UTF-8 bytes remain stable rather than destroyed. */
@@ -715,6 +725,8 @@ static void emit_token(char *buf, int *len) {
     if (id >= 0) {
         corpus[corpus_n++] = id;
         vocab[id].count++;
+    } else {
+        corpus_dropped_vocab++;
     }
     *len = 0;
 }
@@ -737,16 +749,22 @@ static int load_corpus(const char *path) {
     int len = 0;
     int c;
 
-    while ((c = fgetc(f)) != EOF && corpus_n < MAX_CORPUS) {
+    while ((c = fgetc(f)) != EOF) {
         if (isspace((unsigned char)c)) {
             emit_token(buf, &len);
         } else if (is_punct_token(c)) {
             emit_token(buf, &len);
             char p[2] = {(char)c, '\0'};
+            if (corpus_n >= MAX_CORPUS) {
+                corpus_dropped_capacity++;
+                continue;
+            }
             int id = token_id(p, 1);
             if (id >= 0) {
                 corpus[corpus_n++] = id;
                 vocab[id].count++;
+            } else {
+                corpus_dropped_vocab++;
             }
         } else if (len < MAX_TOKEN_LEN - 1) {
             buf[len++] = (char)c;
@@ -754,6 +772,17 @@ static int load_corpus(const char *path) {
     }
     emit_token(buf, &len);
     fclose(f);
+
+    if (corpus_dropped_vocab)
+        fprintf(stderr,
+                "netta: %llu corpus token(s) dropped — vocabulary full at "
+                "%d entries; this world is smaller than its text\n",
+                (unsigned long long)corpus_dropped_vocab, MAX_VOCAB);
+    if (corpus_dropped_capacity)
+        fprintf(stderr,
+                "netta: %llu corpus token(s) dropped — corpus capacity "
+                "full at %d tokens\n",
+                (unsigned long long)corpus_dropped_capacity, MAX_CORPUS);
 
     return corpus_n > CONTEXT + ROLLOUT;
 }
@@ -4093,7 +4122,10 @@ static void history_append(uint64_t ep, int source_pos,
 
     char ctx_text[512], truth_text[512], oracle_text[512], attempt_text[512];
     sequence_to_text(ctx, ctx_n, ctx_text, sizeof(ctx_text));
-    sequence_to_text(truth, n, truth_text, sizeof(truth_text));
+    /* A dialogue has no hidden truth: source_pos -1 marks a lived turn
+       rather than a game against the text. */
+    if (truth) sequence_to_text(truth, n, truth_text, sizeof(truth_text));
+    else truth_text[0] = '\0';
     sequence_to_text(oracle, n, oracle_text, sizeof(oracle_text));
     sequence_to_text(attempt, n, attempt_text, sizeof(attempt_text));
 
@@ -5571,6 +5603,15 @@ static void interactive_prompt(const char *text) {
     memcpy(oracle_seq, generated, gen_n * sizeof(int));
     int oracle_seq_n = gen_n;
 
+    ScoreVector turn_scores[64];
+    int turn_oracle[64];
+    int turn_attempt[64];
+    float turn_distance_sum = 0.0f;
+    int turn_n = 0;
+    float turn_debt_start = prophecy_stack_total_debt(&world);
+    uint64_t turn_depth_start = recursive_depth_total;
+    uint64_t turn_calls_start = recursive_call_total;
+
     for (int step = 0; step < 32 && gen_n < 64; ++step) {
         int oracle_ctx_n = oracle_seq_n < CONTEXT ? oracle_seq_n : CONTEXT;
         int oracle = oracle_next_context(
@@ -5604,6 +5645,14 @@ static void interactive_prompt(const char *text) {
                SCORE_DIM * sizeof(float));
         live_n++;
 
+        if (turn_n < 64) {
+            turn_scores[turn_n] = score;
+            turn_oracle[turn_n] = oracle;
+            turn_attempt[turn_n] = chosen;
+            turn_distance_sum += glyph_distance;
+            turn_n++;
+        }
+
         generated[gen_n++] = chosen;
         float world_before = prophecy_stack_total_debt(&world);
         learn_local(live_ctx, ctx_n, chosen, oracle,
@@ -5629,6 +5678,26 @@ static void interactive_prompt(const char *text) {
 
     if (live_n > 0)
         trajectory_revalue(live_trace, live_n);
+
+    /*
+     * A conversation moves edges, embeddings and phrase memory exactly as a
+     * game does, and is published into the state file. It therefore belongs
+     * in the biography: without this line a lived turn changed the organism
+     * with no record that it happened.
+     */
+    if (turn_n > 0) {
+        uint64_t depth_used = recursive_depth_total - turn_depth_start;
+        uint64_t calls_used = recursive_call_total - turn_calls_start;
+        history_append(episode_count, -1,
+                       prompt, n, NULL,
+                       turn_oracle, turn_attempt, turn_n, turn_scores,
+                       calls_used ? (float)depth_used / (float)calls_used
+                                  : 0.0f,
+                       turn_debt_start,
+                       prophecy_stack_total_debt(&world),
+                       0.0f,
+                       turn_distance_sum / (float)turn_n);
+    }
 
     int line = 1;
     printf("\nnetta> ");
