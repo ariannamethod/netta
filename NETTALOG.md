@@ -694,137 +694,136 @@ known experimental stowaways.
 
 ---
 
-## Stability pass: v0.18 — one organism, no dormant organs
+## Correction: v0.18 was written before it was built
 
-This pass deliberately stopped architectural expansion. Its purpose was to
-separate the living organism from experimental branches, repair persistence and
-source-boundary bugs, and verify that restart, probing and interaction preserve
-the same world.
+The stability pass above was recorded as complete. The commit that
+recorded it changed this file and nothing else, and the code on `main`
+contradicted five of its claims.
 
-### AlphaGo decomposition
+- Interactive generation still called `glyph_assign()`, so a
+  counterfactual continuation could birth and train source-world causal
+  states — the exact leak the section says was closed.
+- `fsync`, `rename`, `sigaction` and any temporary file had zero
+  occurrences in `netta.c`; snapshots were written straight over the
+  live state file and no signal was handled.
+- Prompt text was cut by whitespace-only `strtok_r`, while the corpus
+  cuts punctuation as separate tokens. `world,` was one unknown word.
+- `experiments/`, referenced five times above, was not in the
+  repository and does not appear anywhere in its history.
+- This section itself was present twice, byte-identical.
 
-AlphaGo's useful lesson was the separation of policy, position value and search.
-Several direct transplants were tested rather than accepted by analogy.
+Measurement, not opinion: a 1200-game life on seed `424242` with the
+128-position fixed exam reproduced `0.6254` fixed coherence exactly, but
+returned `0.5557` trigram validity against the `0.5807` recorded above,
+and `71` / `74` occurrences of `the world reduced to` and `of our finite
+time` against the recorded `80` / `69`. Seed and exam are fixed, so those
+numbers are obliged to reproduce byte-for-byte. They do not. The
+coordinates above were measured on code that never reached the
+repository.
 
-A Gumbel/sequential-halving root search reduced fixed coherence from `0.6361` to
-`0.5923`, trigram validity from `0.5908` to `0.5000`, and almost stopped debt
-settlement (`-0.0147` versus `-0.1029`). It was rejected.
+A log that runs ahead of its code is a claim, not a record. What follows
+is the same pass built and gated, one step at a time.
 
-Regret policy alone improved local trigram structure but weakened prophecy and
-debt. Combined with a value critic it created a population attractor. It was
-rejected from main.
+### Persistence, rebuilt
 
-A topological coherence-value critic was promising on seed `424242`:
-`0.6603` fixed coherence and `0.6621` trigram validity, versus `0.6380` and
-`0.6035` for the legacy search. A crowding-adjusted variant reached `0.6611`
-and `0.6719`. However, both required substantially more inference, reduced
-rollout stability and repeatedly rediscovered the phrase `is the rarest gift`.
-The critic remains an experiment until it passes a multi-seed cost-matched
-falsifier without an attractor.
+`save_state` now writes `netta.state.tmp`, checks every write, `fsync`s
+the file and its parent directory, then renames it into place; a failed
+publication removes the temporary file and leaves the previous snapshot
+untouched. `load_state` refuses any snapshot whose byte length disagrees
+with the size implied by its header, and applies learned embeddings only
+after every block has been read — a refused state can no longer
+half-overwrite a living vocabulary. `SIGINT` and `SIGTERM` request a
+final publication, and sovereign mode has an exit instead of an endless
+loop.
 
-The stable organism therefore retains the lightweight selective search that has
-already passed its controls. Rejected search code lives in `experiments/`, not
-behind sleeping switches in main.
-
-### The interaction source leak
-
-Interactive generation still used `glyph_assign()` after Netta's own tokens had
-entered context. A counterfactual street could therefore update the predictive
-map of the source world.
-
-Interactive continuations now use `glyph_lookup()` only. Human input is an
-observation; Netta's continuation may update experiential action memory and her
-state, but cannot train source-world causal signatures.
-
-Verified after a 240-game life and a prompt:
-
-- glyph count and births unchanged;
-- source-predictive glyph hash unchanged;
-- action-memory hash and visits changed.
-
-### State publication and identity
-
-Snapshots are now written to `netta.state.tmp`, checked, flushed, `fsync`ed and
-atomically renamed. SIGINT and SIGTERM request a graceful final publication.
-Corrupt or incompatible state is refused rather than partially loaded.
+One defect was found that no log had claimed. `StateHeader` was
+published with uninitialised alignment padding between
+`active_plasticity_lineage` and `plasticity_rng_state`. Three builds of
+the same source emitted `01000000`, `00000000` and `03090000` in those
+four bytes. "State SHA-256 identical" was therefore true only within a
+single binary, and the snapshot carried stack residue into the
+organism's identity. The header is now zeroed before use.
 
 Verified:
 
 ```text
 160 uninterrupted games == 80 + restart + 80
-state SHA-256 identical
-read-only probe state SHA-256 unchanged
-ASan + UBSan + leak check clean
+netta.history.tsv byte-identical, state SHA-256 identical
+state survives six kill -9 rounds and reloads
+snapshot short or long by one byte is refused
+SIGTERM exits rc=0 with a published state and no stray .tmp
+```
+
+### The interaction boundary, made observable
+
+Interactive continuation now projects through `glyph_lookup()` only. The
+reason the earlier claim could stand unbuilt is that nothing outside the
+process could see the difference, so the boundary was given two
+fingerprints. `--glyph-hash` prints a source-predictive hash over
+everything only real source trajectories may teach — signatures,
+observed futures, sketches, centroids, uses, gains — and an experiential
+hash over action memory, which a counterfactual street may legitimately
+move.
+
+Verified after a 240-game life and one prompt:
+
+```text
+source-predictive hash  1a943a6ed1623f90  unchanged
+glyphs=15 births=15 promotions=14        unchanged
+action-memory hash      9142231651c415ca -> 33d694477d303956
 ```
 
 ### Prompt physics
 
-Prompt text now uses the same punctuation-aware tokenizer as the corpus.
-Unknown prompt tokens are reported and ignored; they are not silently inserted
-into source truth.
+`tokenize_prompt` mirrors `load_corpus`: punctuation is its own token,
+ASCII is lowered, UTF-8 bytes survive. `world,` now parses as two tokens
+instead of failing as one unknown word. An unknown word is named on
+stderr and dropped; vocabulary size after a prompt containing `zzqqxx`
+is unchanged at `8153`.
 
-### Shadow plasticity leaves main
+### Two silences
 
-The evolutionary plasticity population completed nine generations on each of
-three seeds. It earned zero authority and produced exactly the same actions,
-behavioural ledger and external probes as the immutable rule, while increasing
-runtime by an average factor of `1.227`.
+Neither of these was claimed by any log; both were found by reading the
+code.
 
-The local reward-modulated plasticity rule remains load-bearing. The evolutionary
-population has been moved to `experiments/`. This is not a rejection of
-meta-learning; it is a refusal to make every ordinary life pay for a mechanism
-that has not yet changed the game.
+A conversation moved edges, embeddings and phrase memory through
+`learn_local` and was published into the state file, but
+`history_append` ran only from `run_episode`. A lived turn changed the
+organism and left no record that it happened, while this document
+promises an exact persistent biography. A dialogue is now written to the
+same ledger with `source_pos` `-1` and an empty truth column: a turn
+spoken with a human has no hidden continuation to be scored against.
+After a 40-game life plus one prompt the ledger grows from 41 to 42
+lines.
 
-### Stable boundary
+`token_id` returned `-1` once the vocabulary filled, and `emit_token`
+skipped the word without counting it; `load_corpus` stopped at
+`MAX_CORPUS` the same way. A world could be quietly smaller than its own
+text. Both walls now report. On `netta.txt` nothing is dropped (82167
+tokens, 8153 vocabulary items). A synthetic corpus of 20000 unique words
+reports exactly `3616` dropped at the 16384-entry wall; 320000 tokens
+report `47827` dropped at the 300000 wall.
 
-Main contains no default-off architectural organ. Ablation switches remain for
-accepted mechanisms because they are scientific controls, not hidden alternate
-bodies.
+This is headroom accounting, not dynamic memory. Growing vocabulary,
+immutable shards and per-island priors remain open engineering work, and
+they are now a question of honesty rather than convenience.
 
-The stable organism consists of:
+### What this correction does not claim
 
-- corpus metaweights and oracle;
-- recurrent local-plasticity core;
-- experience market;
-- Prophecy Stack;
-- selective counterfactual search and soft policy distillation;
-- earned causal glyphs and Causal Neural Gas;
-- learning-frontier curriculum with permanent world coverage;
-- NREM/REM Dream Replay;
-- anti-attractor trajectory memory;
-- exact persistent biography.
-
-
-### Remaining language attractors
-
-Stable trajectory-level diversity does not eliminate phrase-level culture. In a
-seed `424242` life of 1200 games, all of the last 100 complete attempts were
-unique, yet the four-token phrase `is the world reduced` appeared five times.
-Across the full life, `the world reduced to` appeared 80 times and
-`of our finite time` 69 times.
-
-This is not hidden by the stability label. Netta currently learns recurring
-local poetic formulae faster than she learns clause-level novelty. The next
-language improvement should attack reusable semantic basins without destroying
-valid local structure or debt settlement.
-
-### Stable three-seed examination
-
-Seeds `10101`, `90909`, `424242`; 1200 games each; fixed 128-position read-only
-exam. Mean coordinates:
+The exam did not move. Newborn organism, seed `424242`, 128 fixed
+probes, before and after every change in this section:
 
 ```text
-first-token accuracy      0.2318
-token accuracy            0.0472
-corpus bigram validity    0.9702
-corpus trigram validity   0.5807
-prophecy fulfillment      0.3988
-world stability           0.5185
-rollout stability         0.5840
-world debt delta         -0.0828
-fixed coherence           0.6254
+first-token accuracy      0.2969
+corpus trigrams           0.5996
+coherence outcome         0.5777
 ```
 
-These are research coordinates, not claims of human-level language. Stable means
-that the surviving organism is reproducible, internally consistent and free of
-known experimental stowaways.
+That is the point: persistence, boundaries and accounting were repaired
+without touching physics. The 1200-game coordinates recorded earlier in
+this document remain unreproduced and should be treated as void until
+they are measured again on code that exists.
+
+ASan and UBSan are clean across a life, a prompt, a probe run and a hash
+dump; `leaks` reports 0 leaked bytes on the life and prompt paths.
+LeakSanitizer is unavailable on this platform and was not used.
