@@ -182,8 +182,8 @@ Result:
 Verdict: **null**.
 
 Static reweighting of already-computed scores is too shallow an evolutionary
-target. The experiment remains in `experiments/`, but is excluded from
-`netta.c`.
+target. The experiment was excluded from `netta.c` and its code was not
+preserved; the result above is what survives it.
 
 ---
 
@@ -586,8 +586,8 @@ The critic remains an experiment until it passes a multi-seed cost-matched
 falsifier without an attractor.
 
 The stable organism therefore retains the lightweight selective search that has
-already passed its controls. Rejected search code lives in `experiments/`, not
-behind sleeping switches in main.
+already passed its controls. Rejected search code was removed from main
+rather than left behind sleeping switches, and was not preserved.
 
 ### The interaction source leak
 
@@ -634,7 +634,7 @@ behavioural ledger and external probes as the immutable rule, while increasing
 runtime by an average factor of `1.227`.
 
 The local reward-modulated plasticity rule remains load-bearing. The evolutionary
-population has been moved to `experiments/`. This is not a rejection of
+population was removed from main and not preserved. This is not a rejection of
 meta-learning; it is a refusal to make every ordinary life pay for a mechanism
 that has not yet changed the game.
 
@@ -708,8 +708,14 @@ contradicted five of its claims.
   live state file and no signal was handled.
 - Prompt text was cut by whitespace-only `strtok_r`, while the corpus
   cuts punctuation as separate tokens. `world,` was one unknown word.
-- `experiments/`, referenced five times above, was not in the
-  repository and does not appear anywhere in its history.
+- `experiments/`, referenced three times above, was not in the
+  repository and does not appear anywhere in its history. Those
+  references are now corrected rather than satisfied: a rejected organ
+  is preserved as a result with its numbers, not as code. Its code was
+  measured against a state format and an engine that are both being
+  replaced, so restoring it would restore something that no longer
+  compiles against the organism it was rejected from. What must survive
+  a rejection is why it failed, and that is written above.
 - This section itself was present twice, byte-identical.
 
 Measurement, not opinion: a 1200-game life on seed `424242` with the
