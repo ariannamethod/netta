@@ -852,3 +852,82 @@ they are measured again on code that exists.
 ASan and UBSan are clean across a life, a prompt, a probe run and a hash
 dump; `leaks` reports 0 leaked bytes on the life and prompt paths.
 LeakSanitizer is unavailable on this platform and was not used.
+
+---
+
+## Experiment: policy crowding — double null
+
+Phrase-level culture was the one thing the stability pass named and did
+not fix. The hypothesis was that it lives in the search-policy layer,
+which is the only layer in the organism that grades itself: its target
+comes from the screening utility of its own finalists, so no external
+falsifier can ever tell it that a favourite route stopped paying. The
+bigram market taxes over-exploitation; policy did not.
+
+Metric, pre-registered before any code: the number of distinct
+four-grams occurring more than five times in a life, and the total mass
+of those repetitions, pooled over seeds `10101`, `90909`, `424242`,
+1200 games each. Baseline: `396` types, mass `5225`, trigram validity
+`0.5485`, fixed coherence `0.6200`. Thresholds declared before the run:
+mass at or below `3918` (a 25% fall), trigram not below `0.5385`,
+coherence not below `0.6150`.
+
+### First attempt — the tax that never fired
+
+The market's own rule was transplanted: above sixteen confirmations at a
+high target, add a crowding term to `policy_debt` and to its volatility.
+
+Result: mass `5183`, a fall of 0.8%. **Null.**
+
+Diagnosis, measured rather than guessed. Over 1200 games `policy_mark`
+runs `38400` times, but only `130` of those (0.3%) carry a target above
+`0.6`, and only `42` (0.11%) were ever taxed. The finalists are selected
+as the top four by the same screening utility, so their utilities are
+close by construction, and a softmax at temperature `0.10` spreads the
+target almost evenly across them. Separately, `policy_debt` is already
+saturated across the population — mean `0.9167`, max `0.9654` — so an
+addition there disappears into a shift everybody shares.
+
+### Second attempt — fatigue where influence actually lives
+
+The diagnosis pointed at `confidence = 1 - exp(-visits/8)`, which grows
+monotonically toward one and has no counterpart to the market's
+`fatigue = 1/sqrt(1 + positive_uses/8)`. Freshness decays with age, but a
+frequently confirmed route refreshes its own age on every mark, so
+nothing in this layer could tire. Influence was therefore multiplied by
+`1/sqrt(1 + max(0, visits - 16)/24)`.
+
+The constant was calibrated against the visit histogram before the run,
+not against the target metric: `15903` of `16203` marked trigrams sit at
+sixteen visits or fewer and lose exactly nothing, while the tail at
+65-256 visits loses 42.7% of its influence and the maximum observed
+route (`226` visits) loses 68%.
+
+Result: mass `5344`, a *rise* of 2.3%. **Null.**
+
+### What the two nulls establish
+
+Phrase-level culture does not live in the search-policy layer. Two
+different points of attack — the layer's debt and the layer's influence
+— moved it by less than 3% in either direction, while the ablation
+control reproduced the pre-organ ledger byte-for-byte in both cases.
+
+The metric was audited afterwards to make sure it measures an attractor
+rather than quotation: of the `141` four-grams repeating more than five
+times on seed `424242`, `92` do not occur in the corpus at all. The
+repetitions are Netta's own constructions — `world reduced to grow`
+appears 46 times and exists nowhere in her world — not memorised text.
+
+Neither organ entered main.
+
+### A registered observation, not a result
+
+The second attempt raised corpus trigram validity from `0.5485` to
+`0.5784` and fixed coherence from `0.6200` to `0.6228`, improving
+trigram validity on 3/3 seeds. That was not what it was built to do, and
+a gain discovered after the run is a hypothesis, not a finding. If route
+fatigue in the policy layer is worth having for structural validity, it
+has to be re-run against thresholds declared for that purpose before the
+code is written.
+
+The next place to look for phrase culture is not the policy layer.
