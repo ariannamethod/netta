@@ -709,23 +709,42 @@ contradicted five of its claims.
 - Prompt text was cut by whitespace-only `strtok_r`, while the corpus
   cuts punctuation as separate tokens. `world,` was one unknown word.
 - `experiments/`, referenced three times above, was not in the
-  repository and does not appear anywhere in its history. Those
-  references are now corrected rather than satisfied: a rejected organ
-  is preserved as a result with its numbers, not as code. Its code was
-  measured against a state format and an engine that are both being
-  replaced, so restoring it would restore something that no longer
-  compiles against the organism it was rejected from. What must survive
-  a rejection is why it failed, and that is written above.
+  repository and does not appear anywhere in its history. The rejected
+  organs — Gumbel root search, regret policy, the value critic, the
+  shadow plasticity population — were later found preserved outside it,
+  together with the v0.18 sources and their result tables. They stay
+  outside: they were measured against a state format and an engine that
+  are both being replaced, so what survives a rejection here is why it
+  failed, and that is written above.
 - This section itself was present twice, byte-identical.
 
-Measurement, not opinion: a 1200-game life on seed `424242` with the
-128-position fixed exam reproduced `0.6254` fixed coherence exactly, but
-returned `0.5557` trigram validity against the `0.5807` recorded above,
-and `71` / `74` occurrences of `the world reduced to` and `of our finite
-time` against the recorded `80` / `69`. Seed and exam are fixed, so those
-numbers are obliged to reproduce byte-for-byte. They do not. The
-coordinates above were measured on code that never reached the
-repository.
+Measurement, not opinion. The three-seed matrix above was re-run on the
+same corpus (SHA-256 `02c08152…`), 1200 games per seed, same fixed
+128-position exam:
+
+| coordinate | recorded | re-measured |
+|---|---:|---:|
+| corpus trigram validity | 0.5807 | 0.5485 |
+| fixed coherence | 0.6254 | 0.6200 |
+| first-token accuracy | 0.2318 | 0.2396 |
+
+Per seed, trigram validity came out `0.5430` / `0.5469` / `0.5557` on
+`10101` / `90909` / `424242`. The phrase counts recorded for seed
+`424242` — `80` occurrences of `the world reduced to` and `69` of `of
+our finite time` — came back as `71` and `74`; the same counts on the
+other two seeds are `42` / `34` and `19` / `7`, so phrase culture is
+strongly seed-dependent and a single-seed figure carries little weight.
+
+The v0.18 code was later recovered from outside the repository and
+re-measured. It returns exactly the same coordinates as the repaired
+organism, so the gap is not a difference between two versions of the
+code — the recorded coordinates simply do not follow from any code that
+exists. They are void until measured again.
+
+One methodological note, since this document is also a record of how it
+was checked: the first version of this correction compared a single seed
+against a three-seed mean, which is not a comparison at all. The table
+above is the full matrix.
 
 A log that runs ahead of its code is a claim, not a record. What follows
 is the same pass built and gated, one step at a time.
