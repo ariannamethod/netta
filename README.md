@@ -22,7 +22,7 @@ Netta reads a line, hides the continuation, generates its own attempt, compares 
 - before committing to a token, netta imagines a few steps of plausible future and prices the semantic basin it's about to walk into.
 - repetition is punished at the phrase and basin level — reusing a trajectory fatigues its own support.
 - every so often it dreams: NREM and REM replay over its own episodes, no new data, just re-settling old debt.
-  256, preserving local memory while reducing repeated work.
+- semantic-basin novelty consults the 64 most recent basins rather than all 256, preserving local memory while reducing repeated work.
 - vocabulary, edges and trigrams grow as she meets new words instead of stopping at a fixed wall — starts at 16384 slots, doubles on demand.
 - experience scans are capped for high-degree tokens.
 - read NETTALOG.md for more.
