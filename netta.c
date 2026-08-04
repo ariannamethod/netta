@@ -27,6 +27,7 @@
 #define _POSIX_C_SOURCE 200809L
 
 #include <ctype.h>
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <math.h>
@@ -303,6 +304,27 @@ typedef int   FutureTok[PROPHECY_HORIZONS][FUTURE_TOPK];
 typedef float FutureVal[PROPHECY_HORIZONS][FUTURE_TOPK];
 typedef uint8_t FutureN[PROPHECY_HORIZONS];
 typedef float FutureConf[PROPHECY_HORIZONS];
+
+/*
+ * An island is one text. The corpus holds them end to end, but a game is
+ * always played inside a single island: a window that crossed a boundary
+ * would read its context from the end of one world and its continuation
+ * from the beginning of another. Access can be withdrawn without touching
+ * the text — she keeps every edge and glyph she earned there, and simply
+ * stops being allowed to play it.
+ */
+#define MAX_ISLANDS 32
+
+typedef struct {
+    int offset;
+    int length;
+    uint8_t accessible;
+    char sha[65];
+} Island;
+
+static Island islands[MAX_ISLANDS];
+static int island_count = 0;
+static int active_island = 0;
 
 static Token *vocab = NULL;
 static int vocab_size = 0;
@@ -883,6 +905,7 @@ static int load_corpus(const char *path) {
 
     if (vocab_capacity == 0) vocab_reserve(MAX_VOCAB);
     corpus_reserve();
+    int island_start = corpus_n;
 
     /* Frequencies describe the text at hand; the words themselves persist. */
     for (int i = 0; i < vocab_size; ++i) vocab[i].count = 0;
@@ -927,6 +950,14 @@ static int load_corpus(const char *path) {
                 "netta: %llu corpus token(s) could not be interned; "
                 "this world is smaller than its text\n",
                 (unsigned long long)corpus_dropped_vocab);
+
+    if (corpus_n > island_start && island_count < MAX_ISLANDS) {
+        Island *isl = &islands[island_count++];
+        isl->offset = island_start;
+        isl->length = corpus_n - island_start;
+        isl->accessible = 1;
+        snprintf(isl->sha, sizeof(isl->sha), "%s", path);
+    }
 
     return corpus_n > CONTEXT + ROLLOUT;
 }
@@ -1160,10 +1191,20 @@ static void build_future_fields(void) {
     FutureConf *evidence =
         (FutureConf *)xcalloc(n, sizeof(FutureConf), "future evidence");
 
-    for (int i = 0; i < corpus_n; ++i) {
+    /*
+     * Statistics belong to the island that produced them. Counting across
+     * the whole corpus would let a second text redefine what usually
+     * follows a word in the first — the world of one island diluted by
+     * another it has nothing to do with.
+     */
+    int scan_lo = islands[active_island].offset;
+    int scan_hi = scan_lo + islands[active_island].length;
+    if (island_count == 0) { scan_lo = 0; scan_hi = corpus_n; }
+
+    for (int i = scan_lo; i < scan_hi; ++i) {
         int source = corpus[i];
         int hi = i + 17;
-        if (hi > corpus_n) hi = corpus_n;
+        if (hi > scan_hi) hi = scan_hi;
         for (int j = i + 1; j < hi; ++j) {
             int offset = j - i;
             int h = offset == 1 ? 0 : (offset <= 5 ? 1 : 2);
@@ -2429,12 +2470,34 @@ static void glyph_maintenance(void) {
 }
 
 static void build_source_graph(void) {
-    for (int i = 0; i + 1 < corpus_n; ++i) {
+    /*
+     * The physics of a world is the island's; what she made of it is hers.
+     * Source counts describe which words follow which in *this* text, so
+     * they are rebuilt for the island she is playing. Quote, debt,
+     * volatility, support and opposition are her biography on that edge
+     * and are never touched here — she keeps what an edge cost her even
+     * when she walks into a different world.
+     */
+    int lo = island_count ? islands[active_island].offset : 0;
+    int hi_bound = island_count ?
+        lo + islands[active_island].length : corpus_n;
+
+    for (int e = 0; e < edge_count; ++e) edges[e].source_count = 0;
+    for (int t = 0; t < trigram_count_total; ++t) trigrams[t].count = 0;
+    /* Novelty asks how common a word is *here*, not across every world. */
+    for (int t = 0; t < vocab_size; ++t) vocab[t].count = 0;
+    for (int i = island_count ? islands[active_island].offset : 0;
+         i < (island_count ? islands[active_island].offset +
+                             islands[active_island].length : corpus_n);
+         ++i)
+        vocab[corpus[i]].count++;
+
+    for (int i = lo; i + 1 < hi_bound; ++i) {
         int e = get_edge(corpus[i], corpus[i + 1], 1);
         if (e >= 0) edges[e].source_count++;
     }
 
-    for (int i = 0; i + 2 < corpus_n; ++i) {
+    for (int i = lo; i + 2 < hi_bound; ++i) {
         int t = get_trigram(corpus[i], corpus[i + 1], corpus[i + 2], 1);
         if (t >= 0) trigrams[t].count++;
     }
@@ -2442,7 +2505,8 @@ static void build_source_graph(void) {
     build_top_successors();
     build_future_fields();
 
-    /* Corpus-derived embeddings: local Hebbian co-occurrence. */
+    /* Word geometry is hers and spans every world she has read, so this
+       pass runs over the whole corpus rather than the active island. */
     int window = 5;
     for (int i = 0; i < corpus_n; ++i) {
         int a = corpus[i];
@@ -2835,7 +2899,8 @@ static ScoreVector observe_score(const int *ctx, int ctx_n, int candidate,
                            &s.prophecy_fulfillment,
                            &s.world_state_stability, NULL);
 
-    float freq = (float)vocab[candidate].count / (float)(corpus_n + 1);
+    float freq = (float)vocab[candidate].count /
+        (float)(island_count ? islands[active_island].length + 1 : corpus_n + 1);
     s.novelty = clampf(1.0f - 20.0f * freq, 0.0f, 1.0f);
 
     int rollout_ctx[CONTEXT + 1];
@@ -3261,7 +3326,8 @@ static void prior_score(const int *ctx, int ctx_n, int candidate, int oracle,
         out[8] *= 0.10f;
     }
 
-    float freq = (float)vocab[candidate].count / (float)(corpus_n + 1);
+    float freq = (float)vocab[candidate].count /
+        (float)(island_count ? islands[active_island].length + 1 : corpus_n + 1);
     float lexical_novelty = clampf(1.0f - 20.0f * freq, 0.0f, 1.0f);
     float phrase_novelty = phrase_freshness(ctx, ctx_n, candidate);
     float basin_novelty = semantic_basin_freshness(vocab[candidate].emb);
@@ -4671,9 +4737,12 @@ static float episode_external_coherence(const int *source_context,
 
 
 static void run_episode(int verbose) {
-    int max_start = corpus_n - CONTEXT - 17;
-    int source_pos =
-        curriculum_source_position(episode_count, max_start);
+    /* The window lives inside one island; it never straddles a seam. */
+    Island *isl = &islands[active_island];
+    int span = isl->length - CONTEXT - 17;
+    if (span <= 0) span = 1;
+    int source_pos = isl->offset +
+        curriculum_source_position(episode_count, span);
 
     int seq[CONTEXT + ROLLOUT];
     int oracle[ROLLOUT];
@@ -5390,6 +5459,29 @@ int main(int argc, char **argv) {
 
     if (!reset) preload_vocab("netta.state");
     if (!load_corpus(corpus_path)) return 1;
+
+    /*
+     * Every text in nettatexts/ becomes another island. Her origin text
+     * stays island 0 and is never withdrawn; the rest are worlds she was
+     * given access to, and access is a property of the island, not of the
+     * text on disk.
+     */
+    DIR *texts = opendir("nettatexts");
+    if (texts) {
+        struct dirent *entry;
+        while ((entry = readdir(texts)) && island_count < MAX_ISLANDS) {
+            if (entry->d_name[0] == '.') continue;
+            char path[512];
+            snprintf(path, sizeof(path), "nettatexts/%s", entry->d_name);
+            int before = island_count;
+            load_corpus(path);
+            if (island_count > before)
+                printf("island %d: %s (%d tokens)\n",
+                       island_count - 1, entry->d_name,
+                       islands[island_count - 1].length);
+        }
+        closedir(texts);
+    }
 
     printf("corpus: %d tokens, %d vocabulary items "
            "(capacity %d, grown %s)\n",
