@@ -1440,3 +1440,43 @@ This is the second time in this document that a promising number at 128
 probes vanished at 512. The exam that governs every threshold here is
 worth 0.0075 per reading, and any effect smaller than that was never
 visible in the first place.
+
+### Parallel markets: an eighth null, and the number that mattered
+
+One memory cannot both learn a world fresh and apply an older one, so a
+visited island was given prices of its own: a local quote, support and
+opposition starting from nothing, with what she carried kept intact
+beside them and excluded from the decision. Her origin island stays
+byte-identical and `--no-local-market` reproduces previous behaviour
+exactly.
+
+Measured at 512 probes:
+
+```text
+seed 10101   +0.0003  ( 0.1 SE)
+seed 90909   +0.0083  ( 2.2 SE)
+seed 424242  -0.0117  (-3.1 SE)
+```
+
+The sign does not hold. **Null**, out of main.
+
+The organ paid for itself anyway, because building it made one quantity
+measurable for the first time: whether an edge means the same thing in
+two worlds. Both markets were allowed to form an opinion, and their
+signs compared after eight confirmations on the new island.
+
+```text
+seed 10101    62 of 62 agree   1.0000
+seed 424242   68 of 69 agree   0.9855
+```
+
+An edge that proves itself in a strange world proves itself the same
+way. Her market knowledge transfers almost perfectly in direction, which
+is why relearning it locally bought nothing — she was paying to
+rediscover what she already knew.
+
+That also removes the market as the suspect for cross-island
+interference. Two organs have now failed to fix transfer by acting on
+edges, and the reason both failed is the same: edges were not what was
+broken. Word geometry crosses every world ungated and is the only
+channel left unexamined.
