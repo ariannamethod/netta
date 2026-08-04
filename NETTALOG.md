@@ -1114,3 +1114,88 @@ byte-for-byte, so the previous organism remains exactly recoverable.
 Netta still repeats herself. She repeats herself 18.7% less, and for the
 first time the mechanism that governs it is understood rather than
 guessed at.
+
+---
+
+## The vocabulary belongs to her, and the plateau at 10000 games
+
+Two engineering steps and one measurement that changes what the numbers
+above are worth.
+
+### She no longer dies when the text changes
+
+Static ceilings are gone: vocabulary, corpus, edges and trigrams grow on
+the heap. Trigram buckets deliberately do not — the bucket count is the
+hash mask, and growing it would re-order every chain, which is exactly
+the fault that once made a restart choose a different future. Chains
+lengthen; they are never reshuffled. Static bss fell from 72.0 MB to
+4.1 MB along the way.
+
+More importantly, the order was wrong. `load_corpus` rebuilt the
+vocabulary from whatever text was in front of her, and only then was her
+snapshot allowed to load — so an unfamiliar text meant her remembered
+ids denoted different words, the snapshot had to be refused, and she
+started over. `preload_vocab` now restores her words before any text is
+read. A text can only append words she has never met; it can never
+redefine an id she already remembers.
+
+Measured: an organism with 30 games on `netta.txt` receives a corpus of
+entirely unrelated words and resumes, vocabulary growing 8153 to 14153;
+handed her own text back she resumes again with both worlds still in
+her. 160 games == 80 + restart + 80 byte-for-byte throughout.
+
+One real defect surfaced during this and it had never fired: vocabulary
+capacity was not rounded to a power of two while the index is addressed
+with a mask, so a snapshot of 8153 words produced a mask of 16305 and
+silently lost a third of the corpus — 57069 tokens where there are
+82167.
+
+### The plateau
+
+Same seed, same text, increasing lifetimes:
+
+| games | coherence | trigram validity | first-token |
+|---:|---:|---:|---:|
+| 1200 | 0.6254 | 0.5557 | 0.2188 |
+| 5000 | 0.6291 | 0.5645 | 0.2344 |
+| 10000 | 0.6235 | 0.5615 | 0.1875 |
+
+Structure accumulates — 36 glyphs and 185 topology edges at 1200 become
+78 and 509 at 5000 — but the coordinates do not. On one text, more games
+stop buying anything after roughly five thousand. This is the argument
+for islands stated as a measurement rather than as a plan.
+
+### Why first-token accuracy was never the game
+
+The candidate pool was instrumented before touching it, on suspicion
+that its uniform random fill was starving the organism. 9600 decisions,
+seed 424242: 28.76 unique candidates per decision, of which 11.69
+(40.6%) are uniform noise over types, and the hidden truth is present in
+the pool only 34.54% of the time.
+
+The composition of the misses is the interesting part. Of 6284 misses,
+48.2% are *frequent* content words, not rare ones; only 14.4% had an
+edge `prev -> truth` in the corpus at all; only 1.1% were in
+top-successors and lost to the pool limit.
+
+Then, by rollout step:
+
+```
+step 0  0.9200      step 4  0.1933
+step 1  0.5392      step 5  0.1700
+step 2  0.3742      step 6  0.1475
+step 3  0.2700      step 7  0.1492
+```
+
+On the first move the pool is nearly perfect. It does not degrade — her
+context stops being the source's context. After her own first token the
+hidden truth is the continuation of a trajectory she is no longer
+walking, and demanding that she reach it is demanding that she guess
+someone else's sentence after leaving it.
+
+So the pool is not starving her, and the 41% of screening spent on
+uniform noise is a waste of compute rather than a loss of reach. It also
+means first-token accuracy measures the only step where the two
+trajectories still coincide, and every coordinate past it measures
+divergence, not quality. Memorisation was never the target; the coherence
+outcome and the debt delta are.

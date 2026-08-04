@@ -136,7 +136,14 @@ netta> the forest behind clouds recognized across time — it is attention is
        the universe is an act is to grow tall trees enact universe is
 ```
 
-Beatiful. An organism mid-sentence about itself.  
+Beatiful. An organism mid-sentence about itself.
+
+After 10000 games she's still nobody's stenographer, but the clauses hold:
+```
+a conversation ending well lived resonates when it
+and darkness respectfully withdraws to grow tall loves
+be interrupting a conversation becomes a child learning
+```  
   
    
   
