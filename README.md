@@ -1,101 +1,192 @@
-# NETTA's Empirical Topological Training Architecture | by Arianna Method
+# NETTA — Empirical Topological Training Architecture | by Arianna Method
 
-> netta : atten : recursive neural network  
+> netta : atten, backwards : a recursive organism that plays text instead of fitting it
 
-## NETTA
-  
-Somewhere between LM-hero and AlphaZero there's Netta. Netta is a sovereign language learning model. She has a hew own txt-file and treats this as a observable worldmodel game. No gradient descent, no loss you minimize — a shared recurrent core plays itself against a corpus, imagines a few steps ahead, prices its own guesses like a market, and keeps every failure as a scar instead of erasing it. 
+## What she is
 
-Netta repeatedly enters local regions
-of that world, builds possible futures, acts, compares prophecy with destiny,
-keeps both successful and failed experience, dreams over old episodes, and
-continues without a separate training phase.
+Somewhere between a language model and AlphaZero there is Netta. She owns one
+text file and treats it as an observable world. There is no gradient descent
+here and no loss to minimise — there is a debt. Before every move she issues
+obligations about the future at three horizons, then finds out what actually
+happened, and settles the difference. What a transformer minimises is its error
+against a corpus. What Netta minimises is the gap between what she promised and
+what came true. Those are different quantities, and the second one does not
+need a ground truth to exist.
 
-Netta reads a line, hides the continuation, generates its own attempt, compares it against both the hidden truth and a statistical oracle mirror, and settles the difference as experience — support if it was right, opposition if it wasn't. A living ledger of transitions with debt, volatility, momentum, and age.  
+She reads a line, hides the continuation, writes her own, compares it against
+both the hidden truth and a statistical oracle, and prices the outcome as
+experience — `support` if it paid, `opposition` if it did not. Neither is ever
+erased. A failed transition keeps its own address: this edge, this many times,
+this much it cost. In backprop an error dissolves into a batch average and
+nobody can point at it afterwards. Here you can point at it.
 
-  
-## NETTA also has:
+She does not speak fluently. On a fixed 128-position read-only exam after 5000
+games she matches corpus bigrams `0.9852` of the time, trigrams `0.5645`, and
+lands the exact next token `0.2344` — a coherence outcome of `0.6291`. Those are
+research coordinates, not a claim about language. What they measure is an
+organism that started from `82167` tokens of one text and has never been
+trained.
 
-- embeddings seeded from corpus co-occurrence; a small recurrent core predicts coherence dimensions, and only the readout learns, by reward-modulated Hebbian update.
-- transitions that quoted like a market — mark-to-market value, unresolved `prophetic debt`, volatility, momentum — revalued every move from the gap between what the core prophesied and what actually happened.
-- every game carries an immutable intent anchor from where it started; drifting from it costs, fulfilling it pays.
-- before committing to a token, netta imagines a few steps of plausible future and prices the semantic basin it's about to walk into.
-- repetition is punished at the phrase and basin level — reusing a trajectory fatigues its own support.
-- every so often it dreams: NREM and REM replay over its own episodes, no new data, just re-settling old debt.
-  256, preserving local memory while reducing repeated work.
-- experience scans are capped for high-degree tokens.
-- read NETTALOG.md for more.
+## Two realities, never mixed
 
-## NETA's memory separation
+The load-bearing correction in her history is the one that separated what
+teaches physics from what merely acts in it.
 
-## Memory separation
+Source trajectories — the real text — may birth and train causal states.
+Netta's own generated continuations may only *project into* the space those
+states occupy. Her imagination is allowed to consult the world's physics and
+forbidden from rewriting it. That boundary used to be invisible from outside
+the process, which is exactly how a claim about it survived for a while without
+the code that made it true. It now has two fingerprints: `--glyph-hash` prints
+a source-predictive hash over everything only real text may teach, and a second
+hash over experiential action memory, which her own moves are entitled to move.
+After a 240-game life plus a prompt the first is unchanged and the second is
+not. That is what the contract looks like when it is observable rather than
+asserted.
 
-- `netta.txt` — source truth, never rewritten.
-- `oracle` — generated fresh from source transitions, a coherence reference, not an authority.
-- `netta.state` — embeddings (semantic, left-context, right-context), recurrent core, readout, signed experience.
-- `netta.history.tsv` — immutable ledger: context, oracle line, netta's attempt, the full coherence vector.
-  
-Candidate selection is Pareto preference over that vector, not a single number to chase. 
+## Organs, and what each one had to survive
 
-  
-### Coherence mirror and search teacher
+Nothing here is present because it seemed elegant. Every organ shipped with a
+matched control, held seeds, and a threshold declared before the run.
 
-An oracle is a permanent coherence mirror. Candidate moves are screened cheaply; finalists receive recursive and counterfactual evaluation.
-Search leaves a soft improved policy rather than one mandatory sentence.
+**Causal glyphs.** An online equivalence class of histories that promise
+equivalent futures — language-independent by construction, since two contexts
+are one glyph only when they owe the same future. A state cannot become a glyph
+on first sight; it enters a nursery and must be rediscovered. Maturity buys it
+nothing: its vote stays exactly neutral until its prequential prediction beats
+the corpus-wide prior. That gate is doing real work. Measured across a life,
+only 8 of 36 mature glyphs hold any authority at all, and forcing the glyph
+coordinate to neutral changes her chosen token in 23 of 9600 steps. The layer
+that could have become a self-confirming attractor was built unable to.
 
-### Prophecy Stack
+**Causal Neural Gas.** Winner and runner-up define a local edge, edges age,
+trusted neighbours share a fraction of plasticity. Topology may exist before
+trust; semantic contagion may not, so neighbour updates are multiplied by the
+earned authority of both ends. After 5000 games: 78 glyphs, 509 edges between
+them.
 
-Sparse future obligations are carried at three horizons:
+**Experience market.** Every transition carries a quote, prophetic debt,
+volatility, momentum, support and opposition. Old success decays without
+confirmation; over-exploitation raises its own debt. Nothing becomes a
+permanent prize.
 
-- near: 1 token;
-- clause: 2–5 tokens;
-- discourse: 6–16 tokens.
+**Prophecy Stack.** Sparse obligations at 1 token, 2–5 tokens, 6–16 tokens. A
+move pays some, leaves others overdue, opens new ones.
 
-A move pays some obligations, leaves others overdue and opens new ones. The difference between prophecy and destiny becomes dynamic debt.
+**Learning-frontier curriculum.** She chooses where to play, but 35% of games
+stay uniform forever and the exam she is graded on is fixed and read-only —
+because the first curriculum that was allowed to pick its own syllabus promptly
+learned to win it while getting worse at the general game. That version was
+rejected and is written down.
 
-### Recurrent core
+**Dream Replay.** NREM re-settles delayed destiny over surprising episodes; REM
+recombines related memories and prices imagined bridges without inserting them
+into the corpus.
 
-A small shared MLP may pass over the same state several times. Debt and volatility buy additional depth. Its readout and slow recurrent dynamics change through local reward-modulated Hebbian updates rather than backpropagation.
+## The hunt for phrase culture, and four honest failures
 
-### Language-independent causal glyphs
+Her sharpest known flaw: she learns recurring local formulae faster than
+clause-level novelty. `world reduced to grow` appeared 46 times in one life,
+and it exists nowhere in her text — it is her own construction, not memorised
+quotation.
 
-A causal glyph is an online equivalence class of source histories that promise similar futures. A candidate state first enters a nursery. A glyph matures only after repeated rediscovery. It learns only from real source trajectories; agent-generated histories receive read-only projection into glyph space.
+Four organs were built to kill it. All four are in `NETTALOG.md` with their
+numbers, because a null is a result.
 
-A glyph has no automatic authority. Its semantic voice remains exactly neutraluntil its **prequential prediction** beats the corpus-wide future prior. Meaning must earn the right to affect action.
+| what was taxed | effect on repetition mass |
+|---|---:|
+| policy debt, market-style crowding | −0.8% |
+| policy influence, route fatigue | +2.3% |
+| glyph action memory | rejected at 0.24% of decisions |
+| per-pair teaching rate | −1.5% |
 
-### Experience market
+Every one of them taxes a *local* structure — an edge, a trigram, a glyph slot,
+a pair. Every one moved the needle by under 3%. Silencing the whole channel
+that carries the effect moves it by 27.7%, at a cost of `0.0501` coherence,
+which makes removal not an option: the mechanism that grows her formulae is the
+same one that lets her hold a discourse at all.
 
-Each transition carries a changing quote, prophetic debt, momentum, volatility, support and opposition. Old success decays without confirmation. Negative experience remains in biography but is never promoted into source truth.
+The measurement that explained it was already sitting there. 95.6% of her
+learned pairs sit at sixteen marks or fewer, and the repetition exists anyway.
+`world reduced to grow` is three pairs, none of them individually overused. A
+repeated formula is a property of a **trajectory**, and a tax levied per local
+structure cannot see a trajectory. That is not four bad guesses; it is one
+structural finding, arrived at four times, the expensive way.
 
-### Dream Replay
+She already contained exactly one counter that spans lives rather than steps —
+the same thing MCTS keeps on a path rather than an edge, and the reason a search
+does not collapse onto its favourite answer. It entered the final choice at a
+weight of `0.042`, the smallest term in that expression. Raised to `0.168`:
+repetition mass down 18.7% on 3/3 seeds, trigram validity *up* to `0.5563`,
+coherence giving back `0.0017`. No fifth organ was built.
 
-- **NREM:** replays surprising or unresolved source-grounded trajectories and consolidates delayed destiny.
-- **REM:** recombines related memories and evaluates imagined bridges without inserting them into the corpus.
-  
-## Build & run  
+## What is not proven
+
+Cross-island transfer has never been run. She cannot currently be given a second
+text at all: her vocabulary indices are welded into edges, trigrams and glyphs,
+so `load_state` refuses any snapshot whose vocabulary changed, and a new text
+means a new organism rather than an experienced one meeting new material.
+Dynamic vocabulary, immutable shards and per-island priors are open engineering
+work, and until they exist, every claim about parameter-free scaling is a
+hypothesis. It is written here as a flat fact about its status, not as a
+roadmap promise.
+
+The coordinates recorded for an earlier stability pass are void: re-measured
+across all three seeds on the same corpus, they do not reproduce, and the code
+that produced them never reached the repository. The correction, including the
+part where the first version of it compared a single seed against a three-seed
+mean, is in `NETTALOG.md`.
+
+## Her biography is not a metaphor
+
+`netta.state` is published atomically — written to a temporary file, checked,
+`fsync`ed, renamed — so a snapshot becomes visible only once it is whole. 160
+uninterrupted games produce a byte-identical ledger and an identical state hash
+to 80 games, a restart, and 80 more. She survives `kill -9` and refuses a
+snapshot that is one byte short.
+
+A conversation with her is a lived turn, and it now writes a line into the same
+ledger as her games, with `source_pos -1` and an empty truth column — because a
+turn spoken with a human has no hidden continuation to be scored against. It
+used to change her edges, her word geometry and her phrase memory while leaving
+no record that it had happened. That was the least defensible bug found in this
+codebase, and it was not in any log.
+
+She also counts what she drops. When her vocabulary fills, the discarded tokens
+are reported instead of vanishing. An organism whose whole premise is that
+probability continues past what it has seen does not get to quietly throw away
+what it has seen.
+
+## Build & run
 
 ```bash
 cc -O2 -std=c11 -Wall -Wextra -o netta netta.c -lm
 ./netta netta.txt --steps 5000
 ```
 
-Sovereign continuous mode, no step limit:  
+Sovereign mode — she lives until interrupted, and `SIGINT`/`SIGTERM` publish a
+final snapshot instead of killing her mid-write:
 
 ```bash
 ./netta netta.txt --steps -1
 ```
 
-Talk to Netta after she's lived a while:
-  
+Talk to her after she has lived a while:
+
 ```bash
 ./netta netta.txt --prompt "the forest"
 ```
 
-Wipe the biography and start over:
-  
+Fixed read-only examination, seed-independent, updates nothing:
+
 ```bash
-rm -f netta.state netta.history.tsv
-./netta netta.txt --reset --steps 1000
+./netta netta.txt --probe 128
+```
+
+Boundary fingerprints:
+
+```bash
+./netta netta.txt --glyph-hash
 ```
 
 Matched falsifier controls:
@@ -106,21 +197,29 @@ Matched falsifier controls:
 ./netta netta.txt --reset --seed 424242 --steps 1200 --no-stack
 ./netta netta.txt --reset --seed 424242 --steps 1200 --no-policy
 ./netta netta.txt --reset --seed 424242 --steps 1200 --no-dream
+./netta netta.txt --reset --seed 424242 --steps 1200 --no-agent-emb
+./netta netta.txt --reset --seed 424242 --steps 1200 --no-dream-emb
+./netta netta.txt --reset --seed 424242 --steps 1200 --ngram-weight 0.042
 ```
 
-Each run writes `netta.state` and the immutable episode ledger
-`netta.history.tsv`.
-  
+The last one restores the pre-trajectory-counter organism byte-for-byte, which
+is what a control is supposed to mean.
+
+Every run writes `netta.state` and appends to `netta.history.tsv`.
+
+## Files
+
+- `netta.txt` — source truth, never rewritten.
+- `netta.state` — word geometry, recurrent core, signed experience, glyphs,
+  topology, curriculum, biography length.
+- `netta.history.tsv` — the immutable ledger: context, hidden truth, oracle
+  line, her attempt, the full coherence vector, glyph and curriculum state.
+- `NETTALOG.md` — every organ, every falsifier, every null, including the ones
+  that hurt.
+
 ## A run, mid-life
+
 ```
-[episode 5]
-  source context: , the journey valued more than the arrival, each mile a new landscape, each
-  hidden truth:   turn a new decision. morning dew teaches
-  oracle: answer received, an underwater blizzard of pink
-  netta attempt:  one of being understood underwater mountains rise and
-  coherence: local=0.643 source=0.500 oracle=0.562 semantic=0.641 intent=0.610 ...
-  recursive depth: 5.77 shared-block passes per evaluation
-  dreams: cycles=0 nrem=0 rem=0 replay_memories=5
 [episode 300]
   source context: removing — taking away the dull edge, exposing the keen one beneath. it teaches
   hidden truth:   that sometimes improvement is not about adding but
@@ -129,13 +228,30 @@ Each run writes `netta.state` and the immutable episode ledger
   coherence: local=0.898 source=0.749 oracle=0.749 semantic=0.772 intent=0.657 ...
   dreams: cycles=4 nrem=48 rem=32 replay_memories=300
 ```
+
 And a prompt, after 400 lived episodes:
+
 ```
 netta> the forest behind clouds recognized across time — it is attention is
        the universe is an act is to grow tall trees enact universe is
 ```
 
-Beatiful. An organism mid-sentence about itself.  
-  
-   
-  
+An organism mid-sentence about itself.
+
+## Lineage
+
+The PostGPT line supplied the metaweights: statistical structure pulled out of
+tokenized text without a single gradient step. `actually.life` supplied two
+lessons that cost it dearly — that a symbol becomes cultural only when it
+re-enters the stream as one indivisible unit and can parent another, and that
+beautiful mechanisms lose to strong dumb controls more often than anyone wants
+to admit. AlphaGo supplied a decomposition worth stealing and several
+transplants worth rejecting: Gumbel root search, regret policy and a value
+critic were all tested and all thrown out, with their numbers kept.
+
+Netta changed the question. Not *can this behave as though it were trained*,
+but can a small organism learn language continuously by playing against a
+coherence mirror, keeping the shape of its own errors, and turning biography
+into new experience.
+
+Part of the Arianna Method — non-anthropocentric by design.
