@@ -990,3 +990,39 @@ controls. The next place to look is glyph action memory, where
 `action_visits` only ever grows and a glyph gathers histories that
 promise the same future — the one remaining mechanism that could
 collapse distinct contexts onto one continuation.
+
+### Glyph action memory: eliminated by mechanism, not by ablation
+
+The remaining suspect was glyph action memory: `action_visits` only ever
+grows, and a glyph gathers exactly those histories that promise the same
+future, so it is the one structure that could collapse distinct contexts
+onto a shared continuation.
+
+It was measured before it was modified. Over 1200 games on seed
+`424242`: 36 mature glyphs holding 530 occupied action slots, 79 of them
+(14.9%) past sixteen visits, the busiest at 392. Re-use is real. But the
+earned-voice gate from v27 leaves only 8 of the 36 glyphs with any
+authority at all, and recomputing every decision with the glyph
+coordinate forced to neutral changes the chosen token in **23 of 9600
+steps — 0.24%**.
+
+A mechanism that moves a quarter of one percent of decisions cannot
+account for a phenomenon worth 27.7%. The hypothesis is rejected on
+magnitude, and no organ was built to test it. This is the cheapest
+possible null: the diagnostic cost one run, the falsifier would have
+cost twelve.
+
+It also says something in favour of an older organ. Earned semantic
+voice is doing exactly what it was built for — a glyph accumulates
+usage without accumulating influence until it has predicted better than
+the corpus prior. The layer that could have become an attractor was
+already gated against becoming one.
+
+What remains is the channel that actually carries the effect. In
+`learn_local` the embedding rate is a constant: the same pair
+(`prev`, `chosen`) can be reinforced without limit, and nothing counts
+how often that pair has already taught the geometry. The market beside
+it does count — `edges[e].positive_uses` is right there, unused by this
+update. That is the next thing to measure, and it is a question of
+fatigue on learning, not of removing a channel that coherence depends
+on.
