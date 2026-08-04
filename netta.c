@@ -354,6 +354,13 @@ static int policy_enabled = 1;
    the geometry of her world. Both on by default: this is a measurement. */
 static int agent_embedding_enabled = 1;
 static int dream_embedding_enabled = 1;
+/*
+ * Weight of the only counter that spans lives rather than steps. Four
+ * per-structure fatigue organs failed to touch phrase culture; this one
+ * term, raised from 0.042, cut it by 18.7% on 3/3 seeds. Repetition is a
+ * property of a trajectory, so only a trajectory-level counter can see it.
+ */
+static float ngram_freshness_weight = 0.168f;
 static int prophecy_stack_enabled = 1;
 static int dreams_enabled = 1;
 static uint64_t recursive_depth_total = 0;
@@ -3352,7 +3359,7 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
             0.020f * final_deep[i][5] +
             0.018f * final_deep[i][6] +
             0.018f * final_deep[i][9] +
-            0.042f * global_fresh +
+            ngram_freshness_weight * global_fresh +
             0.018f * final_deep[i][11];
 
         if (choice > best_choice) {
@@ -5106,6 +5113,8 @@ int main(int argc, char **argv) {
             agent_embedding_enabled = 0;
         else if (strcmp(argv[i], "--no-dream-emb") == 0)
             dream_embedding_enabled = 0;
+        else if (strcmp(argv[i], "--ngram-weight") == 0 && i + 1 < argc)
+            ngram_freshness_weight = strtof(argv[++i], NULL);
         else if (strcmp(argv[i], "--no-stack") == 0) {
             prophecy_stack_enabled = 0;
             override_stack = 0;

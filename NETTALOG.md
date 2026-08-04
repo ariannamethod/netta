@@ -1066,3 +1066,51 @@ one that knows what Netta has already said in previous lives.
 
 Whether phrase culture is governed by that weight is the next question,
 and it is a question about an existing organ rather than a new one.
+
+### Trajectory memory: the first organ to earn its threshold
+
+Four per-structure taxes had failed, and the reason was structural: a
+repeated formula is a property of a trajectory, and a tax levied on an
+edge, a trigram, a glyph slot or a pair cannot see one. The organism
+already contained exactly one counter that spans lives rather than
+steps — `global_ngram_counts`, hashing the last three context tokens
+with the candidate, accumulated across the whole biography, consulted in
+the final choice at a weight of `0.042`.
+
+This is Netta's analogue of the one thing she had not taken from
+AlphaZero. In MCTS the visit count lives on a path, and that is what
+keeps the search from collapsing onto its favourite answer; every visit
+counter in Netta was local except this one.
+
+No new organ was built. The weight became a swept parameter, everything
+else untouched, thresholds unchanged from the failed experiments: mass
+at or below `4703`, trigram not below `0.5385`, coherence not below
+`0.6150`.
+
+| weight | repetition mass | types | trigram validity | fixed coherence |
+|---:|---:|---:|---:|---:|
+| 0.042 (before) | 5225 | 396 | 0.5485 | 0.6200 |
+| 0.084 | 4734 | 385 | 0.5827 | 0.6238 |
+| 0.168 | 4250 | 358 | 0.5563 | 0.6183 |
+| 0.336 | 4325 | 377 | 0.5531 | 0.6181 |
+
+Mass falls monotonically to `0.168` and then flattens. `0.084` misses
+the threshold by 31 repetitions; `0.168` clears it with an 18.7% fall,
+same sign on 3/3 seeds (`1382` / `1346` / `1522` against `1639` /
+`1642` / `1944`), and both controls hold — trigram validity rises to
+`0.5563` while coherence gives up `0.0017`.
+
+`0.168` is adopted, not `0.336`: the rule declared before the sweep was
+the smallest weight that clears the gate, not the best number in the
+table. The two heavier settings are within noise of each other and
+buying nothing.
+
+What this cost and what it did not: the fixed newborn exam is unchanged
+at `0.5777` / `0.5996` / `0.2969`, because a newborn has no biography to
+be fresh against. Persistence and interaction gates stay 9/9 and 8/8,
+and setting `--ngram-weight 0.042` reproduces the old ledger
+byte-for-byte, so the previous organism remains exactly recoverable.
+
+Netta still repeats herself. She repeats herself 18.7% less, and for the
+first time the mechanism that governs it is understood rather than
+guessed at.
