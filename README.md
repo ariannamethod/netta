@@ -4,7 +4,7 @@
 
 ## NETTA
   
-Somewhere between LM-hero and AlphaZero there's Netta. Netta is a sovereign language learning model. She has a hew own txt-file and treats this as a observable worldmodel game. No gradient descent, no loss you minimize — a shared recurrent core plays itself against a corpus, imagines a few steps ahead, prices its own guesses like a market, and keeps every failure as a scar instead of erasing it. 
+Somewhere between LM-hero and AlphaZero there's Netta. Netta is a sovereign language learning model. She has a her own txt-file and treats this as a observable worldmodel game. No gradient descent, no loss you minimize — a shared recurrent core plays itself against a corpus, imagines a few steps ahead, prices its own guesses like a market, and keeps every failure as a scar instead of erasing it. 
 
 Netta repeatedly enters local regions
 of that world, builds possible futures, acts, compares prophecy with destiny,
