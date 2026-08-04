@@ -292,30 +292,43 @@ typedef struct {
     uint32_t neighbor_enabled;
 } StateHeader;
 
-static Token vocab[MAX_VOCAB];
+/*
+ * World memory grows instead of standing at a wall. Every table indexed by
+ * a token id shares one capacity and one growth event, so a vocabulary that
+ * doubles can never leave a sibling table addressing the old size.
+ */
+typedef int   TopSuccTok[TOP_SUCCESSORS];
+typedef uint32_t TopSuccCnt[TOP_SUCCESSORS];
+typedef int   FutureTok[PROPHECY_HORIZONS][FUTURE_TOPK];
+typedef float FutureVal[PROPHECY_HORIZONS][FUTURE_TOPK];
+typedef uint8_t FutureN[PROPHECY_HORIZONS];
+typedef float FutureConf[PROPHECY_HORIZONS];
+
+static Token *vocab = NULL;
 static int vocab_size = 0;
-static int corpus[MAX_CORPUS];
+static int vocab_capacity = 0;
+static int *corpus = NULL;
 static int corpus_n = 0;
 
 static Edge edges[MAX_EDGES];
 static int edge_count = 0;
-static int first_edge[MAX_VOCAB];
+static int *first_edge = NULL;
 
 static TrigramEdge trigrams[MAX_TRIGRAMS];
 static int trigram_count_total = 0;
 static int first_trigram[TRI_BUCKETS];
 
-static int top_successors[MAX_VOCAB][TOP_SUCCESSORS];
-static uint32_t top_successor_counts[MAX_VOCAB][TOP_SUCCESSORS];
-static uint8_t top_successor_n[MAX_VOCAB];
+static TopSuccTok *top_successors = NULL;
+static TopSuccCnt *top_successor_counts = NULL;
+static uint8_t *top_successor_n = NULL;
 
 /* Sparse corpus-derived future distributions: 1, 2-5, and 6-16 tokens. */
-static int future_top_tokens[MAX_VOCAB][PROPHECY_HORIZONS][FUTURE_TOPK];
-static float future_top_weight[MAX_VOCAB][PROPHECY_HORIZONS][FUTURE_TOPK];
-static float future_top_prob[MAX_VOCAB][PROPHECY_HORIZONS][FUTURE_TOPK];
-static uint8_t future_top_n[MAX_VOCAB][PROPHECY_HORIZONS];
-static float future_conf[MAX_VOCAB][PROPHECY_HORIZONS];
-static float global_future_weight[PROPHECY_HORIZONS][MAX_VOCAB];
+static FutureTok *future_top_tokens = NULL;
+static FutureVal *future_top_weight = NULL;
+static FutureVal *future_top_prob = NULL;
+static FutureN *future_top_n = NULL;
+static FutureConf *future_conf = NULL;
+static float *global_future_weight[PROPHECY_HORIZONS];
 static float global_future_total[PROPHECY_HORIZONS];
 
 enum { GLYPH_OFF = 0, GLYPH_CAUSAL = 1, GLYPH_RANDOM = 2 };
@@ -618,11 +631,90 @@ static unsigned hash_word(const char *s) {
     return h;
 }
 
-/* Open-addressed vocabulary index. */
-static int vocab_slots[MAX_VOCAB * 2];
+/* Open-addressed vocabulary index, always twice the token capacity. */
+static int *vocab_slots = NULL;
+
+static void *xcalloc(size_t n, size_t size, const char *what) {
+    void *p = calloc(n, size);
+    if (!p) {
+        fprintf(stderr, "netta: out of memory growing %s to %zu entries\n",
+                what, n);
+        exit(1);
+    }
+    return p;
+}
+
+static void vocab_slots_rebuild(void) {
+    size_t slots = (size_t)vocab_capacity * 2;
+    memset(vocab_slots, 0, slots * sizeof(int));
+    unsigned mask = (unsigned)slots - 1;
+    for (int id = 0; id < vocab_size; ++id) {
+        unsigned h = hash_word(vocab[id].text) & mask;
+        for (unsigned probe = 0; probe <= mask; ++probe) {
+            unsigned idx = (h + probe) & mask;
+            if (vocab_slots[idx] == 0) {
+                vocab_slots[idx] = id + 1;
+                break;
+            }
+        }
+    }
+}
+
+#define VOCAB_GROW(field, type, what)                                    \
+    do {                                                                 \
+        type *grown_ = (type *)xcalloc((size_t)cap, sizeof(type), what); \
+        if (field) {                                                     \
+            memcpy(grown_, field, (size_t)vocab_capacity * sizeof(type));\
+            free(field);                                                 \
+        }                                                                \
+        field = grown_;                                                  \
+    } while (0)
+
+static void vocab_reserve(int cap) {
+    if (cap <= vocab_capacity) return;
+
+    VOCAB_GROW(vocab, Token, "vocabulary");
+    VOCAB_GROW(first_edge, int, "edge heads");
+    VOCAB_GROW(top_successors, TopSuccTok, "successor lists");
+    VOCAB_GROW(top_successor_counts, TopSuccCnt, "successor counts");
+    VOCAB_GROW(top_successor_n, uint8_t, "successor sizes");
+    VOCAB_GROW(future_top_tokens, FutureTok, "future tokens");
+    VOCAB_GROW(future_top_weight, FutureVal, "future weights");
+    VOCAB_GROW(future_top_prob, FutureVal, "future probabilities");
+    VOCAB_GROW(future_top_n, FutureN, "future sizes");
+    VOCAB_GROW(future_conf, FutureConf, "future confidence");
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h) {
+        float *grown = (float *)xcalloc((size_t)cap, sizeof(float),
+                                        "global future weights");
+        if (global_future_weight[h]) {
+            memcpy(grown, global_future_weight[h],
+                   (size_t)vocab_capacity * sizeof(float));
+            free(global_future_weight[h]);
+        }
+        global_future_weight[h] = grown;
+    }
+
+    /* Newly addressable tokens have no edges and no successors yet. */
+    for (int i = vocab_capacity; i < cap; ++i) {
+        first_edge[i] = -1;
+        for (int k = 0; k < TOP_SUCCESSORS; ++k)
+            top_successors[i][k] = -1;
+        for (int h = 0; h < PROPHECY_HORIZONS; ++h)
+            for (int k = 0; k < FUTURE_TOPK; ++k)
+                future_top_tokens[i][h][k] = -1;
+    }
+
+    free(vocab_slots);
+    vocab_slots = (int *)xcalloc((size_t)cap * 2, sizeof(int),
+                                 "vocabulary index");
+    vocab_capacity = cap;
+    vocab_slots_rebuild();
+}
+#undef VOCAB_GROW
 
 static int token_id(const char *word, int create) {
-    unsigned mask = (MAX_VOCAB * 2) - 1;
+    if (vocab_capacity == 0) vocab_reserve(MAX_VOCAB);
+    unsigned mask = (unsigned)(vocab_capacity * 2) - 1;
     unsigned h = hash_word(word) & mask;
 
     for (unsigned probe = 0; probe <= mask; ++probe) {
@@ -630,7 +722,11 @@ static int token_id(const char *word, int create) {
         int slot = vocab_slots[idx];
 
         if (slot == 0) {
-            if (!create || vocab_size >= MAX_VOCAB) return -1;
+            if (!create) return -1;
+            if (vocab_size >= vocab_capacity) {
+                vocab_reserve(vocab_capacity * 2);
+                return token_id(word, create);
+            }
             int id = vocab_size++;
             vocab_slots[idx] = id + 1;
             snprintf(vocab[id].text, MAX_TOKEN_LEN, "%s", word);
@@ -714,12 +810,19 @@ static int load_corpus(const char *path) {
         return 0;
     }
 
-    memset(vocab_slots, 0, sizeof(vocab_slots));
-    memset(first_edge, 0xFF, sizeof(first_edge));
+    if (vocab_capacity == 0) vocab_reserve(MAX_VOCAB);
+    if (!corpus)
+        corpus = (int *)xcalloc(MAX_CORPUS, sizeof(int), "corpus");
+
+    memset(vocab_slots, 0, (size_t)vocab_capacity * 2 * sizeof(int));
+    memset(first_edge, 0xFF, (size_t)vocab_capacity * sizeof(int));
     memset(first_trigram, 0xFF, sizeof(first_trigram));
-    memset(top_successors, 0xFF, sizeof(top_successors));
-    memset(top_successor_counts, 0, sizeof(top_successor_counts));
-    memset(top_successor_n, 0, sizeof(top_successor_n));
+    memset(top_successors, 0xFF,
+           (size_t)vocab_capacity * sizeof(TopSuccTok));
+    memset(top_successor_counts, 0,
+           (size_t)vocab_capacity * sizeof(TopSuccCnt));
+    memset(top_successor_n, 0,
+           (size_t)vocab_capacity * sizeof(uint8_t));
 
     char buf[MAX_TOKEN_LEN];
     int len = 0;
@@ -964,17 +1067,19 @@ static void future_top_update(int source, int horizon, int future, float weight)
 }
 
 static void build_future_fields(void) {
-    memset(future_top_tokens, 0xFF, sizeof(future_top_tokens));
-    memset(future_top_weight, 0, sizeof(future_top_weight));
-    memset(future_top_prob, 0, sizeof(future_top_prob));
-    memset(future_top_n, 0, sizeof(future_top_n));
-    memset(future_conf, 0, sizeof(future_conf));
-    memset(global_future_weight, 0, sizeof(global_future_weight));
+    size_t n = (size_t)vocab_capacity;
+    memset(future_top_tokens, 0xFF, n * sizeof(FutureTok));
+    memset(future_top_weight, 0, n * sizeof(FutureVal));
+    memset(future_top_prob, 0, n * sizeof(FutureVal));
+    memset(future_top_n, 0, n * sizeof(FutureN));
+    memset(future_conf, 0, n * sizeof(FutureConf));
+    for (int h = 0; h < PROPHECY_HORIZONS; ++h)
+        memset(global_future_weight[h], 0, n * sizeof(float));
     memset(global_future_total, 0, sizeof(global_future_total));
     memset(global_glyph_sketch, 0, sizeof(global_glyph_sketch));
 
-    static float evidence[MAX_VOCAB][PROPHECY_HORIZONS];
-    memset(evidence, 0, sizeof(evidence));
+    FutureConf *evidence =
+        (FutureConf *)xcalloc(n, sizeof(FutureConf), "future evidence");
 
     for (int i = 0; i < corpus_n; ++i) {
         int source = corpus[i];
@@ -1046,6 +1151,8 @@ static void build_future_fields(void) {
                         0.32f * distinctiveness), 0.02f, 1.0f);
         }
     }
+
+    free(evidence);
 }
 
 static void stack_add_distribution(ProphecyStack *stack, int horizon,
@@ -4006,7 +4113,7 @@ static int load_state(const char *path) {
      * reversed equal-probability iteration and changed oracle destiny after
      * a restart even with an identical RNG state.
      */
-    memset(first_edge, 0xFF, sizeof(first_edge));
+    memset(first_edge, 0xFF, (size_t)vocab_capacity * sizeof(int));
     for (int e = 0; e < edge_count; ++e) {
         int from = (int)edges[e].from;
         edges[e].next_from = first_edge[from];
@@ -5167,13 +5274,9 @@ int main(int argc, char **argv) {
     if (!load_corpus(corpus_path)) return 1;
 
     printf("corpus: %d tokens, %d vocabulary items "
-           "(%.1f%% of capacity)\n",
-           corpus_n, vocab_size,
-           100.0 * (double)vocab_size / (double)MAX_VOCAB);
-    if (vocab_size > (int)(0.90 * (double)MAX_VOCAB))
-        fprintf(stderr,
-                "netta: vocabulary above 90%% capacity; "
-                "new words may become inedible\n");
+           "(capacity %d, grown %s)\n",
+           corpus_n, vocab_size, vocab_capacity,
+           vocab_capacity > MAX_VOCAB ? "yes" : "no");
 
     curriculum_init(corpus_n - CONTEXT - 17);
     build_source_graph();
