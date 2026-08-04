@@ -1517,3 +1517,38 @@ on counts or prices. The measurement that keeps surviving says her
 knowledge is directionally right in both worlds, so the damage is not
 in what she knows about edges. Word geometry remains the only channel
 that crosses ungated and has never been tested.
+
+### What survives a change of world is rare and twice as good
+
+Before building a process to compare two worlds, the material was
+counted: how often a context on island 1 falls into a glyph born on
+island 0, closer than the birth threshold — a genuine state match rather
+than a vague resemblance — and how often such a match also predicts.
+
+400 games on island 0, then 400 on island 1:
+
+```text
+                          matches   of those, predicted
+seed 10101
+  glyphs from island 0         42          29   (69%)
+  glyphs born on island 1    1647         694   (42%)
+seed 424242
+  glyphs from island 0         37          30   (81%)
+  glyphs born on island 1    1815         808   (45%)
+```
+
+Cross-island matches are rare — around 2% of all matches — and roughly
+twice as reliable as local ones.
+
+One caveat stated rather than hidden: the distance that defines a match
+is computed in word geometry, which is shared across worlds and grown by
+life on island 0, so the *count* of cross-island matches is inflated by
+the very channel still under suspicion. The predictive rate is not: a
+match that geometry pulled together falsely cannot go on to predict a
+future it has no claim to. 69% and 81% is evidence that these are real
+states.
+
+Nothing in the organism currently distinguishes them. A glyph that has
+proved itself in two worlds votes exactly like one that has only ever
+seen this one, which means the scarcest and most reliable thing she owns
+is treated as ordinary.
