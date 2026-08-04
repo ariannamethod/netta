@@ -1165,6 +1165,24 @@ Structure accumulates — 36 glyphs and 185 topology edges at 1200 become
 stop buying anything after roughly five thousand. This is the argument
 for islands stated as a measurement rather than as a plan.
 
+**Correction: that table is instrument noise, and it should not have
+been written as a finding.** The exam was run at 128 probes. Measured
+afterwards on 512 probes, the per-position standard deviation of the
+coherence outcome is `0.0851`, so the standard error at n=128 is
+`0.0075`. The entire spread of the three rows above is `0.0056` —
+smaller than one standard error of the instrument that produced them.
+Three rows, one distribution, sampled three times.
+
+Whether one text stops paying is therefore still an open question, not a
+measured fact. What survives from this section is the structural count,
+which is not noise-limited, and the argument for islands stands on
+different grounds: not that the text is exhausted, but that a second
+world cannot currently exist beside the first at all.
+
+The methodological rule, since this is the second time in this log a
+number was published above the precision that produced it: an exam
+result is not a finding until its standard error is known.
+
 ### Why first-token accuracy was never the game
 
 The candidate pool was instrumented before touching it, on suspicion
@@ -1241,3 +1259,36 @@ interactive path runs 32 steps, and sovereign mode runs unbounded. If it
 returns, it returns there, with a threshold declared for that setting.
 
 Recorded rather than kept: the organ is out of main.
+
+### How much room any organ has: one number
+
+Six organs returned null. Before building a seventh, the question was
+turned around: not "is this organ weak" but "how much of the decision is
+available to any learned organ at all".
+
+Every learned coordinate was silenced at once — the recurrent core's
+contribution (`mlp_gate` forced to zero, so the mixture is pure corpus
+prior), the search policy set neutral, the glyph vote set neutral — and
+the choice recomputed through the same margin and the same tie-break.
+The diagnostic is silent: the ledger is byte-identical over 300 games.
+Nothing about quality is asserted; only whether the chosen token
+changes.
+
+| seed | chosen token changes | first step of episode |
+|---|---:|---:|
+| 10101 | 0.1449 | 0.1308 |
+| 90909 | 0.1437 | 0.1142 |
+| 424242 | 0.1388 | 0.1133 |
+
+Roughly one decision in seven. Individually these coordinates had already
+been measured — the core's carried memory changes 0.13% and 0.29% of
+choices, the glyph vote 0.24% — but their sum had never been taken.
+
+So 86% of her moves are settled by corpus statistics before any learned
+structure speaks, and every organ built so far has been competing for
+the remaining seventh. That is a simpler explanation for six nulls than
+any account of the organs themselves: they were not weak, the room was
+small. It also sets the ceiling for the next one, and it says where the
+room is not — a new organ inside the choice is bidding for a seventh of
+the decision, while a second world changes what the corpus prior is
+computed from.
