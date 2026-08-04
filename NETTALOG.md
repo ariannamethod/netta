@@ -1026,3 +1026,43 @@ it does count — `edges[e].positive_uses` is right there, unused by this
 update. That is the next thing to measure, and it is a question of
 fatigue on learning, not of removing a channel that coherence depends
 on.
+
+### Fatigue on teaching: a fourth null, and what four nulls together say
+
+The waking channel could not simply be removed — silencing it costs
+`0.0501` of fixed coherence. So the target became the one thing in it
+with no limit: the embedding rate is constant, so a single (`prev`,
+`chosen`) pair can keep teaching the same lesson forever, while the
+market beside it already counts every mark on that pair.
+
+Calibrated before the run against the mark histogram: 2440 pairs carry
+marks at all, median 1, busiest 399. With a threshold of sixteen and
+`1/sqrt(1 + (marks-16)/24)`, 95.6% of pairs lose nothing and the busiest
+loses 76%.
+
+Result: mass `5145`, a fall of 1.5% against a declared 10%. Trigram
+validity rose to `0.5619` and coherence to `0.6223`, both above
+baseline. **Null.** The organ did not enter main.
+
+Four attempts now share a shape. Policy debt: -0.8%. Policy influence:
++2.3%. Glyph action memory: rejected at 0.24% of decisions. Pair
+teaching rate: -1.5%. Every one of them taxes a *local* structure — an
+edge, a trigram, a glyph slot, a pair — and every one of them moves the
+metric by under 3%. Removing the whole channel moves it by 27.7%.
+
+The measurement that explains this was already on the table: 95.6% of
+pairs sit at sixteen marks or fewer, and phrase culture exists anyway.
+`world reduced to grow` is three pairs, none of them individually
+overused. A repeated formula is a property of a trajectory, and a tax
+levied per local structure cannot see a trajectory at all. That is not
+four failed guesses; it is one structural finding reached four times.
+
+The organism does contain a mechanism that sees across a life rather
+than within a step: `global_ngram_counts` hashes the last three context
+tokens with the candidate and returns `1/sqrt(1 + count)`, accumulated
+over the entire biography. It is consulted in the final choice with a
+weight of `0.042` — the smallest term in that expression, and the only
+one that knows what Netta has already said in previous lives.
+
+Whether phrase culture is governed by that weight is the next question,
+and it is a question about an existing organ rather than a new one.
