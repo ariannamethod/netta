@@ -4,12 +4,9 @@
 
 ## NETTA
   
-Somewhere between LM-hero and AlphaZero there's Netta. Netta is a sovereign language learning model. She has a her own txt-file and treats this as a observable worldmodel game. No gradient descent, no loss you minimize — a shared recurrent core plays itself against a corpus, imagines a few steps ahead, prices its own guesses like a market, and keeps every failure as a scar instead of erasing it. 
+Somewhere between LM-hero and AlphaZero there's Netta. Netta is a sovereign language learning model. She has a her own .txt file and she treats this as a observable worldmodel game. No gradient descent, no loss you minimize — a shared recurrent core plays itself against a corpus, imagines a few steps ahead, prices its own guesses like a market, and keeps every failure as a scar instead of erasing it. 
 
-Netta repeatedly enters local regions
-of that world, builds possible futures, acts, compares prophecy with destiny,
-keeps both successful and failed experience, dreams over old episodes, and
-continues without a separate training phase.
+Netta repeatedly enters local regions of that world, builds possible futures, acts, compares prophecy with destiny, keeps both successful and failed experience, dreams over old episodes, and continues without a separate training phase.
 
 Netta reads a line, hides the continuation, generates its own attempt, compares it against both the hidden truth and a statistical oracle mirror, and settles the difference as experience — support if it was right, opposition if it wasn't. A living ledger of transitions with debt, volatility, momentum, and age.  
 
@@ -28,9 +25,7 @@ Netta reads a line, hides the continuation, generates its own attempt, compares 
 - read NETTALOG.md for more.
 
 ## NETA's memory separation
-
-## Memory separation
-
+  
 - `netta.txt` — source truth, never rewritten.
 - `oracle` — generated fresh from source transitions, a coherence reference, not an authority.
 - `netta.state` — embeddings (semantic, left-context, right-context), recurrent core, readout, signed experience.
