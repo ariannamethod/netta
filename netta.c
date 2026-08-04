@@ -325,6 +325,7 @@ typedef struct {
 static Island islands[MAX_ISLANDS];
 static int island_count = 0;
 static int active_island = 0;
+static int requested_island = 0;
 
 static Token *vocab = NULL;
 static int vocab_size = 0;
@@ -4986,7 +4987,12 @@ static void run_episode(int verbose) {
 
 static void run_probe_suite(int count) {
     if (count <= 0) return;
-    int max_start = corpus_n - CONTEXT - 17;
+    /* The exam belongs to the island being played. Drawing positions from
+       the whole corpus would grade her on worlds she is not in. */
+    int probe_base = island_count ? islands[active_island].offset : 0;
+    int probe_span = island_count ?
+        islands[active_island].length : corpus_n;
+    int max_start = probe_span - CONTEXT - 17;
     if (max_start <= 0) return;
 
     Core saved_core = core;
@@ -5016,7 +5022,7 @@ static void run_probe_suite(int count) {
             ((uint64_t)probe + 1ULL) *
             0xD1B54A32D192ED03ULL);
         int source_pos =
-            (int)(position_hash % (uint64_t)max_start);
+            probe_base + (int)(position_hash % (uint64_t)max_start);
 
         rng_state = mix64(
             COHERENCE_PROBE_SEED ^
@@ -5406,6 +5412,8 @@ int main(int argc, char **argv) {
             agent_embedding_enabled = 0;
         else if (strcmp(argv[i], "--no-dream-emb") == 0)
             dream_embedding_enabled = 0;
+        else if (strcmp(argv[i], "--island") == 0 && i + 1 < argc)
+            requested_island = atoi(argv[++i]);
         else if (strcmp(argv[i], "--ngram-weight") == 0 && i + 1 < argc)
             ngram_freshness_weight = strtof(argv[++i], NULL);
         else if (strcmp(argv[i], "--no-stack") == 0) {
@@ -5488,7 +5496,19 @@ int main(int argc, char **argv) {
            corpus_n, vocab_size, vocab_capacity,
            vocab_capacity > MAX_VOCAB ? "yes" : "no");
 
-    curriculum_init(corpus_n - CONTEXT - 17);
+    if (requested_island >= island_count) {
+        fprintf(stderr, "netta: island %d does not exist (%d known)\n",
+                requested_island, island_count);
+        return 1;
+    }
+    if (!islands[requested_island].accessible) {
+        fprintf(stderr, "netta: island %d is not open to her\n",
+                requested_island);
+        return 1;
+    }
+    active_island = requested_island;
+
+    curriculum_init(islands[active_island].length - CONTEXT - 17);
     build_source_graph();
     core_init();
     baseline_plasticity_rule = plasticity_baseline();
