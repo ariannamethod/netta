@@ -1292,3 +1292,81 @@ small. It also sets the ceiling for the next one, and it says where the
 room is not — a new organ inside the choice is bidding for a seventh of
 the decision, while a second world changes what the corpus prior is
 computed from.
+
+---
+
+## Islands
+
+Since her first commit the corpus was one array. Every statistic —
+bigram counts, trigram counts, future fields, word frequencies — was
+taken across all of it, so a second text would not have stood beside the
+first, it would have redefined it. Islands existed in this document as a
+registered experiment and had never existed in code.
+
+An island is one text: an offset, a length, and access. A game is played
+inside one island, because a window crossing a seam would read its
+context from the end of one world and its continuation from the
+beginning of another. Texts placed in `nettatexts/` become islands
+beside her origin text, which is island 0 and is never withdrawn.
+
+### The line: world or biography
+
+Every structure was sorted by one question — does this describe the
+world, or does it describe her?
+
+The world stays on its island: source counts, trigram counts, the future
+fields the oracle samples from, and word frequencies, all rebuilt for the
+island she is playing.
+
+She travels: quote, debt, volatility, momentum, support and opposition on
+every edge; word geometry; the life-spanning trajectory counter; glyphs
+and their topology. She keeps what an edge cost her when she walks into
+a different text.
+
+### Verified
+
+A single island reproduces the previous ledger and state hash byte for
+byte. With a second island present, the physics of island 0 is unchanged:
+
+```text
+source and trigram counts   55d12cda916ee25b
+future confidence           a16ac8713c4cb2ba
+word frequencies            762d25d041111e2c
+```
+
+All three identical with and without the second island. Her behaviour on
+island 0 *does* change, and that is correct rather than a leak: geometry
+is biography, so reading a second world changes her and not it.
+
+Persistence gate 10/10, interaction gate 8/8, newborn fixed exam
+unchanged, ASan and UBSan clean across a two-island life and a prompt.
+
+### What is not built
+
+She always plays island 0. There is no switching, no threshold, and the
+central question has therefore not been put to the machine: **does an
+organism that has lived on island A start better on island B than a
+newborn does?** Until that is measured, transfer between worlds is a
+hypothesis. Access is a field that nothing sets.
+
+### Next, and the shape it has to take
+
+Switching, then the threshold that governs it.
+
+The threshold is prophetic debt, and its direction matters. A new world
+raises her debt because it is unpredictable, so a naive rule would
+expel her for entering — in, debt rises, out, debt falls, in again.
+Membership must therefore be judged on her *origin* island, not on the
+new one: the question is whether she holds form at home, not how hard
+she finds it abroad. Difficulty in a new world is what she goes there
+for.
+
+Withdrawal is a field, never surgery. Removing text would delete lived
+experience, which is the death this organism was just released from. An
+island she loses access to remains in her: she remembers its edges and
+its glyphs, and simply may not play it until her debt at home recovers.
+
+Registered as design, not yet measured: entry is earned by low debt at
+home; the entry itself raises debt, so holding membership costs more
+than gaining it; a text may hold more than one island; and when no new
+text arrives, she keeps playing what she has.
