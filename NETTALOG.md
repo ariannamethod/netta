@@ -1370,3 +1370,73 @@ Registered as design, not yet measured: entry is earned by low debt at
 home; the entry itself raises debt, so holding membership costs more
 than gaining it; a text may hold more than one island; and when no new
 text arrives, she keeps playing what she has.
+
+### Cross-island transfer: what she carries, and a seventh null
+
+With switching in place the question islands exist for could finally be
+asked. It was measured wrong the first time — the exam drew probe
+positions from the whole corpus, so with two islands present it graded
+her on a mixture of worlds she was not in. Repaired to draw from the
+island being played. A pre-repair figure of `+0.0544` in favour of
+experience was an artefact and is discarded.
+
+Repaired, three seeds, equal budget on island 1, newborn against an
+organism that lived 400 games on island 0: coherence
+`-0.0080 / -0.0031 / -0.0135`. Experience does not transfer; it
+interferes on 3/3 seeds, and trigram validity falls by up to `0.1143`.
+
+### What survives a change of world, measured
+
+Before repairing anything, what actually crosses was counted.
+
+```text
+contexts recognised by an existing glyph
+  newborn on island 1      0.0569   0.7069
+  experienced on island 1  0.8756   0.9862
+
+glyphs holding earned authority on island 1        6      7
+of those carried from island 0                     2      2
+still predicting on island 1                       2      2
+```
+
+Recognition is near-total: an experienced organism sees the new world
+almost entirely through abstractions it already holds. Earned voice is
+almost absent — two glyphs cross with authority, and both keep
+predicting. Small sample, but not a failure of abstraction.
+
+A glyph without authority votes exactly neutral, so it cannot be the
+source of the damage. What crosses ungated is the market and the word
+geometry: they apply in the new world by virtue of existing, which is
+the error v27 already corrected once for glyphs — existence mistaken for
+competence.
+
+### The gate that did not hold
+
+Edges were given the same rule glyphs have: what an edge earned elsewhere
+speaks here only once confirmed here, scaled by
+`1 - exp(-island_uses/3)`, open from the first step on her origin island.
+`K=3` was calibrated against the observed distribution of edge use on a
+new island — median 1 use, 93 of 1265 edges reaching five — and not
+against the target metric. Island 0 stays byte-identical, and
+`--no-transfer-gate` reproduces ungated behaviour byte-for-byte.
+
+At 128 probes it looked like a finding: `+0.0122 / -0.0024 / +0.0085`
+against `-0.0080 / -0.0031 / -0.0135` ungated, an improvement on 3/3.
+
+At 512 probes, where the standard error is `0.0038` rather than `0.0075`:
+
+```text
+seed 10101   +0.0034  (0.9 SE)
+seed 90909   -0.0070  (-1.8 SE)
+seed 424242  -0.0044  (-1.2 SE)
+```
+
+The sign does not hold. **Null**, and out of main. The gate is a correct
+idea applied to a channel that is not the one doing the damage, or it is
+too weak to matter; the measurement cannot tell which, and saying more
+would be a story rather than a result.
+
+This is the second time in this document that a promising number at 128
+probes vanished at 512. The exam that governs every threshold here is
+worth 0.0075 per reading, and any effect smaller than that was never
+visible in the first place.
