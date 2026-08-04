@@ -310,12 +310,20 @@ static int vocab_capacity = 0;
 static int *corpus = NULL;
 static int corpus_n = 0;
 
-static Edge edges[MAX_EDGES];
+static Edge *edges = NULL;
 static int edge_count = 0;
+static int edge_capacity = 0;
 static int *first_edge = NULL;
 
-static TrigramEdge trigrams[MAX_TRIGRAMS];
+static TrigramEdge *trigrams = NULL;
 static int trigram_count_total = 0;
+static int trigram_capacity = 0;
+/*
+ * Bucket count stays fixed on purpose. It is the hash mask, so growing it
+ * would re-order every chain, and chain order decides which candidate an
+ * equal-probability draw lands on — the exact bug that once made a restart
+ * choose a different future. Chains lengthen; they never get reshuffled.
+ */
 static int first_trigram[TRI_BUCKETS];
 
 static TopSuccTok *top_successors = NULL;
@@ -644,6 +652,18 @@ static void *xcalloc(size_t n, size_t size, const char *what) {
     return p;
 }
 
+static void *xrealloc_zero(void *p, size_t old_n, size_t new_n,
+                           size_t size, const char *what) {
+    void *grown = realloc(p, new_n * size);
+    if (!grown) {
+        fprintf(stderr, "netta: out of memory growing %s to %zu entries\n",
+                what, new_n);
+        exit(1);
+    }
+    memset((char *)grown + old_n * size, 0, (new_n - old_n) * size);
+    return grown;
+}
+
 static void vocab_slots_rebuild(void) {
     size_t slots = (size_t)vocab_capacity * 2;
     memset(vocab_slots, 0, slots * sizeof(int));
@@ -776,15 +796,20 @@ static int is_punct_token(int c) {
 /* A world that claims probability continues beyond what it has seen may
    not silently discard what it has seen. Both walls are counted. */
 static uint64_t corpus_dropped_vocab = 0;
-static uint64_t corpus_dropped_capacity = 0;
+
+static int corpus_capacity = 0;
+
+static void corpus_reserve(void) {
+    if (corpus_n < corpus_capacity) return;
+    int cap = corpus_capacity ? corpus_capacity * 2 : MAX_CORPUS;
+    corpus = (int *)xrealloc_zero(corpus, (size_t)corpus_capacity,
+                                  (size_t)cap, sizeof(int), "corpus");
+    corpus_capacity = cap;
+}
 
 static void emit_token(char *buf, int *len) {
     if (*len <= 0) return;
-    if (corpus_n >= MAX_CORPUS) {
-        corpus_dropped_capacity++;
-        *len = 0;
-        return;
-    }
+    corpus_reserve();
     buf[*len] = '\0';
 
     /* ASCII lowercase; UTF-8 bytes remain stable rather than destroyed. */
@@ -811,8 +836,7 @@ static int load_corpus(const char *path) {
     }
 
     if (vocab_capacity == 0) vocab_reserve(MAX_VOCAB);
-    if (!corpus)
-        corpus = (int *)xcalloc(MAX_CORPUS, sizeof(int), "corpus");
+    corpus_reserve();
 
     memset(vocab_slots, 0, (size_t)vocab_capacity * 2 * sizeof(int));
     memset(first_edge, 0xFF, (size_t)vocab_capacity * sizeof(int));
@@ -834,10 +858,7 @@ static int load_corpus(const char *path) {
         } else if (is_punct_token(c)) {
             emit_token(buf, &len);
             char p[2] = {(char)c, '\0'};
-            if (corpus_n >= MAX_CORPUS) {
-                corpus_dropped_capacity++;
-                continue;
-            }
+            corpus_reserve();
             int id = token_id(p, 1);
             if (id >= 0) {
                 corpus[corpus_n++] = id;
@@ -854,14 +875,9 @@ static int load_corpus(const char *path) {
 
     if (corpus_dropped_vocab)
         fprintf(stderr,
-                "netta: %llu corpus token(s) dropped — vocabulary full at "
-                "%d entries; this world is smaller than its text\n",
-                (unsigned long long)corpus_dropped_vocab, MAX_VOCAB);
-    if (corpus_dropped_capacity)
-        fprintf(stderr,
-                "netta: %llu corpus token(s) dropped — corpus capacity "
-                "full at %d tokens\n",
-                (unsigned long long)corpus_dropped_capacity, MAX_CORPUS);
+                "netta: %llu corpus token(s) could not be interned; "
+                "this world is smaller than its text\n",
+                (unsigned long long)corpus_dropped_vocab);
 
     return corpus_n > CONTEXT + ROLLOUT;
 }
@@ -874,7 +890,14 @@ static int find_edge(int from, int to) {
 
 static int get_edge(int from, int to, int create) {
     int e = find_edge(from, to);
-    if (e >= 0 || !create || edge_count >= MAX_EDGES) return e;
+    if (e >= 0 || !create) return e;
+
+    if (edge_count >= edge_capacity) {
+        int cap = edge_capacity ? edge_capacity * 2 : MAX_EDGES;
+        edges = (Edge *)xrealloc_zero(edges, (size_t)edge_capacity,
+                                      (size_t)cap, sizeof(Edge), "edges");
+        edge_capacity = cap;
+    }
 
     e = edge_count++;
     edges[e].from = (uint32_t)from;
@@ -912,8 +935,15 @@ static int get_trigram(int a, int b, int c, int create) {
             return t;
     }
 
-    if (!create || trigram_count_total >= MAX_TRIGRAMS)
-        return -1;
+    if (!create) return -1;
+
+    if (trigram_count_total >= trigram_capacity) {
+        int cap = trigram_capacity ? trigram_capacity * 2 : MAX_TRIGRAMS;
+        trigrams = (TrigramEdge *)xrealloc_zero(
+            trigrams, (size_t)trigram_capacity, (size_t)cap,
+            sizeof(TrigramEdge), "trigrams");
+        trigram_capacity = cap;
+    }
 
     int t = trigram_count_total++;
     trigrams[t].a = (uint32_t)a;
