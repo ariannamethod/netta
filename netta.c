@@ -691,6 +691,12 @@ static void vocab_slots_rebuild(void) {
     } while (0)
 
 static void vocab_reserve(int cap) {
+    /* The index is addressed with a mask, so capacity must stay a power of
+       two: 8153 slots would mask to 16305 and silently lose words. */
+    int rounded = MAX_VOCAB;
+    while (rounded < cap) rounded *= 2;
+    cap = rounded;
+
     if (cap <= vocab_capacity) return;
 
     VOCAB_GROW(vocab, Token, "vocabulary");
@@ -828,6 +834,46 @@ static void emit_token(char *buf, int *len) {
     *len = 0;
 }
 
+/*
+ * The vocabulary belongs to her, not to the text in front of her. It is
+ * restored before any text is read, so a new text can only append words she
+ * has never met — it can never redefine what an id she already remembers
+ * means. Without this the file on disk decides who she is, and any text she
+ * had not seen before killed her.
+ */
+static int preload_vocab(const char *path) {
+    FILE *f = fopen(path, "rb");
+    if (!f) return 0;
+
+    StateHeader h;
+    if (fread(&h, sizeof(h), 1, f) != 1 ||
+        h.magic != STATE_MAGIC ||
+        h.version != STATE_VERSION ||
+        h.vocab_size == 0) {
+        fclose(f);
+        return 0;
+    }
+
+    vocab_reserve((int)h.vocab_size);
+    Token *saved = (Token *)malloc((size_t)h.vocab_size * sizeof(Token));
+    if (!saved) {
+        fclose(f);
+        return 0;
+    }
+    if (fread(saved, sizeof(Token), h.vocab_size, f) != h.vocab_size) {
+        free(saved);
+        fclose(f);
+        return 0;
+    }
+
+    memcpy(vocab, saved, (size_t)h.vocab_size * sizeof(Token));
+    vocab_size = (int)h.vocab_size;
+    free(saved);
+    fclose(f);
+    vocab_slots_rebuild();
+    return 1;
+}
+
 static int load_corpus(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) {
@@ -838,7 +884,10 @@ static int load_corpus(const char *path) {
     if (vocab_capacity == 0) vocab_reserve(MAX_VOCAB);
     corpus_reserve();
 
-    memset(vocab_slots, 0, (size_t)vocab_capacity * 2 * sizeof(int));
+    /* Frequencies describe the text at hand; the words themselves persist. */
+    for (int i = 0; i < vocab_size; ++i) vocab[i].count = 0;
+    if (vocab_size == 0)
+        memset(vocab_slots, 0, (size_t)vocab_capacity * 2 * sizeof(int));
     memset(first_edge, 0xFF, (size_t)vocab_capacity * sizeof(int));
     memset(first_trigram, 0xFF, sizeof(first_trigram));
     memset(top_successors, 0xFF,
@@ -5339,6 +5388,7 @@ int main(int argc, char **argv) {
     printf("NETTA — NETTA's Experiential Text Training Architecture\n");
     printf("sovereign recursive coherence game; no backpropagation\n");
 
+    if (!reset) preload_vocab("netta.state");
     if (!load_corpus(corpus_path)) return 1;
 
     printf("corpus: %d tokens, %d vocabulary items "
