@@ -74,7 +74,7 @@
 #define NREM_DREAMS      12
 #define REM_DREAMS       8
 #define STATE_MAGIC     0x4E455454u /* NETT */
-#define STATE_VERSION   41u
+#define STATE_VERSION   42u
 
 typedef struct {
     char text[MAX_TOKEN_LEN];
@@ -4016,11 +4016,19 @@ static int load_state(const char *path) {
     if (fread(&h, sizeof(h), 1, f) != 1 ||
         h.magic != STATE_MAGIC ||
         h.version != STATE_VERSION ||
-        h.vocab_size != (uint32_t)vocab_size ||
         h.glyph_mode != (uint32_t)glyph_mode) {
         fclose(f);
         return 0;
     }
+
+    /*
+     * A snapshot may hold more words than the current text produced — she
+     * lived through a larger world before. Identity of the shared prefix is
+     * what must match, not its length; the vocabulary is append-only, so a
+     * remembered id always means the same word.
+     */
+    if (h.vocab_size > (uint32_t)vocab_capacity)
+        vocab_reserve((int)h.vocab_size);
 
     /*
      * A truncated or foreign snapshot is refused before a single byte of
@@ -4053,8 +4061,15 @@ static int load_state(const char *path) {
         return 0;
     }
 
-    /* Refuse state if vocabulary identity changed. */
-    for (uint32_t i = 0; i < h.vocab_size; ++i) {
+    /*
+     * Refuse state if vocabulary identity changed. Only the prefix both
+     * worlds share is checked: words the snapshot knew and this text no
+     * longer produces are still hers, and words this text added after the
+     * snapshot cannot contradict anything she remembers.
+     */
+    uint32_t shared = h.vocab_size < (uint32_t)vocab_size ?
+                      h.vocab_size : (uint32_t)vocab_size;
+    for (uint32_t i = 0; i < shared; ++i) {
         if (strncmp(saved[i].text, vocab[i].text, MAX_TOKEN_LEN) != 0) {
             free(saved);
             fclose(f);
@@ -4062,16 +4077,39 @@ static int load_state(const char *path) {
         }
     }
 
-    if (h.edge_count > MAX_EDGES ||
-        fread(edges, sizeof(Edge), h.edge_count, f) != h.edge_count) {
+    /* Words she remembers that this text did not re-create stay hers. */
+    for (uint32_t i = (uint32_t)vocab_size; i < h.vocab_size; ++i) {
+        snprintf(vocab[i].text, MAX_TOKEN_LEN, "%s", saved[i].text);
+        vocab[i].count = saved[i].count;
+    }
+    if (h.vocab_size > (uint32_t)vocab_size) {
+        vocab_size = (int)h.vocab_size;
+        vocab_slots_rebuild();
+    }
+
+    if ((int)h.edge_count > edge_capacity) {
+        int cap = edge_capacity ? edge_capacity : MAX_EDGES;
+        while ((int)h.edge_count > cap) cap *= 2;
+        edges = (Edge *)xrealloc_zero(edges, (size_t)edge_capacity,
+                                      (size_t)cap, sizeof(Edge), "edges");
+        edge_capacity = cap;
+    }
+    if (fread(edges, sizeof(Edge), h.edge_count, f) != h.edge_count) {
         free(saved);
         fclose(f);
         return 0;
     }
 
     edge_count = (int)h.edge_count;
-    if (h.trigram_count > MAX_TRIGRAMS ||
-        fread(trigrams, sizeof(TrigramEdge), h.trigram_count, f) !=
+    if ((int)h.trigram_count > trigram_capacity) {
+        int cap = trigram_capacity ? trigram_capacity : MAX_TRIGRAMS;
+        while ((int)h.trigram_count > cap) cap *= 2;
+        trigrams = (TrigramEdge *)xrealloc_zero(
+            trigrams, (size_t)trigram_capacity, (size_t)cap,
+            sizeof(TrigramEdge), "trigrams");
+        trigram_capacity = cap;
+    }
+    if (fread(trigrams, sizeof(TrigramEdge), h.trigram_count, f) !=
             h.trigram_count) {
         free(saved);
         fclose(f);
