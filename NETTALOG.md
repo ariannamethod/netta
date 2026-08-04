@@ -1480,3 +1480,40 @@ interference. Two organs have now failed to fix transfer by acting on
 edges, and the reason both failed is the same: edges were not what was
 broken. Word geometry crosses every world ungated and is the only
 channel left unexamined.
+
+### Accumulating counts across worlds: a ninth null, and why q's answer is not hers
+
+The sibling project `q` keeps one living set of metaweights and pours
+every new text into it — `ingest_ids` adds to existing bigram and trigram
+mass rather than rebuilding it. Since her market knowledge was measured
+to transfer almost perfectly in direction (`1.0000`, `0.9855`), the
+obvious reading was that per-island rebuilding was destroying knowledge
+that would otherwise carry, and that the rebuild was the defect.
+
+Tested: counts accumulate across every island, future fields and word
+frequency stay island-local. Origin island byte-identical,
+`--rebuild-per-island` reproduces prior behaviour exactly.
+
+Measured at 512 probes, experienced against newborn on island 1:
+
+```text
+seed 10101   -0.0140  (-3.7 SE)
+seed 90909   -0.0111  (-2.9 SE)
+seed 424242  -0.0247  (-6.5 SE)
+```
+
+Worse on 3/3, and worse than the per-island rebuild it replaced. **Null.**
+
+The reason `q`'s answer does not transplant is structural rather than a
+matter of degree. `q` has one world, so accumulated mass is simply more
+of that world. Netta samples her oracle from these counts, so accumulated
+mass from a previous island is an oracle proposing continuations from a
+world she is no longer in. Isolation was not the defect; it was the
+correct decision, and this null is what confirms it.
+
+Three organs have now failed to make experience help across islands —
+a transfer gate, parallel markets, accumulated counts. All three acted
+on counts or prices. The measurement that keeps surviving says her
+knowledge is directionally right in both worlds, so the damage is not
+in what she knows about edges. Word geometry remains the only channel
+that crosses ungated and has never been tested.
