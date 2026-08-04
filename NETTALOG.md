@@ -1199,3 +1199,45 @@ means first-token accuracy measures the only step where the two
 trajectories still coincide, and every coordinate past it measures
 divergence, not quality. Memorisation was never the target; the coherence
 outcome and the debt delta are.
+
+### Named debt: a null with a structural cause
+
+Her debt is a scalar. It says how much is owed and never which word,
+so nothing in the organism can say "I promised this forty steps ago and
+still have not said it". The sibling project `q` solved exactly this
+years earlier: its prophecies are named obligations carrying an age, and
+pressure grows as `strength · log(1+age)` until the promise is kept or
+dies.
+
+Transplanted as a silent organ — sixteen live promises drawn from the
+near horizon, aged each step, discharged when the promised word is
+spoken — and wired to nothing. No coordinate, no utility term, no
+influence on any choice. Verified silent: the state file and every
+pre-existing ledger column are byte-identical across 300 games.
+
+Pre-registered threshold: overdue pressure must correlate with episode
+coherence more strongly than the existing scalar debt does, on 3/3
+seeds.
+
+| seed | r(overdue, coherence) | r(scalar debt, coherence) |
+|---|---:|---:|
+| 10101 | -0.1702 | -0.2721 |
+| 90909 | -0.1599 | -0.2367 |
+| 424242 | -0.1416 | -0.2159 |
+
+The scalar wins on all three. **Null.**
+
+The diagnostic says why, and the reason is not the mechanism. Over 1200
+games: 106581 promises born, 7169 kept, **0 expired**. Not one promise
+ever reached the age limit — an episode is eight steps long, so nothing
+survives long enough for `log(1+age)` to grow. Age-weighted pressure
+needs a trajectory; her life is cut into eight-step pieces, and the
+promise dies with the episode rather than ageing inside it.
+
+So the transplant did not fail on its merits. It failed because the
+organ it came from lives on a continuous life and this one does not.
+Named debt has a place here only where the trajectory is long: the
+interactive path runs 32 steps, and sovereign mode runs unbounded. If it
+returns, it returns there, with a threshold declared for that setting.
+
+Recorded rather than kept: the organ is out of main.
