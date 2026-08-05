@@ -3529,14 +3529,21 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
             !edges[e].positive_uses && !edges[e].negative_uses) continue;
         experience_scanned++;
         float v = learned_relation_score(prev, (int)edges[e].to);
+        int to = (int)edges[e].to;
         for (int k = 0; k < 3; ++k) {
-            if (v > best_val[k]) {
+            /* Before she has used any of these edges they all score the
+               same, so the winner was whichever the chain reached first —
+               chain order again, biography again. Spelling decides ties
+               here for the same reason it decides them among successors. */
+            if (v > best_val[k] ||
+                (v == best_val[k] && best_exp[k] >= 0 &&
+                 strcmp(vocab[to].text, vocab[best_exp[k]].text) < 0)) {
                 for (int q = 2; q > k; --q) {
                     best_val[q] = best_val[q - 1];
                     best_exp[q] = best_exp[q - 1];
                 }
                 best_val[k] = v;
-                best_exp[k] = (int)edges[e].to;
+                best_exp[k] = to;
                 break;
             }
         }
