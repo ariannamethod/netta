@@ -1552,3 +1552,43 @@ Nothing in the organism currently distinguishes them. A glyph that has
 proved itself in two worlds votes exactly like one that has only ever
 seen this one, which means the scarcest and most reliable thing she owns
 is treated as ordinary.
+
+### Giving cross-world abstractions more voice: a tenth null
+
+A glyph that predicted in more than one island was given a multiplier on
+the authority it had already earned under v27 — not a second vote, so a
+glyph that never beat the corpus prior stays silent regardless of how
+many worlds it has seen. The multiplier was taken from the replication
+measurement rather than chosen: cross-island matches predict at 69% and
+81% against 42% and 45% for local ones, a ratio near 1.7.
+
+The first comparison was invalid and is discarded: it measured this
+build against a baseline recorded by a different binary, with different
+physics. A matched control — the same binary with the organ on and off —
+gives:
+
+```text
+seed 10101   +0.0073  (1.9 SE)
+seed 90909   +0.0018  (0.5 SE)
+seed 424242  +0.0016  (0.4 SE)
+```
+
+Positive on 3/3, but two of three inside the noise floor.
+
+Since the organ touches roughly 1% of steps, the global exam cannot see
+it either way, so the decisive measurement is aimed: outcomes on the
+steps where a two-world glyph actually voted, against steps where an
+ordinary one did.
+
+```text
+seed 10101    two-world 0.1210 (124 steps)   ordinary 0.0901 (2809)
+seed 424242   two-world 0.0704  (71 steps)   ordinary 0.0931 (3084)
+```
+
+The sign does not hold, and on 124 and 71 steps neither number means
+anything. **Null**, out of main.
+
+What survives is the finding that motivated it: what crosses a change of
+world predicts twice as reliably as what does not. Multiplying its vote
+is simply not how to use that. The organ was rejected; the measurement
+that named the material stands.
