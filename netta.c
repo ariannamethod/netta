@@ -389,7 +389,14 @@ static float glyph_birth_threshold = 0.31f;
 static int neighbor_enabled = 1;
 
 static CurriculumRegion curriculum_regions[MAX_CURRICULUM_REGIONS];
+/* How many regions have ever been prepared, across every world she knows;
+   append-only, like the vocabulary. */
 static int curriculum_count = 0;
+/* The window belonging to the world she is playing. Regions are indexed by
+   position in the whole corpus, so no two worlds share one: what she learned
+   about the opening of one text is not progress through another's. */
+static int curriculum_lo = 0;
+static int curriculum_n = 0;
 static int curriculum_enabled = 1;
 static int curriculum_region_span = CURRICULUM_REGION_SPAN;
 static int last_curriculum_region = -1;
@@ -461,22 +468,31 @@ static uint64_t mix64(uint64_t x) {
 static float clampf(float x, float lo, float hi);
 
 static void curriculum_init(int max_start) {
-    int count =
+    /* Rounded up, so the region a seam falls in belongs to one world only. */
+    int base = island_count ?
+        (islands[active_island].offset + curriculum_region_span - 1) /
+        curriculum_region_span : 0;
+    if (base >= MAX_CURRICULUM_REGIONS) base = MAX_CURRICULUM_REGIONS - 1;
+
+    int n =
         (max_start + curriculum_region_span - 1) /
         curriculum_region_span;
-    if (count < 1) count = 1;
-    if (count > MAX_CURRICULUM_REGIONS)
-        count = MAX_CURRICULUM_REGIONS;
+    if (n < 1) n = 1;
+    if (base + n > MAX_CURRICULUM_REGIONS)
+        n = MAX_CURRICULUM_REGIONS - base;
 
-    if (curriculum_count == 0) {
-        memset(curriculum_regions, 0, sizeof(curriculum_regions));
-        for (int i = 0; i < count; ++i) {
-            curriculum_regions[i].fast = 0.5f;
-            curriculum_regions[i].slow = 0.5f;
-            curriculum_regions[i].priority = 0.5f;
-        }
+    /* A world she has not entered before starts undecided rather than at
+       zero, so its regions do not read as uniformly exhausted. */
+    for (int i = curriculum_count; i < base + n; ++i) {
+        memset(&curriculum_regions[i], 0, sizeof(curriculum_regions[i]));
+        curriculum_regions[i].fast = 0.5f;
+        curriculum_regions[i].slow = 0.5f;
+        curriculum_regions[i].priority = 0.5f;
     }
-    curriculum_count = count;
+    if (base + n > curriculum_count) curriculum_count = base + n;
+
+    curriculum_lo = base;
+    curriculum_n = n;
 }
 
 static float curriculum_priority_for(int region) {
@@ -517,12 +533,12 @@ static uint64_t curriculum_hash(uint64_t episode, uint64_t stream) {
 }
 
 static int curriculum_source_position(uint64_t episode, int max_start) {
-    if (curriculum_count <= 0)
+    if (curriculum_n <= 0)
         curriculum_init(max_start);
 
     uint64_t warmup =
         (uint64_t)CURRICULUM_WARMUP_PASSES *
-        (uint64_t)curriculum_count;
+        (uint64_t)curriculum_n;
     int in_warmup = episode < warmup;
     int use_uniform =
         !curriculum_enabled ||
@@ -539,12 +555,12 @@ static int curriculum_source_position(uint64_t episode, int max_start) {
          */
         uint64_t offset =
             curriculum_hash(0, 0xC011AB1EULL) %
-            (uint64_t)curriculum_count;
-        region = (int)((episode + offset) %
-                       (uint64_t)curriculum_count);
+            (uint64_t)curriculum_n;
+        region = curriculum_lo + (int)((episode + offset) %
+                                       (uint64_t)curriculum_n);
     } else if (use_uniform) {
-        region = (int)(curriculum_hash(episode, 2) %
-                       (uint64_t)curriculum_count);
+        region = curriculum_lo + (int)(curriculum_hash(episode, 2) %
+                                       (uint64_t)curriculum_n);
     } else {
         /*
          * Prioritized replay without winner-take-all collapse.
@@ -552,7 +568,7 @@ static int curriculum_source_position(uint64_t episode, int max_start) {
          * mass, while the permanent uniform branch preserves world coverage.
          */
         double total = 0.0;
-        for (int i = 0; i < curriculum_count; ++i) {
+        for (int i = curriculum_lo; i < curriculum_lo + curriculum_n; ++i) {
             float p = curriculum_priority_for(i);
             total += 0.02 + (double)p * sqrt((double)p + 1e-12);
         }
@@ -562,8 +578,8 @@ static int curriculum_source_position(uint64_t episode, int max_start) {
             (1.0 / 9007199254740992.0);
         double target = u * total;
         double cumulative = 0.0;
-        region = curriculum_count - 1;
-        for (int i = 0; i < curriculum_count; ++i) {
+        region = curriculum_lo + curriculum_n - 1;
+        for (int i = curriculum_lo; i < curriculum_lo + curriculum_n; ++i) {
             float p = curriculum_priority_for(i);
             cumulative +=
                 0.02 + (double)p * sqrt((double)p + 1e-12);
@@ -574,13 +590,13 @@ static int curriculum_source_position(uint64_t episode, int max_start) {
         }
     }
 
-    int lo = region * curriculum_region_span;
+    int lo = (region - curriculum_lo) * curriculum_region_span;
     int hi = lo + curriculum_region_span;
     if (hi > max_start) hi = max_start;
     if (hi <= lo) {
         lo = 0;
         hi = max_start;
-        region = 0;
+        region = curriculum_lo;
     }
     int width = hi - lo;
     int pos = lo + (int)(curriculum_hash(episode, 999) %
@@ -596,9 +612,10 @@ static void curriculum_update(int source_pos,
                               float outcome,
                               float debt,
                               float surprise) {
-    if (curriculum_count <= 0) return;
-    int region = source_pos / curriculum_region_span;
-    if (region < 0 || region >= curriculum_count) return;
+    if (curriculum_n <= 0) return;
+    /* The position is local to the world; the region it names is not. */
+    int region = curriculum_lo + source_pos / curriculum_region_span;
+    if (source_pos < 0 || region >= curriculum_lo + curriculum_n) return;
 
     CurriculumRegion *r = &curriculum_regions[region];
     float old_fast = r->fast;
@@ -5131,7 +5148,7 @@ static void run_episode(int verbose) {
     basin_remember(episode_emb);
 
     episode_count++;
-    curriculum_update(source_pos, episode_coherence,
+    curriculum_update(source_pos - isl->offset, episode_coherence,
                       world_debt_end, episode_surprise);
 
     if (dreams_enabled && episode_count % DREAM_INTERVAL == 0)

@@ -179,22 +179,25 @@ if want 8; then
     ( cd "$alone" && "$BIN" netta.txt --reset --seed 42 --steps 60 --island 0 ) >/dev/null 2>&1
     ( cd "$alone" && "$BIN" netta.txt --seed 42 --steps 1 --island 0 --probe 128 ) >/dev/null 2>&1
 
-    via=$(world life_via); mkdir -p "$via/nettatexts"
-    cp "$ROOT/docs/MODELCARD.md" "$via/nettatexts/"
-    ( cd "$via" && "$BIN" netta.txt --reset --seed 42 --steps 60 --island 0 ) >/dev/null 2>&1
-    ( cd "$via" && "$BIN" netta.txt --seed 42 --steps 60 --island 1 ) >/dev/null 2>&1
-    ( cd "$via" && "$BIN" netta.txt --seed 42 --steps 1 --island 0 --probe 128 ) >/dev/null 2>&1
+    ( cd "$alone" && "$BIN" netta.txt --seed 42 --steps 60 --island 1 ) >/dev/null 2>&1
 
-    ca=$(awk -F'\t' 'NR>1{n++;s+=$29} END{if(n)printf "%.5f", s/n}' "$alone/netta.history.tsv")
-    cv=$(awk -F'\t' 'NR>1{n++;s+=$29} END{if(n)printf "%.5f", s/n}' "$via/netta.history.tsv")
-    if [ -z "$ca" ] || [ -z "$cv" ]; then
-        fail "8 time spent in another world leaves this world's curriculum alone" \
-             "no measurement taken: ledger missing or empty"
-    elif [ "$ca" = "$cv" ]; then
-        pass "8 time spent in another world leaves this world's curriculum alone"
+    # Comparing progress between two organisms cannot answer this: one that
+    # also lived elsewhere is simply older, and region choice depends on the
+    # episode count. What is observable is the symptom the defect left: the
+    # position of an episode was local to its world while the region it
+    # updated was indexed from the whole corpus, so on any world but the
+    # first the update fell outside the table and the curriculum silently
+    # learned nothing at all.
+    prog=$(awk -F'\t' 'NR>62{n++; s+=$30} END{if(n)printf "%.5f", s/n}' \
+        "$alone/netta.history.tsv")
+    if [ -z "$prog" ]; then
+        fail "8 a second world's curriculum learns at all" \
+             "no measurement taken: ledger missing or too short"
+    elif [ "$prog" = "0.00000" ]; then
+        fail "8 a second world's curriculum learns at all" \
+             "progress stayed at $prog across 60 episodes"
     else
-        fail "8 time spent in another world leaves this world's curriculum alone" \
-             "mean curriculum progress $ca vs $cv"
+        pass "8 a second world's curriculum learns at all ($prog)"
     fi
 fi
 
