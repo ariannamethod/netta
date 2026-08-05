@@ -1153,6 +1153,24 @@ static void policy_improve_context(const int *ctx, int ctx_n,
 }
 
 
+/*
+ * Ranks two successors. Count first; ties broken by how the word is spelled.
+ *
+ * A word has more successors of equal count than the table has room for, so
+ * something must decide which twelve stay, and that something was the order
+ * of the edge chain — which is the order edges happened to be created, which
+ * is her biography. The physics of a text was a function of the life she had
+ * lived before reading it. Token ids cannot break the tie either: an id is
+ * assigned by arrival order and a resumed organism carries the ids of the
+ * world it came from. The spelling is the only total order in the organism
+ * that no history can move.
+ */
+static int successor_precedes(uint32_t count_a, int tok_a,
+                              uint32_t count_b, int tok_b) {
+    if (count_a != count_b) return count_a > count_b;
+    return strcmp(vocab[tok_a].text, vocab[tok_b].text) < 0;
+}
+
 static void build_top_successors(void) {
     /* Resume rebuilds the world a second time in one process; without this
        the second pass inserts on top of the first table. */
@@ -1170,14 +1188,19 @@ static void build_top_successors(void) {
 
             if (slot < TOP_SUCCESSORS) {
                 top_successor_n[from]++;
-            } else if (count <= top_successor_counts[from][TOP_SUCCESSORS - 1]) {
+            } else if (!successor_precedes(
+                           count, tok,
+                           top_successor_counts[from][TOP_SUCCESSORS - 1],
+                           top_successors[from][TOP_SUCCESSORS - 1])) {
                 continue;
             } else {
                 slot = TOP_SUCCESSORS - 1;
             }
 
             while (slot > 0 &&
-                   count > top_successor_counts[from][slot - 1]) {
+                   successor_precedes(count, tok,
+                                      top_successor_counts[from][slot - 1],
+                                      top_successors[from][slot - 1])) {
                 if (slot < TOP_SUCCESSORS) {
                     top_successor_counts[from][slot] =
                         top_successor_counts[from][slot - 1];
