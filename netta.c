@@ -791,12 +791,28 @@ static int token_id(const char *word, int create) {
             vocab_slots[idx] = id + 1;
             snprintf(vocab[id].text, MAX_TOKEN_LEN, "%s", word);
             vocab[id].count = 0;
+            /*
+             * A word's first shape is drawn from the word itself, not from
+             * where it happened to fall in the stream of random numbers.
+             * Drawn globally, the same word received a different lottery
+             * depending on how many words had been created before it — so
+             * an organism arriving from another text started every shared
+             * word in a different place than one born here, with nothing
+             * learned by either. The word is the seed; the draw follows.
+             */
+            uint64_t wseed = 1469598103934665603ULL;
+            for (const char *p = vocab[id].text; *p; ++p)
+                wseed = (wseed ^ (uint64_t)(unsigned char)*p) *
+                        1099511628211ULL;
+            uint64_t saved_rng = rng_state;
+            rng_state = mix64(wseed) | 1ULL;
             for (int d = 0; d < EMBED_DIM; ++d) {
                 float seed = randn(0.08f);
                 vocab[id].emb[d] = seed;
                 vocab[id].left_emb[d] = seed + randn(0.015f);
                 vocab[id].right_emb[d] = seed + randn(0.015f);
             }
+            rng_state = saved_rng;
             normalize(vocab[id].emb, EMBED_DIM);
             normalize(vocab[id].left_emb, EMBED_DIM);
             normalize(vocab[id].right_emb, EMBED_DIM);
