@@ -1154,10 +1154,17 @@ static void policy_improve_context(const int *ctx, int ctx_n,
 
 
 static void build_top_successors(void) {
+    /* Resume rebuilds the world a second time in one process; without this
+       the second pass inserts on top of the first table. */
+    memset(top_successor_n, 0, (size_t)vocab_capacity * sizeof(uint8_t));
+
     for (int from = 0; from < vocab_size; ++from) {
         for (int e = first_edge[from]; e >= 0; e = edges[e].next_from) {
             int tok = (int)edges[e].to;
             uint32_t count = edges[e].source_count;
+            /* An edge she opened herself is biography; it is not a
+               successor in this text and does not belong in this table. */
+            if (count == 0) continue;
             int n = top_successor_n[from];
             int slot = n;
 
@@ -2508,7 +2515,7 @@ static void glyph_maintenance(void) {
     }
 }
 
-static void build_source_graph(void) {
+static void build_source_graph(int with_geometry) {
     /*
      * The physics of a world is the island's; what she made of it is hers.
      * Source counts describe which words follow which in *this* text, so
@@ -2545,7 +2552,11 @@ static void build_source_graph(void) {
     build_future_fields();
 
     /* Word geometry is hers and spans every world she has read, so this
-       pass runs over the whole corpus rather than the active island. */
+       pass runs over the whole corpus rather than the active island. It is
+       grown once and never regrown over a snapshot that already restored
+       it — that would overwrite what she learned with what the text says. */
+    if (!with_geometry) return;
+
     int window = 5;
     for (int i = 0; i < corpus_n; ++i) {
         int a = corpus[i];
@@ -2801,6 +2812,10 @@ static int oracle_next_context(const int *ctx, int ctx_n) {
         int tri_scanned = 0;
         for (int t = first_trigram[bucket]; t >= 0 && tri_scanned < 20;
              t = trigrams[t].next_bucket) {
+            /* A trigram absent from this text and untouched by her belongs
+               to a world she has left; it must not spend the scan. */
+            if (trigrams[t].count == 0 && trigrams[t].policy_visits == 0)
+                continue;
             tri_scanned++;
             if ((int)trigrams[t].a == a && (int)trigrams[t].b == b)
                 total += trigrams[t].count;
@@ -3253,6 +3268,10 @@ static int simulated_policy_next(const int *ctx, int ctx_n,
             if ((int)trigrams[t].a != a ||
                 (int)trigrams[t].b != prev)
                 continue;
+            /* Absent from this text and untouched by her: a continuation
+               belonging to a world she is no longer in. */
+            if (trigrams[t].count == 0 && trigrams[t].policy_visits == 0)
+                continue;
             int tok = (int)trigrams[t].c;
             float value = simulated_token_value(ctx, ctx_n, tok, intent, world);
             if (value > best_value) {
@@ -3476,6 +3495,15 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
     for (int e = first_edge[prev];
          e >= 0 && experience_scanned < 128;
          e = edges[e].next_from) {
+        /*
+         * An edge that is neither part of this text nor part of her
+         * experience is neither, and it must not consume one of the
+         * hundred and twenty-eight: after a change of world the chain
+         * begins with tens of thousands of edges belonging to the text she
+         * left, and the scan ended before reaching this world at all.
+         */
+        if (edges[e].source_count == 0 &&
+            !edges[e].positive_uses && !edges[e].negative_uses) continue;
         experience_scanned++;
         float v = learned_relation_score(prev, (int)edges[e].to);
         for (int k = 0; k < 3; ++k) {
@@ -5613,12 +5641,21 @@ int main(int argc, char **argv) {
     active_island = requested_island;
 
     curriculum_init(islands[active_island].length - CONTEXT - 17);
-    build_source_graph();
+    build_source_graph(1);
     core_init();
     baseline_plasticity_rule = plasticity_baseline();
 
     int resumed = !reset && load_state("netta.state");
     if (resumed) {
+        /*
+         * The snapshot carries edges and trigrams whole, including the
+         * source counts of whichever world she was last in. Restoring them
+         * over the world just built hands her an oracle that samples from a
+         * text she has left. Her biography is what the snapshot is for; the
+         * physics belongs to the world she is in now, and is rebuilt after
+         * the snapshot rather than before it.
+         */
+        build_source_graph(0);
         if (override_policy >= 0) policy_enabled = override_policy;
         if (override_stack >= 0) prophecy_stack_enabled = override_stack;
         if (override_dream >= 0) dreams_enabled = override_dream;
