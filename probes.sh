@@ -43,6 +43,13 @@ say "source $(cd "$ROOT" && git rev-parse --short HEAD 2>/dev/null || echo '(not
 say "workdir $WORK"
 say ""
 
+# A harness that judges fail-closed behaviour must itself be fail-closed. A
+# missing fixture used to leave the comparisons empty, and empty compared
+# equal to empty: probes reported PASS while measuring nothing at all.
+for fixture in "$ROOT/netta.txt" "$ROOT/docs/MODELCARD.md"; do
+    [ -f "$fixture" ] || { say "missing fixture: $fixture"; exit 99; }
+done
+
 # --- build ------------------------------------------------------------------
 if want 1; then
     out=$($CC -O2 -std=c11 -Wall -Wextra -Wpedantic -o "$BIN" "$ROOT/netta.c" -lm 2>&1)
@@ -120,7 +127,10 @@ if want 5; then
 
     f=$(column "$fresh" 4); a=$(column "$ab" 4)
     fb=$(column "$fresh" 6); ab_=$(column "$ab" 6)
-    if [ "$f" = "$a" ] && [ "$fb" = "$ab_" ]; then
+    if [ -z "$f" ] || [ -z "$a" ] || [ -z "$fb" ] || [ -z "$ab_" ]; then
+        fail "5 arriving in a world with no episodes played changes nothing" \
+             "no measurement taken: probe ledger missing or empty"
+    elif [ "$f" = "$a" ] && [ "$fb" = "$ab_" ]; then
         pass "5 arriving in a world with no episodes played changes nothing ($f / $fb)"
     else
         fail "5 arriving in a world with no episodes played changes nothing" \
@@ -177,7 +187,10 @@ if want 8; then
 
     ca=$(awk -F'\t' 'NR>1{n++;s+=$29} END{if(n)printf "%.5f", s/n}' "$alone/netta.history.tsv")
     cv=$(awk -F'\t' 'NR>1{n++;s+=$29} END{if(n)printf "%.5f", s/n}' "$via/netta.history.tsv")
-    if [ -n "$ca" ] && [ "$ca" = "$cv" ]; then
+    if [ -z "$ca" ] || [ -z "$cv" ]; then
+        fail "8 time spent in another world leaves this world's curriculum alone" \
+             "no measurement taken: ledger missing or empty"
+    elif [ "$ca" = "$cv" ]; then
         pass "8 time spent in another world leaves this world's curriculum alone"
     else
         fail "8 time spent in another world leaves this world's curriculum alone" \
@@ -226,18 +239,23 @@ fi
 # by biography rather than by the text. Removing that order moved the
 # newborn to 0.6318/0.5828 -- confirmed independently at 6b525b0 by a second
 # auditor on a separately built binary -- and closing the same defect in the
-# experience scan moved it again, to the values below. The order was not
-# only nondeterministic; it was noise she was born carrying.
+# experience scan moved it again, and making the oracle deterministic moved
+# it a third time, to the values below -- taken by the auditor on f2a09ce
+# and transcribed here. The order was not only nondeterministic; it was
+# noise she was born carrying.
 if want 11; then
     d=$(world newborn)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 --probe 128 ) \
         > "$d/exam" 2>&1
     tri=$(awk '/corpus trigrams:/{print $3}' "$d/exam")
     coh=$(awk '/coherence outcome:/{print $3}' "$d/exam")
-    if [ "$tri" = "0.6602" ] && [ "$coh" = "0.5809" ]; then
-        pass "11 a newborn scores 0.6602 trigrams and 0.5809 coherence"
+    if [ -z "$tri" ] || [ -z "$coh" ]; then
+        fail "11 a newborn scores 0.6436 trigrams and 0.5738 coherence" \
+             "no measurement taken: exam produced nothing"
+    elif [ "$tri" = "0.6436" ] && [ "$coh" = "0.5738" ]; then
+        pass "11 a newborn scores 0.6436 trigrams and 0.5738 coherence"
     else
-        fail "11 a newborn scores 0.6602 trigrams and 0.5809 coherence" \
+        fail "11 a newborn scores 0.6436 trigrams and 0.5738 coherence" \
              "got $tri and $coh"
     fi
 fi
