@@ -409,6 +409,8 @@ static int evaluation_mode = 0;
 
 static Core core;
 static uint64_t episode_count = 0;
+/* One row per decision, written before the decision teaches anything. */
+static FILE *receipt_file = NULL;
 static uint64_t rng_state = 0x9E3779B97F4A7C15ull;
 static uint64_t experiment_seed = 42ull;
 static int policy_enabled = 1;
@@ -3668,6 +3670,9 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
     }
     n = unique_n;
 
+    int pool_n = n;
+    int phrase_excluded = 0;
+
     uint32_t min_phrase_use = UINT32_MAX;
     for (int i = 0; i < n; ++i) {
         if (!token_is_content_id(candidates[i])) continue;
@@ -3695,8 +3700,10 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
 
         if (token_is_content_id(cand) &&
             phrase_uses > min_phrase_use + 1 &&
-            phrase_uses >= 3)
+            phrase_uses >= 3) {
+            phrase_excluded++;
             continue;
+        }
 
         float prior[SCORE_DIM], mlp[SCORE_DIM], mix[SCORE_DIM];
         prior_score(ctx, ctx_n, cand, oracle, intent, world, glyph_id, prior);
@@ -3856,6 +3863,45 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
                 }
             }
         }
+    }
+
+    /*
+     * The receipt for this decision, written before anything learns from it.
+     * The three winners are counterfactual argmaxes over the same finalists,
+     * the same state and the same draw: by predictive survival alone, by the
+     * full choice including freshness, and by the corpus prior with the
+     * learned core silenced. Where they disagree is where a learned channel
+     * actually decided something — which no ablation across separate runs
+     * can show, because a separate run is a different organism from the
+     * first divergence onward.
+     */
+    if (receipt_file) {
+        int win_surv = 0, win_prior = 0, within = 0;
+        float best_surv = -1e30f, best_prior = -1e30f, second = -1e30f;
+        for (int i = 0; i < final_n; ++i) {
+            if (final_survival[i] > best_surv) {
+                best_surv = final_survival[i];
+                win_surv = i;
+            }
+            float p = survival_utility(final_prior[i]);
+            if (p > best_prior) {
+                best_prior = p;
+                win_prior = i;
+            }
+            if (final_survival[i] + margin >= max_survival) within++;
+        }
+        for (int i = 0; i < final_n; ++i)
+            if (i != win_surv && final_survival[i] > second)
+                second = final_survival[i];
+        fprintf(receipt_file,
+                "%llu\t%d\t%d\t%d\t%d\t%.5f\t%.5f\t%.5f\t%s\t%s\t%s\n",
+                (unsigned long long)episode_count,
+                pool_n, phrase_excluded, final_n, within,
+                (double)mlp_gate, (double)margin,
+                (double)(final_n > 1 ? max_survival - second : 0.0f),
+                vocab[final_tok[best_idx]].text,
+                vocab[final_tok[win_surv]].text,
+                vocab[final_tok[win_prior]].text);
     }
 
     *observed_out =
@@ -5828,6 +5874,18 @@ int main(int argc, char **argv) {
             fclose(f);
         }
     }
+
+    /*
+     * Receipts follow the ledger: a new organism starts a fresh file, a
+     * resumed one appends to the life it already has.
+     */
+    receipt_file = fopen("netta.receipts.tsv", resumed ? "ab" : "wb");
+    if (!receipt_file)
+        fprintf(stderr, "netta: cannot open receipts: %s\n", strerror(errno));
+    else if (!resumed)
+        fputs("episode\tpool\tphrase_excluded\tfinalists\twithin_margin\t"
+              "mlp_gate\tmargin\tgap\tchosen\twin_survival\twin_prior\n",
+              receipt_file);
 
     printf("active seed=%llu search_policy=%s prophecy_stack=%s dreams=%s "
            "causal_glyphs=%s neighbors=%s curriculum=%s "
