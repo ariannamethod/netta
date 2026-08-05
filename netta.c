@@ -3499,8 +3499,18 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
     if (ctx_n >= 2) {
         int a = ctx[ctx_n - 2];
         unsigned bucket = trigram_bucket(a, prev);
+        /*
+         * Gathered whole, then ordered by spelling before the limit cuts
+         * it. Walking the chain and stopping at the limit let the order
+         * trigrams were created decide which continuations she ever sees,
+         * and after a change of world that chain begins with the text she
+         * left — so the same context offered her the same words in a
+         * different order, and the order is what the ranking breaks ties by.
+         */
+        int tri_tok[CANDIDATES];
+        int tri_n = 0;
         for (int t = first_trigram[bucket];
-             t >= 0 && n < CANDIDATES - 10;
+             t >= 0 && tri_n < CANDIDATES;
              t = trigrams[t].next_bucket) {
             if ((int)trigrams[t].a == a &&
                 (int)trigrams[t].b == prev &&
@@ -3508,8 +3518,18 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
                  (policy_enabled && trigrams[t].policy_visits > 0 &&
                   context_policy_score(ctx, ctx_n,
                                        (int)trigrams[t].c) > 0.53f)))
-                candidates[n++] = (int)trigrams[t].c;
+                tri_tok[tri_n++] = (int)trigrams[t].c;
         }
+        for (int i = 0; i + 1 < tri_n; ++i)
+            for (int j = i + 1; j < tri_n; ++j)
+                if (strcmp(vocab[tri_tok[j]].text,
+                           vocab[tri_tok[i]].text) < 0) {
+                    int tmp = tri_tok[i];
+                    tri_tok[i] = tri_tok[j];
+                    tri_tok[j] = tmp;
+                }
+        for (int i = 0; i < tri_n && n < CANDIDATES - 10; ++i)
+            candidates[n++] = tri_tok[i];
     }
 
     int punct_added = 0;
