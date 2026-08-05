@@ -218,6 +218,23 @@ if want 10; then
     fi
 fi
 
+# --- a newborn is the same newborn on every hand ---------------------------
+# Anchored by a second auditor on a separately built binary. If a change to
+# her learning moves this, it moved something it had no business touching.
+if want 11; then
+    d=$(world newborn)
+    ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 --probe 128 ) \
+        > "$d/exam" 2>&1
+    tri=$(awk '/corpus trigrams:/{print $3}' "$d/exam")
+    coh=$(awk '/coherence outcome:/{print $3}' "$d/exam")
+    if [ "$tri" = "0.5996" ] && [ "$coh" = "0.5777" ]; then
+        pass "11 a newborn scores 0.5996 trigrams and 0.5777 coherence"
+    else
+        fail "11 a newborn scores 0.5996 trigrams and 0.5777 coherence" \
+             "got $tri and $coh"
+    fi
+fi
+
 say ""
 say "$((RAN-FAILED))/$RAN passed"
 [ -n "${NETTA_PROBE_DIR:-}" ] || say "receipts under $WORK"

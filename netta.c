@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -51,6 +52,9 @@
 #define SCORE_DIM       12
 #define CONTEXT         16
 #define ROLLOUT         8
+/* The widest window an episode reads: its context, then destiny 17 ahead.
+   A world shorter than this cannot be played without reading past its end. */
+#define MIN_ISLAND      (CONTEXT + 17 + 1)
 #define CANDIDATES      32
 #define PHRASE_TABLE    131072
 #define BASIN_MEMORY    256
@@ -75,7 +79,7 @@
 #define NREM_DREAMS      12
 #define REM_DREAMS       8
 #define STATE_MAGIC     0x4E455454u /* NETT */
-#define STATE_VERSION   42u
+#define STATE_VERSION   43u
 
 typedef struct {
     char text[MAX_TOKEN_LEN];
@@ -291,6 +295,10 @@ typedef struct {
     uint32_t curriculum_count;
     uint32_t curriculum_enabled;
     uint32_t neighbor_enabled;
+    uint32_t island_count;
+    /* Which world she was in, named by its text rather than by its number:
+       a text added later may take a number without taking a place. */
+    uint64_t active_island_hash;
 } StateHeader;
 
 /*
@@ -319,7 +327,10 @@ typedef struct {
     int offset;
     int length;
     uint8_t accessible;
-    char sha[65];
+    /* Identity of the text itself, not of the path it arrived by. A world
+       may be renamed; a world that changed under her is a different world,
+       and she may not resume into it as though it were the same. */
+    uint64_t token_hash;
 } Island;
 
 static Island islands[MAX_ISLANDS];
@@ -877,6 +888,13 @@ static int preload_vocab(const char *path) {
         return 0;
     }
 
+    /* The island manifest sits between the header and the words. */
+    if (fseek(f, (long)h.island_count *
+                 (long)(sizeof(uint64_t) + sizeof(uint8_t)), SEEK_CUR) != 0) {
+        fclose(f);
+        return 0;
+    }
+
     vocab_reserve((int)h.vocab_size);
     Token *saved = (Token *)malloc((size_t)h.vocab_size * sizeof(Token));
     if (!saved) {
@@ -907,6 +925,7 @@ static int load_corpus(const char *path) {
     if (vocab_capacity == 0) vocab_reserve(MAX_VOCAB);
     corpus_reserve();
     int island_start = corpus_n;
+    int vocab_start = vocab_size;
 
     /* Frequencies describe the text at hand; the words themselves persist. */
     for (int i = 0; i < vocab_size; ++i) vocab[i].count = 0;
@@ -952,12 +971,31 @@ static int load_corpus(const char *path) {
                 "this world is smaller than its text\n",
                 (unsigned long long)corpus_dropped_vocab);
 
-    if (corpus_n > island_start && island_count < MAX_ISLANDS) {
+    /*
+     * A world too short to hold one episode is refused rather than padded.
+     * A refused world leaves no trace at all — not its tokens and not its
+     * words — because words interned from it would shift the ids every
+     * later text is read under.
+     */
+    if (corpus_n - island_start < MIN_ISLAND) {
+        if (corpus_n > island_start)
+            fprintf(stderr, "netta: %s holds %d tokens, a world needs %d\n",
+                    path, corpus_n - island_start, MIN_ISLAND);
+        corpus_n = island_start;
+        vocab_size = vocab_start;
+        vocab_slots_rebuild();
+        return 0;
+    }
+
+    if (island_count < MAX_ISLANDS) {
         Island *isl = &islands[island_count++];
         isl->offset = island_start;
         isl->length = corpus_n - island_start;
         isl->accessible = 1;
-        snprintf(isl->sha, sizeof(isl->sha), "%s", path);
+        uint64_t hash = 1469598103934665603ULL;
+        for (int i = isl->offset; i < corpus_n; ++i)
+            hash = (hash ^ (uint64_t)(uint32_t)corpus[i]) * 1099511628211ULL;
+        isl->token_hash = hash ^ (uint64_t)(uint32_t)isl->length;
     }
 
     return corpus_n > CONTEXT + ROLLOUT;
@@ -3999,8 +4037,9 @@ static void request_stop(int sig) {
 }
 
 static size_t state_expected_size(uint32_t vocab_n, uint32_t edge_n,
-                                  uint32_t tri_n) {
+                                  uint32_t tri_n, uint32_t island_n) {
     return sizeof(StateHeader) +
+           (size_t)island_n * (sizeof(uint64_t) + sizeof(uint8_t)) +
            (size_t)vocab_n * sizeof(Token) +
            (size_t)edge_n * sizeof(Edge) +
            (size_t)tri_n * sizeof(TrigramEdge) +
@@ -4074,9 +4113,15 @@ static void save_state(const char *path) {
     h.curriculum_count = (uint32_t)curriculum_count;
     h.curriculum_enabled = (uint32_t)curriculum_enabled;
     h.neighbor_enabled = (uint32_t)neighbor_enabled;
+    h.island_count = (uint32_t)island_count;
+    h.active_island_hash =
+        island_count ? islands[active_island].token_hash : 0;
 
     int ok = 1;
     ok = ok && fwrite(&h, sizeof(h), 1, f) == 1;
+    for (int i = 0; ok && i < island_count; ++i)
+        ok = fwrite(&islands[i].token_hash, sizeof(uint64_t), 1, f) == 1 &&
+             fwrite(&islands[i].accessible, sizeof(uint8_t), 1, f) == 1;
     ok = ok && fwrite(vocab, sizeof(Token), (size_t)vocab_size, f) ==
                (size_t)vocab_size;
     ok = ok && fwrite(edges, sizeof(Edge), (size_t)edge_count, f) ==
@@ -4159,11 +4204,44 @@ static int load_state(const char *path) {
     if (file_size < 0 ||
         (size_t)file_size != state_expected_size(h.vocab_size,
                                                  h.edge_count,
-                                                 h.trigram_count) ||
+                                                 h.trigram_count,
+                                                 h.island_count) ||
         fseek(f, after_header, SEEK_SET) != 0) {
         fclose(f);
         return 0;
     }
+
+    /*
+     * Worlds are append-only. She may be given a new text and resume into
+     * her own life; she may not resume into a world that changed under her,
+     * because every edge and glyph she owns was earned against the text as
+     * it was. Each remembered world is found by what it says rather than by
+     * where it sorts, so a text added later cannot inherit another's
+     * biography by taking its number.
+     */
+    if (h.island_count > (uint32_t)island_count) {
+        fclose(f);
+        return 0;
+    }
+    uint8_t access[MAX_ISLANDS];
+    int where[MAX_ISLANDS];
+    for (uint32_t i = 0; i < h.island_count; ++i) {
+        uint64_t hash;
+        if (fread(&hash, sizeof(hash), 1, f) != 1 ||
+            fread(&access[i], sizeof(uint8_t), 1, f) != 1) {
+            fclose(f);
+            return 0;
+        }
+        where[i] = -1;
+        for (int k = 0; k < island_count; ++k)
+            if (islands[k].token_hash == hash) { where[i] = k; break; }
+        if (where[i] < 0) {
+            fclose(f);
+            return 0;
+        }
+    }
+    for (uint32_t i = 0; i < h.island_count; ++i)
+        islands[where[i]].accessible = access[i];
 
     Token *saved =
         (Token *)malloc((size_t)h.vocab_size * sizeof(Token));
@@ -5476,19 +5554,45 @@ int main(int argc, char **argv) {
      */
     DIR *texts = opendir("nettatexts");
     if (texts) {
+        /*
+         * readdir order is a property of the filesystem, not of her. Left
+         * unsorted it would decide which text is which world and what id a
+         * new word receives, so the same texts on another machine would
+         * produce a different organism. Only a plain file is a text: a
+         * directory or a pipe is not a world she can read.
+         */
+        char names[MAX_ISLANDS][256];
+        int n_names = 0;
         struct dirent *entry;
-        while ((entry = readdir(texts)) && island_count < MAX_ISLANDS) {
+        while ((entry = readdir(texts)) && n_names < MAX_ISLANDS) {
             if (entry->d_name[0] == '.') continue;
+            char probe[512];
+            struct stat st;
+            snprintf(probe, sizeof(probe), "nettatexts/%s", entry->d_name);
+            if (stat(probe, &st) != 0 || !S_ISREG(st.st_mode)) continue;
+            snprintf(names[n_names++], sizeof(names[0]), "%s", entry->d_name);
+        }
+        closedir(texts);
+
+        for (int a = 0; a + 1 < n_names; ++a)
+            for (int b = a + 1; b < n_names; ++b)
+                if (strcmp(names[a], names[b]) > 0) {
+                    char tmp[256];
+                    snprintf(tmp, sizeof(tmp), "%s", names[a]);
+                    snprintf(names[a], sizeof(names[0]), "%s", names[b]);
+                    snprintf(names[b], sizeof(names[0]), "%s", tmp);
+                }
+
+        for (int i = 0; i < n_names && island_count < MAX_ISLANDS; ++i) {
             char path[512];
-            snprintf(path, sizeof(path), "nettatexts/%s", entry->d_name);
+            snprintf(path, sizeof(path), "nettatexts/%s", names[i]);
             int before = island_count;
             load_corpus(path);
             if (island_count > before)
                 printf("island %d: %s (%d tokens)\n",
-                       island_count - 1, entry->d_name,
+                       island_count - 1, names[i],
                        islands[island_count - 1].length);
         }
-        closedir(texts);
     }
 
     printf("corpus: %d tokens, %d vocabulary items "
@@ -5496,7 +5600,7 @@ int main(int argc, char **argv) {
            corpus_n, vocab_size, vocab_capacity,
            vocab_capacity > MAX_VOCAB ? "yes" : "no");
 
-    if (requested_island >= island_count) {
+    if (requested_island < 0 || requested_island >= island_count) {
         fprintf(stderr, "netta: island %d does not exist (%d known)\n",
                 requested_island, island_count);
         return 1;
