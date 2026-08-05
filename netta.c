@@ -2832,10 +2832,36 @@ static int oracle_next(int prev) {
         return (int)(rng_u64() % (uint64_t)vocab_size);
 
     uint64_t r = rng_u64() % total;
+
+    /*
+     * The same draw must name the same word. Mapping r along the chain
+     * hands it to whichever successor happens to sit first, and that is
+     * the order edges were created — so two organisms reading the same
+     * text answered the same number with different words. Ordered by
+     * spelling, the mapping belongs to the text and to nothing else.
+     */
+    int tok[64];
+    uint32_t cnt[64];
+    int m = 0;
+    for (int e = first_edge[prev];
+         e >= 0 && m < (int)(sizeof(tok) / sizeof(tok[0]));
+         e = edges[e].next_from) {
+        if (edges[e].source_count == 0) continue;
+        tok[m] = (int)edges[e].to;
+        cnt[m] = edges[e].source_count;
+        m++;
+    }
+    for (int i = 0; i + 1 < m; ++i)
+        for (int j = i + 1; j < m; ++j)
+            if (strcmp(vocab[tok[j]].text, vocab[tok[i]].text) < 0) {
+                int ti = tok[i]; tok[i] = tok[j]; tok[j] = ti;
+                uint32_t ci = cnt[i]; cnt[i] = cnt[j]; cnt[j] = ci;
+            }
+
     uint64_t acc = 0;
-    for (int e = first_edge[prev]; e >= 0; e = edges[e].next_from) {
-        acc += edges[e].source_count;
-        if (r < acc) return (int)edges[e].to;
+    for (int i = 0; i < m; ++i) {
+        acc += cnt[i];
+        if (r < acc) return tok[i];
     }
     return prev;
 }
@@ -2862,14 +2888,32 @@ static int oracle_next_context(const int *ctx, int ctx_n) {
 
         if (total > 0) {
             uint64_t r = rng_u64() % total;
-            uint64_t acc = 0;
-            for (int t = first_trigram[bucket]; t >= 0;
+            /* Ordered by spelling for the same reason as the bigram
+               oracle: the draw must name the word, not the chain. */
+            int tok[64];
+            uint32_t cnt[64];
+            int m = 0;
+            for (int t = first_trigram[bucket];
+                 t >= 0 && m < (int)(sizeof(tok) / sizeof(tok[0]));
                  t = trigrams[t].next_bucket) {
                 if ((int)trigrams[t].a != a || (int)trigrams[t].b != b)
                     continue;
-                acc += trigrams[t].count;
-                if (r < acc)
-                    return (int)trigrams[t].c;
+                if (trigrams[t].count == 0) continue;
+                tok[m] = (int)trigrams[t].c;
+                cnt[m] = trigrams[t].count;
+                m++;
+            }
+            for (int i = 0; i + 1 < m; ++i)
+                for (int j = i + 1; j < m; ++j)
+                    if (strcmp(vocab[tok[j]].text,
+                               vocab[tok[i]].text) < 0) {
+                        int ti = tok[i]; tok[i] = tok[j]; tok[j] = ti;
+                        uint32_t ci = cnt[i]; cnt[i] = cnt[j]; cnt[j] = ci;
+                    }
+            uint64_t acc = 0;
+            for (int i = 0; i < m; ++i) {
+                acc += cnt[i];
+                if (r < acc) return tok[i];
             }
         }
     }
