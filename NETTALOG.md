@@ -1592,3 +1592,62 @@ What survives is the finding that motivated it: what crosses a change of
 world predicts twice as reliably as what does not. Multiplying its vote
 is simply not how to use that. The organ was rejected; the measurement
 that named the material stands.
+
+## The probe suite, and five channels of one defect
+
+The audit closed with a line that was skipped: turn the reproductions into
+tests before changing learned authority. Everything after it was measured
+in one-off shell commands, which is how a comparison between two
+differently-built binaries passed for a controlled measurement. probes.sh
+now states eleven invariants, builds its own binary from one tree with one
+command, and answers each with a machine verdict. It reported 3/11 on the
+commit the audit was written against.
+
+Probe 5 is the audit's central result as an invariant: a zero-episode
+organism saved in one world and resumed in another must be identical to one
+born there, because no episode has been played and there is nothing for
+them to differ about. It failed at 0.4277 against 0.0996.
+
+Five channels were found, all one defect wearing different clothes: the
+physics of a text was a function of the life lived before reading it.
+
+Three were scans bounded by position in a chain rather than by relevance --
+experience candidates took the first 128 edges, the oracle's distribution
+the first 20 trigrams of a bucket, a continuation search walked every
+trigram matching the context. After a change of world those chains begin
+with tens of thousands of entries from the text she left, and the scan
+ended before reaching this world at all.
+
+Two were ties broken by chain order. A word has more successors of equal
+count than the table holds, and which twelve stayed was decided by the
+order edges happened to be created. The same for the three experience
+candidates, which all score identically before she has used any of them.
+Ties now break on how the word is spelled -- the only total order in the
+organism that no history can move. Token ids cannot do it: an id is
+assigned by arrival order and a resumed organism carries the ids of the
+world it came from.
+
+That last one was not only nondeterminism. It cost her from the first
+breath: a newborn's trigram validity goes from 0.5996 to 0.6602 with no
+learning involved, confirmed on two separately built binaries. She was born
+carrying noise.
+
+### Where the sixth is
+
+Probe 5 still fails, at 0.4424 against 0.4404, and the divergence has moved
+past selection into what happens after it. Located to the token, not
+guessed at:
+
+```text
+first diverging probe   64 of 128, source position 82295
+context                 three horizons , before each move . netta is
+                        non - parametric only in the narrow
+probes affected         10 of 128
+candidate pools         identical
+finalists and scores    identical for the first three steps of that probe
+```
+
+The arriving organism scores 1.000 there against the newborn's 0.625, so
+whatever remains is not contamination from the world she left -- it is
+something that helps her, and that a newborn does not have. The search
+continues inside steps four through eight of that rollout.
