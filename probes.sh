@@ -219,18 +219,25 @@ if want 10; then
 fi
 
 # --- a newborn is the same newborn on every hand ---------------------------
-# Anchored by a second auditor on a separately built binary. If a change to
-# her learning moves this, it moved something it had no business touching.
+# If a change to her learning moves this, it moved something it had no
+# business touching.
+#
+# The first anchor, 0.5996/0.5777, pinned a defect: successor tables ordered
+# by biography rather than by the text. Removing that order moved the
+# newborn to 0.6318/0.5828 -- confirmed independently at 6b525b0 by a second
+# auditor on a separately built binary -- and closing the same defect in the
+# experience scan moved it again, to the values below. The order was not
+# only nondeterministic; it was noise she was born carrying.
 if want 11; then
     d=$(world newborn)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 --probe 128 ) \
         > "$d/exam" 2>&1
     tri=$(awk '/corpus trigrams:/{print $3}' "$d/exam")
     coh=$(awk '/coherence outcome:/{print $3}' "$d/exam")
-    if [ "$tri" = "0.5996" ] && [ "$coh" = "0.5777" ]; then
-        pass "11 a newborn scores 0.5996 trigrams and 0.5777 coherence"
+    if [ "$tri" = "0.6602" ] && [ "$coh" = "0.5809" ]; then
+        pass "11 a newborn scores 0.6602 trigrams and 0.5809 coherence"
     else
-        fail "11 a newborn scores 0.5996 trigrams and 0.5777 coherence" \
+        fail "11 a newborn scores 0.6602 trigrams and 0.5809 coherence" \
              "got $tri and $coh"
     fi
 fi
