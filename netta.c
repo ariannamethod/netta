@@ -4307,7 +4307,7 @@ static void save_state(const char *path) {
     fsync_parent_dir(path);
 }
 
-static int load_state(const char *path) {
+static int load_state_valid(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) return 0;
 
@@ -4530,6 +4530,20 @@ static int load_state(const char *path) {
 
     fclose(f);
     return 1;
+}
+
+/*
+ * Absent (0), valid (1), invalid (-1). A snapshot that exists but cannot be
+ * read is a failure, not a birth. Treated as a birth it printed "new
+ * organism" and opened the ledger with "wb", so the record of a life was
+ * erased by the very refusal to load it — and a world edited underneath her
+ * resumed as though nothing had happened, because the refusal was silent.
+ */
+static int load_state(const char *path) {
+    FILE *probe = fopen(path, "rb");
+    if (!probe) return 0;
+    fclose(probe);
+    return load_state_valid(path) ? 1 : -1;
 }
 
 static void print_score_average(const ScoreVector *scores, int n) {
@@ -5755,7 +5769,13 @@ int main(int argc, char **argv) {
     core_init();
     baseline_plasticity_rule = plasticity_baseline();
 
-    int resumed = !reset && load_state("netta.state");
+    int resumed = reset ? 0 : load_state("netta.state");
+    if (resumed < 0) {
+        fprintf(stderr,
+                "netta: netta.state exists but cannot be read; refusing to "
+                "overwrite her life. Move it aside or pass --reset.\n");
+        return 1;
+    }
     if (resumed) {
         /*
          * The snapshot carries edges and trigrams whole, including the
