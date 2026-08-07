@@ -2616,24 +2616,30 @@ static void build_source_graph(int with_geometry) {
     if (!with_geometry) return;
 
     int window = 5;
-    for (int i = 0; i < corpus_n; ++i) {
-        int a = corpus[i];
-        int hi = i + window + 1;
-        if (hi > corpus_n) hi = corpus_n;
-        for (int j = i + 1; j < hi; ++j) {
-            int b = corpus[j];
-            float rate = 0.015f / (float)(j - i);
-            for (int d = 0; d < EMBED_DIM; ++d) {
-                float av = vocab[a].emb[d];
-                float bv = vocab[b].emb[d];
+    int n_islands = island_count ? island_count : 1;
+    for (int isl = 0; isl < n_islands; ++isl) {
+        int off = island_count ? islands[isl].offset : 0;
+        int end = island_count ? islands[isl].offset + islands[isl].length
+                                : corpus_n;
+        for (int i = off; i < end; ++i) {
+            int a = corpus[i];
+            int hi = i + window + 1;
+            if (hi > end) hi = end;
+            for (int j = i + 1; j < hi; ++j) {
+                int b = corpus[j];
+                float rate = 0.015f / (float)(j - i);
+                for (int d = 0; d < EMBED_DIM; ++d) {
+                    float av = vocab[a].emb[d];
+                    float bv = vocab[b].emb[d];
 
-                /* Undirected topic geometry. */
-                vocab[a].emb[d] += rate * bv;
-                vocab[b].emb[d] += rate * av;
+                    /* Undirected topic geometry. */
+                    vocab[a].emb[d] += rate * bv;
+                    vocab[b].emb[d] += rate * av;
 
-                /* Directed role geometry: a -> b. */
-                vocab[a].right_emb[d] += rate * vocab[b].emb[d];
-                vocab[b].left_emb[d]  += rate * vocab[a].emb[d];
+                    /* Directed role geometry: a -> b. */
+                    vocab[a].right_emb[d] += rate * vocab[b].emb[d];
+                    vocab[b].left_emb[d]  += rate * vocab[a].emb[d];
+                }
             }
         }
     }
