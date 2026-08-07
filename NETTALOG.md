@@ -1651,3 +1651,48 @@ The arriving organism scores 1.000 there against the newborn's 0.625, so
 whatever remains is not contamination from the world she left -- it is
 something that helps her, and that a newborn does not have. The search
 continues inside steps four through eight of that rollout.
+
+## Wave zero: four fixes, and the ledger that could not move
+
+An external read-only audit (Kimi-K3, against a ~2500-line snapshot of a
+~5900-line tree) named four addresses. All four were re-confirmed on the
+live tree before anything was touched, and the wave ran under one law: an
+80-game ledger at seed 424242, hashed from the pre-fix binary, must come
+back byte-identical after every fix. It did, four times.
+
+The fallback branch of choose_candidate read ctx[ctx_n - 2] with no
+guard; a single-word prompt reaches ctx_n == 1. The guard is in
+(379edaa), but probing an instrumented pre-fix binary for the
+empty-finalists condition found zero hits in ~4300 steps, and the reason
+is structural: the phrase filter can never exclude the candidate holding
+the pool's minimum use count, so at least one finalist always survives.
+The fix closes an unsafe pattern, not a live crash.
+
+The word-geometry pass was the one address with real behavioural weight
+(814728e): its window ran over corpus[] as one unbroken line, pairing the
+last words of one island with the first words of the next -- phantom
+co-occurrence across a seam neither world contains. The pass still spans
+every island she has read -- geometry stays hers and global -- but a
+pair now lives inside one island. The verdict was structural, not
+statistical: an instrumented binary counting cross-seam pairs on a
+synthetic two-island world read 15 before the fix (window 5: 5+4+3+2+1)
+and 0 after. One edge is on record: a text absorbed after MAX_ISLANDS is
+full lies in the corpus with no island over it, and the clipped pass now
+skips it -- that debt comes due when the island ceiling goes dynamic.
+
+The prompt tokenizer emitted '\n' as a punctuation token while the
+corpus reader consumes it as whitespace, so no world can contain the
+token the prompt produced. Before the fix the difference was already
+cosmetic -- stdout byte-identical, stderr noise about an unknown token
+-- and now (a923922) a newline separates words the way every world
+separates them.
+
+And FINALISTS = 4 lived inside choose_candidate while
+policy_improve_context sized its array with a bare 8. One count now
+exists, at file scope (060ce25).
+
+Eleven probes pass on every commit of the wave, enforced by the
+pre-commit hook and re-taken each time by the auditor from a separately
+built binary. The wave changed no game by a single byte -- which is the
+point: these were faults of structure, and structure is what the next
+arc stands on.
