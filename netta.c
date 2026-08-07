@@ -56,6 +56,7 @@
    A world shorter than this cannot be played without reading past its end. */
 #define MIN_ISLAND      (CONTEXT + 17 + 1)
 #define CANDIDATES      32
+enum { FINALISTS = 4 };
 #define PHRASE_TABLE    131072
 #define BASIN_MEMORY    256
 #define TOP_SUCCESSORS  12
@@ -1162,7 +1163,7 @@ static void policy_improve_context(const int *ctx, int ctx_n,
     if (target_out) for (int i = 0; i < n; ++i) target_out[i] = 0.5f;
     if (!policy_enabled || ctx_n < 2 || n <= 0) return;
 
-    float utility[8];
+    float utility[FINALISTS];
     float max_u = -1e30f;
     for (int i = 0; i < n; ++i) {
         utility[i] = screening_utility(deep[i]);
@@ -3692,7 +3693,6 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
     float mlp_gate =
         clampf((float)episode_count / 2500.0f, 0.0f, 0.65f);
 
-    enum { FINALISTS = 4 };
     int final_tok[FINALISTS];
     float final_utility[FINALISTS];
     float final_mlp[FINALISTS][SCORE_DIM];
