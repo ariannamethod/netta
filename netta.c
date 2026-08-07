@@ -3768,7 +3768,7 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
         *observed_out =
             observe_score(ctx, ctx_n, fallback, oracle, truth,
                           intent, intent_debt, world, glyph_id);
-        if (policy_enabled) {
+        if (policy_enabled && ctx_n >= 2) {
             float fallback_target = 1.0f;
             policy_mark(ctx[ctx_n - 2], ctx[ctx_n - 1],
                         fallback, fallback_target);
