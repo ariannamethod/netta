@@ -5530,7 +5530,7 @@ static int tokenize_prompt(const char *text, int *prompt, int *unknown) {
             buf[len] = '\0';
             if (len > 0 && !prompt_emit(buf, prompt, &n, unknown)) return n;
             len = 0;
-            if (is_punct_token(c)) {
+            if (!isspace(c) && is_punct_token(c)) {
                 char single[2] = {(char)c, '\0'};
                 if (!prompt_emit(single, prompt, &n, unknown)) return n;
             }
