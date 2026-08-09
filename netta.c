@@ -684,10 +684,33 @@ static void normalize(float *a, int n) {
     for (int i = 0; i < n; ++i) a[i] /= z;
 }
 
-/* normalize()'s division silently turns an overflowed accumulator into NaN
-   (Inf/Inf) or a degenerate zero vector (finite/Inf); this catches the
+/*
+ * The word-geometry pass in build_source_graph accumulates without
+ * renormalizing mid-sweep (F5a), so it runs in double here rather than
+ * float: the same unbounded sum gets 2^52 of headroom instead of 2^24
+ * before the same failure mode — overflow, then Inf/Inf = NaN, or a
+ * silent finite/Inf = 0 — could reappear. Full double vector ops,
+ * mirroring vec_dot/vec_norm/normalize above, rather than a one-off.
+ */
+static double vec_dot_d(const double *a, const double *b, int n) {
+    double s = 0.0;
+    for (int i = 0; i < n; ++i) s += a[i] * b[i];
+    return s;
+}
+
+static double vec_norm_d(const double *a, int n) {
+    return sqrt(vec_dot_d(a, a, n) + 1e-8);
+}
+
+static void normalize_d(double *a, int n) {
+    double z = vec_norm_d(a, n);
+    for (int i = 0; i < n; ++i) a[i] /= z;
+}
+
+/* normalize_d()'s division silently turns an overflowed accumulator into
+   NaN (Inf/Inf) or a degenerate zero vector (finite/Inf); this catches the
    accumulator before that division swallows the evidence. */
-static int vec_finite(const float *a, int n) {
+static int vec_finite_d(const double *a, int n) {
     for (int i = 0; i < n; ++i)
         if (!isfinite(a[i])) return 0;
     return 1;
@@ -2627,6 +2650,28 @@ static void build_source_graph(int with_geometry) {
 
     int window = 5;
     int n_islands = island_count ? island_count : 1;
+
+    /* F5a caught the symptom at float32's ceiling; F5b removes the ceiling
+       this pass actually needs. Same accumulation, same coefficients, run
+       in double so a corpus this organism can hold no longer overflows
+       before the single final normalize. */
+    double (*emb_d)[EMBED_DIM] = xcalloc((size_t)vocab_capacity,
+                                         sizeof(*emb_d),
+                                         "double word geometry (emb)");
+    double (*left_d)[EMBED_DIM] = xcalloc((size_t)vocab_capacity,
+                                          sizeof(*left_d),
+                                          "double word geometry (left)");
+    double (*right_d)[EMBED_DIM] = xcalloc((size_t)vocab_capacity,
+                                           sizeof(*right_d),
+                                           "double word geometry (right)");
+
+    for (int i = 0; i < vocab_size; ++i)
+        for (int d = 0; d < EMBED_DIM; ++d) {
+            emb_d[i][d] = (double)vocab[i].emb[d];
+            left_d[i][d] = (double)vocab[i].left_emb[d];
+            right_d[i][d] = (double)vocab[i].right_emb[d];
+        }
+
     for (int isl = 0; isl < n_islands; ++isl) {
         int off = island_count ? islands[isl].offset : 0;
         int end = island_count ? islands[isl].offset + islands[isl].length
@@ -2637,34 +2682,36 @@ static void build_source_graph(int with_geometry) {
             if (hi > end) hi = end;
             for (int j = i + 1; j < hi; ++j) {
                 int b = corpus[j];
-                float rate = 0.015f / (float)(j - i);
+                double rate = 0.015 / (double)(j - i);
                 for (int d = 0; d < EMBED_DIM; ++d) {
-                    float av = vocab[a].emb[d];
-                    float bv = vocab[b].emb[d];
+                    double av = emb_d[a][d];
+                    double bv = emb_d[b][d];
 
                     /* Undirected topic geometry. */
-                    vocab[a].emb[d] += rate * bv;
-                    vocab[b].emb[d] += rate * av;
+                    emb_d[a][d] += rate * bv;
+                    emb_d[b][d] += rate * av;
 
-                    /* Directed role geometry: a -> b. */
-                    vocab[a].right_emb[d] += rate * vocab[b].emb[d];
-                    vocab[b].left_emb[d]  += rate * vocab[a].emb[d];
+                    /* Directed role geometry: a -> b. Reads the
+                       already-updated neighbor, exactly as the float
+                       version read vocab[b/a].emb[d] after its own
+                       update above. */
+                    right_d[a][d] += rate * emb_d[b][d];
+                    left_d[b][d]  += rate * emb_d[a][d];
                 }
             }
         }
     }
+
     for (int i = 0; i < vocab_size; ++i) {
-        /* The accumulation above never renormalizes mid-pass, so a corpus
-           dense enough (more islands, more tokens in the window) drives a
-           high-degree word's raw accumulator past FLT_MAX. normalize()'s
-           division would then hand her either an Inf/Inf NaN or a silently
-           degenerate zero vector (finite/Inf) — both are a poisoned
-           embedding wearing a normal-looking float. Refused here instead. */
-        if (!vec_finite(vocab[i].emb, EMBED_DIM) ||
-            !vec_finite(vocab[i].left_emb, EMBED_DIM) ||
-            !vec_finite(vocab[i].right_emb, EMBED_DIM)) {
+        /* Double gives this sweep 2^52 of headroom instead of float32's
+           2^24; a world dense enough to exhaust even that would still
+           hand normalize_d() an Inf/Inf NaN or a silent finite/Inf = 0.
+           Refused here instead, same as F5a. */
+        if (!vec_finite_d(emb_d[i], EMBED_DIM) ||
+            !vec_finite_d(left_d[i], EMBED_DIM) ||
+            !vec_finite_d(right_d[i], EMBED_DIM)) {
             fprintf(stderr,
-                    "netta: word geometry overflowed float32 on '%s' (id %d) "
+                    "netta: word geometry overflowed double on '%s' (id %d) "
                     "while folding %d island(s), %d tokens; this world is "
                     "too dense for the geometry pass to hold in one "
                     "unnormalized sweep\n",
@@ -2672,10 +2719,19 @@ static void build_source_graph(int with_geometry) {
                     corpus_n);
             exit(1);
         }
-        normalize(vocab[i].emb, EMBED_DIM);
-        normalize(vocab[i].left_emb, EMBED_DIM);
-        normalize(vocab[i].right_emb, EMBED_DIM);
+        normalize_d(emb_d[i], EMBED_DIM);
+        normalize_d(left_d[i], EMBED_DIM);
+        normalize_d(right_d[i], EMBED_DIM);
+        for (int d = 0; d < EMBED_DIM; ++d) {
+            vocab[i].emb[d] = (float)emb_d[i][d];
+            vocab[i].left_emb[d] = (float)left_d[i][d];
+            vocab[i].right_emb[d] = (float)right_d[i][d];
+        }
     }
+
+    free(emb_d);
+    free(left_d);
+    free(right_d);
 }
 
 static void core_init(void) {

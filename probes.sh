@@ -246,6 +246,12 @@ fi
 # it a third time, to the values below -- taken by the auditor on f2a09ce
 # and transcribed here. The order was not only nondeterministic; it was
 # noise she was born carrying.
+#
+# A third re-pin, F5b: the word-geometry pass moved from float to double
+# after 4421 of 8153 words (54%) turned out to be silent zero embeddings,
+# a float32 accumulator overflow masked as a normal-looking vector until
+# checked directly. The newborn's coherence moved 0.5738 -> 0.7218, taken
+# by two hands independently on separately built binaries.
 if want 11; then
     d=$(world newborn)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 --probe 128 ) \
@@ -253,12 +259,12 @@ if want 11; then
     tri=$(awk '/corpus trigrams:/{print $3}' "$d/exam")
     coh=$(awk '/coherence outcome:/{print $3}' "$d/exam")
     if [ -z "$tri" ] || [ -z "$coh" ]; then
-        fail "11 a newborn scores 0.6436 trigrams and 0.5738 coherence" \
+        fail "11 a newborn scores 0.6328 trigrams and 0.7218 coherence" \
              "no measurement taken: exam produced nothing"
-    elif [ "$tri" = "0.6436" ] && [ "$coh" = "0.5738" ]; then
-        pass "11 a newborn scores 0.6436 trigrams and 0.5738 coherence"
+    elif [ "$tri" = "0.6328" ] && [ "$coh" = "0.7218" ]; then
+        pass "11 a newborn scores 0.6328 trigrams and 0.7218 coherence"
     else
-        fail "11 a newborn scores 0.6436 trigrams and 0.5738 coherence" \
+        fail "11 a newborn scores 0.6328 trigrams and 0.7218 coherence" \
              "got $tri and $coh"
     fi
 fi
