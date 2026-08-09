@@ -684,6 +684,15 @@ static void normalize(float *a, int n) {
     for (int i = 0; i < n; ++i) a[i] /= z;
 }
 
+/* normalize()'s division silently turns an overflowed accumulator into NaN
+   (Inf/Inf) or a degenerate zero vector (finite/Inf); this catches the
+   accumulator before that division swallows the evidence. */
+static int vec_finite(const float *a, int n) {
+    for (int i = 0; i < n; ++i)
+        if (!isfinite(a[i])) return 0;
+    return 1;
+}
+
 static unsigned hash_word(const char *s) {
     unsigned h = 2166136261u;
     while (*s) {
@@ -2645,6 +2654,24 @@ static void build_source_graph(int with_geometry) {
         }
     }
     for (int i = 0; i < vocab_size; ++i) {
+        /* The accumulation above never renormalizes mid-pass, so a corpus
+           dense enough (more islands, more tokens in the window) drives a
+           high-degree word's raw accumulator past FLT_MAX. normalize()'s
+           division would then hand her either an Inf/Inf NaN or a silently
+           degenerate zero vector (finite/Inf) — both are a poisoned
+           embedding wearing a normal-looking float. Refused here instead. */
+        if (!vec_finite(vocab[i].emb, EMBED_DIM) ||
+            !vec_finite(vocab[i].left_emb, EMBED_DIM) ||
+            !vec_finite(vocab[i].right_emb, EMBED_DIM)) {
+            fprintf(stderr,
+                    "netta: word geometry overflowed float32 on '%s' (id %d) "
+                    "while folding %d island(s), %d tokens; this world is "
+                    "too dense for the geometry pass to hold in one "
+                    "unnormalized sweep\n",
+                    vocab[i].text, i, island_count ? island_count : 1,
+                    corpus_n);
+            exit(1);
+        }
         normalize(vocab[i].emb, EMBED_DIM);
         normalize(vocab[i].left_emb, EMBED_DIM);
         normalize(vocab[i].right_emb, EMBED_DIM);
