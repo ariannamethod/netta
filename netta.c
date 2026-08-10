@@ -4507,6 +4507,29 @@ static int load_state_valid(const char *path) {
     }
 
     /*
+     * The exact-length check below only proves the file is the right
+     * number of bytes; basin/replay/glyph/curriculum counts and cursors do
+     * not appear in that formula at all (their backing arrays are always
+     * read at fixed capacity, state_expected_size below), so a snapshot
+     * can corrupt exactly one of them to an out-of-range value and still
+     * pass with the same total length. Left unchecked, semantic_basin_
+     * freshness/basin_remember index basin_memory[BASIN_MEMORY] with
+     * basin_count/basin_cursor straight from disk, and the replay/glyph/
+     * curriculum counterparts do the same against their own fixed arrays:
+     * an out-of-range value is a live out-of-bounds read or write, not a
+     * refused load. Checked here, before any of it is trusted.
+     */
+    if (h.basin_count < 0 || h.basin_count > BASIN_MEMORY ||
+        h.basin_cursor < 0 || h.basin_cursor >= BASIN_MEMORY ||
+        h.replay_count < 0 || h.replay_count > REPLAY_CAPACITY ||
+        h.replay_cursor < 0 || h.replay_cursor >= REPLAY_CAPACITY ||
+        h.glyph_count > (uint32_t)MAX_GLYPHS ||
+        h.curriculum_count > (uint32_t)MAX_CURRICULUM_REGIONS) {
+        fclose(f);
+        return 0;
+    }
+
+    /*
      * A snapshot may hold more words than the current text produced — she
      * lived through a larger world before. Identity of the shared prefix is
      * what must match, not its length; the vocabulary is append-only, so a
@@ -4618,6 +4641,23 @@ static int load_state_valid(const char *path) {
         return 0;
     }
 
+    /*
+     * first_edge is rebuilt below by indexing it with edges[e].from
+     * straight from disk (first_edge[from] = e); an out-of-range from/to
+     * is an out-of-bounds write into first_edge (sized vocab_capacity) or
+     * a later out-of-bounds read wherever an edge's endpoint is used to
+     * index vocab[]. vocab_size above already reflects this snapshot's
+     * words, so the bound is known before any edge is trusted.
+     */
+    for (uint32_t e = 0; e < h.edge_count; ++e) {
+        if (edges[e].from >= (uint32_t)vocab_size ||
+            edges[e].to >= (uint32_t)vocab_size) {
+            free(saved);
+            fclose(f);
+            return 0;
+        }
+    }
+
     edge_count = (int)h.edge_count;
     if ((int)h.trigram_count > trigram_capacity) {
         int cap = trigram_capacity ? trigram_capacity : MAX_TRIGRAMS;
@@ -4632,6 +4672,19 @@ static int load_state_valid(const char *path) {
         free(saved);
         fclose(f);
         return 0;
+    }
+
+    /* Same reasoning as the edge check above: a/b/c are token ids read
+       straight from disk and later index vocab[] (get_trigram, oracle and
+       continuation lookups) or seed a hash bucket derived from them. */
+    for (uint32_t t = 0; t < h.trigram_count; ++t) {
+        if (trigrams[t].a >= (uint32_t)vocab_size ||
+            trigrams[t].b >= (uint32_t)vocab_size ||
+            trigrams[t].c >= (uint32_t)vocab_size) {
+            free(saved);
+            fclose(f);
+            return 0;
+        }
     }
     trigram_count_total = (int)h.trigram_count;
     episode_count = h.episodes;
