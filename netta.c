@@ -81,6 +81,17 @@ enum { FINALISTS = 4 };
 #define CURRICULUM_WARMUP_PASSES 2
 #define CURRICULUM_UNIFORM_MILLIS 350
 #define COHERENCE_PROBE_SEED 0x6E6574746150524FULL
+/* S4 held-out examiner (Sol's audit, Next step item 5): the fixture is
+   meant to stay small and fixed by design (docs/HELDOUT.md); a hard cap
+   keeps the exam's own memory static instead of growing corpus-sized
+   machinery for a text that must never become one. */
+#define EXAM_MAX_TOKENS  8192
+/* Proper-scoring mass split, documented in full at exam_run_pass: pool
+   gets (1 - EPS_OUT) by softmax at T_EXAM; the rest is shared between
+   "known but not in this position's pool" and "escape" (truth is a word
+   she has never met at all). */
+#define EPS_OUT          0.10
+#define T_EXAM           1.0
 #define REPLAY_CAPACITY  1024
 #define DREAM_INTERVAL   64
 #define NREM_DREAMS      12
@@ -6082,6 +6093,514 @@ static void run_geometry_probe(int pairs) {
     free(cos_samples);
 }
 
+/*
+ * S4 held-out proper-scoring examiner (Sol's audit, arianna-shared/
+ * resonance_connections/reports/2026-08-10-sol-netta-foundation-audit.md,
+ * Next step item 5). Read-only, absolute: no write to state, counters,
+ * edges, glyphs or policy; its own local RNG stream keyed by --exam-seed,
+ * never the organism's rng_state past its own window; held-out text is
+ * validated at load against every island's own token_hash and refused if
+ * it matches -- a text she has already lived is not held out.
+ */
+
+/* Same FNV-1a formula and constants as Island.token_hash (load_corpus),
+   over the file's OWN tokenization resolved against the CURRENT vocabulary
+   with no creation (token_id(word, 0)) -- read-only. An unresolved word
+   contributes a fixed sentinel rather than being skipped, so the hash is a
+   stable function of "what she would see reading this file now"; the only
+   way it can equal a live island's hash is if the file IS that island's
+   text, seen through a vocabulary that already knew every word in it. */
+static uint64_t exam_content_hash(const int *ids, int n) {
+    uint64_t hash = 1469598103934665603ULL;
+    for (int i = 0; i < n; ++i) {
+        uint32_t v = ids[i] >= 0 ? (uint32_t)ids[i] : 0xFFFFFFFFu;
+        hash = (hash ^ (uint64_t)v) * 1099511628211ULL;
+    }
+    hash ^= (uint64_t)(uint32_t)n;
+    return hash;
+}
+
+static void exam_resolve_word(char *word, int *ids, int *n, int cap,
+                              char oov[][MAX_TOKEN_LEN], int *oov_n) {
+    if (*n >= cap) {
+        fprintf(stderr,
+                "netta: held-out text exceeds %d tokens; the fixture is "
+                "meant to stay small and fixed\n", cap);
+        exit(1);
+    }
+    int id = token_id(word, 0);
+    ids[(*n)++] = id;
+    if (id < 0) {
+        int duplicate = 0;
+        for (int i = 0; i < *oov_n; ++i)
+            if (strcmp(oov[i], word) == 0) { duplicate = 1; break; }
+        if (!duplicate && *oov_n < cap) {
+            snprintf(oov[*oov_n], MAX_TOKEN_LEN, "%s", word);
+            (*oov_n)++;
+        }
+    }
+}
+
+static void exam_emit(char *buf, int *len, int *ids, int *n, int cap,
+                      char oov[][MAX_TOKEN_LEN], int *oov_n) {
+    if (*len <= 0) return;
+    buf[*len] = '\0';
+    for (int i = 0; i < *len; ++i) {
+        unsigned char c = (unsigned char)buf[i];
+        if (c < 128) buf[i] = (char)tolower(c);
+    }
+    exam_resolve_word(buf, ids, n, cap, oov, oov_n);
+    *len = 0;
+}
+
+/* Same char-by-char physics as load_corpus (isspace/is_punct_token, ASCII
+   lowering, punctuation as its own token) but read-only throughout:
+   token_id is always called with create=0, so no word in this file ever
+   enters her vocabulary, corpus or counters. */
+static int exam_tokenize(const char *path, int *ids, int cap, int *out_n,
+                         char oov[][MAX_TOKEN_LEN], int *out_oov_n) {
+    FILE *f = fopen(path, "rb");
+    if (!f) return 0;
+
+    char buf[MAX_TOKEN_LEN];
+    int len = 0;
+    int n = 0;
+    int oov_n = 0;
+    int c;
+
+    while ((c = fgetc(f)) != EOF) {
+        if (isspace((unsigned char)c)) {
+            exam_emit(buf, &len, ids, &n, cap, oov, &oov_n);
+        } else if (is_punct_token(c)) {
+            exam_emit(buf, &len, ids, &n, cap, oov, &oov_n);
+            char p[2] = {(char)c, '\0'};
+            exam_resolve_word(p, ids, &n, cap, oov, &oov_n);
+        } else if (len < MAX_TOKEN_LEN - 1) {
+            buf[len++] = (char)c;
+        }
+    }
+    exam_emit(buf, &len, ids, &n, cap, oov, &oov_n);
+    fclose(f);
+
+    *out_n = n;
+    *out_oov_n = oov_n;
+    return 1;
+}
+
+typedef struct {
+    int ctx[CONTEXT];
+    int truth_id; /* resolved id, or -1 if the held-out truth is OOV */
+} ExamPosition;
+
+/* An exam position needs CONTEXT tokens of context she can actually read.
+   Context is a rolling window of the last CONTEXT RESOLVED words seen so
+   far -- an OOV word is silently skipped from it, the same precedent
+   load_corpus already sets for a word that cannot be interned
+   (corpus_dropped_vocab). Truth is read from every position of the raw
+   stream regardless, resolved or not: what she must predict is whatever
+   word is actually there, known to her or not. */
+static int exam_build_positions(const int *ids, int n, ExamPosition *out,
+                                int cap) {
+    int window[CONTEXT];
+    int filled = 0;
+    int m = 0;
+    for (int p = 0; p < n; ++p) {
+        if (filled == CONTEXT) {
+            if (m >= cap) break;
+            memcpy(out[m].ctx, window, sizeof(window));
+            out[m].truth_id = ids[p];
+            m++;
+        }
+        if (ids[p] >= 0) {
+            if (filled < CONTEXT) {
+                window[filled++] = ids[p];
+            } else {
+                memmove(window, window + 1,
+                       (size_t)(CONTEXT - 1) * sizeof(int));
+                window[CONTEXT - 1] = ids[p];
+            }
+        }
+    }
+    return m;
+}
+
+/*
+ * Read-only twin of choose_candidate's pool construction and screening
+ * utility, stopping one step earlier: the exam needs a distribution over
+ * the WHOLE pool, not just the top FINALISTS she would act on, so every
+ * surviving candidate keeps its utility instead of only the top four.
+ * Every read here is identical to what choose_candidate itself reads
+ * (prior_score, core_predict_recursive with commit_state=0,
+ * screening_utility); the only write is the local pool_tok/pool_utility
+ * output. intent_debt is fixed at 1.0: the exam scores each position
+ * fresh, the same reset run_probe_suite gives the start of every rollout,
+ * not a multi-step accumulation.
+ */
+static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
+                           const float *intent, const ProphecyStack *world,
+                           int glyph_id,
+                           int pool_tok[CANDIDATES],
+                           float pool_utility[CANDIDATES]) {
+    int candidates[CANDIDATES];
+    int n = 0;
+    int prev = ctx[ctx_n - 1];
+
+    if (ctx_n >= 2) {
+        int a = ctx[ctx_n - 2];
+        unsigned bucket = trigram_bucket(a, prev);
+        int tri_tok[CANDIDATES];
+        int tri_n = 0;
+        for (int t = first_trigram[bucket];
+             t >= 0 && tri_n < CANDIDATES;
+             t = trigrams[t].next_bucket) {
+            if ((int)trigrams[t].a == a &&
+                (int)trigrams[t].b == prev &&
+                (trigrams[t].count > 0 ||
+                 (policy_enabled && trigrams[t].policy_visits > 0 &&
+                  context_policy_score(ctx, ctx_n,
+                                       (int)trigrams[t].c) > 0.53f)))
+                tri_tok[tri_n++] = (int)trigrams[t].c;
+        }
+        for (int i = 0; i + 1 < tri_n; ++i)
+            for (int j = i + 1; j < tri_n; ++j)
+                if (strcmp(vocab[tri_tok[j]].text,
+                           vocab[tri_tok[i]].text) < 0) {
+                    int tmp = tri_tok[i];
+                    tri_tok[i] = tri_tok[j];
+                    tri_tok[j] = tmp;
+                }
+        for (int i = 0; i < tri_n && n < CANDIDATES - 10; ++i)
+            candidates[n++] = tri_tok[i];
+    }
+
+    int punct_added = 0;
+    int top_n = top_successor_n[prev];
+    for (int i = 0; i < top_n && n < CANDIDATES - 6; ++i) {
+        int tok = top_successors[prev][i];
+        if (tok < 0) continue;
+        if (!token_is_content_id(tok)) {
+            if (punct_added >= 3 || !token_is_content_id(prev)) continue;
+            punct_added++;
+        }
+        candidates[n++] = tok;
+    }
+
+    if (n < CANDIDATES &&
+        (token_is_content_id(oracle) || token_is_content_id(prev)))
+        candidates[n++] = oracle;
+
+    int best_exp[3] = {-1, -1, -1};
+    float best_val[3] = {-1e9f, -1e9f, -1e9f};
+    int experience_scanned = 0;
+    for (int e = first_edge[prev];
+         e >= 0 && experience_scanned < 128;
+         e = edges[e].next_from) {
+        if (edges[e].source_count == 0 &&
+            !edges[e].positive_uses && !edges[e].negative_uses) continue;
+        experience_scanned++;
+        float v = learned_relation_score(prev, (int)edges[e].to);
+        int to = (int)edges[e].to;
+        for (int k = 0; k < 3; ++k) {
+            if (v > best_val[k] ||
+                (v == best_val[k] && best_exp[k] >= 0 &&
+                 strcmp(vocab[to].text, vocab[best_exp[k]].text) < 0)) {
+                for (int q = 2; q > k; --q) {
+                    best_val[q] = best_val[q - 1];
+                    best_exp[q] = best_exp[q - 1];
+                }
+                best_val[k] = v;
+                best_exp[k] = to;
+                break;
+            }
+        }
+    }
+    for (int k = 0; k < 3 && n < CANDIDATES - 2; ++k)
+        if (best_exp[k] >= 0) candidates[n++] = best_exp[k];
+
+    while (n < CANDIDATES) {
+        int tok = (int)(rng_u64() % (uint64_t)vocab_size);
+        if (token_is_content_id(tok))
+            candidates[n++] = tok;
+    }
+
+    int unique_n = 0;
+    for (int i = 0; i < n; ++i) {
+        int duplicate = 0;
+        for (int j = 0; j < unique_n; ++j)
+            if (candidates[j] == candidates[i]) { duplicate = 1; break; }
+        if (!duplicate) candidates[unique_n++] = candidates[i];
+    }
+    n = unique_n;
+
+    uint32_t min_phrase_use = UINT32_MAX;
+    for (int i = 0; i < n; ++i) {
+        if (!token_is_content_id(candidates[i])) continue;
+        uint32_t uses = phrase_use_count(ctx, ctx_n, candidates[i]);
+        if (uses < min_phrase_use) min_phrase_use = uses;
+    }
+    if (min_phrase_use == UINT32_MAX) min_phrase_use = 0;
+
+    float ctx_emb[EMBED_DIM];
+    context_embedding(ctx, ctx_n, ctx_emb);
+    float mlp_gate = clampf((float)episode_count / 2500.0f, 0.0f, 0.65f);
+
+    int pool_n = 0;
+    for (int i = 0; i < n; ++i) {
+        int cand = candidates[i];
+        uint32_t phrase_uses = phrase_use_count(ctx, ctx_n, cand);
+        if (token_is_content_id(cand) &&
+            phrase_uses > min_phrase_use + 1 &&
+            phrase_uses >= 3)
+            continue;
+
+        float prior[SCORE_DIM], mlp[SCORE_DIM], mix[SCORE_DIM];
+        prior_score(ctx, ctx_n, cand, oracle, intent, world, glyph_id, prior);
+        core_predict_recursive(ctx_emb, intent, 1.0f,
+                               prev, cand, oracle, prior, mlp, 0);
+        for (int d = 0; d < SCORE_DIM; ++d) {
+            float m = 0.5f * (mlp[d] + 1.0f);
+            mix[d] = (1.0f - mlp_gate) * prior[d] + mlp_gate * m;
+        }
+        float world_debt = prophecy_stack_total_debt(world);
+        float utility =
+            screening_utility(mix) +
+            0.09f * clampf(1.0f, 0.0f, 1.5f) * mix[4] +
+            0.08f * clampf(world_debt, 0.0f, 2.0f) * mix[7] +
+            0.08f * mix[6];
+        if (!token_is_content_id(cand) && prior[0] < 0.82f)
+            utility -= 0.20f;
+
+        pool_tok[pool_n] = cand;
+        pool_utility[pool_n] = utility;
+        pool_n++;
+    }
+    return pool_n;
+}
+
+typedef struct {
+    double bpt;
+    double in_pool_rate;
+    double escape_rate;
+    double first_token_accuracy;
+} ExamResult;
+
+/*
+ * Proper scoring at T_EXAM=1.0. Mass is predeclared and never looks at the
+ * realized truth before splitting it -- that would not be a forecast:
+ *   pool total   = 1 - EPS_OUT, split by softmax(utility / T_EXAM) over the
+ *                  candidates that survive the same screen choose_candidate
+ *                  itself uses;
+ *   out total    = EPS_OUT * (1 - escape_share), spread uniformly over
+ *                  every vocabulary token NOT in this position's pool;
+ *   escape total = EPS_OUT * escape_share, one class standing in for "the
+ *                  truth is a word she has never met at all" -- OOV
+ *                  held-out words. escape_share is fixed once per exam
+ *                  file, before any position is scored: the fraction of
+ *                  distinct OOV word TYPES among (OOV types + her known
+ *                  vocabulary), i.e. how much of this text's word-space
+ *                  lies outside what she knows. pool + out + escape = 1
+ *                  by construction, at every position.
+ * BPT = -mean(log2(P(truth))) over the sampled positions.
+ */
+static ExamResult exam_run_pass(const ExamPosition *positions, int total,
+                                uint64_t exam_seed, int exam_n,
+                                double escape_share) {
+    ExamResult r;
+    memset(&r, 0, sizeof(r));
+    if (total <= 0 || exam_n <= 0) return r;
+
+    double sum_bits = 0.0;
+    int in_pool = 0, escape = 0, correct = 0;
+
+    for (int i = 0; i < exam_n; ++i) {
+        uint64_t position_hash = mix64(
+            exam_seed ^ ((uint64_t)i + 1ULL) * 0xD1B54A32D192ED03ULL);
+        int idx = (int)(position_hash % (uint64_t)total);
+        const ExamPosition *pos = &positions[idx];
+
+        rng_state = mix64(exam_seed ^ 0xA24BAED4963EE407ULL ^
+                          (uint64_t)i * 0x9FB21C651E98DF25ULL);
+        if (!rng_state) rng_state = 1;
+
+        float intent[EMBED_DIM];
+        intent_from_context(pos->ctx, CONTEXT, intent);
+        ProphecyStack world;
+        prophecy_stack_init(pos->ctx, CONTEXT, &world);
+        int gid = glyph_lookup(pos->ctx, CONTEXT, &world, NULL);
+        int oracle_tok = oracle_next_context(pos->ctx, CONTEXT);
+
+        int pool_tok[CANDIDATES];
+        float pool_utility[CANDIDATES];
+        int pool_n = exam_score_pool(pos->ctx, CONTEXT, oracle_tok, intent,
+                                     &world, gid, pool_tok, pool_utility);
+
+        double p_pool_total = 1.0 - EPS_OUT;
+        double p_out_total = EPS_OUT * (1.0 - escape_share);
+        double p_escape = EPS_OUT * escape_share;
+
+        int best_k = -1;
+        double max_u = -1e300;
+        for (int k = 0; k < pool_n; ++k)
+            if ((double)pool_utility[k] > max_u) {
+                max_u = pool_utility[k];
+                best_k = k;
+            }
+
+        double softmax_w[CANDIDATES];
+        double denom = 0.0;
+        for (int k = 0; k < pool_n; ++k) {
+            softmax_w[k] = exp(((double)pool_utility[k] - max_u) / T_EXAM);
+            denom += softmax_w[k];
+        }
+        if (denom <= 0.0) denom = 1.0;
+
+        double p_truth;
+        if (pos->truth_id < 0) {
+            p_truth = p_escape;
+            escape++;
+        } else {
+            int found = -1;
+            for (int k = 0; k < pool_n; ++k)
+                if (pool_tok[k] == pos->truth_id) { found = k; break; }
+            if (found >= 0) {
+                p_truth = p_pool_total * (softmax_w[found] / denom);
+                in_pool++;
+            } else {
+                int out_n = vocab_size - pool_n;
+                p_truth = out_n > 0 ? p_out_total / (double)out_n
+                                    : p_out_total;
+            }
+        }
+        if (p_truth < 1e-12) p_truth = 1e-12;
+        sum_bits += -log2(p_truth);
+
+        if (best_k >= 0 && pool_tok[best_k] == pos->truth_id) correct++;
+    }
+
+    r.bpt = sum_bits / (double)exam_n;
+    r.in_pool_rate = (double)in_pool / (double)exam_n;
+    r.escape_rate = (double)escape / (double)exam_n;
+    r.first_token_accuracy = (double)correct / (double)exam_n;
+    return r;
+}
+
+/*
+ * Held-out exam entry point: --exam <file> --exam-seed N --exam-n N. Two
+ * readings, same sampled positions and the same local RNG stream in both:
+ * combined (her working vectors, exactly as choose_candidate reads them)
+ * and source (island_* swapped in for emb/left_emb/right_emb for the
+ * duration of the pass, then restored byte for byte). Every geometric
+ * channel becomes source-only this way without a single per-channel flag,
+ * because every one of them reads these three arrays; non-geometric
+ * channels never touch them and are therefore identical in both readings.
+ */
+static void run_exam(const char *path, uint64_t exam_seed, int exam_n) {
+    if (exam_n <= 0) return;
+
+    int *ids = (int *)xcalloc(EXAM_MAX_TOKENS, sizeof(int), "exam tokens");
+    char (*oov_words)[MAX_TOKEN_LEN] =
+        (char (*)[MAX_TOKEN_LEN])xcalloc(EXAM_MAX_TOKENS, MAX_TOKEN_LEN,
+                                         "exam oov words");
+    int token_n = 0, oov_n = 0;
+    if (!exam_tokenize(path, ids, EXAM_MAX_TOKENS, &token_n,
+                       oov_words, &oov_n)) {
+        fprintf(stderr, "netta: cannot open exam file %s: %s\n",
+                path, strerror(errno));
+        free(ids);
+        free(oov_words);
+        exit(1);
+    }
+
+    uint64_t file_hash = exam_content_hash(ids, token_n);
+    for (int i = 0; i < island_count; ++i) {
+        if (islands[i].token_hash == file_hash) {
+            fprintf(stderr,
+                    "netta: exam file %s hashes to island %d's own "
+                    "token_hash -- she has already lived this text; "
+                    "refusing to call it held-out\n", path, i);
+            free(ids);
+            free(oov_words);
+            exit(1);
+        }
+    }
+
+    ExamPosition *positions = (ExamPosition *)xcalloc(
+        EXAM_MAX_TOKENS, sizeof(ExamPosition), "exam positions");
+    int pos_n = exam_build_positions(ids, token_n, positions,
+                                     EXAM_MAX_TOKENS);
+    if (pos_n <= 0) {
+        fprintf(stderr,
+                "netta: %s holds no position with a fully known %d-token "
+                "context; nothing to examine\n", path, CONTEXT);
+        free(ids);
+        free(oov_words);
+        free(positions);
+        return;
+    }
+
+    double escape_share = (double)oov_n / (double)(oov_n + vocab_size);
+
+    Core saved_core = core;
+    uint64_t saved_rng = rng_state;
+    uint64_t saved_depth = recursive_depth_total;
+    uint64_t saved_calls = recursive_call_total;
+    int saved_eval = evaluation_mode;
+    evaluation_mode = 1;
+
+    ExamResult combined =
+        exam_run_pass(positions, pos_n, exam_seed, exam_n, escape_share);
+
+    float (*save_emb)[EMBED_DIM] = (float (*)[EMBED_DIM])xcalloc(
+        (size_t)vocab_size, sizeof(*save_emb), "exam emb save");
+    float (*save_left)[EMBED_DIM] = (float (*)[EMBED_DIM])xcalloc(
+        (size_t)vocab_size, sizeof(*save_left), "exam left save");
+    float (*save_right)[EMBED_DIM] = (float (*)[EMBED_DIM])xcalloc(
+        (size_t)vocab_size, sizeof(*save_right), "exam right save");
+    for (int i = 0; i < vocab_size; ++i) {
+        memcpy(save_emb[i], vocab[i].emb, sizeof(save_emb[i]));
+        memcpy(save_left[i], vocab[i].left_emb, sizeof(save_left[i]));
+        memcpy(save_right[i], vocab[i].right_emb, sizeof(save_right[i]));
+        memcpy(vocab[i].emb, vocab[i].island_emb, sizeof(vocab[i].emb));
+        memcpy(vocab[i].left_emb, vocab[i].island_left_emb,
+               sizeof(vocab[i].left_emb));
+        memcpy(vocab[i].right_emb, vocab[i].island_right_emb,
+               sizeof(vocab[i].right_emb));
+    }
+
+    ExamResult source =
+        exam_run_pass(positions, pos_n, exam_seed, exam_n, escape_share);
+
+    for (int i = 0; i < vocab_size; ++i) {
+        memcpy(vocab[i].emb, save_emb[i], sizeof(vocab[i].emb));
+        memcpy(vocab[i].left_emb, save_left[i], sizeof(vocab[i].left_emb));
+        memcpy(vocab[i].right_emb, save_right[i], sizeof(vocab[i].right_emb));
+    }
+    free(save_emb);
+    free(save_left);
+    free(save_right);
+
+    core = saved_core;
+    rng_state = saved_rng;
+    recursive_depth_total = saved_depth;
+    recursive_call_total = saved_calls;
+    evaluation_mode = saved_eval;
+
+    printf("\n[READ-ONLY HELD-OUT EXAM] file=%s positions=%d n=%d "
+           "seed=%llu oov_types=%d vocab=%d escape_share=%.4f\n",
+           path, pos_n, exam_n, (unsigned long long)exam_seed, oov_n,
+           vocab_size, escape_share);
+    printf("  exam[combined] bpt=%.4f in_pool=%.4f escape=%.4f ft=%.4f\n",
+           combined.bpt, combined.in_pool_rate, combined.escape_rate,
+           combined.first_token_accuracy);
+    printf("  exam[source]   bpt=%.4f in_pool=%.4f escape=%.4f ft=%.4f\n",
+           source.bpt, source.in_pool_rate, source.escape_rate,
+           source.first_token_accuracy);
+
+    free(ids);
+    free(oov_words);
+    free(positions);
+}
+
 /* Earned language floor, S3: dump only, no authority in choice. Every
    relation floor_observe recorded, with its distinct-island count and raw
    confirmation total; >= 2 islands is what the spec calls floor-eligible,
@@ -6298,6 +6817,9 @@ int main(int argc, char **argv) {
     int probe_count = 0;
     int geometry_probe_count = 0;
     int floor_dump = 0;
+    const char *exam_path = NULL;
+    uint64_t exam_seed_arg = 424242ull;
+    int exam_n = 256;
     int override_policy = -1;
     int override_stack = -1;
     int override_dream = -1;
@@ -6315,6 +6837,12 @@ int main(int argc, char **argv) {
             probe_count = atoi(argv[++i]);
         else if (strcmp(argv[i], "--geometry-probe") == 0 && i + 1 < argc)
             geometry_probe_count = atoi(argv[++i]);
+        else if (strcmp(argv[i], "--exam") == 0 && i + 1 < argc)
+            exam_path = argv[++i];
+        else if (strcmp(argv[i], "--exam-seed") == 0 && i + 1 < argc)
+            exam_seed_arg = strtoull(argv[++i], NULL, 10);
+        else if (strcmp(argv[i], "--exam-n") == 0 && i + 1 < argc)
+            exam_n = atoi(argv[++i]);
         else if (strcmp(argv[i], "--floor") == 0)
             floor_dump = 1;
         else if (strcmp(argv[i], "--reset") == 0)
@@ -6544,6 +7072,11 @@ int main(int argc, char **argv) {
             run_probe_suite(probe_count);
         if (geometry_probe_count > 0)
             run_geometry_probe(geometry_probe_count);
+        if (exam_path) {
+            save_state("netta.state.exam_pre");
+            run_exam(exam_path, exam_seed_arg, exam_n);
+            save_state("netta.state.exam_post");
+        }
         if (floor_dump)
             run_floor_dump();
         return 0;
@@ -6576,6 +7109,11 @@ int main(int argc, char **argv) {
         run_probe_suite(probe_count);
     if (geometry_probe_count > 0)
         run_geometry_probe(geometry_probe_count);
+    if (exam_path) {
+        save_state("netta.state.exam_pre");
+        run_exam(exam_path, exam_seed_arg, exam_n);
+        save_state("netta.state.exam_post");
+    }
     if (floor_dump)
         run_floor_dump();
     printf("\ncomplete: %llu lifetime episodes\n",

@@ -6,7 +6,7 @@
 # from a run performed in this script, and the reference values are the ones
 # an audit can restate independently.
 #
-#   ./probes.sh            run every probe except 13 (12/12 when healthy)
+#   ./probes.sh            run every probe except 13 (15/15 when healthy)
 #   ./probes.sh 3 5        run only probes 3 and 5
 #   ./probes.sh 13         geometry health -- RED until geometry repair (S3),
 #                          excluded from the default run on purpose, run
@@ -40,6 +40,11 @@ world() {
 
 coherence() { awk -F'\t' 'NR>1{n++;s+=$15} END{if(n)printf "%.4f", s/n}' "$1/netta.probe.tsv"; }
 column()    { awk -F'\t' -v c="$2" 'NR>1{n++;s+=$c} END{if(n)printf "%.4f", s/n}' "$1/netta.probe.tsv"; }
+# exam_field FILE combined|source bpt|in_pool|escape|ft -- one field off the
+# "exam[reading] bpt=.. in_pool=.. escape=.. ft=.." line run_exam prints.
+exam_field() {
+    grep "exam\[$2\]" "$1" | sed -n "s/.*[[:space:]]$3=\([0-9.]*\).*/\1/p"
+}
 
 say "netta probes"
 say "source $(cd "$ROOT" && git rev-parse --short HEAD 2>/dev/null || echo '(not a repo)')"
@@ -49,7 +54,7 @@ say ""
 # A harness that judges fail-closed behaviour must itself be fail-closed. A
 # missing fixture used to leave the comparisons empty, and empty compared
 # equal to empty: probes reported PASS while measuring nothing at all.
-for fixture in "$ROOT/netta.txt" "$ROOT/docs/MODELCARD.md"; do
+for fixture in "$ROOT/netta.txt" "$ROOT/docs/MODELCARD.md" "$ROOT/docs/HELDOUT.md"; do
     [ -f "$fixture" ] || { say "missing fixture: $fixture"; exit 99; }
 done
 
@@ -337,6 +342,74 @@ if want 14; then
         pass "$label"
     else
         fail "$label" "state=$(printf '%.12s' "$sh") history=$(printf '%.12s' "$lh")"
+    fi
+fi
+
+# --- S4 held-out exam: proper-scoring reproducibility pin -------------------
+# docs/HELDOUT.md is the first ~3000 bytes of Alice's Adventures in
+# Wonderland (public domain, Project Gutenberg) -- a text this organism has
+# never read. Its content-hash is checked against every loaded island's own
+# token_hash at exam start and refused if it matches; it does not, because
+# it was never one of her islands. exam-seed 424242, exam-n 256, newborn on
+# netta.txt (--steps 0, same convention as probes 11-13). Combined and
+# source read identical here on purpose: a newborn's combined geometry
+# equals her island geometry exactly (residual is zero at birth, S3) -- the
+# pin exists so a future divergence at birth is caught, not assumed away.
+if want 15; then
+    d=$(world exam_newborn)
+    ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 \
+        --exam "$ROOT/docs/HELDOUT.md" --exam-seed 424242 --exam-n 256 ) \
+        > "$d/exam" 2>&1
+    cbpt=$(exam_field "$d/exam" combined bpt)
+    cip=$(exam_field "$d/exam" combined in_pool)
+    cesc=$(exam_field "$d/exam" combined escape)
+    cft=$(exam_field "$d/exam" combined ft)
+    sbpt=$(exam_field "$d/exam" source bpt)
+    sip=$(exam_field "$d/exam" source in_pool)
+    sesc=$(exam_field "$d/exam" source escape)
+    sft=$(exam_field "$d/exam" source ft)
+    label="15 held-out exam reproducibility pin: bpt=12.9674 in_pool=0.1914 escape=0.1875 ft=0.0508 (combined == source at birth)"
+    if [ -z "$cbpt" ] || [ -z "$sbpt" ]; then
+        fail "$label" "no measurement taken: exam produced nothing"
+    elif [ "$cbpt" = "12.9674" ] && [ "$cip" = "0.1914" ] && \
+         [ "$cesc" = "0.1875" ] && [ "$cft" = "0.0508" ] && \
+         [ "$sbpt" = "12.9674" ] && [ "$sip" = "0.1914" ] && \
+         [ "$sesc" = "0.1875" ] && [ "$sft" = "0.0508" ]; then
+        pass "$label"
+    else
+        fail "$label" \
+             "combined bpt=$cbpt in_pool=$cip escape=$cesc ft=$cft / source bpt=$sbpt in_pool=$sip escape=$sesc ft=$sft"
+    fi
+fi
+
+# --- S4 held-out exam: observer invariance ----------------------------------
+# Two invariants Sol's audit named for any read-only observer (P0-5's
+# "observer consumes no RNG and changes neither state, history nor
+# decisions", restated for S4 as "state before the exam equals state after,
+# bit for bit"): a life played with --exam produces the same netta.state as
+# the identical life played without it, and within one run, the state saved
+# immediately before run_exam() and immediately after are byte-identical.
+if want 16; then
+    a=$(world exam_inv_noexam)
+    ( cd "$a" && "$BIN" netta.txt --reset --seed 42 --steps 80 ) >/dev/null 2>&1
+    sa=$(shasum -a 256 "$a/netta.state" 2>/dev/null | cut -d' ' -f1)
+
+    b=$(world exam_inv_withexam)
+    ( cd "$b" && "$BIN" netta.txt --reset --seed 42 --steps 80 \
+        --exam "$ROOT/docs/HELDOUT.md" --exam-seed 424242 --exam-n 256 ) \
+        >/dev/null 2>&1
+    sb=$(shasum -a 256 "$b/netta.state" 2>/dev/null | cut -d' ' -f1)
+    spre=$(shasum -a 256 "$b/netta.state.exam_pre" 2>/dev/null | cut -d' ' -f1)
+    spost=$(shasum -a 256 "$b/netta.state.exam_post" 2>/dev/null | cut -d' ' -f1)
+
+    label="16 observer invariance: with/without exam and pre/post-exam state are bit-identical"
+    if [ -z "$sa" ] || [ -z "$sb" ] || [ -z "$spre" ] || [ -z "$spost" ]; then
+        fail "$label" "no measurement taken: a state file is missing"
+    elif [ "$sa" = "$sb" ] && [ "$sb" = "$spre" ] && [ "$spre" = "$spost" ]; then
+        pass "$label ($(printf '%.12s' "$sa"))"
+    else
+        fail "$label" \
+             "no-exam=$(printf '%.12s' "$sa") with-exam=$(printf '%.12s' "$sb") pre=$(printf '%.12s' "$spre") post=$(printf '%.12s' "$spost")"
     fi
 fi
 
