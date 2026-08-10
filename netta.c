@@ -718,6 +718,18 @@ static int vec_finite_d(const double *a, int n) {
     return 1;
 }
 
+/* vec_finite_d() alone misses overflow inside the dot product itself: a
+   component near DBL_MAX is finite on its own, but squaring it before
+   summing (vec_dot_d(a,a,n), exactly what normalize_d's sqrt() consumes)
+   can still overflow to +Inf. normalize_d() then divides every component
+   by that Inf -- a silent all-zero vector, the same F5a failure one
+   numeric ceiling later, with every individual component still passing
+   vec_finite_d(). Checked here, before normalize_d() ever runs. */
+static int vec_norm_finite_positive_d(const double *a, int n) {
+    double sq = vec_dot_d(a, a, n);
+    return isfinite(sq) && sq > 0.0;
+}
+
 static unsigned hash_word(const char *s) {
     unsigned h = 2166136261u;
     while (*s) {
@@ -2708,10 +2720,15 @@ static void build_source_graph(int with_geometry) {
         /* Double gives this sweep 2^52 of headroom instead of float32's
            2^24; a world dense enough to exhaust even that would still
            hand normalize_d() an Inf/Inf NaN or a silent finite/Inf = 0.
-           Refused here instead, same as F5a. */
+           Refused here instead, same as F5a. Component finiteness does
+           not imply a finite squared norm (vec_norm_finite_positive_d
+           above), so both are checked before the divide runs at all. */
         if (!vec_finite_d(emb_d[i], EMBED_DIM) ||
             !vec_finite_d(left_d[i], EMBED_DIM) ||
-            !vec_finite_d(right_d[i], EMBED_DIM)) {
+            !vec_finite_d(right_d[i], EMBED_DIM) ||
+            !vec_norm_finite_positive_d(emb_d[i], EMBED_DIM) ||
+            !vec_norm_finite_positive_d(left_d[i], EMBED_DIM) ||
+            !vec_norm_finite_positive_d(right_d[i], EMBED_DIM)) {
             fprintf(stderr,
                     "netta: word geometry overflowed double on '%s' (id %d) "
                     "while folding %d island(s), %d tokens; this world is "
@@ -2724,6 +2741,21 @@ static void build_source_graph(int with_geometry) {
         normalize_d(emb_d[i], EMBED_DIM);
         normalize_d(left_d[i], EMBED_DIM);
         normalize_d(right_d[i], EMBED_DIM);
+        /* Belt beside suspenders: the pre-checks above make a non-finite
+           result unreachable through this exact overflow, but the
+           post-normalized vector is checked too rather than trusted, so
+           any other route to the same silent failure is refused here
+           instead of written back as a normal-looking float. */
+        if (!vec_finite_d(emb_d[i], EMBED_DIM) ||
+            !vec_finite_d(left_d[i], EMBED_DIM) ||
+            !vec_finite_d(right_d[i], EMBED_DIM)) {
+            fprintf(stderr,
+                    "netta: word geometry normalized to a non-finite vector "
+                    "for '%s' (id %d); refusing rather than writing it back "
+                    "as a normal-looking float\n",
+                    vocab[i].text, i);
+            exit(1);
+        }
         for (int d = 0; d < EMBED_DIM; ++d) {
             vocab[i].emb[d] = (float)emb_d[i][d];
             vocab[i].left_emb[d] = (float)left_d[i][d];
