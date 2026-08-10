@@ -57,7 +57,13 @@
    itself (16 tokens). A world shorter than this cannot be played without
    the destiny read touching a seam it does not own. */
 #define MIN_ISLAND      (CONTEXT + (ROLLOUT - 1) + 16)
-#define CANDIDATES      32
+/* Physical ceiling for the candidate pool buffers. The runtime working
+   budget is candidates_cap (--candidates, default 32) -- every array here
+   is sized to this fixed max so the cap can move up to it without a
+   reallocation; loop bounds that used to read CANDIDATES read
+   candidates_cap instead wherever the count is a live decision, not a
+   buffer size. */
+#define CANDIDATES      128
 enum { FINALISTS = 4 };
 #define PHRASE_TABLE    131072
 #define BASIN_MEMORY    256
@@ -491,6 +497,15 @@ static uint64_t residual_writes_dream = 0;
  * property of a trajectory, so only a trajectory-level counter can see it.
  */
 static float ngram_freshness_weight = 0.168f;
+/* Runtime candidate-pool budget, --candidates, default 32 (S5b). Bounded
+   to [1, CANDIDATES] by the CLI parser; CANDIDATES itself is the physical
+   buffer ceiling, not a live decision. */
+static int candidates_cap = 32;
+/* Episode count that saturates the mlp gate to its 0.65 ceiling,
+   --mlp-gate-episodes, default 2500 (S5b). N=0 is a sentinel: the core
+   never connects, mlp_gate stays 0 for the organism's whole life --
+   see compute_mlp_gate(). */
+static float mlp_gate_episodes = 2500.0f;
 static int prophecy_stack_enabled = 1;
 static int dreams_enabled = 1;
 static uint64_t recursive_depth_total = 0;
@@ -3824,6 +3839,15 @@ static float screening_utility(const float score[SCORE_DIM]) {
            0.04f * score[11];
 }
 
+/* mlp_gate_episodes <= 0 is the --mlp-gate-episodes 0 sentinel: the core
+   never connects, mlp_gate is 0 for the organism's whole life instead of
+   ramping toward 0.65. One definition shared by choose_candidate and its
+   read-only exam twin so the sentinel can't drift between the two. */
+static float compute_mlp_gate(void) {
+    if (mlp_gate_episodes <= 0.0f) return 0.0f;
+    return clampf((float)episode_count / mlp_gate_episodes, 0.0f, 0.65f);
+}
+
 static float survival_utility(const float score[SCORE_DIM]) {
     return 0.11f * score[0] +  /* local language physics */
            0.12f * score[1] +  /* lived source grounding */
@@ -3861,7 +3885,7 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
         int tri_tok[CANDIDATES];
         int tri_n = 0;
         for (int t = first_trigram[bucket];
-             t >= 0 && tri_n < CANDIDATES;
+             t >= 0 && tri_n < candidates_cap;
              t = trigrams[t].next_bucket) {
             if ((int)trigrams[t].a == a &&
                 (int)trigrams[t].b == prev &&
@@ -3879,13 +3903,13 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
                     tri_tok[i] = tri_tok[j];
                     tri_tok[j] = tmp;
                 }
-        for (int i = 0; i < tri_n && n < CANDIDATES - 10; ++i)
+        for (int i = 0; i < tri_n && n < candidates_cap - 10; ++i)
             candidates[n++] = tri_tok[i];
     }
 
     int punct_added = 0;
     int top_n = top_successor_n[prev];
-    for (int i = 0; i < top_n && n < CANDIDATES - 6; ++i) {
+    for (int i = 0; i < top_n && n < candidates_cap - 6; ++i) {
         int tok = top_successors[prev][i];
         if (tok < 0) continue;
         if (!token_is_content_id(tok)) {
@@ -3895,7 +3919,7 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
         candidates[n++] = tok;
     }
 
-    if (n < CANDIDATES &&
+    if (n < candidates_cap &&
         (token_is_content_id(oracle) || token_is_content_id(prev)))
         candidates[n++] = oracle;
 
@@ -3935,10 +3959,10 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
             }
         }
     }
-    for (int k = 0; k < 3 && n < CANDIDATES - 2; ++k)
+    for (int k = 0; k < 3 && n < candidates_cap - 2; ++k)
         if (best_exp[k] >= 0) candidates[n++] = best_exp[k];
 
-    while (n < CANDIDATES) {
+    while (n < candidates_cap) {
         int tok = (int)(rng_u64() % (uint64_t)vocab_size);
         if (token_is_content_id(tok))
             candidates[n++] = tok;
@@ -3971,8 +3995,7 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
 
     float ctx_emb[EMBED_DIM];
     context_embedding(ctx, ctx_n, ctx_emb);
-    float mlp_gate =
-        clampf((float)episode_count / 2500.0f, 0.0f, 0.65f);
+    float mlp_gate = compute_mlp_gate();
 
     int final_tok[FINALISTS];
     float final_utility[FINALISTS];
@@ -6251,7 +6274,7 @@ static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
         int tri_tok[CANDIDATES];
         int tri_n = 0;
         for (int t = first_trigram[bucket];
-             t >= 0 && tri_n < CANDIDATES;
+             t >= 0 && tri_n < candidates_cap;
              t = trigrams[t].next_bucket) {
             if ((int)trigrams[t].a == a &&
                 (int)trigrams[t].b == prev &&
@@ -6269,13 +6292,13 @@ static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
                     tri_tok[i] = tri_tok[j];
                     tri_tok[j] = tmp;
                 }
-        for (int i = 0; i < tri_n && n < CANDIDATES - 10; ++i)
+        for (int i = 0; i < tri_n && n < candidates_cap - 10; ++i)
             candidates[n++] = tri_tok[i];
     }
 
     int punct_added = 0;
     int top_n = top_successor_n[prev];
-    for (int i = 0; i < top_n && n < CANDIDATES - 6; ++i) {
+    for (int i = 0; i < top_n && n < candidates_cap - 6; ++i) {
         int tok = top_successors[prev][i];
         if (tok < 0) continue;
         if (!token_is_content_id(tok)) {
@@ -6285,7 +6308,7 @@ static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
         candidates[n++] = tok;
     }
 
-    if (n < CANDIDATES &&
+    if (n < candidates_cap &&
         (token_is_content_id(oracle) || token_is_content_id(prev)))
         candidates[n++] = oracle;
 
@@ -6314,10 +6337,10 @@ static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
             }
         }
     }
-    for (int k = 0; k < 3 && n < CANDIDATES - 2; ++k)
+    for (int k = 0; k < 3 && n < candidates_cap - 2; ++k)
         if (best_exp[k] >= 0) candidates[n++] = best_exp[k];
 
-    while (n < CANDIDATES) {
+    while (n < candidates_cap) {
         int tok = (int)(rng_u64() % (uint64_t)vocab_size);
         if (token_is_content_id(tok))
             candidates[n++] = tok;
@@ -6342,7 +6365,7 @@ static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
 
     float ctx_emb[EMBED_DIM];
     context_embedding(ctx, ctx_n, ctx_emb);
-    float mlp_gate = clampf((float)episode_count / 2500.0f, 0.0f, 0.65f);
+    float mlp_gate = compute_mlp_gate();
 
     int pool_n = 0;
     for (int i = 0; i < n; ++i) {
@@ -6860,6 +6883,14 @@ int main(int argc, char **argv) {
             requested_island = atoi(argv[++i]);
         else if (strcmp(argv[i], "--ngram-weight") == 0 && i + 1 < argc)
             ngram_freshness_weight = strtof(argv[++i], NULL);
+        else if (strcmp(argv[i], "--candidates") == 0 && i + 1 < argc) {
+            int v = atoi(argv[++i]);
+            if (v < 1) v = 1;
+            if (v > CANDIDATES) v = CANDIDATES;
+            candidates_cap = v;
+        }
+        else if (strcmp(argv[i], "--mlp-gate-episodes") == 0 && i + 1 < argc)
+            mlp_gate_episodes = strtof(argv[++i], NULL);
         else if (strcmp(argv[i], "--no-stack") == 0) {
             prophecy_stack_enabled = 0;
             override_stack = 0;
