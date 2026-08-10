@@ -5676,6 +5676,145 @@ static void run_probe_suite(int count) {
     evaluation_mode = saved_eval;
 }
 
+static int geometry_cos_cmp(const void *pa, const void *pb) {
+    float a = *(const float *)pa;
+    float b = *(const float *)pb;
+    return (a > b) - (a < b);
+}
+
+static int geometry_rank_cmp(const void *pa, const void *pb) {
+    int a = *(const int *)pa;
+    int b = *(const int *)pb;
+    return a - b;
+}
+
+/*
+ * Geometry health, probe 13 (Sol's audit, P0-1/P0-2). Its own fixed local
+ * generator, never rng_state, so it consumes no RNG and changes neither
+ * state nor history nor decisions -- the same observer invariance the
+ * audit held its other read-only shadows to. Reports the raw signal a
+ * healthy source geometry needs; on the current cone every threshold is
+ * expected to fail. See probes.sh probe 13.
+ */
+static void run_geometry_probe(int pairs) {
+    if (pairs <= 0 || vocab_size < 2) return;
+    uint64_t grng = 0xD15EA5EDD15EA5EDULL;
+
+    float *cos_samples = (float *)xcalloc((size_t)pairs, sizeof(float),
+                                          "geometry probe cosines");
+    int clamp_violations = 0;
+    for (int k = 0; k < pairs; ++k) {
+        int a, b;
+        do {
+            grng = mix64(grng ^ ((uint64_t)k * 0x9E3779B97F4A7C15ULL));
+            a = (int)(grng % (uint64_t)vocab_size);
+            grng = mix64(grng ^ 0xD1B54A32D192ED03ULL);
+            b = (int)(grng % (uint64_t)vocab_size);
+        } while (a == b);
+        float c = cosine(vocab[a].emb, vocab[b].emb, EMBED_DIM);
+        cos_samples[k] = c;
+        if (c > 1.0f) clamp_violations++;
+    }
+    qsort(cos_samples, (size_t)pairs, sizeof(float), geometry_cos_cmp);
+    float median = cos_samples[pairs / 2];
+    float q10 = cos_samples[(size_t)((double)pairs * 0.10)];
+
+    float centroid[EMBED_DIM] = {0};
+    for (int i = 0; i < vocab_size; ++i)
+        for (int d = 0; d < EMBED_DIM; ++d)
+            centroid[d] += vocab[i].emb[d];
+    for (int d = 0; d < EMBED_DIM; ++d) centroid[d] /= (float)vocab_size;
+    float centroid_norm = vec_norm(centroid, EMBED_DIM);
+
+    /* Hub share and actual-vs-random directional rank, on a fixed sample
+       of words that have at least one real corpus successor. */
+    int sample_n = 128;
+    if (sample_n > vocab_size) sample_n = vocab_size;
+    int hub_target[128];
+    int actual_ranks[128], random_ranks[128];
+    int actual_n = 0;
+
+    for (int s = 0; s < sample_n; ++s) {
+        grng = mix64(grng ^ ((uint64_t)s * 0xA24BAED4963EE407ULL));
+        int w = (int)(grng % (uint64_t)vocab_size);
+
+        int best = -1;
+        float best_cos = -1e30f;
+        for (int cnd = 0; cnd < vocab_size; ++cnd) {
+            if (cnd == w) continue;
+            float c = cosine(vocab[w].emb, vocab[cnd].emb, EMBED_DIM);
+            if (c > best_cos) { best_cos = c; best = cnd; }
+        }
+        hub_target[s] = best;
+
+        int truth = -1;
+        for (int p = 0; p < corpus_n - 1; ++p) {
+            if (corpus[p] == w) { truth = corpus[p + 1]; break; }
+        }
+        if (truth >= 0 && truth != w) {
+            float truth_cos =
+                cosine(vocab[w].emb, vocab[truth].emb, EMBED_DIM);
+            int rank = 0;
+            for (int cnd = 0; cnd < vocab_size; ++cnd) {
+                if (cnd == w || cnd == truth) continue;
+                if (cosine(vocab[w].emb, vocab[cnd].emb, EMBED_DIM) >
+                    truth_cos)
+                    rank++;
+            }
+            actual_ranks[actual_n] = rank;
+
+            grng = mix64(grng ^ 0xC6BC279692B5CC83ULL);
+            int rword;
+            do {
+                grng = mix64(grng);
+                rword = (int)(grng % (uint64_t)vocab_size);
+            } while (rword == w || rword == truth);
+            float rand_cos =
+                cosine(vocab[w].emb, vocab[rword].emb, EMBED_DIM);
+            int rrank = 0;
+            for (int cnd = 0; cnd < vocab_size; ++cnd) {
+                if (cnd == w || cnd == rword) continue;
+                if (cosine(vocab[w].emb, vocab[cnd].emb, EMBED_DIM) >
+                    rand_cos)
+                    rrank++;
+            }
+            random_ranks[actual_n] = rrank;
+            actual_n++;
+        }
+    }
+
+    int hub_share_count = 0;
+    for (int i = 0; i < sample_n; ++i) {
+        int count = 0;
+        for (int j = 0; j < sample_n; ++j)
+            if (hub_target[j] == hub_target[i]) count++;
+        if (count > hub_share_count) hub_share_count = count;
+    }
+
+    int actual_median = 0, random_median = 0;
+    if (actual_n > 0) {
+        qsort(actual_ranks, (size_t)actual_n, sizeof(int), geometry_rank_cmp);
+        qsort(random_ranks, (size_t)actual_n, sizeof(int), geometry_rank_cmp);
+        actual_median = actual_ranks[actual_n / 2];
+        random_median = random_ranks[actual_n / 2];
+    }
+
+    printf("\n[READ-ONLY GEOMETRY HEALTH PROBE] pairs=%d sample=%d "
+           "(RED until geometry repair (S3), run explicitly)\n",
+           pairs, sample_n);
+    printf("  background cosine median: %.4f\n", median);
+    printf("  background cosine q10:    %.4f\n", q10);
+    printf("  background clamp fraction: %.4f\n",
+           (double)clamp_violations / (double)pairs);
+    printf("  centroid norm:            %.4f\n", centroid_norm);
+    printf("  hub share:                %.4f\n",
+           (double)hub_share_count / (double)sample_n);
+    printf("  actual rank median:       %d\n", actual_median);
+    printf("  random rank median:       %d\n", random_median);
+
+    free(cos_samples);
+}
+
 /*
  * Prompt text is cut by the same physics as the corpus: punctuation is a
  * token, ASCII is lowered, UTF-8 survives. An unknown word is reported and
@@ -5861,6 +6000,7 @@ int main(int argc, char **argv) {
     int reset = 0;
     int seed_given = 0;
     int probe_count = 0;
+    int geometry_probe_count = 0;
     int override_policy = -1;
     int override_stack = -1;
     int override_dream = -1;
@@ -5876,6 +6016,8 @@ int main(int argc, char **argv) {
             prompt = argv[++i];
         else if (strcmp(argv[i], "--probe") == 0 && i + 1 < argc)
             probe_count = atoi(argv[++i]);
+        else if (strcmp(argv[i], "--geometry-probe") == 0 && i + 1 < argc)
+            geometry_probe_count = atoi(argv[++i]);
         else if (strcmp(argv[i], "--reset") == 0)
             reset = 1;
         else if (strcmp(argv[i], "--seed") == 0 && i + 1 < argc) {
@@ -6101,6 +6243,8 @@ int main(int argc, char **argv) {
         save_state("netta.state");
         if (probe_count > 0)
             run_probe_suite(probe_count);
+        if (geometry_probe_count > 0)
+            run_geometry_probe(geometry_probe_count);
         return 0;
     }
 
@@ -6129,6 +6273,8 @@ int main(int argc, char **argv) {
     save_state("netta.state");
     if (probe_count > 0)
         run_probe_suite(probe_count);
+    if (geometry_probe_count > 0)
+        run_geometry_probe(geometry_probe_count);
     printf("\ncomplete: %llu lifetime episodes\n",
            (unsigned long long)episode_count);
     printf("memory: netta.state\nledger: netta.history.tsv\n");

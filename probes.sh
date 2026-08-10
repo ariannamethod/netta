@@ -6,8 +6,11 @@
 # from a run performed in this script, and the reference values are the ones
 # an audit can restate independently.
 #
-#   ./probes.sh            run every probe
+#   ./probes.sh            run every probe except 13 (12/12 when healthy)
 #   ./probes.sh 3 5        run only probes 3 and 5
+#   ./probes.sh 13         geometry health -- RED until geometry repair (S3),
+#                          excluded from the default run on purpose, run
+#                          explicitly
 #
 # Exit code is the number of failing probes.
 
@@ -252,6 +255,15 @@ fi
 # a float32 accumulator overflow masked as a normal-looking vector until
 # checked directly. The newborn's coherence moved 0.5738 -> 0.7218, taken
 # by two hands independently on separately built binaries.
+#
+# Sol's audit (P0-1) named this pin what it actually is: a reproducibility
+# invariant for the program, not a quality anchor. Almost all of F5b's
+# apparent gain came from cosine channels declaring nearly every candidate
+# equivalent to truth once the geometry collapsed to a cone -- discrimination
+# fell (first-token 0.3594 -> 0.2520 at 512 positions) while this composite
+# rose. Split into three probes: this one stays a pin on the program, probe
+# 12 pins the external-quality coordinates the composite was hiding, and
+# probe 13 measures whether the geometry backing all of it is healthy.
 if want 11; then
     d=$(world newborn)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 --probe 128 ) \
@@ -259,13 +271,71 @@ if want 11; then
     tri=$(awk '/corpus trigrams:/{print $3}' "$d/exam")
     coh=$(awk '/coherence outcome:/{print $3}' "$d/exam")
     if [ -z "$tri" ] || [ -z "$coh" ]; then
-        fail "11 a newborn scores 0.6328 trigrams and 0.7218 coherence" \
+        fail "11 newborn reproducibility pin (not a quality claim): 0.6328 trigrams, 0.7218 coherence" \
              "no measurement taken: exam produced nothing"
     elif [ "$tri" = "0.6328" ] && [ "$coh" = "0.7218" ]; then
-        pass "11 a newborn scores 0.6328 trigrams and 0.7218 coherence"
+        pass "11 newborn reproducibility pin (not a quality claim): 0.6328 trigrams, 0.7218 coherence"
     else
-        fail "11 a newborn scores 0.6328 trigrams and 0.7218 coherence" \
+        fail "11 newborn reproducibility pin (not a quality claim): 0.6328 trigrams, 0.7218 coherence" \
              "got $tri and $coh"
+    fi
+fi
+
+# --- external quality coordinates, the numbers probe 11's composite hid ----
+# Taken at 512 positions rather than 128 -- the wider sample the audit used
+# to show the composite's gain was discrimination loss wearing a rising
+# number. Pinned as reproducibility, exactly like probe 11: these are not
+# claimed to be good, only to be the honest, reproducible external read.
+if want 12; then
+    d=$(world quality512)
+    ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 --probe 512 ) \
+        > "$d/exam" 2>&1
+    ft=$(awk '/^  first-token accuracy:/{print $3}' "$d/exam")
+    ta=$(awk '/^  token accuracy:/{print $3}' "$d/exam")
+    bg=$(awk '/^  corpus bigrams:/{print $3}' "$d/exam")
+    tg=$(awk '/^  corpus trigrams:/{print $3}' "$d/exam")
+    label="12 newborn external quality pin: first-token 0.2520, token 0.0515, bigram 0.9848, trigram 0.6589"
+    if [ -z "$ft" ] || [ -z "$ta" ] || [ -z "$bg" ] || [ -z "$tg" ]; then
+        fail "$label" "no measurement taken: exam produced nothing"
+    elif [ "$ft" = "0.2520" ] && [ "$ta" = "0.0515" ] && \
+         [ "$bg" = "0.9848" ] && [ "$tg" = "0.6589" ]; then
+        pass "$label"
+    else
+        fail "$label" "got first-token=$ft token=$ta bigram=$bg trigram=$tg"
+    fi
+fi
+
+# --- geometry health -- RED until geometry repair (S3), run explicitly -----
+# Not part of the default run: this probe states the invariant a *healthy*
+# source geometry needs, and the present compound geometry fails every
+# threshold on purpose. Wiring it into the default 0-failure gate would
+# either hide the cone behind a passing suite or force a false PASS message;
+# neither is honest. Run it on demand with `./probes.sh 13` and read the
+# numbers -- they are the falsifier for whichever repair replaces the
+# compound pass in S3.
+if [ -n "$WANT" ] && want 13; then
+    d=$(world geometry)
+    ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 \
+        --geometry-probe 20000 ) > "$d/exam" 2>&1
+    bgm=$(awk '/background cosine median:/{print $4}' "$d/exam")
+    q10=$(awk '/background cosine q10:/{print $4}' "$d/exam")
+    cf=$(awk '/background clamp fraction:/{print $4}' "$d/exam")
+    cn=$(awk '/centroid norm:/{print $3}' "$d/exam")
+    hs=$(awk '/hub share:/{print $3}' "$d/exam")
+    ar=$(awk '/actual rank median:/{print $4}' "$d/exam")
+    rr=$(awk '/random rank median:/{print $4}' "$d/exam")
+    label="13 geometry health (healthy: bg median<0.35, centroid norm<0.3, hub share<0.1, actual rank<random rank)"
+    detail="bg_median=$bgm bg_q10=$q10 clamp_fraction=$cf centroid=$cn hub=$hs actual_rank=$ar random_rank=$rr"
+    if [ -z "$bgm" ] || [ -z "$cn" ] || [ -z "$hs" ] || \
+       [ -z "$ar" ] || [ -z "$rr" ]; then
+        fail "$label" "no measurement taken: exam produced nothing"
+    elif awk -v v="$bgm" 'BEGIN{exit !(v<0.35)}' && \
+         awk -v v="$cn" 'BEGIN{exit !(v<0.3)}' && \
+         awk -v v="$hs" 'BEGIN{exit !(v<0.1)}' && \
+         [ "$ar" -lt "$rr" ]; then
+        pass "$label ($detail)"
+    else
+        fail "$label" "$detail"
     fi
 fi
 
