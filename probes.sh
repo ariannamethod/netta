@@ -264,6 +264,12 @@ fi
 # rose. Split into three probes: this one stays a pin on the program, probe
 # 12 pins the external-quality coordinates the composite was hiding, and
 # probe 13 measures whether the geometry backing all of it is healthy.
+#
+# S3 re-pin (four-figure age): three geometries replace the compound pass --
+# a newborn's combined = island (residual is zero at birth), rebuilt by the
+# frozen-seed sweep instead of one compounding pass. The pin moves from
+# 0.6328/0.7218 to 0.6309/0.6203, taken on two independently built binaries
+# by Sonnet and confirmed independently by Fable before acceptance.
 if want 11; then
     d=$(world newborn)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 --probe 128 ) \
@@ -271,12 +277,12 @@ if want 11; then
     tri=$(awk '/corpus trigrams:/{print $3}' "$d/exam")
     coh=$(awk '/coherence outcome:/{print $3}' "$d/exam")
     if [ -z "$tri" ] || [ -z "$coh" ]; then
-        fail "11 newborn reproducibility pin (not a quality claim): 0.6328 trigrams, 0.7218 coherence" \
+        fail "11 newborn reproducibility pin (not a quality claim): 0.6309 trigrams, 0.6203 coherence" \
              "no measurement taken: exam produced nothing"
-    elif [ "$tri" = "0.6328" ] && [ "$coh" = "0.7218" ]; then
-        pass "11 newborn reproducibility pin (not a quality claim): 0.6328 trigrams, 0.7218 coherence"
+    elif [ "$tri" = "0.6309" ] && [ "$coh" = "0.6203" ]; then
+        pass "11 newborn reproducibility pin (not a quality claim): 0.6309 trigrams, 0.6203 coherence"
     else
-        fail "11 newborn reproducibility pin (not a quality claim): 0.6328 trigrams, 0.7218 coherence" \
+        fail "11 newborn reproducibility pin (not a quality claim): 0.6309 trigrams, 0.6203 coherence" \
              "got $tri and $coh"
     fi
 fi
@@ -286,6 +292,13 @@ fi
 # to show the composite's gain was discrimination loss wearing a rising
 # number. Pinned as reproducibility, exactly like probe 11: these are not
 # claimed to be good, only to be the honest, reproducible external read.
+#
+# S3 re-pin: 0.2520/0.0515/0.9848/0.6589 -> 0.2910/0.0623/0.9931/0.6448 --
+# the exact coordinates of Sol's own falsifier prototype, now produced by
+# the frozen-seed geometry this pin measures rather than by a counterfactual
+# patch. Three of four move up (discrimination recovered from the cone);
+# trigram moves down 0.0141, the expected, disclosed trade of a
+# non-compounding pass, not a regression.
 if want 12; then
     d=$(world quality512)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 --probe 512 ) \
@@ -294,14 +307,36 @@ if want 12; then
     ta=$(awk '/^  token accuracy:/{print $3}' "$d/exam")
     bg=$(awk '/^  corpus bigrams:/{print $3}' "$d/exam")
     tg=$(awk '/^  corpus trigrams:/{print $3}' "$d/exam")
-    label="12 newborn external quality pin: first-token 0.2520, token 0.0515, bigram 0.9848, trigram 0.6589"
+    label="12 newborn external quality pin: first-token 0.2910, token 0.0623, bigram 0.9931, trigram 0.6448"
     if [ -z "$ft" ] || [ -z "$ta" ] || [ -z "$bg" ] || [ -z "$tg" ]; then
         fail "$label" "no measurement taken: exam produced nothing"
-    elif [ "$ft" = "0.2520" ] && [ "$ta" = "0.0515" ] && \
-         [ "$bg" = "0.9848" ] && [ "$tg" = "0.6589" ]; then
+    elif [ "$ft" = "0.2910" ] && [ "$ta" = "0.0623" ] && \
+         [ "$bg" = "0.9931" ] && [ "$tg" = "0.6448" ]; then
         pass "$label"
     else
         fail "$label" "got first-token=$ft token=$ta bigram=$bg trigram=$tg"
+    fi
+fi
+
+# --- anchor80: a canonical lived organism, not just a newborn -------------
+# Probes 11/12 pin the newborn; nothing until now pinned a life. Seed 42
+# (same convention as probe 6), 80 episodes, --reset. Two independent binary
+# builds on this tree produced identical sha256 for both netta.state and
+# netta.history.tsv -- geometry, residual, floor and core together, the
+# whole organism after the first half of probe 6's own restart split.
+if want 14; then
+    d=$(world anchor80)
+    ( cd "$d" && "$BIN" netta.txt --reset --seed 42 --steps 80 ) >/dev/null 2>&1
+    sh=$(shasum -a 256 "$d/netta.state" 2>/dev/null | cut -d' ' -f1)
+    lh=$(shasum -a 256 "$d/netta.history.tsv" 2>/dev/null | cut -d' ' -f1)
+    label="14 anchor80: a canonical 80-episode life stays bit-for-bit reproducible"
+    if [ -z "$sh" ] || [ -z "$lh" ]; then
+        fail "$label" "no measurement taken: run produced no state/ledger"
+    elif [ "$sh" = "bccef9218f1e93f0ad95273e0631c9a3c077a725f2bd874eadcb3b222e4fc9e8" ] && \
+         [ "$lh" = "110e2aadef11f4337d2dba7342dad46f43a0e36509754453dd3768e084290083" ]; then
+        pass "$label"
+    else
+        fail "$label" "state=$(printf '%.12s' "$sh") history=$(printf '%.12s' "$lh")"
     fi
 fi
 

@@ -72,6 +72,10 @@ enum { FINALISTS = 4 };
 #define GLYPH_NURSERY    32
 #define GLYPH_SEED_HITS  4
 #define GLYPH_LINK_MAX_AGE 64
+/* Earned language floor, S3: bounded per-glyph slots for confirmed
+   (glyph, token) relations. Structure and record only -- no authority in
+   choice; S6 wires that. */
+#define FLOOR_TOPK       8
 #define CURRICULUM_REGION_SPAN 256
 #define MAX_CURRICULUM_REGIONS ((MAX_CORPUS + CURRICULUM_REGION_SPAN - 1) / CURRICULUM_REGION_SPAN)
 #define CURRICULUM_WARMUP_PASSES 2
@@ -82,14 +86,37 @@ enum { FINALISTS = 4 };
 #define NREM_DREAMS      12
 #define REM_DREAMS       8
 #define STATE_MAGIC     0x4E455454u /* NETT */
-#define STATE_VERSION   43u
+#define STATE_VERSION   44u
+/* Biography residual, S3: how far her lived experience may bend combined
+   geometry away from IslandWorld. A norm cap on each residual vector, not
+   on the combined result -- she gnaws at the world, she does not replace
+   it. */
+#define RESIDUAL_R_MAX  0.5f
 
 typedef struct {
     char text[MAX_TOKEN_LEN];
     uint32_t count;
+    /* Combined = normalize(island + residual), recomputed by
+       recompute_combined() whenever either side changes. This is what
+       every agentic/contextual score channel reads. */
     float emb[EMBED_DIM];        /* undirected semantic field */
     float left_emb[EMBED_DIM];   /* contexts that tend to precede token */
     float right_emb[EMBED_DIM];  /* contexts that tend to follow token */
+    /* IslandWorld, S3: source-only, deterministic from the corpus alone.
+       Written only at word registration (hash-seed) and by
+       build_source_graph's frozen-seed sweep -- never by a living write.
+       This is what source-judgment channels (oracle parity, source
+       grounding, destiny) read. */
+    float island_emb[EMBED_DIM];
+    float island_left_emb[EMBED_DIM];
+    float island_right_emb[EMBED_DIM];
+    /* Biography residual, S3: her prejudice on the world she was born
+       into. Written only by learn_local (wake) and nrem_consolidate
+       (dream), clamped to RESIDUAL_R_MAX, persisted across a rebuilt
+       IslandWorld. */
+    float residual_emb[EMBED_DIM];
+    float residual_left_emb[EMBED_DIM];
+    float residual_right_emb[EMBED_DIM];
 } Token;
 
 typedef struct {
@@ -236,6 +263,20 @@ typedef struct {
     uint8_t active;
 } GlyphSeed;
 
+/* Earned language floor, S3: a relation is (glyph_id, token) -- the
+   glyph's class is the entry, same identity v27 already gates authority
+   by. island_mask bit i means the relation was observed while playing
+   island i (MAX_ISLANDS == 32, fits one word); confirm_total is a raw
+   observation count across every island, kept for inspection only.
+   >= 2 distinct set bits is what the spec calls floor-eligible; nothing
+   here reads it back into scoring. */
+typedef struct {
+    int32_t token[FLOOR_TOPK];
+    uint32_t island_mask[FLOOR_TOPK];
+    uint32_t confirm_total[FLOOR_TOPK];
+    uint8_t n;
+} FloorClass;
+
 typedef struct {
     float fast;
     float slow;
@@ -302,6 +343,12 @@ typedef struct {
     /* Which world she was in, named by its text rather than by its number:
        a text added later may take a number without taking a place. */
     uint64_t active_island_hash;
+    /* S3: IslandWorld is rebuilt from the corpus every load, never trusted
+       from disk. This hash is what "the same world" means for the source
+       geometry; a mismatch refuses the resume (load_state_valid). */
+    uint64_t island_geometry_hash;
+    uint64_t residual_writes_wake;
+    uint64_t residual_writes_dream;
 } StateHeader;
 
 /*
@@ -378,6 +425,7 @@ static float global_future_total[PROPHECY_HORIZONS];
 
 enum { GLYPH_OFF = 0, GLYPH_CAUSAL = 1, GLYPH_RANDOM = 2 };
 static CausalGlyph causal_glyphs[MAX_GLYPHS];
+static FloorClass floor_table[MAX_GLYPHS];
 static GlyphSeed glyph_nursery[GLYPH_NURSERY];
 static uint16_t glyph_link_age[MAX_GLYPHS][MAX_GLYPHS];
 static float global_glyph_sketch[PROPHECY_HORIZONS][GLYPH_SKETCH];
@@ -421,6 +469,10 @@ static int policy_enabled = 1;
    the geometry of her world. Both on by default: this is a measurement. */
 static int agent_embedding_enabled = 1;
 static int dream_embedding_enabled = 1;
+/* Provenance, S3: how many times biography residual was written from each
+   channel. Inspection only -- nothing reads these to decide anything. */
+static uint64_t residual_writes_wake = 0;
+static uint64_t residual_writes_dream = 0;
 /*
  * Weight of the only counter that spans lives rather than steps. Four
  * per-structure fatigue organs failed to touch phrase culture; this one
@@ -838,6 +890,32 @@ static void vocab_reserve(int cap) {
 }
 #undef VOCAB_GROW
 
+/* IslandWorld, S3: a word's hash seed, a pure function of its text bytes.
+   Used both at first registration (token_id below) and by every rebuild of
+   build_source_graph's geometry sweep -- the latter never trusts whatever
+   is already sitting in island_emb (a preloaded snapshot's already-swept
+   value, on resume), it always re-derives the seed from the word itself.
+   Saves/restores the global rng_state around the local draw, same as the
+   isolation this replaced. */
+static void word_hash_seed_emb(const char *text, float *out_emb,
+                               float *out_left, float *out_right) {
+    uint64_t wseed = 1469598103934665603ULL;
+    for (const char *p = text; *p; ++p)
+        wseed = (wseed ^ (uint64_t)(unsigned char)*p) * 1099511628211ULL;
+    uint64_t saved_rng = rng_state;
+    rng_state = mix64(wseed) | 1ULL;
+    for (int d = 0; d < EMBED_DIM; ++d) {
+        float seed = randn(0.08f);
+        out_emb[d] = seed;
+        out_left[d] = seed + randn(0.015f);
+        out_right[d] = seed + randn(0.015f);
+    }
+    rng_state = saved_rng;
+    normalize(out_emb, EMBED_DIM);
+    normalize(out_left, EMBED_DIM);
+    normalize(out_right, EMBED_DIM);
+}
+
 static int token_id(const char *word, int create) {
     if (vocab_capacity == 0) vocab_reserve(MAX_VOCAB);
     unsigned mask = (unsigned)(vocab_capacity * 2) - 1;
@@ -866,22 +944,19 @@ static int token_id(const char *word, int create) {
              * word in a different place than one born here, with nothing
              * learned by either. The word is the seed; the draw follows.
              */
-            uint64_t wseed = 1469598103934665603ULL;
-            for (const char *p = vocab[id].text; *p; ++p)
-                wseed = (wseed ^ (uint64_t)(unsigned char)*p) *
-                        1099511628211ULL;
-            uint64_t saved_rng = rng_state;
-            rng_state = mix64(wseed) | 1ULL;
-            for (int d = 0; d < EMBED_DIM; ++d) {
-                float seed = randn(0.08f);
-                vocab[id].emb[d] = seed;
-                vocab[id].left_emb[d] = seed + randn(0.015f);
-                vocab[id].right_emb[d] = seed + randn(0.015f);
-            }
-            rng_state = saved_rng;
-            normalize(vocab[id].emb, EMBED_DIM);
-            normalize(vocab[id].left_emb, EMBED_DIM);
-            normalize(vocab[id].right_emb, EMBED_DIM);
+            word_hash_seed_emb(vocab[id].text, vocab[id].island_emb,
+                               vocab[id].island_left_emb,
+                               vocab[id].island_right_emb);
+            /* residual_* is already zero (xcalloc); combined at birth is
+               the seed itself. This is provisional in any case:
+               preload_vocab may later overwrite this entry wholesale, and
+               build_source_graph always re-derives island_* from the word
+               itself rather than trusting it -- see word_hash_seed_emb. */
+            memcpy(vocab[id].emb, vocab[id].island_emb, sizeof(vocab[id].emb));
+            memcpy(vocab[id].left_emb, vocab[id].island_left_emb,
+                   sizeof(vocab[id].left_emb));
+            memcpy(vocab[id].right_emb, vocab[id].island_right_emb,
+                   sizeof(vocab[id].right_emb));
             return id;
         }
 
@@ -2313,8 +2388,13 @@ static void glyph_future_add(CausalGlyph *g, int h, int tok, float weight) {
                      &g->future_n[h], tok, weight, GLYPH_TOPK);
     int bucket = glyph_sketch_bucket(h, tok);
     g->future_sketch[h][bucket] += weight;
+    /* Destiny is source-only predictive physics (see the call site in
+       run_episode) whether it arrives here directly or through
+       glyph_merge_into's transfer between glyphs -- both read IslandWorld,
+       never combined, so a merge cannot leak one glyph's biography into
+       another's destiny sums. */
     for (int d = 0; d < EMBED_DIM; ++d)
-        g->future_emb_sum[h][d] += weight * vocab[tok].emb[d];
+        g->future_emb_sum[h][d] += weight * vocab[tok].island_emb[d];
     g->future_total[h] += weight;
 }
 
@@ -2435,6 +2515,36 @@ static float glyph_semantic_authority(const CausalGlyph *g) {
     return clampf(
         evidence * gain_gate * assignment_reliability,
         0.0f, 1.0f);
+}
+
+/* Earned language floor, S3: record only. Entry is gated on the SAME v27
+   authority a glyph must have earned to carry any vote elsewhere -- an
+   unearned glyph records nothing, so the floor cannot fill with noise
+   from a glyph that is still only guessing. glyph_id and token both come
+   from the source-only trajectory (see the call site in run_episode:
+   source_glyph_id, truth), never from her chosen path, so a floor
+   relation is exactly as source-grounded as destiny is. Nothing in this
+   function is read by any scoring or choice path. */
+static void floor_observe(int glyph_id, int token) {
+    if (glyph_id < 0 || glyph_id >= MAX_GLYPHS || !island_count) return;
+    if (glyph_semantic_authority(&causal_glyphs[glyph_id]) <= 0.0f) return;
+    if (active_island < 0 || active_island >= 32) return;
+
+    FloorClass *fc = &floor_table[glyph_id];
+    int slot = -1;
+    for (int i = 0; i < fc->n; ++i)
+        if (fc->token[i] == token) { slot = i; break; }
+    if (slot < 0) {
+        /* Bounded, no eviction: a scaffold records what it has room for
+           and no more. Widening this is an S6-scale decision, not S3's. */
+        if (fc->n >= FLOOR_TOPK) return;
+        slot = fc->n++;
+        fc->token[slot] = token;
+        fc->island_mask[slot] = 0;
+        fc->confirm_total[slot] = 0;
+    }
+    fc->island_mask[slot] |= (1u << active_island);
+    fc->confirm_total[slot]++;
 }
 
 static float glyph_candidate_score_single(int gid, int candidate) {
@@ -2679,12 +2789,35 @@ static void build_source_graph(int with_geometry) {
                                            sizeof(*right_d),
                                            "double word geometry (right)");
 
-    for (int i = 0; i < vocab_size; ++i)
+    /* IslandWorld, S3 (Sol's audit falsifier): frozen hash-seed starts,
+       read-only for the whole sweep. Every neighbor read below comes from
+       here, never from emb_d/left_d/right_d -- one pass, no feedback,
+       neither topic nor role geometry sees a value this sweep has already
+       written. This is what makes the pass a deterministic function of
+       the corpus alone. */
+    double (*seed_d)[EMBED_DIM] = xcalloc((size_t)vocab_capacity,
+                                          sizeof(*seed_d),
+                                          "double word geometry (seed)");
+
+    /* Re-derive the seed from each word's text, never from whatever is
+       currently sitting in vocab[i].island_emb: on resume, preload_vocab
+       (see main()) has already copied a PRIOR run's fully-swept island_emb
+       into vocab[] before this function runs. Reading that as the seed
+       would sweep an already-swept vector -- a second, compounding pass,
+       not a rebuild -- and break the determinism this whole geometry
+       exists to guarantee. word_hash_seed_emb is a pure function of the
+       word's bytes, so this loop produces the same seed regardless of
+       what preload_vocab did. */
+    for (int i = 0; i < vocab_size; ++i) {
+        float seed_emb[EMBED_DIM], seed_left[EMBED_DIM], seed_right[EMBED_DIM];
+        word_hash_seed_emb(vocab[i].text, seed_emb, seed_left, seed_right);
         for (int d = 0; d < EMBED_DIM; ++d) {
-            emb_d[i][d] = (double)vocab[i].emb[d];
-            left_d[i][d] = (double)vocab[i].left_emb[d];
-            right_d[i][d] = (double)vocab[i].right_emb[d];
+            seed_d[i][d] = (double)seed_emb[d];
+            emb_d[i][d] = seed_d[i][d];
+            left_d[i][d] = (double)seed_left[d];
+            right_d[i][d] = (double)seed_right[d];
         }
+    }
 
     for (int isl = 0; isl < n_islands; ++isl) {
         int off = island_count ? islands[isl].offset : 0;
@@ -2698,23 +2831,25 @@ static void build_source_graph(int with_geometry) {
                 int b = corpus[j];
                 double rate = 0.015 / (double)(j - i);
                 for (int d = 0; d < EMBED_DIM; ++d) {
-                    double av = emb_d[a][d];
-                    double bv = emb_d[b][d];
+                    double av = seed_d[a][d];
+                    double bv = seed_d[b][d];
 
-                    /* Undirected topic geometry. */
+                    /* Undirected topic geometry: both reads are the
+                       frozen seed, not each other's in-progress sum. */
                     emb_d[a][d] += rate * bv;
                     emb_d[b][d] += rate * av;
 
-                    /* Directed role geometry: a -> b. Reads the
-                       already-updated neighbor, exactly as the float
-                       version read vocab[b/a].emb[d] after its own
-                       update above. */
-                    right_d[a][d] += rate * emb_d[b][d];
-                    left_d[b][d]  += rate * emb_d[a][d];
+                    /* Directed role geometry: a -> b. Reads the same
+                       frozen seed as the undirected update above, not
+                       the neighbor's updated emb_d. */
+                    right_d[a][d] += rate * bv;
+                    left_d[b][d]  += rate * av;
                 }
             }
         }
     }
+
+    free(seed_d);
 
     for (int i = 0; i < vocab_size; ++i) {
         /* Double gives this sweep 2^52 of headroom instead of float32's
@@ -2757,10 +2892,20 @@ static void build_source_graph(int with_geometry) {
             exit(1);
         }
         for (int d = 0; d < EMBED_DIM; ++d) {
-            vocab[i].emb[d] = (float)emb_d[i][d];
-            vocab[i].left_emb[d] = (float)left_d[i][d];
-            vocab[i].right_emb[d] = (float)right_d[i][d];
+            vocab[i].island_emb[d] = (float)emb_d[i][d];
+            vocab[i].island_left_emb[d] = (float)left_d[i][d];
+            vocab[i].island_right_emb[d] = (float)right_d[i][d];
         }
+        /* build_source_graph(1) runs exactly once per process, always
+           before load_state (see main()) -- residual_* is still zero here
+           whether this is a genuine newborn or about to be overwritten by
+           a resumed snapshot's residual. Combined is the island itself
+           until residual says otherwise. */
+        memcpy(vocab[i].emb, vocab[i].island_emb, sizeof(vocab[i].emb));
+        memcpy(vocab[i].left_emb, vocab[i].island_left_emb,
+               sizeof(vocab[i].left_emb));
+        memcpy(vocab[i].right_emb, vocab[i].island_right_emb,
+               sizeof(vocab[i].right_emb));
     }
 
     free(emb_d);
@@ -3150,10 +3295,15 @@ static ScoreVector observe_score(const int *ctx, int ctx_n, int candidate,
 
     float local_evidence = (float)src + 2.5f * (float)tri;
     s.syntax_local = 1.0f - expf(-local_evidence * 0.25f);
+    /* Source-judgment channels, S3: IslandWorld only. Truth/oracle
+       comparison is the examiner's read of the world, not of her
+       biography. */
     s.source_grounding = candidate == truth ? 1.0f :
-        0.5f * (1.0f + cosine(vocab[candidate].emb, vocab[truth].emb, EMBED_DIM));
+        0.5f * (1.0f + cosine(vocab[candidate].island_emb,
+                              vocab[truth].island_emb, EMBED_DIM));
     s.oracle_parity = candidate == oracle ? 1.0f :
-        0.5f * (1.0f + cosine(vocab[candidate].emb, vocab[oracle].emb, EMBED_DIM));
+        0.5f * (1.0f + cosine(vocab[candidate].island_emb,
+                              vocab[oracle].island_emb, EMBED_DIM));
 
     float cemb[EMBED_DIM];
     context_embedding(ctx, ctx_n, cemb);
@@ -3189,9 +3339,12 @@ static ScoreVector observe_score(const int *ctx, int ctx_n, int candidate,
            rollout_n * sizeof(int));
     rollout_ctx[rollout_n++] = candidate;
     int next_oracle = oracle_next_context(rollout_ctx, rollout_n);
+    /* Both ends are world objects (next_oracle, truth): the world judging
+       the world, IslandWorld. imagined_future below is her own recursive
+       self-simulation and stays combined. */
     float immediate_future =
-        0.5f * (1.0f + cosine(vocab[next_oracle].emb,
-                              vocab[truth].emb, EMBED_DIM));
+        0.5f * (1.0f + cosine(vocab[next_oracle].island_emb,
+                              vocab[truth].island_emb, EMBED_DIM));
     float imagined_future =
         counterfactual_rollout_score(ctx, ctx_n, candidate, intent, intent_debt, world);
     s.rollout_stability =
@@ -3588,8 +3741,8 @@ static void prior_score(const int *ctx, int ctx_n, int candidate, int oracle,
     out[0] = 1.0f - expf(-local_evidence * 0.25f);
     out[1] = 0.5f + 0.5f * learned_relation_score(prev, candidate);
     out[2] = candidate == oracle ? 1.0f :
-             0.5f * (1.0f + cosine(vocab[candidate].emb,
-                                   vocab[oracle].emb, EMBED_DIM));
+             0.5f * (1.0f + cosine(vocab[candidate].island_emb,
+                                   vocab[oracle].island_emb, EMBED_DIM));
     float semantic_field =
         0.5f * (1.0f + cosine(cemb, vocab[candidate].emb, EMBED_DIM));
     float role_order = directional_compatibility(prev, candidate);
@@ -4036,6 +4189,34 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
     return best;
 }
 
+/* Biography residual, S3: her own writes never touch island_*, only
+   residual_*. A residual vector's own norm is capped at RESIDUAL_R_MAX --
+   the accumulator itself, not the combined result -- so a long life bends
+   the world without erasing it, no matter how many writes land here. */
+static void clamp_residual_component(float *r) {
+    float n = vec_norm(r, EMBED_DIM);
+    if (n > RESIDUAL_R_MAX) {
+        float scale = RESIDUAL_R_MAX / n;
+        for (int d = 0; d < EMBED_DIM; ++d) r[d] *= scale;
+    }
+}
+
+/* Combined = normalize(island + residual). Called on every token a
+   residual write touches; never called from the geometry build itself,
+   which sets combined = island directly while residual is still zero. */
+static void recompute_combined(int i) {
+    for (int d = 0; d < EMBED_DIM; ++d) {
+        vocab[i].emb[d] = vocab[i].island_emb[d] + vocab[i].residual_emb[d];
+        vocab[i].left_emb[d] =
+            vocab[i].island_left_emb[d] + vocab[i].residual_left_emb[d];
+        vocab[i].right_emb[d] =
+            vocab[i].island_right_emb[d] + vocab[i].residual_right_emb[d];
+    }
+    normalize(vocab[i].emb, EMBED_DIM);
+    normalize(vocab[i].left_emb, EMBED_DIM);
+    normalize(vocab[i].right_emb, EMBED_DIM);
+}
+
 static void learn_local(const int *ctx, int ctx_n, int chosen, int oracle,
                         const float *intent, float intent_debt,
                         const ProphecyStack *world, int glyph_id,
@@ -4181,18 +4362,24 @@ static void learn_local(const int *ctx, int ctx_n, int chosen, int oracle,
     float erate = rule.embedding_lr * direction;
 
     if (agent_embedding_enabled) {
+        /* S3: this experience writes residual_*, never island_*. Reads on
+           the right-hand side are combined (vocab[x].emb) -- what she
+           learns from is what she has lived, not the frozen source. */
         for (int d = 0; d < EMBED_DIM; ++d) {
-            vocab[chosen].emb[d] += erate * ctx_emb[d];
+            vocab[chosen].residual_emb[d] += erate * ctx_emb[d];
 
             /* The chosen token learns what tends to precede it. */
-            vocab[chosen].left_emb[d] += erate * vocab[prev].emb[d];
+            vocab[chosen].residual_left_emb[d] += erate * vocab[prev].emb[d];
 
             /* The previous token learns what tends to follow it. */
-            vocab[prev].right_emb[d] += erate * vocab[chosen].emb[d];
+            vocab[prev].residual_right_emb[d] += erate * vocab[chosen].emb[d];
         }
-        normalize(vocab[chosen].emb, EMBED_DIM);
-        normalize(vocab[chosen].left_emb, EMBED_DIM);
-        normalize(vocab[prev].right_emb, EMBED_DIM);
+        clamp_residual_component(vocab[chosen].residual_emb);
+        clamp_residual_component(vocab[chosen].residual_left_emb);
+        clamp_residual_component(vocab[prev].residual_right_emb);
+        recompute_combined(chosen);
+        recompute_combined(prev);
+        residual_writes_wake++;
     }
     phrase_remember(ctx, ctx_n, chosen);
     global_ngram_remember(ctx, ctx_n, chosen);
@@ -4372,10 +4559,33 @@ static size_t state_expected_size(uint32_t vocab_n, uint32_t edge_n,
            (size_t)BASIN_MEMORY * sizeof(uint32_t) +
            (size_t)REPLAY_CAPACITY * sizeof(ReplayEpisode) +
            (size_t)MAX_GLYPHS * sizeof(CausalGlyph) +
+           (size_t)MAX_GLYPHS * sizeof(FloorClass) +
            (size_t)GLYPH_NURSERY * sizeof(GlyphSeed) +
            (size_t)MAX_GLYPHS * MAX_GLYPHS * sizeof(uint16_t) +
            (size_t)MAX_CURRICULUM_REGIONS * sizeof(CurriculumRegion) +
            sizeof(PlasticityRule);
+}
+
+/* IslandWorld, S3: what "the same world" means for the source geometry.
+   FNV-1a over island_emb/island_left_emb/island_right_emb for every word,
+   same constants as the word hash-seed above -- deterministic from the
+   corpus alone, so two builds of the same text agree bit for bit (G-DET)
+   and a resumed snapshot can be checked against it (load_state_valid). */
+static uint64_t compute_island_hash(void) {
+    uint64_t h = 1469598103934665603ULL;
+    for (int i = 0; i < vocab_size; ++i) {
+        const unsigned char *fields[3] = {
+            (const unsigned char *)vocab[i].island_emb,
+            (const unsigned char *)vocab[i].island_left_emb,
+            (const unsigned char *)vocab[i].island_right_emb,
+        };
+        for (int f = 0; f < 3; ++f)
+            for (size_t k = 0; k < EMBED_DIM * sizeof(float); ++k) {
+                h ^= fields[f][k];
+                h *= 1099511628211ULL;
+            }
+    }
+    return h;
 }
 
 /* A snapshot becomes visible only once it is whole on disk. */
@@ -4440,6 +4650,9 @@ static void save_state(const char *path) {
     h.island_count = (uint32_t)island_count;
     h.active_island_hash =
         island_count ? islands[active_island].token_hash : 0;
+    h.island_geometry_hash = compute_island_hash();
+    h.residual_writes_wake = residual_writes_wake;
+    h.residual_writes_dream = residual_writes_dream;
 
     int ok = 1;
     ok = ok && fwrite(&h, sizeof(h), 1, f) == 1;
@@ -4465,6 +4678,8 @@ static void save_state(const char *path) {
     ok = ok && fwrite(replay_buffer, sizeof(ReplayEpisode),
                       REPLAY_CAPACITY, f) == REPLAY_CAPACITY;
     ok = ok && fwrite(causal_glyphs, sizeof(CausalGlyph),
+                      MAX_GLYPHS, f) == MAX_GLYPHS;
+    ok = ok && fwrite(floor_table, sizeof(FloorClass),
                       MAX_GLYPHS, f) == MAX_GLYPHS;
     ok = ok && fwrite(glyph_nursery, sizeof(GlyphSeed),
                       GLYPH_NURSERY, f) == GLYPH_NURSERY;
@@ -4502,6 +4717,21 @@ static int load_state_valid(const char *path) {
         h.magic != STATE_MAGIC ||
         h.version != STATE_VERSION ||
         h.glyph_mode != (uint32_t)glyph_mode) {
+        fclose(f);
+        return 0;
+    }
+
+    /*
+     * IslandWorld, S3: build_source_graph(1) already rebuilt island_* from
+     * the corpus she is resuming into, before load_state was ever called
+     * (see main()). That fresh geometry is never overwritten below -- it
+     * is only trusted if its hash agrees with the one this snapshot was
+     * saved with. A text edit that leaves word identity untouched but
+     * moves the geometry (a different corpus ordering, a changed window)
+     * is refused here, fail-closed, before residual is loaded on top of a
+     * world that no longer agrees with what she learned it to be.
+     */
+    if (h.island_geometry_hash != compute_island_hash()) {
         fclose(f);
         return 0;
     }
@@ -4719,6 +4949,8 @@ static int load_state_valid(const char *path) {
               REPLAY_CAPACITY, f) != REPLAY_CAPACITY ||
         fread(causal_glyphs, sizeof(CausalGlyph),
               MAX_GLYPHS, f) != MAX_GLYPHS ||
+        fread(floor_table, sizeof(FloorClass),
+              MAX_GLYPHS, f) != MAX_GLYPHS ||
         fread(glyph_nursery, sizeof(GlyphSeed),
               GLYPH_NURSERY, f) != GLYPH_NURSERY ||
         fread(glyph_link_age, sizeof(uint16_t),
@@ -4734,16 +4966,37 @@ static int load_state_valid(const char *path) {
         return 0;
     }
 
-    /* Learned geometry is applied last: every earlier refusal leaves the
-       freshly built vocabulary untouched. */
+    /* Biography residual is applied last: every earlier refusal leaves the
+       freshly built, hash-validated IslandWorld untouched. island_* from
+       `saved` is never copied in -- the geometry built by build_source_graph
+       before this function was called already IS her world, and disagreeing
+       with it was already refused above by the hash check. Only what she
+       lived (residual_*) comes off disk; combined is then recomputed from
+       the two -- but ONLY for a word residual actually touched. An
+       untouched word's combined is the raw memcpy of island_emb from
+       build_source_graph, never put through normalize() a second time; a
+       zero residual mathematically leaves normalize(island+0) == island,
+       but not bit-for-bit in float -- an unconditional recompute here
+       would nudge every untouched word by an ULP and break G-RESTART's
+       byte-for-byte invariant without changing a single choice. */
     for (uint32_t i = 0; i < h.vocab_size; ++i) {
-        memcpy(vocab[i].emb, saved[i].emb, sizeof(vocab[i].emb));
-        memcpy(vocab[i].left_emb, saved[i].left_emb,
-               sizeof(vocab[i].left_emb));
-        memcpy(vocab[i].right_emb, saved[i].right_emb,
-               sizeof(vocab[i].right_emb));
+        memcpy(vocab[i].residual_emb, saved[i].residual_emb,
+               sizeof(vocab[i].residual_emb));
+        memcpy(vocab[i].residual_left_emb, saved[i].residual_left_emb,
+               sizeof(vocab[i].residual_left_emb));
+        memcpy(vocab[i].residual_right_emb, saved[i].residual_right_emb,
+               sizeof(vocab[i].residual_right_emb));
+        int touched = 0;
+        for (int d = 0; d < EMBED_DIM && !touched; ++d)
+            if (vocab[i].residual_emb[d] != 0.0f ||
+                vocab[i].residual_left_emb[d] != 0.0f ||
+                vocab[i].residual_right_emb[d] != 0.0f)
+                touched = 1;
+        if (touched) recompute_combined((int)i);
     }
     free(saved);
+    residual_writes_wake = h.residual_writes_wake;
+    residual_writes_dream = h.residual_writes_dream;
 
     /*
      * get_edge/get_trigram prepend newly-created entries. Rebuild in
@@ -5037,14 +5290,19 @@ static void nrem_consolidate(ReplayEpisode *r) {
         float rate = 0.0012f * dream_strength * (0.4f + 0.6f * weakness);
 
         if (dream_embedding_enabled) {
+            /* S3: dream writes residual_*, never island_*, same as the
+               waking path in learn_local. */
             for (int d = 0; d < EMBED_DIM; ++d) {
-                vocab[step->prev].right_emb[d] +=
+                vocab[step->prev].residual_right_emb[d] +=
                     rate * vocab[step->chosen].emb[d];
-                vocab[step->chosen].left_emb[d] +=
+                vocab[step->chosen].residual_left_emb[d] +=
                     rate * vocab[step->prev].emb[d];
             }
-            normalize(vocab[step->prev].right_emb, EMBED_DIM);
-            normalize(vocab[step->chosen].left_emb, EMBED_DIM);
+            clamp_residual_component(vocab[step->prev].residual_right_emb);
+            clamp_residual_component(vocab[step->chosen].residual_left_emb);
+            recompute_combined(step->prev);
+            recompute_combined(step->chosen);
+            residual_writes_dream++;
         }
     }
 
@@ -5337,6 +5595,10 @@ static void run_episode(int verbose) {
         glyph_observe_destiny(source_glyph_id,
                               &corpus[future_index], future_n,
                               glyph_gain, debt_progress);
+        /* Earned language floor, S3: same source-only step, same
+           source_glyph_id -- what actually followed in the text
+           (truth), not what she chose. */
+        floor_observe(source_glyph_id, truth);
         if (source_glyph_id >= 0) {
             glyph_gain_sum += glyph_gain;
             glyph_distance_sum += glyph_distance;
@@ -5711,7 +5973,9 @@ static void run_geometry_probe(int pairs) {
             grng = mix64(grng ^ 0xD1B54A32D192ED03ULL);
             b = (int)(grng % (uint64_t)vocab_size);
         } while (a == b);
-        float c = cosine(vocab[a].emb, vocab[b].emb, EMBED_DIM);
+        /* Geometry health, S3: this probe states IslandWorld's own
+           invariant, not combined's -- every read here is island_emb. */
+        float c = cosine(vocab[a].island_emb, vocab[b].island_emb, EMBED_DIM);
         cos_samples[k] = c;
         if (c > 1.0f) clamp_violations++;
     }
@@ -5722,7 +5986,7 @@ static void run_geometry_probe(int pairs) {
     float centroid[EMBED_DIM] = {0};
     for (int i = 0; i < vocab_size; ++i)
         for (int d = 0; d < EMBED_DIM; ++d)
-            centroid[d] += vocab[i].emb[d];
+            centroid[d] += vocab[i].island_emb[d];
     for (int d = 0; d < EMBED_DIM; ++d) centroid[d] /= (float)vocab_size;
     float centroid_norm = vec_norm(centroid, EMBED_DIM);
 
@@ -5742,7 +6006,8 @@ static void run_geometry_probe(int pairs) {
         float best_cos = -1e30f;
         for (int cnd = 0; cnd < vocab_size; ++cnd) {
             if (cnd == w) continue;
-            float c = cosine(vocab[w].emb, vocab[cnd].emb, EMBED_DIM);
+            float c = cosine(vocab[w].island_emb, vocab[cnd].island_emb,
+                             EMBED_DIM);
             if (c > best_cos) { best_cos = c; best = cnd; }
         }
         hub_target[s] = best;
@@ -5753,12 +6018,13 @@ static void run_geometry_probe(int pairs) {
         }
         if (truth >= 0 && truth != w) {
             float truth_cos =
-                cosine(vocab[w].emb, vocab[truth].emb, EMBED_DIM);
+                cosine(vocab[w].island_emb, vocab[truth].island_emb,
+                      EMBED_DIM);
             int rank = 0;
             for (int cnd = 0; cnd < vocab_size; ++cnd) {
                 if (cnd == w || cnd == truth) continue;
-                if (cosine(vocab[w].emb, vocab[cnd].emb, EMBED_DIM) >
-                    truth_cos)
+                if (cosine(vocab[w].island_emb, vocab[cnd].island_emb,
+                          EMBED_DIM) > truth_cos)
                     rank++;
             }
             actual_ranks[actual_n] = rank;
@@ -5770,12 +6036,13 @@ static void run_geometry_probe(int pairs) {
                 rword = (int)(grng % (uint64_t)vocab_size);
             } while (rword == w || rword == truth);
             float rand_cos =
-                cosine(vocab[w].emb, vocab[rword].emb, EMBED_DIM);
+                cosine(vocab[w].island_emb, vocab[rword].island_emb,
+                      EMBED_DIM);
             int rrank = 0;
             for (int cnd = 0; cnd < vocab_size; ++cnd) {
                 if (cnd == w || cnd == rword) continue;
-                if (cosine(vocab[w].emb, vocab[cnd].emb, EMBED_DIM) >
-                    rand_cos)
+                if (cosine(vocab[w].island_emb, vocab[cnd].island_emb,
+                          EMBED_DIM) > rand_cos)
                     rrank++;
             }
             random_ranks[actual_n] = rrank;
@@ -5813,6 +6080,35 @@ static void run_geometry_probe(int pairs) {
     printf("  random rank median:       %d\n", random_median);
 
     free(cos_samples);
+}
+
+/* Earned language floor, S3: dump only, no authority in choice. Every
+   relation floor_observe recorded, with its distinct-island count and raw
+   confirmation total; >= 2 islands is what the spec calls floor-eligible,
+   marked here for inspection -- nothing downstream reads this mark. */
+static void run_floor_dump(void) {
+    int glyphs_with_entries = 0, total_entries = 0, floor_eligible = 0;
+    printf("\n[READ-ONLY FLOOR DUMP] structure + record only, "
+           "no authority in choice\n");
+    for (int g = 0; g < MAX_GLYPHS; ++g) {
+        FloorClass *fc = &floor_table[g];
+        if (fc->n == 0) continue;
+        glyphs_with_entries++;
+        for (int i = 0; i < fc->n; ++i) {
+            int isl_n = 0;
+            for (int b = 0; b < 32; ++b)
+                if (fc->island_mask[i] & (1u << b)) isl_n++;
+            int eligible = isl_n >= 2;
+            if (eligible) floor_eligible++;
+            total_entries++;
+            printf("  glyph %3d -> \"%s\" islands=%d confirms=%u%s\n",
+                   g, vocab[fc->token[i]].text, isl_n,
+                   (unsigned)fc->confirm_total[i], eligible ? " FLOOR" : "");
+        }
+    }
+    printf("glyphs_with_entries=%d total_entries=%d "
+           "floor_eligible(>=2 islands)=%d\n",
+           glyphs_with_entries, total_entries, floor_eligible);
 }
 
 /*
@@ -6001,6 +6297,7 @@ int main(int argc, char **argv) {
     int seed_given = 0;
     int probe_count = 0;
     int geometry_probe_count = 0;
+    int floor_dump = 0;
     int override_policy = -1;
     int override_stack = -1;
     int override_dream = -1;
@@ -6018,6 +6315,8 @@ int main(int argc, char **argv) {
             probe_count = atoi(argv[++i]);
         else if (strcmp(argv[i], "--geometry-probe") == 0 && i + 1 < argc)
             geometry_probe_count = atoi(argv[++i]);
+        else if (strcmp(argv[i], "--floor") == 0)
+            floor_dump = 1;
         else if (strcmp(argv[i], "--reset") == 0)
             reset = 1;
         else if (strcmp(argv[i], "--seed") == 0 && i + 1 < argc) {
@@ -6245,6 +6544,8 @@ int main(int argc, char **argv) {
             run_probe_suite(probe_count);
         if (geometry_probe_count > 0)
             run_geometry_probe(geometry_probe_count);
+        if (floor_dump)
+            run_floor_dump();
         return 0;
     }
 
@@ -6275,6 +6576,8 @@ int main(int argc, char **argv) {
         run_probe_suite(probe_count);
     if (geometry_probe_count > 0)
         run_geometry_probe(geometry_probe_count);
+    if (floor_dump)
+        run_floor_dump();
     printf("\ncomplete: %llu lifetime episodes\n",
            (unsigned long long)episode_count);
     printf("memory: netta.state\nledger: netta.history.tsv\n");
