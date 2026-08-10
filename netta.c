@@ -52,9 +52,11 @@
 #define SCORE_DIM       12
 #define CONTEXT         16
 #define ROLLOUT         8
-/* The widest window an episode reads: its context, then destiny 17 ahead.
-   A world shorter than this cannot be played without reading past its end. */
-#define MIN_ISLAND      (CONTEXT + 17 + 1)
+/* The widest window an episode reads: its context, the latest rollout step
+   a destiny read can start from (ROLLOUT - 1), and the destiny horizon
+   itself (16 tokens). A world shorter than this cannot be played without
+   the destiny read touching a seam it does not own. */
+#define MIN_ISLAND      (CONTEXT + (ROLLOUT - 1) + 16)
 #define CANDIDATES      32
 enum { FINALISTS = 4 };
 #define PHRASE_TABLE    131072
@@ -5239,8 +5241,14 @@ static void run_episode(int verbose) {
             0.28f * debt_target, 0.0f, 1.0f);
         glyph_action_mark(agent_glyph_id, chosen, action_target);
 
+        /* Destiny is source-only predictive physics for the island being
+           played. Bounding it by corpus_n let a non-last island teach a
+           glyph with the opening tokens of the world that follows it in
+           the concatenated corpus; the bound is the active island's own
+           end, exactly as build_source_graph's window already is. */
         int future_index = source_pos + CONTEXT + step;
-        int future_n = corpus_n - future_index;
+        int island_end = island_count ? isl->offset + isl->length : corpus_n;
+        int future_n = island_end - future_index;
         glyph_observe_destiny(source_glyph_id,
                               &corpus[future_index], future_n,
                               glyph_gain, debt_progress);
