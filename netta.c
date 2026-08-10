@@ -103,7 +103,9 @@ enum { FINALISTS = 4 };
 #define NREM_DREAMS      12
 #define REM_DREAMS       8
 #define STATE_MAGIC     0x4E455454u /* NETT */
-#define STATE_VERSION   44u
+/* 45: S5c P0-1 adds a persisted per-island exposure clock
+   (island_episode_count) to the per-island save/load record. */
+#define STATE_VERSION   45u
 /* Biography residual, S3: how far her lived experience may bend combined
    geometry away from IslandWorld. A norm cap on each residual vector, not
    on the combined result -- she gnaws at the world, she does not replace
@@ -477,6 +479,16 @@ static int evaluation_mode = 0;
 
 static Core core;
 static uint64_t episode_count = 0;
+/* Per-island exposure clock, S5c P0-1 (Sol's audit): curriculum scheduling
+   (warmup count, the deterministic survey walk, the priority-weighted walk)
+   must run on how long she has lived on THIS island, not on her whole-life
+   episode_count -- otherwise two arms that enter the same island at
+   different lifetime ages survey different halves of it and a transfer
+   experiment is not paired. episode_count remains the true age/staleness
+   clock (curriculum_priority_for's staleness term, the mlp gate, policy
+   exploration decay): those measure real time, including time spent away
+   on another island, and are deliberately left alone. */
+static uint64_t island_episode_count[MAX_ISLANDS];
 /* One row per decision, written before the decision teaches anything. */
 static FILE *receipt_file = NULL;
 static uint64_t rng_state = 0x9E3779B97F4A7C15ull;
@@ -1071,9 +1083,11 @@ static int preload_vocab(const char *path) {
         return 0;
     }
 
-    /* The island manifest sits between the header and the words. */
+    /* The island manifest sits between the header and the words: per
+       island, token_hash + accessible + island_episode_count (S5c P0-1). */
     if (fseek(f, (long)h.island_count *
-                 (long)(sizeof(uint64_t) + sizeof(uint8_t)), SEEK_CUR) != 0) {
+                 (long)(sizeof(uint64_t) + sizeof(uint8_t) +
+                        sizeof(uint64_t)), SEEK_CUR) != 0) {
         fclose(f);
         return 0;
     }
@@ -4584,7 +4598,9 @@ static void request_stop(int sig) {
 static size_t state_expected_size(uint32_t vocab_n, uint32_t edge_n,
                                   uint32_t tri_n, uint32_t island_n) {
     return sizeof(StateHeader) +
-           (size_t)island_n * (sizeof(uint64_t) + sizeof(uint8_t)) +
+           /* token_hash + accessible + island_episode_count per island. */
+           (size_t)island_n *
+               (sizeof(uint64_t) + sizeof(uint8_t) + sizeof(uint64_t)) +
            (size_t)vocab_n * sizeof(Token) +
            (size_t)edge_n * sizeof(Edge) +
            (size_t)tri_n * sizeof(TrigramEdge) +
@@ -4692,7 +4708,8 @@ static void save_state(const char *path) {
     ok = ok && fwrite(&h, sizeof(h), 1, f) == 1;
     for (int i = 0; ok && i < island_count; ++i)
         ok = fwrite(&islands[i].token_hash, sizeof(uint64_t), 1, f) == 1 &&
-             fwrite(&islands[i].accessible, sizeof(uint8_t), 1, f) == 1;
+             fwrite(&islands[i].accessible, sizeof(uint8_t), 1, f) == 1 &&
+             fwrite(&island_episode_count[i], sizeof(uint64_t), 1, f) == 1;
     ok = ok && fwrite(vocab, sizeof(Token), (size_t)vocab_size, f) ==
                (size_t)vocab_size;
     ok = ok && fwrite(edges, sizeof(Edge), (size_t)edge_count, f) ==
@@ -4835,11 +4852,16 @@ static int load_state_valid(const char *path) {
         return 0;
     }
     uint8_t access[MAX_ISLANDS];
+    /* S5c P0-1: per-island exposure clock, same identity-remap discipline
+       as accessible[] -- found by token_hash, never by saved slot number,
+       so a text added later cannot inherit another island's clock. */
+    uint64_t iso_episodes[MAX_ISLANDS];
     int where[MAX_ISLANDS];
     for (uint32_t i = 0; i < h.island_count; ++i) {
         uint64_t hash;
         if (fread(&hash, sizeof(hash), 1, f) != 1 ||
-            fread(&access[i], sizeof(uint8_t), 1, f) != 1) {
+            fread(&access[i], sizeof(uint8_t), 1, f) != 1 ||
+            fread(&iso_episodes[i], sizeof(uint64_t), 1, f) != 1) {
             fclose(f);
             return 0;
         }
@@ -4851,8 +4873,10 @@ static int load_state_valid(const char *path) {
             return 0;
         }
     }
-    for (uint32_t i = 0; i < h.island_count; ++i)
+    for (uint32_t i = 0; i < h.island_count; ++i) {
         islands[where[i]].accessible = access[i];
+        island_episode_count[where[i]] = iso_episodes[i];
+    }
 
     Token *saved =
         (Token *)malloc((size_t)h.vocab_size * sizeof(Token));
@@ -5504,7 +5528,7 @@ static void run_episode(int verbose) {
     int span = isl->length - CONTEXT - 17;
     if (span <= 0) span = 1;
     int source_pos = isl->offset +
-        curriculum_source_position(episode_count, span);
+        curriculum_source_position(island_episode_count[active_island], span);
 
     int seq[CONTEXT + ROLLOUT];
     int oracle[ROLLOUT];
@@ -5672,6 +5696,7 @@ static void run_episode(int verbose) {
     basin_remember(episode_emb);
 
     episode_count++;
+    island_episode_count[active_island]++;
     curriculum_update(source_pos - isl->offset, episode_coherence,
                       world_debt_end, episode_surprise);
 
@@ -7056,6 +7081,25 @@ int main(int argc, char **argv) {
             fclose(f);
         }
     }
+
+    /*
+     * S5c P0-1 (Sol's audit): the curriculum_init call above ran before
+     * load_state. If a snapshot was just restored, it overwrote
+     * curriculum_count with whatever smaller count this island's world had
+     * the last time she was ANYWHERE, and overwrote curriculum_regions with
+     * the disk-zeroed tail beyond it -- an island she is entering for the
+     * first time in this snapshot's life reads every one of its regions as
+     * zero priority, permanently, because curriculum_priority_for refuses
+     * anything at or past curriculum_count. Completing curriculum_init again
+     * here repairs exactly that seam: its loop only touches indices from the
+     * (possibly just-shrunk) curriculum_count up to this island's own
+     * base+n, so an island already fully known from a prior visit is
+     * untouched (the loop is empty), and a fresh island gets its undecided
+     * 0.5 priority back instead of the disk's zero. curriculum_lo/
+     * curriculum_n are plain statics, never part of the snapshot, so they
+     * already name the active island correctly either way.
+     */
+    curriculum_init(islands[active_island].length - CONTEXT - 17);
 
     /*
      * Receipts follow the ledger: a new organism starts a fresh file, a

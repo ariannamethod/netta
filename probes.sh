@@ -180,7 +180,16 @@ if want 7; then
     fi
 fi
 
-# --- invariant 1 again: island life is not one shared curriculum ------------
+# --- invariant 1 again: island life is not one shared curriculum, and her
+# entry into a second world is not timed by a stranger's clock -------------
+# Strengthened per Sol's S5c audit (P0-1): the original check only read the
+# printed progress column, which curriculum_update writes unconditionally --
+# it can be nonzero while curriculum_priority_for still refuses the same
+# region as zero, because load_state ran after curriculum_init and restored
+# an older, smaller curriculum_count over the fresh island's slice. Two more
+# assertions close that false-negative: the entry priority itself, and a
+# causal-scheduling proof that the island's own exposure clock, not her whole
+# lifetime, decides which region a first visit lands in.
 if want 8; then
     alone=$(world life_alone); mkdir -p "$alone/nettatexts"
     cp "$ROOT/docs/MODELCARD.md" "$alone/nettatexts/"
@@ -198,14 +207,41 @@ if want 8; then
     # learned nothing at all.
     prog=$(awk -F'\t' 'NR>62{n++; s+=$30} END{if(n)printf "%.5f", s/n}' \
         "$alone/netta.history.tsv")
-    if [ -z "$prog" ]; then
-        fail "8 a second world's curriculum learns at all" \
-             "no measurement taken: ledger missing or too short"
+
+    # Entry priority (P0-1a): row 63 is the transfer arm's first island-1
+    # episode (60 rows for island 0, one more resumed island-0 row for the
+    # --probe 128 step, then island 1 begins). Under the pre-fix bug this
+    # region reads exactly 0.00000 forever, because it sits at or past the
+    # curriculum_count the snapshot restored over the fresh island's slice.
+    entry_region=$(awk -F'\t' 'NR==63{print $28}' "$alone/netta.history.tsv")
+    entry_priority=$(awk -F'\t' 'NR==63{print $29}' "$alone/netta.history.tsv")
+
+    # Causal scheduling + paired entry (P0-1b): a newborn on the SAME
+    # island, same seed, played from scratch. If region selection were still
+    # keyed by global episode_count (60 already lived on island 0) instead
+    # of this island's own exposure clock, the transfer arm and the newborn
+    # would survey different neighbourhoods of island 1 on their first
+    # episode; paired, they must land on the same region.
+    newborn=$(world life_newborn_b); mkdir -p "$newborn/nettatexts"
+    cp "$ROOT/docs/MODELCARD.md" "$newborn/nettatexts/"
+    ( cd "$newborn" && "$BIN" netta.txt --reset --seed 42 --steps 1 --island 1 ) \
+        >/dev/null 2>&1
+    newborn_region=$(awk -F'\t' 'NR==2{print $28}' "$newborn/netta.history.tsv")
+
+    label="8 a second world's curriculum learns at all, enters at a live priority, and is timed by its own clock"
+    if [ -z "$prog" ] || [ -z "$entry_region" ] || [ -z "$entry_priority" ] || \
+       [ -z "$newborn_region" ]; then
+        fail "$label" "no measurement taken: a ledger is missing or too short"
     elif [ "$prog" = "0.00000" ]; then
-        fail "8 a second world's curriculum learns at all" \
-             "progress stayed at $prog across 60 episodes"
+        fail "$label" "progress stayed at $prog across 60 episodes"
+    elif [ "$entry_priority" = "0.00000" ]; then
+        fail "$label" \
+             "entry priority read 0.00000 at region $entry_region -- the P0-1 curriculum-count seam"
+    elif [ "$entry_region" != "$newborn_region" ]; then
+        fail "$label" \
+             "transfer arm entered region $entry_region, a paired newborn entered $newborn_region -- unpaired B exposure"
     else
-        pass "8 a second world's curriculum learns at all ($prog)"
+        pass "$label (progress=$prog entry_priority=$entry_priority region=$entry_region, paired with newborn)"
     fi
 fi
 
@@ -329,6 +365,16 @@ fi
 # builds on this tree produced identical sha256 for both netta.state and
 # netta.history.tsv -- geometry, residual, floor and core together, the
 # whole organism after the first half of probe 6's own restart split.
+#
+# v45 re-pin (fifth): S5c P0-1 adds a persisted per-island exposure clock
+# (island_episode_count) to the state format and bumps STATE_VERSION
+# 44 -> 45. netta.history.tsv -- the byte-for-byte record of every decision
+# this life made -- is unchanged (still 110e2aadef11...): the fix does not
+# move the single-island path. Only netta.state moves, mechanically, because
+# any new persisted field forces a version bump. Reproduced on two
+# independent builds by Claude, confirmed by a third independent build by
+# Sol: v45: per-island exposure clocks, ledger unchanged -- пятый пере-пин,
+# формат, не поведение.
 if want 14; then
     d=$(world anchor80)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 42 --steps 80 ) >/dev/null 2>&1
@@ -337,7 +383,7 @@ if want 14; then
     label="14 anchor80: a canonical 80-episode life stays bit-for-bit reproducible"
     if [ -z "$sh" ] || [ -z "$lh" ]; then
         fail "$label" "no measurement taken: run produced no state/ledger"
-    elif [ "$sh" = "bccef9218f1e93f0ad95273e0631c9a3c077a725f2bd874eadcb3b222e4fc9e8" ] && \
+    elif [ "$sh" = "c16ca05f04a1ffd0922b09527fae21472ea0cc19f43d068a7e3dd3a6b6246681" ] && \
          [ "$lh" = "110e2aadef11f4337d2dba7342dad46f43a0e36509754453dd3768e084290083" ]; then
         pass "$label"
     else
