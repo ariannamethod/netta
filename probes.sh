@@ -311,6 +311,13 @@ fi
 # frozen-seed sweep instead of one compounding pass. The pin moves from
 # 0.6328/0.7218 to 0.6309/0.6203, taken on two independently built binaries
 # by Sonnet and confirmed independently by Fable before acceptance.
+#
+# Checked, not moved, at S5c core shadow authority (the fifth re-pin epoch,
+# see probe 14): a newborn plays 0 episodes, and island_core_gate starts at
+# 0.0 exactly like the old age-based clamp(episode_count/2500, 0, 0.65) did
+# at episode_count=0 -- the two mechanisms agree at birth by construction,
+# so this pin and probe 12's do not move even though the mechanism under
+# them changed.
 if want 11; then
     d=$(world newborn)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 --probe 128 ) \
@@ -366,7 +373,7 @@ fi
 # netta.history.tsv -- geometry, residual, floor and core together, the
 # whole organism after the first half of probe 6's own restart split.
 #
-# v45 re-pin (fifth): S5c P0-1 adds a persisted per-island exposure clock
+# v45 re-pin: S5c P0-1 adds a persisted per-island exposure clock
 # (island_episode_count) to the state format and bumps STATE_VERSION
 # 44 -> 45. netta.history.tsv -- the byte-for-byte record of every decision
 # this life made -- is unchanged (still 110e2aadef11...): the fix does not
@@ -375,6 +382,19 @@ fi
 # independent builds by Claude, confirmed by a third independent build by
 # Sol: v45: per-island exposure clocks, ledger unchanged -- пятый пере-пин,
 # формат, не поведение.
+#
+# v46 re-pin: S5c core shadow authority. This one is behavioral, not just
+# format, exactly as the audit anticipated ("anchor80 will fall; this is
+# the expected re-pin of the epoch"). The core's live gate used to be
+# clamp(episode_count / 2500, 0, 0.65) -- nonzero and rising through this
+# very life, reaching ~0.032 by episode 80. It is now 0.0 until this
+# island's earned-authority ledger shows CORE_SHADOW_WIN_K=24 net wins
+# over a window of CORE_SHADOW_WINDOW=400 disagreement receipts, which 80
+# episodes on a freshly-initialized core cannot reach (measured: after
+# 1200 episodes on this same seed, window_wins_minus_losses=-384, still
+# unearned -- see --core-status). Both netta.state and netta.history.tsv
+# move this time, because the decisions themselves moved, not only the
+# format. Reproduced identically on two independent local builds.
 if want 14; then
     d=$(world anchor80)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 42 --steps 80 ) >/dev/null 2>&1
@@ -383,8 +403,8 @@ if want 14; then
     label="14 anchor80: a canonical 80-episode life stays bit-for-bit reproducible"
     if [ -z "$sh" ] || [ -z "$lh" ]; then
         fail "$label" "no measurement taken: run produced no state/ledger"
-    elif [ "$sh" = "c16ca05f04a1ffd0922b09527fae21472ea0cc19f43d068a7e3dd3a6b6246681" ] && \
-         [ "$lh" = "110e2aadef11f4337d2dba7342dad46f43a0e36509754453dd3768e084290083" ]; then
+    elif [ "$sh" = "32b54fc60b1a326494d1163f4496e1f211d5ee6ca0846a490e6fd3ac11b925cb" ] && \
+         [ "$lh" = "17a9fb61c303264bca013a85eaa59f8f5777ad4525c60b75d319a1d5ef9f41a3" ]; then
         pass "$label"
     else
         fail "$label" "state=$(printf '%.12s' "$sh") history=$(printf '%.12s' "$lh")"
@@ -408,6 +428,10 @@ fi
 # positions at seed 424242; census needs no such disclosure). The screening
 # formula itself is untouched; only the position set moved from a biased
 # with-replacement draw to the whole fixture.
+#
+# Checked, not moved, at S5c core shadow authority: same reasoning as
+# probes 11/12 -- a newborn plays 0 episodes, and island_core_gate starts
+# at 0.0 exactly where the old age-based clamp also read 0 at birth.
 if want 15; then
     d=$(world exam_newborn)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 \

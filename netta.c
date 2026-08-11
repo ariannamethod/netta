@@ -104,8 +104,45 @@ enum { FINALISTS = 4 };
 #define REM_DREAMS       8
 #define STATE_MAGIC     0x4E455454u /* NETT */
 /* 45: S5c P0-1 adds a persisted per-island exposure clock
-   (island_episode_count) to the per-island save/load record. */
-#define STATE_VERSION   45u
+   (island_episode_count) to the per-island save/load record.
+   46: S5c core shadow authority adds the per-island earned-authority gate,
+   its disagreement-receipt ring buffer and lifetime win/loss totals to
+   the same record. */
+#define STATE_VERSION   46u
+
+/*
+ * S5c core shadow authority (Sol's audit: "authority is earned, not aged"
+ * -- the core's own live gate used to be clamp(episode_count /
+ * mlp_gate_episodes, 0, 0.65), a pure function of age. It is replaced by a
+ * per-island earned voice: silent by default, raised only by a record of
+ * actually being right on the same-state disagreements where its opinion
+ * would have changed the outcome. Constants declared here, before the
+ * mechanism that uses them (netta.c, compute_mlp_gate and
+ * choose_candidate), per the audit's own governance:
+ *
+ *   CORE_AUTHORITY_FULL       0.65 -- the ceiling the old age-based gate
+ *                              used to reach. Kept for continuity, not
+ *                              re-derived: this stage is about how the
+ *                              ceiling is earned, not what it is.
+ *   CORE_SHADOW_WINDOW        400  -- rolling window size, in DISAGREEMENT
+ *                              receipts (not episodes) per island. Sol's
+ *                              number.
+ *   CORE_SHADOW_WIN_K         24   -- net wins minus losses required,
+ *                              within that window, before the island's
+ *                              voice turns on. Sol's number.
+ *   CORE_AUTHORITY_RAMP_RATE  0.01 -- per-episode step toward the ramp
+ *                              target (0 while unearned, CORE_AUTHORITY_
+ *                              FULL once earned) -- roughly a 100-episode
+ *                              time constant, so authority is gained and
+ *                              lost smoothly rather than as a single-
+ *                              receipt flip. Not specified by the audit;
+ *                              chosen for this stage, revisable only by
+ *                              the auditor's word.
+ */
+#define CORE_AUTHORITY_FULL       0.65f
+#define CORE_SHADOW_WINDOW        400
+#define CORE_SHADOW_WIN_K         24
+#define CORE_AUTHORITY_RAMP_RATE  0.01f
 /* Biography residual, S3: how far her lived experience may bend combined
    geometry away from IslandWorld. A norm cap on each residual vector, not
    on the combined result -- she gnaws at the world, she does not replace
@@ -403,6 +440,21 @@ typedef struct {
 } Island;
 
 static Island islands[MAX_ISLANDS];
+/*
+ * Bytes written per island in save_state's manifest, read back the same
+ * way by both load_state and preload_vocab (a second, independent parser
+ * of the same on-disk record -- S5c P0-1 caught this pair drifting once
+ * already when a field was added and only two of the three sites were
+ * updated; one shared constant instead of three hand-written formulas).
+ * token_hash + accessible + island_episode_count (S5c P0-1) +
+ * island_core_gate + core_receipt_cursor + core_receipt_count +
+ * core_wins_total + core_losses_total + the core_receipts ring itself
+ * (S5c core shadow authority).
+ */
+#define ISLAND_RECORD_BYTES \
+    (sizeof(uint64_t) + sizeof(uint8_t) + sizeof(uint64_t) + \
+     sizeof(float) + sizeof(int32_t) * 2 + sizeof(uint64_t) * 2 + \
+     (size_t)CORE_SHADOW_WINDOW)
 static int island_count = 0;
 static int active_island = 0;
 static int requested_island = 0;
@@ -513,11 +565,6 @@ static float ngram_freshness_weight = 0.168f;
    to [1, CANDIDATES] by the CLI parser; CANDIDATES itself is the physical
    buffer ceiling, not a live decision. */
 static int candidates_cap = 32;
-/* Episode count that saturates the mlp gate to its 0.65 ceiling,
-   --mlp-gate-episodes, default 2500 (S5b). N=0 is a sentinel: the core
-   never connects, mlp_gate stays 0 for the organism's whole life --
-   see compute_mlp_gate(). */
-static float mlp_gate_episodes = 2500.0f;
 static int prophecy_stack_enabled = 1;
 static int dreams_enabled = 1;
 static uint64_t recursive_depth_total = 0;
@@ -1083,11 +1130,12 @@ static int preload_vocab(const char *path) {
         return 0;
     }
 
-    /* The island manifest sits between the header and the words: per
-       island, token_hash + accessible + island_episode_count (S5c P0-1). */
-    if (fseek(f, (long)h.island_count *
-                 (long)(sizeof(uint64_t) + sizeof(uint8_t) +
-                        sizeof(uint64_t)), SEEK_CUR) != 0) {
+    /* The island manifest sits between the header and the words --
+       ISLAND_RECORD_BYTES per island, the same constant save_state/
+       load_state use, so this second parser of the same on-disk record
+       cannot drift from them again (S5c P0-1). */
+    if (fseek(f, (long)h.island_count * (long)ISLAND_RECORD_BYTES,
+             SEEK_CUR) != 0) {
         fclose(f);
         return 0;
     }
@@ -3853,13 +3901,55 @@ static float screening_utility(const float score[SCORE_DIM]) {
            0.04f * score[11];
 }
 
-/* mlp_gate_episodes <= 0 is the --mlp-gate-episodes 0 sentinel: the core
-   never connects, mlp_gate is 0 for the organism's whole life instead of
-   ramping toward 0.65. One definition shared by choose_candidate and its
-   read-only exam twin so the sentinel can't drift between the two. */
+/*
+ * S5c core shadow authority (Sol's audit: "authority is earned, not aged"
+ * -- see the CORE_AUTHORITY_ and CORE_SHADOW_ constants declared near
+ * STATE_VERSION at the top of the file, before ISLAND_RECORD_BYTES needs
+ * them). The core's own live gate used to be clamp(episode_count /
+ * mlp_gate_episodes, 0, 0.65), a pure function of age. It is replaced by a
+ * per-island earned voice: silent by default, and raised only by a record
+ * of actually being right on the same-state disagreements where its
+ * opinion would have changed the outcome.
+ */
+
+/* Per island: the live, ramping voice; a ring buffer of the last (up to
+   CORE_SHADOW_WINDOW) disagreement receipts (+1 win, -1 loss); its
+   cursor/count; and lifetime win/loss totals for --core-status. The ring
+   buffer only advances on genuine disagreements (core_choice != base_
+   choice), never on agreement steps -- Sol's "window of 400 receipts",
+   not 400 episodes. */
+static float island_core_gate[MAX_ISLANDS];
+static int8_t core_receipts[MAX_ISLANDS][CORE_SHADOW_WINDOW];
+static int32_t core_receipt_cursor[MAX_ISLANDS];
+static int32_t core_receipt_count[MAX_ISLANDS];
+static uint64_t core_wins_total[MAX_ISLANDS];
+static uint64_t core_losses_total[MAX_ISLANDS];
+
+static int core_wins_minus_losses(int island) {
+    int sum = 0;
+    int cnt = core_receipt_count[island];
+    for (int i = 0; i < cnt; ++i) sum += core_receipts[island][i];
+    return sum;
+}
+
+/* Called once per real episode (run_episode only -- never from a read-only
+   evaluation_mode context), after this episode's receipt, if any, has
+   already been folded into the ring buffer. Earned/not-earned is a
+   threshold on the window; the gate itself moves toward its target
+   smoothly rather than snapping, so one disagreement receipt at the
+   threshold cannot flip the live voice on or off in a single step. */
+static void core_authority_update(int island) {
+    int earned = core_wins_minus_losses(island) >= CORE_SHADOW_WIN_K;
+    float target = earned ? CORE_AUTHORITY_FULL : 0.0f;
+    island_core_gate[island] +=
+        CORE_AUTHORITY_RAMP_RATE * (target - island_core_gate[island]);
+}
+
+/* Pure read -- called from choose_candidate's live decision AND from
+   exam_score_pool's read-only screening twin, so it must never mutate
+   anything (the ramp step above is a separate, explicitly-invoked write). */
 static float compute_mlp_gate(void) {
-    if (mlp_gate_episodes <= 0.0f) return 0.0f;
-    return clampf((float)episode_count / mlp_gate_episodes, 0.0f, 0.65f);
+    return island_core_gate[active_island];
 }
 
 static float survival_utility(const float score[SCORE_DIM]) {
@@ -3887,6 +3977,163 @@ typedef struct {
     int n;
     int best_idx;
 } ChoiceTrace;
+
+/* S5c core shadow authority: the full result of one gate's finalist cut,
+   kept whole (not just the winner) because the live bracket's caller still
+   needs mlp/prior/deep for policy improvement, the receipt line and
+   predicted_out. */
+typedef struct {
+    int tok[FINALISTS];
+    float mlp[FINALISTS][SCORE_DIM];
+    float prior[FINALISTS][SCORE_DIM];
+    float deep[FINALISTS][SCORE_DIM]; /* mix, then dim10 rollout-blended */
+    float survival[FINALISTS];
+    int n;
+    int best_idx;
+} FinalistChoice;
+
+/* S5c core shadow authority: counterfactual_rollout_score is a pure
+   function of (ctx, candidate, intent, intent_debt, world), none of which
+   differ between the live/base/core brackets one choose_candidate call
+   evaluates -- only the gate that picks which candidates become finalists
+   differs. A candidate that lands as a finalist in more than one bracket
+   (common: the gate only reweights, it does not replace, the underlying
+   prior/trigram signal) is simulated once, not up to three times. */
+typedef struct {
+    int tok[CANDIDATES];
+    float val[CANDIDATES];
+    int n;
+} RolloutCache;
+
+static float rollout_cached(RolloutCache *cache, const int *ctx, int ctx_n,
+                            int candidate, const float *intent,
+                            float intent_debt, const ProphecyStack *world) {
+    if (cache) {
+        for (int i = 0; i < cache->n; ++i)
+            if (cache->tok[i] == candidate) return cache->val[i];
+    }
+    float v = counterfactual_rollout_score(ctx, ctx_n, candidate, intent,
+                                           intent_debt, world);
+    if (cache && cache->n < CANDIDATES) {
+        cache->tok[cache->n] = candidate;
+        cache->val[cache->n] = v;
+        cache->n++;
+    }
+    return v;
+}
+
+/*
+ * One gate's version of "the choice": top-FINALISTS cut by screening
+ * utility, counterfactual rollout on the survivors, predictive-survival
+ * ranking, coherence-constrained freshness diversity, punctuation rescue.
+ * Deterministic and side-effect-free -- no RNG, no policy_mark, no
+ * exploration sampling. Those remain the live bracket's caller's job,
+ * because a shadow bracket (base/core, S5c) must never write policy or
+ * consume RNG a second time for the same decision. cand_prior/cand_mlp are
+ * precomputed once per candidate by the caller and shared across every
+ * gate this is called with -- prior_score and core_predict_recursive do
+ * not depend on gate, only the mix blend below does.
+ */
+static FinalistChoice resolve_finalist_choice(
+        const int *cand_tok, const float cand_prior[][SCORE_DIM],
+        const float cand_mlp[][SCORE_DIM], int cand_n, float gate,
+        const int *ctx, int ctx_n, const float *intent, float intent_debt,
+        const ProphecyStack *world, RolloutCache *cache) {
+    FinalistChoice fc;
+    memset(&fc, 0, sizeof(fc));
+    float final_utility[FINALISTS];
+    int final_n = 0;
+
+    for (int i = 0; i < cand_n; ++i) {
+        const float *prior = cand_prior[i];
+        const float *mlp = cand_mlp[i];
+        float mix[SCORE_DIM];
+        for (int d = 0; d < SCORE_DIM; ++d) {
+            float m = 0.5f * (mlp[d] + 1.0f);
+            mix[d] = (1.0f - gate) * prior[d] + gate * m;
+        }
+
+        float world_debt = prophecy_stack_total_debt(world);
+        float utility =
+            screening_utility(mix) +
+            0.09f * clampf(intent_debt, 0.0f, 1.5f) * mix[4] +
+            0.08f * clampf(world_debt, 0.0f, 2.0f) * mix[7] +
+            0.08f * mix[6];
+        if (!token_is_content_id(cand_tok[i]) && prior[0] < 0.82f)
+            utility -= 0.20f;
+
+        int slot = final_n;
+        if (slot < FINALISTS) {
+            final_n++;
+        } else if (utility <= final_utility[FINALISTS - 1]) {
+            continue;
+        } else {
+            slot = FINALISTS - 1;
+        }
+
+        while (slot > 0 && utility > final_utility[slot - 1]) {
+            if (slot < FINALISTS) {
+                fc.tok[slot] = fc.tok[slot - 1];
+                final_utility[slot] = final_utility[slot - 1];
+                memcpy(fc.mlp[slot], fc.mlp[slot - 1], sizeof(fc.mlp[slot]));
+                memcpy(fc.prior[slot], fc.prior[slot - 1],
+                       sizeof(fc.prior[slot]));
+                memcpy(fc.deep[slot], fc.deep[slot - 1],
+                       sizeof(fc.deep[slot]));
+            }
+            slot--;
+        }
+
+        fc.tok[slot] = cand_tok[i];
+        final_utility[slot] = utility;
+        memcpy(fc.mlp[slot], mlp, sizeof(fc.mlp[slot]));
+        memcpy(fc.prior[slot], prior, sizeof(fc.prior[slot]));
+        memcpy(fc.deep[slot], mix, sizeof(fc.deep[slot]));
+    }
+    fc.n = final_n;
+    if (final_n == 0) return fc;
+
+    float max_survival = -1e30f;
+    for (int i = 0; i < fc.n; ++i) {
+        float future = rollout_cached(cache, ctx, ctx_n, fc.tok[i],
+                                      intent, intent_debt, world);
+        fc.deep[i][10] = 0.58f * fc.deep[i][10] + 0.42f * future;
+        fc.survival[i] = survival_utility(fc.deep[i]);
+        if (fc.survival[i] > max_survival) max_survival = fc.survival[i];
+    }
+
+    float world_debt = prophecy_stack_total_debt(world);
+    float margin = 0.032f / (0.80f + 0.35f * world_debt);
+    float best_choice = -1e30f;
+    int best_idx = 0;
+    for (int i = 0; i < fc.n; ++i) {
+        if (fc.survival[i] + margin < max_survival) continue;
+        float global_fresh = global_ngram_freshness(ctx, ctx_n, fc.tok[i]);
+        float choice =
+            fc.survival[i] +
+            0.020f * fc.deep[i][5] +
+            0.018f * fc.deep[i][6] +
+            0.018f * fc.deep[i][9] +
+            ngram_freshness_weight * global_fresh +
+            0.018f * fc.deep[i][11];
+        if (choice > best_choice) {
+            best_choice = choice;
+            best_idx = i;
+        }
+    }
+
+    int best = fc.tok[best_idx];
+    if (!token_is_content_id(best)) {
+        for (int i = 0; i < fc.n; ++i) {
+            if (token_is_content_id(fc.tok[i]) && fc.deep[i][0] > 0.30f) {
+                best_idx = i;
+                break;
+            }
+        }
+    }
+    fc.best_idx = best_idx;
+    return fc;
+}
 
 static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
                             const float *intent, float intent_debt,
@@ -4024,12 +4271,14 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
     context_embedding(ctx, ctx_n, ctx_emb);
     float mlp_gate = compute_mlp_gate();
 
-    int final_tok[FINALISTS];
-    float final_utility[FINALISTS];
-    float final_mlp[FINALISTS][SCORE_DIM];
-    float final_prior[FINALISTS][SCORE_DIM];
-    float final_mix[FINALISTS][SCORE_DIM];
-    int final_n = 0;
+    /* prior/mlp do not depend on gate; computed once per surviving
+       candidate and shared by every finalist-cut this decision runs below
+       -- the live bracket, and (outside evaluation_mode) the S5c base/core
+       shadow brackets used only to grow the earned-authority receipt. */
+    int surv_tok[CANDIDATES];
+    float surv_prior[CANDIDATES][SCORE_DIM];
+    float surv_mlp[CANDIDATES][SCORE_DIM];
+    int surv_n = 0;
 
     for (int i = 0; i < n; ++i) {
         int cand = candidates[i];
@@ -4042,61 +4291,16 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
             continue;
         }
 
-        float prior[SCORE_DIM], mlp[SCORE_DIM], mix[SCORE_DIM];
-        prior_score(ctx, ctx_n, cand, oracle, intent, world, glyph_id, prior);
+        surv_tok[surv_n] = cand;
+        prior_score(ctx, ctx_n, cand, oracle, intent, world, glyph_id,
+                   surv_prior[surv_n]);
         core_predict_recursive(ctx_emb, intent, intent_debt,
-                               prev, cand, oracle, prior, mlp, 0);
-
-        for (int d = 0; d < SCORE_DIM; ++d) {
-            float m = 0.5f * (mlp[d] + 1.0f);
-            mix[d] = (1.0f - mlp_gate) * prior[d] + mlp_gate * m;
-        }
-
-        float world_debt = prophecy_stack_total_debt(world);
-        float utility =
-            screening_utility(mix) +
-            0.09f * clampf(intent_debt, 0.0f, 1.5f) * mix[4] +
-            0.08f * clampf(world_debt, 0.0f, 2.0f) * mix[7] +
-            0.08f * mix[6];
-        /* Global freshness is not a reward. It is applied only after
-           predictive-survival finalists have been established. */
-        float global_fresh =
-            global_ngram_freshness(ctx, ctx_n, cand);
-        (void)global_fresh;
-        if (!token_is_content_id(cand) && prior[0] < 0.82f)
-            utility -= 0.20f;
-
-        int slot = final_n;
-        if (slot < FINALISTS) {
-            final_n++;
-        } else if (utility <= final_utility[FINALISTS - 1]) {
-            continue;
-        } else {
-            slot = FINALISTS - 1;
-        }
-
-        while (slot > 0 && utility > final_utility[slot - 1]) {
-            if (slot < FINALISTS) {
-                final_tok[slot] = final_tok[slot - 1];
-                final_utility[slot] = final_utility[slot - 1];
-                memcpy(final_mlp[slot], final_mlp[slot - 1],
-                       sizeof(final_mlp[slot]));
-                memcpy(final_prior[slot], final_prior[slot - 1],
-                       sizeof(final_prior[slot]));
-                memcpy(final_mix[slot], final_mix[slot - 1],
-                       sizeof(final_mix[slot]));
-            }
-            slot--;
-        }
-
-        final_tok[slot] = cand;
-        final_utility[slot] = utility;
-        memcpy(final_mlp[slot], mlp, sizeof(mlp));
-        memcpy(final_prior[slot], prior, sizeof(prior));
-        memcpy(final_mix[slot], mix, sizeof(mix));
+                               prev, cand, oracle, surv_prior[surv_n],
+                               surv_mlp[surv_n], 0);
+        surv_n++;
     }
 
-    if (final_n == 0) {
+    if (surv_n == 0) {
         int fallback = oracle;
         float prior[SCORE_DIM], mlp[SCORE_DIM];
         prior_score(ctx, ctx_n, fallback, oracle, intent, world, glyph_id, prior);
@@ -4126,60 +4330,71 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
 
     /*
      * Only finalists receive expensive imagination. This is selective
-     * test-time compute rather than exhaustive fantasy.
+     * test-time compute rather than exhaustive fantasy. One rollout cache
+     * per decision, shared by every bracket below: counterfactual_
+     * rollout_score depends only on (ctx, candidate, intent, intent_debt,
+     * world), none of which differ between brackets, so a candidate that
+     * lands as a finalist under more than one gate is simulated once.
      */
-    int best_idx = 0;
-    float final_deep[FINALISTS][SCORE_DIM];
-    float final_survival[FINALISTS];
-    if (final_n > FINALISTS) final_n = FINALISTS;
-    float max_survival = -1e30f;
-    for (int i = 0; i < final_n; ++i) {
-        memcpy(final_deep[i], final_mix[i], sizeof(final_deep[i]));
-        float future = counterfactual_rollout_score(
-            ctx, ctx_n, final_tok[i], intent, intent_debt, world);
-        final_deep[i][10] = 0.58f * final_deep[i][10] + 0.42f * future;
-        final_survival[i] = survival_utility(final_deep[i]);
-        if (final_survival[i] > max_survival)
-            max_survival = final_survival[i];
-    }
+    RolloutCache rollout_cache;
+    rollout_cache.n = 0;
+    FinalistChoice live = resolve_finalist_choice(
+        surv_tok, surv_prior, surv_mlp, surv_n, mlp_gate,
+        ctx, ctx_n, intent, intent_debt, world, &rollout_cache);
+    int final_n = live.n;
 
-    /* Coherence-constrained diversity: novelty may choose only among
-       alternatives whose predictive survival is effectively equivalent. */
-    float world_debt = prophecy_stack_total_debt(world);
-    float margin = 0.032f / (0.80f + 0.35f * world_debt);
-    float best_choice = -1e30f;
-    for (int i = 0; i < final_n; ++i) {
-        if (final_survival[i] + margin < max_survival)
-            continue;
-        float global_fresh =
-            global_ngram_freshness(ctx, ctx_n, final_tok[i]);
-        float choice =
-            final_survival[i] +
-            0.020f * final_deep[i][5] +
-            0.018f * final_deep[i][6] +
-            0.018f * final_deep[i][9] +
-            ngram_freshness_weight * global_fresh +
-            0.018f * final_deep[i][11];
-
-        if (choice > best_choice) {
-            best_choice = choice;
-            best_idx = i;
+    /*
+     * S5c core shadow authority (Sol's audit: "authority is earned, not
+     * aged"): a same-state, no-second-RNG twin of the choice above, from
+     * the identical surv_prior/surv_mlp, at two fixed brackets -- core
+     * silent (gate 0) and core at full voice (CORE_AUTHORITY_FULL). Only
+     * outside evaluation_mode: run_probe_suite and the S4/S5c examiner
+     * already call choose_candidate read-only under evaluation_mode=1 (the
+     * one guard policy_mark checks), and this receipt must be exactly as
+     * read-only -- an exam scoring 611 census positions must not silently
+     * grow or shrink an island's earned authority. Where the brackets
+     * disagree, the core's own preferred choice is judged against hard
+     * truth -- never against the live bracket actually acted on, so a
+     * still-unearned core cannot poison its own evidence by having caused
+     * the outcome it is being judged against.
+     */
+    if (!evaluation_mode) {
+        FinalistChoice base = resolve_finalist_choice(
+            surv_tok, surv_prior, surv_mlp, surv_n, 0.0f,
+            ctx, ctx_n, intent, intent_debt, world, &rollout_cache);
+        FinalistChoice core_fc = resolve_finalist_choice(
+            surv_tok, surv_prior, surv_mlp, surv_n, CORE_AUTHORITY_FULL,
+            ctx, ctx_n, intent, intent_debt, world, &rollout_cache);
+        int base_choice = base.n > 0 ? base.tok[base.best_idx] : oracle;
+        int core_choice = core_fc.n > 0 ? core_fc.tok[core_fc.best_idx]
+                                        : oracle;
+        if (base_choice != core_choice) {
+            int isl = active_island;
+            int win = core_choice == truth;
+            int cursor = core_receipt_cursor[isl];
+            core_receipts[isl][cursor] = win ? (int8_t)1 : (int8_t)-1;
+            core_receipt_cursor[isl] = (cursor + 1) % CORE_SHADOW_WINDOW;
+            if (core_receipt_count[isl] < CORE_SHADOW_WINDOW)
+                core_receipt_count[isl]++;
+            if (win) core_wins_total[isl]++;
+            else core_losses_total[isl]++;
         }
     }
 
     float policy_target[FINALISTS];
-    policy_improve_context(ctx, ctx_n, final_tok, final_deep,
-                           final_n, policy_target);
+    policy_improve_context(ctx, ctx_n, live.tok, live.deep, final_n,
+                           policy_target);
 
-    int best = final_tok[best_idx];
+    int best_idx = live.best_idx;
+    int best = live.tok[best_idx];
 
     /* Prefer a viable content finalist over weak punctuation. */
     if (!token_is_content_id(best)) {
         for (int i = 0; i < final_n; ++i) {
-            if (token_is_content_id(final_tok[i]) &&
-                final_deep[i][0] > 0.30f) {
+            if (token_is_content_id(live.tok[i]) &&
+                live.deep[i][0] > 0.30f) {
                 best_idx = i;
-                best = final_tok[i];
+                best = live.tok[i];
                 break;
             }
         }
@@ -4204,7 +4419,7 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
                 acc += noisy[i];
                 if (r <= acc) {
                     best_idx = i;
-                    best = final_tok[i];
+                    best = live.tok[i];
                     break;
                 }
             }
@@ -4224,30 +4439,35 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
     if (receipt_file) {
         int win_surv = 0, win_prior = 0, within = 0;
         float best_surv = -1e30f, best_prior = -1e30f, second = -1e30f;
+        float world_debt = prophecy_stack_total_debt(world);
+        float margin = 0.032f / (0.80f + 0.35f * world_debt);
+        float max_survival = -1e30f;
+        for (int i = 0; i < final_n; ++i)
+            if (live.survival[i] > max_survival) max_survival = live.survival[i];
         for (int i = 0; i < final_n; ++i) {
-            if (final_survival[i] > best_surv) {
-                best_surv = final_survival[i];
+            if (live.survival[i] > best_surv) {
+                best_surv = live.survival[i];
                 win_surv = i;
             }
-            float p = survival_utility(final_prior[i]);
+            float p = survival_utility(live.prior[i]);
             if (p > best_prior) {
                 best_prior = p;
                 win_prior = i;
             }
-            if (final_survival[i] + margin >= max_survival) within++;
+            if (live.survival[i] + margin >= max_survival) within++;
         }
         for (int i = 0; i < final_n; ++i)
-            if (i != win_surv && final_survival[i] > second)
-                second = final_survival[i];
+            if (i != win_surv && live.survival[i] > second)
+                second = live.survival[i];
         fprintf(receipt_file,
                 "%llu\t%d\t%d\t%d\t%d\t%.5f\t%.5f\t%.5f\t%s\t%s\t%s\n",
                 (unsigned long long)episode_count,
                 pool_n, phrase_excluded, final_n, within,
                 (double)mlp_gate, (double)margin,
                 (double)(final_n > 1 ? max_survival - second : 0.0f),
-                vocab[final_tok[best_idx]].text,
-                vocab[final_tok[win_surv]].text,
-                vocab[final_tok[win_prior]].text);
+                vocab[best].text,
+                vocab[live.tok[win_surv]].text,
+                vocab[live.tok[win_prior]].text);
     }
 
     *observed_out =
@@ -4255,12 +4475,12 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
                       intent, intent_debt, world, glyph_id);
     if (policy_enabled)
         observed_out->search_policy = policy_target[best_idx];
-    memcpy(predicted_out, final_mlp[best_idx], SCORE_DIM * sizeof(float));
+    memcpy(predicted_out, live.mlp[best_idx], SCORE_DIM * sizeof(float));
     if (trace_out) {
         trace_out->n = final_n;
         for (int i = 0; i < final_n; ++i) {
-            trace_out->tok[i] = final_tok[i];
-            trace_out->survival[i] = final_survival[i];
+            trace_out->tok[i] = live.tok[i];
+            trace_out->survival[i] = live.survival[i];
         }
         trace_out->best_idx = best_idx;
     }
@@ -4628,9 +4848,7 @@ static void request_stop(int sig) {
 static size_t state_expected_size(uint32_t vocab_n, uint32_t edge_n,
                                   uint32_t tri_n, uint32_t island_n) {
     return sizeof(StateHeader) +
-           /* token_hash + accessible + island_episode_count per island. */
-           (size_t)island_n *
-               (sizeof(uint64_t) + sizeof(uint8_t) + sizeof(uint64_t)) +
+           (size_t)island_n * ISLAND_RECORD_BYTES +
            (size_t)vocab_n * sizeof(Token) +
            (size_t)edge_n * sizeof(Edge) +
            (size_t)tri_n * sizeof(TrigramEdge) +
@@ -4739,7 +4957,14 @@ static void save_state(const char *path) {
     for (int i = 0; ok && i < island_count; ++i)
         ok = fwrite(&islands[i].token_hash, sizeof(uint64_t), 1, f) == 1 &&
              fwrite(&islands[i].accessible, sizeof(uint8_t), 1, f) == 1 &&
-             fwrite(&island_episode_count[i], sizeof(uint64_t), 1, f) == 1;
+             fwrite(&island_episode_count[i], sizeof(uint64_t), 1, f) == 1 &&
+             fwrite(&island_core_gate[i], sizeof(float), 1, f) == 1 &&
+             fwrite(&core_receipt_cursor[i], sizeof(int32_t), 1, f) == 1 &&
+             fwrite(&core_receipt_count[i], sizeof(int32_t), 1, f) == 1 &&
+             fwrite(&core_wins_total[i], sizeof(uint64_t), 1, f) == 1 &&
+             fwrite(&core_losses_total[i], sizeof(uint64_t), 1, f) == 1 &&
+             fwrite(core_receipts[i], sizeof(int8_t),
+                   CORE_SHADOW_WINDOW, f) == (size_t)CORE_SHADOW_WINDOW;
     ok = ok && fwrite(vocab, sizeof(Token), (size_t)vocab_size, f) ==
                (size_t)vocab_size;
     ok = ok && fwrite(edges, sizeof(Edge), (size_t)edge_count, f) ==
@@ -4886,12 +5111,34 @@ static int load_state_valid(const char *path) {
        as accessible[] -- found by token_hash, never by saved slot number,
        so a text added later cannot inherit another island's clock. */
     uint64_t iso_episodes[MAX_ISLANDS];
+    /* S5c core shadow authority: same remap discipline again. cursor/count
+       are bounds-checked below before anything trusts them as an index --
+       they index core_receipts[isl][] directly in choose_candidate. */
+    float iso_gate[MAX_ISLANDS];
+    int32_t iso_cursor[MAX_ISLANDS];
+    int32_t iso_count[MAX_ISLANDS];
+    uint64_t iso_wins[MAX_ISLANDS];
+    uint64_t iso_losses[MAX_ISLANDS];
+    int8_t iso_receipts[MAX_ISLANDS][CORE_SHADOW_WINDOW];
     int where[MAX_ISLANDS];
     for (uint32_t i = 0; i < h.island_count; ++i) {
         uint64_t hash;
         if (fread(&hash, sizeof(hash), 1, f) != 1 ||
             fread(&access[i], sizeof(uint8_t), 1, f) != 1 ||
-            fread(&iso_episodes[i], sizeof(uint64_t), 1, f) != 1) {
+            fread(&iso_episodes[i], sizeof(uint64_t), 1, f) != 1 ||
+            fread(&iso_gate[i], sizeof(float), 1, f) != 1 ||
+            fread(&iso_cursor[i], sizeof(int32_t), 1, f) != 1 ||
+            fread(&iso_count[i], sizeof(int32_t), 1, f) != 1 ||
+            fread(&iso_wins[i], sizeof(uint64_t), 1, f) != 1 ||
+            fread(&iso_losses[i], sizeof(uint64_t), 1, f) != 1 ||
+            fread(iso_receipts[i], sizeof(int8_t),
+                  CORE_SHADOW_WINDOW, f) != (size_t)CORE_SHADOW_WINDOW) {
+            fclose(f);
+            return 0;
+        }
+        if (iso_cursor[i] < 0 || iso_cursor[i] >= CORE_SHADOW_WINDOW ||
+            iso_count[i] < 0 || iso_count[i] > CORE_SHADOW_WINDOW ||
+            !(iso_gate[i] >= 0.0f && iso_gate[i] <= CORE_AUTHORITY_FULL)) {
             fclose(f);
             return 0;
         }
@@ -4906,6 +5153,13 @@ static int load_state_valid(const char *path) {
     for (uint32_t i = 0; i < h.island_count; ++i) {
         islands[where[i]].accessible = access[i];
         island_episode_count[where[i]] = iso_episodes[i];
+        island_core_gate[where[i]] = iso_gate[i];
+        core_receipt_cursor[where[i]] = iso_cursor[i];
+        core_receipt_count[where[i]] = iso_count[i];
+        core_wins_total[where[i]] = iso_wins[i];
+        core_losses_total[where[i]] = iso_losses[i];
+        memcpy(core_receipts[where[i]], iso_receipts[i],
+              sizeof(iso_receipts[i]));
     }
 
     Token *saved =
@@ -5727,6 +5981,11 @@ static void run_episode(int verbose) {
 
     episode_count++;
     island_episode_count[active_island]++;
+    /* S5c core shadow authority: the ramp step, once per real episode
+       only. Any disagreement receipt from this episode's choose_candidate
+       calls is already in the ring buffer by now (learn_local, called
+       inside the per-step loop above, runs before this point). */
+    core_authority_update(active_island);
     curriculum_update(source_pos - isl->offset, episode_coherence,
                       world_debt_end, episode_surprise);
 
@@ -6934,6 +7193,27 @@ static void run_floor_dump(void) {
            glyphs_with_entries, total_entries, floor_eligible);
 }
 
+/* S5c core shadow authority: dump only, read-only, the same --floor-style
+   precedent. wins_minus_losses is recomputed from the live ring buffer,
+   never trusted as a separate persisted number (there isn't one). */
+static void run_core_status(void) {
+    printf("\n[READ-ONLY CORE STATUS] per-island earned authority, "
+           "window=%d threshold=%d ceiling=%.2f ramp_rate=%.3f\n",
+           CORE_SHADOW_WINDOW, CORE_SHADOW_WIN_K,
+           (double)CORE_AUTHORITY_FULL, (double)CORE_AUTHORITY_RAMP_RATE);
+    for (int i = 0; i < island_count; ++i) {
+        if (!islands[i].accessible) continue;
+        int wml = core_wins_minus_losses(i);
+        printf("  island %2d: gate=%.4f wins_total=%llu losses_total=%llu "
+               "window_wins_minus_losses=%d window_fill=%d/%d %s\n",
+               i, (double)island_core_gate[i],
+               (unsigned long long)core_wins_total[i],
+               (unsigned long long)core_losses_total[i],
+               wml, core_receipt_count[i], CORE_SHADOW_WINDOW,
+               wml >= CORE_SHADOW_WIN_K ? "EARNED" : "unearned");
+    }
+}
+
 /*
  * Prompt text is cut by the same physics as the corpus: punctuation is a
  * token, ASCII is lowered, UTF-8 survives. An unknown word is reported and
@@ -7122,6 +7402,7 @@ int main(int argc, char **argv) {
     int probe_count = 0;
     int geometry_probe_count = 0;
     int floor_dump = 0;
+    int core_status_dump = 0;
     const char *exam_path = NULL;
     uint64_t exam_seed_arg = 424242ull;
     /* 0 is census (S5c examiner v2): every admissible position, exactly
@@ -7153,6 +7434,8 @@ int main(int argc, char **argv) {
             exam_n = atoi(argv[++i]);
         else if (strcmp(argv[i], "--floor") == 0)
             floor_dump = 1;
+        else if (strcmp(argv[i], "--core-status") == 0)
+            core_status_dump = 1;
         else if (strcmp(argv[i], "--reset") == 0)
             reset = 1;
         else if (strcmp(argv[i], "--seed") == 0 && i + 1 < argc) {
@@ -7174,8 +7457,6 @@ int main(int argc, char **argv) {
             if (v > CANDIDATES) v = CANDIDATES;
             candidates_cap = v;
         }
-        else if (strcmp(argv[i], "--mlp-gate-episodes") == 0 && i + 1 < argc)
-            mlp_gate_episodes = strtof(argv[++i], NULL);
         else if (strcmp(argv[i], "--no-stack") == 0) {
             prophecy_stack_enabled = 0;
             override_stack = 0;
@@ -7414,6 +7695,8 @@ int main(int argc, char **argv) {
         }
         if (floor_dump)
             run_floor_dump();
+        if (core_status_dump)
+            run_core_status();
         return 0;
     }
 
@@ -7451,6 +7734,8 @@ int main(int argc, char **argv) {
     }
     if (floor_dump)
         run_floor_dump();
+    if (core_status_dump)
+        run_core_status();
     printf("\ncomplete: %llu lifetime episodes\n",
            (unsigned long long)episode_count);
     printf("memory: netta.state\nledger: netta.history.tsv\n");
