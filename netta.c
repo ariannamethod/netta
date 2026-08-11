@@ -3925,6 +3925,15 @@ static int32_t core_receipt_count[MAX_ISLANDS];
 static uint64_t core_wins_total[MAX_ISLANDS];
 static uint64_t core_losses_total[MAX_ISLANDS];
 
+/* S5c Stage 4 (minimal requalification vector): --core-gate-force pins
+   island_core_gate for every island and freezes the ramp, for a clean
+   shadow-off (0.0) vs forced-on (0.65) ablation without waiting on -- or
+   faking -- an earned record. Diagnostic only; off (0) by default, and the
+   forced gate is not itself persisted as "earned" (the receipt ledger
+   keeps recording normally underneath it). */
+static int core_gate_forced = 0;
+static float core_gate_force_value = 0.0f;
+
 static int core_wins_minus_losses(int island) {
     int sum = 0;
     int cnt = core_receipt_count[island];
@@ -3939,6 +3948,7 @@ static int core_wins_minus_losses(int island) {
    smoothly rather than snapping, so one disagreement receipt at the
    threshold cannot flip the live voice on or off in a single step. */
 static void core_authority_update(int island) {
+    if (core_gate_forced) return;
     int earned = core_wins_minus_losses(island) >= CORE_SHADOW_WIN_K;
     float target = earned ? CORE_AUTHORITY_FULL : 0.0f;
     island_core_gate[island] +=
@@ -7486,6 +7496,10 @@ int main(int argc, char **argv) {
             glyph_birth_threshold = strtof(argv[++i], NULL);
         else if (strcmp(argv[i], "--glyph-hash") == 0)
             glyph_hash_only = 1;
+        else if (strcmp(argv[i], "--core-gate-force") == 0 && i + 1 < argc) {
+            core_gate_forced = 1;
+            core_gate_force_value = strtof(argv[++i], NULL);
+        }
     }
 
     if (!prophecy_stack_enabled)
@@ -7641,6 +7655,12 @@ int main(int argc, char **argv) {
      * already name the active island correctly either way.
      */
     curriculum_init(islands[active_island].length - CONTEXT - 17);
+
+    /* S5c Stage 4 diagnostic override: applied after load, so it wins over
+       whatever gate a resumed snapshot carried. */
+    if (core_gate_forced)
+        for (int isl = 0; isl < MAX_ISLANDS; ++isl)
+            island_core_gate[isl] = core_gate_force_value;
 
     /*
      * Receipts follow the ledger: a new organism starts a fresh file, a
