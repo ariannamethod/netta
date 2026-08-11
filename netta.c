@@ -3876,11 +3876,24 @@ static float survival_utility(const float score[SCORE_DIM]) {
 
 
 
+/* S5c examiner v2 (Sol's audit, P1-3 "full chooser: hard choice and a
+   same-state distribution/energy over the actual finalists"): an optional,
+   purely additive readout of choose_candidate's own finalist ranking. Every
+   existing call site passes NULL and is byte-for-byte unaffected -- this
+   changes no decision, only whether one is reported afterward. */
+typedef struct {
+    int tok[FINALISTS];
+    float survival[FINALISTS];
+    int n;
+    int best_idx;
+} ChoiceTrace;
+
 static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
                             const float *intent, float intent_debt,
                             const ProphecyStack *world, int glyph_id,
                             int explore, ScoreVector *observed_out,
-                            float predicted_out[SCORE_DIM]) {
+                            float predicted_out[SCORE_DIM],
+                            ChoiceTrace *trace_out) {
     int candidates[CANDIDATES];
     int n = 0;
     int prev = ctx[ctx_n - 1];
@@ -4099,6 +4112,15 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
             observed_out->search_policy = fallback_target;
         }
         memcpy(predicted_out, mlp, sizeof(mlp));
+        if (trace_out) {
+            /* prior, not mlp: survival_utility reads the [0,1] mix scale,
+               and this fallback never built a mix (no finalist survived
+               screening to be blended with the core's [-1,1] output). */
+            trace_out->n = 1;
+            trace_out->tok[0] = fallback;
+            trace_out->survival[0] = survival_utility(prior);
+            trace_out->best_idx = 0;
+        }
         return fallback;
     }
 
@@ -4234,6 +4256,14 @@ static int choose_candidate(const int *ctx, int ctx_n, int oracle, int truth,
     if (policy_enabled)
         observed_out->search_policy = policy_target[best_idx];
     memcpy(predicted_out, final_mlp[best_idx], SCORE_DIM * sizeof(float));
+    if (trace_out) {
+        trace_out->n = final_n;
+        for (int i = 0; i < final_n; ++i) {
+            trace_out->tok[i] = final_tok[i];
+            trace_out->survival[i] = final_survival[i];
+        }
+        trace_out->best_idx = best_idx;
+    }
     return best;
 }
 
@@ -5600,7 +5630,7 @@ static void run_episode(int verbose) {
         int chosen = choose_candidate(ctx, ctx_n, oracle_tok, truth,
                                       intent, intent_debt, &world,
                                       agent_glyph_id,
-                                      1, &scores[step], pred);
+                                      1, &scores[step], pred, NULL);
         attempt[step] = chosen;
 
         trace[step].prev = ctx[ctx_n - 1];
@@ -5862,7 +5892,7 @@ static void run_probe_suite(int count) {
             int chosen = choose_candidate(
                 ctx, ctx_n, oracle_tok, truth,
                 intent, intent_debt, &world, gid,
-                0, &scores[step], pred);
+                0, &scores[step], pred, NULL);
             attempt[step] = chosen;
 
             trace[step].prev = ctx[ctx_n - 1];
@@ -6272,6 +6302,19 @@ static int exam_build_positions(const int *ids, int n, ExamPosition *out,
     return m;
 }
 
+/* S5c examiner v2 (Sol's audit, P1-3 candidate provenance): which source
+   inside exam_score_pool's construction first offered a given candidate.
+   Priority order matches construction order below, so the first source to
+   append a token is the one dedup keeps credit for. */
+enum {
+    EXAM_PROV_TRIGRAM = 0,
+    EXAM_PROV_SUCCESSOR = 1,
+    EXAM_PROV_ORACLE = 2,
+    EXAM_PROV_EXPERIENCE = 3,
+    EXAM_PROV_RANDOM = 4,
+    EXAM_PROV_COUNT = 5
+};
+
 /*
  * Read-only twin of choose_candidate's pool construction and screening
  * utility, stopping one step earlier: the exam needs a distribution over
@@ -6279,17 +6322,19 @@ static int exam_build_positions(const int *ids, int n, ExamPosition *out,
  * surviving candidate keeps its utility instead of only the top four.
  * Every read here is identical to what choose_candidate itself reads
  * (prior_score, core_predict_recursive with commit_state=0,
- * screening_utility); the only write is the local pool_tok/pool_utility
- * output. intent_debt is fixed at 1.0: the exam scores each position
- * fresh, the same reset run_probe_suite gives the start of every rollout,
- * not a multi-step accumulation.
+ * screening_utility); the only writes are the local pool_tok/pool_utility/
+ * pool_provenance outputs. intent_debt is fixed at 1.0: the exam scores
+ * each position fresh, the same reset run_probe_suite gives the start of
+ * every rollout, not a multi-step accumulation.
  */
 static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
                            const float *intent, const ProphecyStack *world,
                            int glyph_id,
                            int pool_tok[CANDIDATES],
-                           float pool_utility[CANDIDATES]) {
+                           float pool_utility[CANDIDATES],
+                           int pool_provenance[CANDIDATES]) {
     int candidates[CANDIDATES];
+    int cand_prov[CANDIDATES];
     int n = 0;
     int prev = ctx[ctx_n - 1];
 
@@ -6317,8 +6362,11 @@ static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
                     tri_tok[i] = tri_tok[j];
                     tri_tok[j] = tmp;
                 }
-        for (int i = 0; i < tri_n && n < candidates_cap - 10; ++i)
-            candidates[n++] = tri_tok[i];
+        for (int i = 0; i < tri_n && n < candidates_cap - 10; ++i) {
+            candidates[n] = tri_tok[i];
+            cand_prov[n] = EXAM_PROV_TRIGRAM;
+            n++;
+        }
     }
 
     int punct_added = 0;
@@ -6330,12 +6378,17 @@ static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
             if (punct_added >= 3 || !token_is_content_id(prev)) continue;
             punct_added++;
         }
-        candidates[n++] = tok;
+        candidates[n] = tok;
+        cand_prov[n] = EXAM_PROV_SUCCESSOR;
+        n++;
     }
 
     if (n < candidates_cap &&
-        (token_is_content_id(oracle) || token_is_content_id(prev)))
-        candidates[n++] = oracle;
+        (token_is_content_id(oracle) || token_is_content_id(prev))) {
+        candidates[n] = oracle;
+        cand_prov[n] = EXAM_PROV_ORACLE;
+        n++;
+    }
 
     int best_exp[3] = {-1, -1, -1};
     float best_val[3] = {-1e9f, -1e9f, -1e9f};
@@ -6363,12 +6416,19 @@ static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
         }
     }
     for (int k = 0; k < 3 && n < candidates_cap - 2; ++k)
-        if (best_exp[k] >= 0) candidates[n++] = best_exp[k];
+        if (best_exp[k] >= 0) {
+            candidates[n] = best_exp[k];
+            cand_prov[n] = EXAM_PROV_EXPERIENCE;
+            n++;
+        }
 
     while (n < candidates_cap) {
         int tok = (int)(rng_u64() % (uint64_t)vocab_size);
-        if (token_is_content_id(tok))
-            candidates[n++] = tok;
+        if (token_is_content_id(tok)) {
+            candidates[n] = tok;
+            cand_prov[n] = EXAM_PROV_RANDOM;
+            n++;
+        }
     }
 
     int unique_n = 0;
@@ -6376,7 +6436,11 @@ static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
         int duplicate = 0;
         for (int j = 0; j < unique_n; ++j)
             if (candidates[j] == candidates[i]) { duplicate = 1; break; }
-        if (!duplicate) candidates[unique_n++] = candidates[i];
+        if (!duplicate) {
+            candidates[unique_n] = candidates[i];
+            cand_prov[unique_n] = cand_prov[i];
+            unique_n++;
+        }
     }
     n = unique_n;
 
@@ -6420,17 +6484,84 @@ static int exam_score_pool(const int *ctx, int ctx_n, int oracle,
 
         pool_tok[pool_n] = cand;
         pool_utility[pool_n] = utility;
+        pool_provenance[pool_n] = cand_prov[i];
         pool_n++;
     }
     return pool_n;
 }
 
 typedef struct {
+    /* Legacy summary -- same fields, same formulas, kept for the pinned
+       probe 15/16 grep format. Now computed over a census or a true
+       without-replacement subsample instead of a hash draw with
+       replacement (S5c examiner v2, Sol's audit P1-3/P0-3). */
     double bpt;
     double in_pool_rate;
     double escape_rate;
     double first_token_accuracy;
+
+    /* Fixture/sampling bookkeeping. */
+    int n_scored;
+    int n_unique;
+
+    /* Strata (P1-3 "backoff quality reported separately"): in-pool (truth
+       survived screening), known-out (a real vocabulary word, just not in
+       this position's pool), OOV/escape (never met at all). */
+    int n_in_pool;
+    double bpt_in_pool;
+    int n_known_out;
+    double bpt_known_out;
+    int n_oov;
+    double bpt_oov;
+
+    /* Candidate provenance (P1-3 "proposal coverage... with provenance"):
+       share of ALL scored positions where the eventual in-pool truth was
+       first offered by this construction source. Does not sum to 1 --
+       the remainder is known-out + OOV, positions with no provenance to
+       report because truth never entered the pool at all. */
+    double prov_trigram;
+    double prov_successor;
+    double prov_oracle;
+    double prov_experience;
+    double prov_random;
+
+    /* Full-chooser shadow (P0-2/P1-3): Netta's actual live decision on the
+       same state -- finalists, counterfactual rollout, survival,
+       freshness, punctuation rescue -- not the screening surrogate above.
+       Judged only where truth resolves to a vocabulary id. */
+    int n_full_chooser_judged;
+    double full_chooser_accuracy;
+    double full_chooser_truth_rank_mean;
 } ExamResult;
+
+/* S5c examiner v2 (Sol's audit P0-3/P1-3): which positions get scored.
+   want<=0 (or want>=total) is census -- every admissible position, exactly
+   once, in file order; no draw, so no RNG stream to document. want>0 is a
+   true without-replacement subsample, a partial Fisher-Yates over a LOCAL
+   RNG stream derived from exam_seed -- never the global rng_state a live
+   episode reads, so position selection itself cannot perturb the organism
+   (observer invariance, S4) and is fully independent of the per-position
+   deep-pass seeding exam_run_pass still does below. */
+static int exam_select_positions(int total, int want, uint64_t exam_seed,
+                                 int *out) {
+    if (total <= 0) return 0;
+    if (want <= 0 || want >= total) {
+        for (int i = 0; i < total; ++i) out[i] = i;
+        return total;
+    }
+    int *pool = (int *)xcalloc((size_t)total, sizeof(int), "exam select pool");
+    for (int i = 0; i < total; ++i) pool[i] = i;
+    uint64_t local_rng = mix64(exam_seed ^ 0x5E1EC7EDF0517105ULL);
+    for (int i = 0; i < want; ++i) {
+        local_rng = mix64(local_rng ^ (uint64_t)i * 0xD1B54A32D192ED03ULL);
+        int span = total - i;
+        int j = i + (int)(local_rng % (uint64_t)span);
+        int tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+        out[i] = pool[i];
+    }
+    free(pool);
+    return want;
+}
 
 /*
  * Proper scoring at T_EXAM=1.0. Mass is predeclared and never looks at the
@@ -6448,23 +6579,27 @@ typedef struct {
  *                  vocabulary), i.e. how much of this text's word-space
  *                  lies outside what she knows. pool + out + escape = 1
  *                  by construction, at every position.
- * BPT = -mean(log2(P(truth))) over the sampled positions.
+ * BPT = -mean(log2(P(truth))) over the scored positions. idx[0..n) names
+ * which of the `total` admissible positions were scored, in what order --
+ * chosen once by exam_select_positions and shared between the combined and
+ * source readings so both grade the same positions.
  */
 static ExamResult exam_run_pass(const ExamPosition *positions, int total,
-                                uint64_t exam_seed, int exam_n,
-                                double escape_share) {
+                                const int *idx, int n,
+                                uint64_t exam_seed, double escape_share) {
     ExamResult r;
     memset(&r, 0, sizeof(r));
-    if (total <= 0 || exam_n <= 0) return r;
+    if (total <= 0 || n <= 0) return r;
 
     double sum_bits = 0.0;
-    int in_pool = 0, escape = 0, correct = 0;
+    double sum_bits_in_pool = 0.0, sum_bits_known_out = 0.0, sum_bits_oov = 0.0;
+    int in_pool = 0, known_out = 0, escape = 0, correct = 0;
+    long prov_count[EXAM_PROV_COUNT] = {0, 0, 0, 0, 0};
+    int full_judged = 0, full_correct = 0;
+    double full_rank_sum = 0.0;
 
-    for (int i = 0; i < exam_n; ++i) {
-        uint64_t position_hash = mix64(
-            exam_seed ^ ((uint64_t)i + 1ULL) * 0xD1B54A32D192ED03ULL);
-        int idx = (int)(position_hash % (uint64_t)total);
-        const ExamPosition *pos = &positions[idx];
+    for (int i = 0; i < n; ++i) {
+        const ExamPosition *pos = &positions[idx[i]];
 
         rng_state = mix64(exam_seed ^ 0xA24BAED4963EE407ULL ^
                           (uint64_t)i * 0x9FB21C651E98DF25ULL);
@@ -6479,8 +6614,10 @@ static ExamResult exam_run_pass(const ExamPosition *positions, int total,
 
         int pool_tok[CANDIDATES];
         float pool_utility[CANDIDATES];
+        int pool_prov[CANDIDATES];
         int pool_n = exam_score_pool(pos->ctx, CONTEXT, oracle_tok, intent,
-                                     &world, gid, pool_tok, pool_utility);
+                                     &world, gid, pool_tok, pool_utility,
+                                     pool_prov);
 
         double p_pool_total = 1.0 - EPS_OUT;
         double p_out_total = EPS_OUT * (1.0 - escape_share);
@@ -6503,9 +6640,11 @@ static ExamResult exam_run_pass(const ExamPosition *positions, int total,
         if (denom <= 0.0) denom = 1.0;
 
         double p_truth;
+        int stratum; /* 0 in_pool, 1 known_out, 2 oov */
         if (pos->truth_id < 0) {
             p_truth = p_escape;
             escape++;
+            stratum = 2;
         } else {
             int found = -1;
             for (int k = 0; k < pool_n; ++k)
@@ -6513,38 +6652,118 @@ static ExamResult exam_run_pass(const ExamPosition *positions, int total,
             if (found >= 0) {
                 p_truth = p_pool_total * (softmax_w[found] / denom);
                 in_pool++;
+                prov_count[pool_prov[found]]++;
+                stratum = 0;
             } else {
                 int out_n = vocab_size - pool_n;
                 p_truth = out_n > 0 ? p_out_total / (double)out_n
                                     : p_out_total;
+                known_out++;
+                stratum = 1;
             }
         }
         if (p_truth < 1e-12) p_truth = 1e-12;
-        sum_bits += -log2(p_truth);
+        double bits = -log2(p_truth);
+        sum_bits += bits;
+        if (stratum == 0) sum_bits_in_pool += bits;
+        else if (stratum == 1) sum_bits_known_out += bits;
+        else sum_bits_oov += bits;
 
         if (best_k >= 0 && pool_tok[best_k] == pos->truth_id) correct++;
+
+        /* Full-chooser shadow: Netta's actual live decision (choose_
+           candidate), never the screening surrogate. Judged only where
+           truth resolves to a vocabulary id -- observe_score dereferences
+           vocab[truth] unconditionally, and pos->truth_id is -1 for OOV.
+           The caller sets evaluation_mode (making policy_mark a no-op) and
+           nulls receipt_file for the duration, exactly the discipline
+           run_probe_suite already uses for this same function. */
+        if (pos->truth_id >= 0) {
+            ScoreVector observed;
+            float predicted[SCORE_DIM];
+            ChoiceTrace trace;
+            memset(&trace, 0, sizeof(trace));
+            int chosen = choose_candidate(pos->ctx, CONTEXT, oracle_tok,
+                                          pos->truth_id, intent, 1.0f,
+                                          &world, gid, 0, &observed,
+                                          predicted, &trace);
+            full_judged++;
+            if (chosen == pos->truth_id) full_correct++;
+            int rank = trace.n + 1;
+            for (int k = 0; k < trace.n; ++k) {
+                if (trace.tok[k] == pos->truth_id) {
+                    int better = 0;
+                    for (int j = 0; j < trace.n; ++j)
+                        if (trace.survival[j] > trace.survival[k]) better++;
+                    rank = better + 1;
+                    break;
+                }
+            }
+            full_rank_sum += (double)rank;
+        }
     }
 
-    r.bpt = sum_bits / (double)exam_n;
-    r.in_pool_rate = (double)in_pool / (double)exam_n;
-    r.escape_rate = (double)escape / (double)exam_n;
-    r.first_token_accuracy = (double)correct / (double)exam_n;
+    r.bpt = sum_bits / (double)n;
+    r.in_pool_rate = (double)in_pool / (double)n;
+    r.escape_rate = (double)escape / (double)n;
+    r.first_token_accuracy = (double)correct / (double)n;
+
+    r.n_scored = n;
+    {
+        /* Self-verifying rather than assumed: exam_select_positions
+           already guarantees no repeats, but the report proves it against
+           the actual list it was handed, not against its caller's word. */
+        int unique = 0;
+        for (int i = 0; i < n; ++i) {
+            int dup = 0;
+            for (int j = 0; j < i; ++j)
+                if (idx[j] == idx[i]) { dup = 1; break; }
+            if (!dup) unique++;
+        }
+        r.n_unique = unique;
+    }
+
+    r.n_in_pool = in_pool;
+    r.bpt_in_pool = in_pool ? sum_bits_in_pool / (double)in_pool : 0.0;
+    r.n_known_out = known_out;
+    r.bpt_known_out =
+        known_out ? sum_bits_known_out / (double)known_out : 0.0;
+    r.n_oov = escape;
+    r.bpt_oov = escape ? sum_bits_oov / (double)escape : 0.0;
+
+    r.prov_trigram    = (double)prov_count[EXAM_PROV_TRIGRAM]    / (double)n;
+    r.prov_successor  = (double)prov_count[EXAM_PROV_SUCCESSOR]  / (double)n;
+    r.prov_oracle     = (double)prov_count[EXAM_PROV_ORACLE]     / (double)n;
+    r.prov_experience = (double)prov_count[EXAM_PROV_EXPERIENCE] / (double)n;
+    r.prov_random     = (double)prov_count[EXAM_PROV_RANDOM]     / (double)n;
+
+    r.n_full_chooser_judged = full_judged;
+    r.full_chooser_accuracy =
+        full_judged ? (double)full_correct / (double)full_judged : 0.0;
+    r.full_chooser_truth_rank_mean =
+        full_judged ? full_rank_sum / (double)full_judged : 0.0;
+
     return r;
 }
 
 /*
- * Held-out exam entry point: --exam <file> --exam-seed N --exam-n N. Two
- * readings, same sampled positions and the same local RNG stream in both:
+ * Held-out exam entry point: --exam <file> --exam-seed N [--exam-n N]. Two
+ * readings, same scored positions and the same local RNG stream in both:
  * combined (her working vectors, exactly as choose_candidate reads them)
  * and source (island_* swapped in for emb/left_emb/right_emb for the
  * duration of the pass, then restored byte for byte). Every geometric
  * channel becomes source-only this way without a single per-channel flag,
  * because every one of them reads these three arrays; non-geometric
  * channels never touch them and are therefore identical in both readings.
+ *
+ * S5c examiner v2 (Sol's audit P0-3): default is census -- every admissible
+ * position exactly once -- because the fixture is small (611 positions for
+ * docs/HELDOUT.md) and there is no reason to sample it with replacement.
+ * --exam-n N now selects a true N-position subsample without replacement;
+ * it no longer means "examine nothing" at N=0 -- exam_n<=0 (the compiled-in
+ * default, or an explicit 0) both resolve to census.
  */
 static void run_exam(const char *path, uint64_t exam_seed, int exam_n) {
-    if (exam_n <= 0) return;
-
     int *ids = (int *)xcalloc(EXAM_MAX_TOKENS, sizeof(int), "exam tokens");
     char (*oov_words)[MAX_TOKEN_LEN] =
         (char (*)[MAX_TOKEN_LEN])xcalloc(EXAM_MAX_TOKENS, MAX_TOKEN_LEN,
@@ -6588,15 +6807,27 @@ static void run_exam(const char *path, uint64_t exam_seed, int exam_n) {
 
     double escape_share = (double)oov_n / (double)(oov_n + vocab_size);
 
+    int *idx = (int *)xcalloc((size_t)pos_n, sizeof(int), "exam idx");
+    int scored_n = exam_select_positions(pos_n, exam_n, exam_seed, idx);
+
     Core saved_core = core;
     uint64_t saved_rng = rng_state;
     uint64_t saved_depth = recursive_depth_total;
     uint64_t saved_calls = recursive_call_total;
     int saved_eval = evaluation_mode;
     evaluation_mode = 1;
+    /* The full-chooser shadow below calls choose_candidate, which writes a
+       receipt when receipt_file is open -- exactly like a lived episode.
+       An exam is a read-only observer (S4); nulling the handle for its
+       duration keeps every exam-shadow decision out of the biography's
+       receipt ledger, the same way this whole function already keeps
+       every exam-shadow decision out of netta.state. */
+    FILE *saved_receipt_file = receipt_file;
+    receipt_file = NULL;
 
     ExamResult combined =
-        exam_run_pass(positions, pos_n, exam_seed, exam_n, escape_share);
+        exam_run_pass(positions, pos_n, idx, scored_n, exam_seed,
+                     escape_share);
 
     float (*save_emb)[EMBED_DIM] = (float (*)[EMBED_DIM])xcalloc(
         (size_t)vocab_size, sizeof(*save_emb), "exam emb save");
@@ -6616,7 +6847,8 @@ static void run_exam(const char *path, uint64_t exam_seed, int exam_n) {
     }
 
     ExamResult source =
-        exam_run_pass(positions, pos_n, exam_seed, exam_n, escape_share);
+        exam_run_pass(positions, pos_n, idx, scored_n, exam_seed,
+                     escape_share);
 
     for (int i = 0; i < vocab_size; ++i) {
         memcpy(vocab[i].emb, save_emb[i], sizeof(vocab[i].emb));
@@ -6632,10 +6864,11 @@ static void run_exam(const char *path, uint64_t exam_seed, int exam_n) {
     recursive_depth_total = saved_depth;
     recursive_call_total = saved_calls;
     evaluation_mode = saved_eval;
+    receipt_file = saved_receipt_file;
 
-    printf("\n[READ-ONLY HELD-OUT EXAM] file=%s positions=%d n=%d "
+    printf("\n[READ-ONLY HELD-OUT EXAM v2] file=%s positions=%d scored=%d "
            "seed=%llu oov_types=%d vocab=%d escape_share=%.4f\n",
-           path, pos_n, exam_n, (unsigned long long)exam_seed, oov_n,
+           path, pos_n, scored_n, (unsigned long long)exam_seed, oov_n,
            vocab_size, escape_share);
     printf("  exam[combined] bpt=%.4f in_pool=%.4f escape=%.4f ft=%.4f\n",
            combined.bpt, combined.in_pool_rate, combined.escape_rate,
@@ -6644,6 +6877,29 @@ static void run_exam(const char *path, uint64_t exam_seed, int exam_n) {
            source.bpt, source.in_pool_rate, source.escape_rate,
            source.first_token_accuracy);
 
+    const ExamResult *rd[2] = { &combined, &source };
+    const char *rname[2] = { "combined", "source" };
+    for (int k = 0; k < 2; ++k) {
+        const ExamResult *r = rd[k];
+        printf("  examv2[%s] census unique=%d of scored=%d\n",
+               rname[k], r->n_unique, r->n_scored);
+        printf("  examv2[%s] stratum=in_pool    n=%-4d bpt=%.4f\n",
+               rname[k], r->n_in_pool, r->bpt_in_pool);
+        printf("  examv2[%s] stratum=known_out  n=%-4d bpt=%.4f\n",
+               rname[k], r->n_known_out, r->bpt_known_out);
+        printf("  examv2[%s] stratum=oov        n=%-4d bpt=%.4f\n",
+               rname[k], r->n_oov, r->bpt_oov);
+        printf("  examv2[%s] provenance trigram=%.4f successor=%.4f "
+               "oracle=%.4f experience=%.4f random=%.4f\n",
+               rname[k], r->prov_trigram, r->prov_successor, r->prov_oracle,
+               r->prov_experience, r->prov_random);
+        printf("  examv2[%s] full_chooser n=%-4d accuracy=%.4f "
+               "rank_mean=%.4f\n",
+               rname[k], r->n_full_chooser_judged, r->full_chooser_accuracy,
+               r->full_chooser_truth_rank_mean);
+    }
+
+    free(idx);
     free(ids);
     free(oov_words);
     free(positions);
@@ -6782,7 +7038,8 @@ static void interactive_prompt(const char *text) {
                                     &glyph_distance);
         int chosen = choose_candidate(live_ctx, ctx_n,
                                       oracle, oracle, intent, intent_debt,
-                                      &world, glyph_id, 0, &score, pred);
+                                      &world, glyph_id, 0, &score, pred,
+                                      NULL);
 
         live_trace[live_n].prev = live_ctx[ctx_n - 1];
         live_trace[live_n].chosen = chosen;
@@ -6867,7 +7124,10 @@ int main(int argc, char **argv) {
     int floor_dump = 0;
     const char *exam_path = NULL;
     uint64_t exam_seed_arg = 424242ull;
-    int exam_n = 256;
+    /* 0 is census (S5c examiner v2): every admissible position, exactly
+       once. --exam-n N below overrides it to a true N-position
+       without-replacement subsample. */
+    int exam_n = 0;
     int override_policy = -1;
     int override_stack = -1;
     int override_dream = -1;

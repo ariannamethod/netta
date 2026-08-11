@@ -396,15 +396,22 @@ fi
 # Wonderland (public domain, Project Gutenberg) -- a text this organism has
 # never read. Its content-hash is checked against every loaded island's own
 # token_hash at exam start and refused if it matches; it does not, because
-# it was never one of her islands. exam-seed 424242, exam-n 256, newborn on
-# netta.txt (--steps 0, same convention as probes 11-13). Combined and
-# source read identical here on purpose: a newborn's combined geometry
-# equals her island geometry exactly (residual is zero at birth, S3) -- the
-# pin exists so a future divergence at birth is caught, not assumed away.
+# it was never one of her islands. exam-seed 424242, newborn on netta.txt
+# (--steps 0, same convention as probes 11-13). Combined and source read
+# identical here on purpose: a newborn's combined geometry equals her
+# island geometry exactly (residual is zero at birth, S3) -- the pin exists
+# so a future divergence at birth is caught, not assumed away.
+#
+# Re-pin (S5c examiner v2, Sol's audit P0-3): --exam-n dropped, so this now
+# runs the census default -- all 611 admissible HELDOUT.md positions exactly
+# once, not 256 draws with replacement (the old sample held only 210 unique
+# positions at seed 424242; census needs no such disclosure). The screening
+# formula itself is untouched; only the position set moved from a biased
+# with-replacement draw to the whole fixture.
 if want 15; then
     d=$(world exam_newborn)
     ( cd "$d" && "$BIN" netta.txt --reset --seed 424242 --steps 0 \
-        --exam "$ROOT/docs/HELDOUT.md" --exam-seed 424242 --exam-n 256 ) \
+        --exam "$ROOT/docs/HELDOUT.md" --exam-seed 424242 ) \
         > "$d/exam" 2>&1
     cbpt=$(exam_field "$d/exam" combined bpt)
     cip=$(exam_field "$d/exam" combined in_pool)
@@ -414,13 +421,13 @@ if want 15; then
     sip=$(exam_field "$d/exam" source in_pool)
     sesc=$(exam_field "$d/exam" source escape)
     sft=$(exam_field "$d/exam" source ft)
-    label="15 held-out exam reproducibility pin: bpt=12.9674 in_pool=0.1914 escape=0.1875 ft=0.0508 (combined == source at birth)"
+    label="15 held-out exam census pin (v2): bpt=13.0923 in_pool=0.1997 escape=0.1522 ft=0.0442 (611 positions, combined == source at birth)"
     if [ -z "$cbpt" ] || [ -z "$sbpt" ]; then
         fail "$label" "no measurement taken: exam produced nothing"
-    elif [ "$cbpt" = "12.9674" ] && [ "$cip" = "0.1914" ] && \
-         [ "$cesc" = "0.1875" ] && [ "$cft" = "0.0508" ] && \
-         [ "$sbpt" = "12.9674" ] && [ "$sip" = "0.1914" ] && \
-         [ "$sesc" = "0.1875" ] && [ "$sft" = "0.0508" ]; then
+    elif [ "$cbpt" = "13.0923" ] && [ "$cip" = "0.1997" ] && \
+         [ "$cesc" = "0.1522" ] && [ "$cft" = "0.0442" ] && \
+         [ "$sbpt" = "13.0923" ] && [ "$sip" = "0.1997" ] && \
+         [ "$sesc" = "0.1522" ] && [ "$sft" = "0.0442" ]; then
         pass "$label"
     else
         fail "$label" \
@@ -442,7 +449,7 @@ if want 16; then
 
     b=$(world exam_inv_withexam)
     ( cd "$b" && "$BIN" netta.txt --reset --seed 42 --steps 80 \
-        --exam "$ROOT/docs/HELDOUT.md" --exam-seed 424242 --exam-n 256 ) \
+        --exam "$ROOT/docs/HELDOUT.md" --exam-seed 424242 ) \
         >/dev/null 2>&1
     sb=$(shasum -a 256 "$b/netta.state" 2>/dev/null | cut -d' ' -f1)
     spre=$(shasum -a 256 "$b/netta.state.exam_pre" 2>/dev/null | cut -d' ' -f1)
