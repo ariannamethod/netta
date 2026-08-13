@@ -36,7 +36,7 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    4u
+#define STATE_VER    5u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -272,6 +272,37 @@ static uint64_t mv_out[ACTIONS + MAX_UNITS];
 static double   mvlm_bits = 0.0;
 static uint64_t mvlm_bytes = 0;
 
+/* body 5: the right to act is earned. Candidates are the byte models
+   only: atomic-uni (the newborn actor) and byte-bi. The right is
+   granted by the lived prequential record alone -- byte-bi acts when
+   its cumulative lived bits/byte beats atomic by >= 0.1 after >= 1000
+   lived bytes; it steps down if the lead falls under 0.05 (hysteresis);
+   elections happen only at episode boundaries and are biography events.
+   The judge prices the ACTING model in the receipt; the shadow prices
+   of all models stay prequential and untouched by who acts. Where the
+   right is not earned, intervention must be exactly zero. */
+static int actor_current = 0;      /* 0 = atomic-uni, 1 = byte-bi */
+static int actor_lock = -1;        /* CLI: -1 earned, 0 uni, 1 bi */
+static uint64_t ep_uni = 0, ep_bi = 0;
+
+#define ACTOR_MIN_BYTES 1000
+#define ACTOR_GAIN      0.1
+#define ACTOR_KEEP      0.05
+
+static void actor_elect(void) {
+    if (actor_lock >= 0) { actor_current = actor_lock; return; }
+    if (atomic_bytes_lived >= ACTOR_MIN_BYTES &&
+        bilm_bytes >= ACTOR_MIN_BYTES) {
+        double au = atomic_bits_lived / (double)atomic_bytes_lived;
+        double bb = bilm_bits / (double)bilm_bytes;
+        if (actor_current == 0 && au - bb >= ACTOR_GAIN)
+            actor_current = 1;
+        else if (actor_current == 1 && au - bb < ACTOR_KEEP)
+            actor_current = 0;
+    } else
+        actor_current = 0;
+}
+
 static void emit_move(uint32_t m, uint64_t pos, int isl) {
     /* prequential shadow price, strictly before the count update */
     double denom = (double)move_total + (double)(ACTIONS + unit_count);
@@ -407,6 +438,9 @@ static void state_save(const char *path) {
             != ACTIONS + MAX_UNITS ||
         fwrite(&mvlm_bits, sizeof mvlm_bits, 1, f) != 1 ||
         fwrite(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
+        fwrite(&actor_current, sizeof actor_current, 1, f) != 1 ||
+        fwrite(&ep_uni, sizeof ep_uni, 1, f) != 1 ||
+        fwrite(&ep_bi, sizeof ep_bi, 1, f) != 1 ||
         fwrite(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: state write failed\n"); exit(1);
     }
@@ -504,6 +538,9 @@ static int state_load(const char *path) {
             != ACTIONS + MAX_UNITS ||
         fread(&mvlm_bits, sizeof mvlm_bits, 1, f) != 1 ||
         fread(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
+        fread(&actor_current, sizeof actor_current, 1, f) != 1 ||
+        fread(&ep_uni, sizeof ep_uni, 1, f) != 1 ||
+        fread(&ep_bi, sizeof ep_bi, 1, f) != 1 ||
         fread(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: %s truncated; refusing\n", path);
         exit(1);
@@ -568,39 +605,57 @@ static double run_episode(int isl_id, uint64_t steps) {
     double bits = 0.0;
     char line[256];
     episode_no++;
+    actor_elect();
+    if (actor_current) ep_bi++; else ep_uni++;
+    snprintf(line, sizeof line, "a\t%llu\t%s\n",
+             (unsigned long long)episode_no,
+             actor_current ? "bi" : "uni");
+    bio_append(line);
     for (uint64_t s = 0; s < steps; ++s) {
         uint64_t pos = start + s;
         uint64_t ctx_digest =
             fnv1a64(isl->bytes + pos - CTX, CTX, FNV_SEED);
         uint64_t rng_before = rng_state;
-        double p[ACTIONS];
-        policy(p);
-        int action = sample(p);
+        uint8_t pv = isl->bytes[pos - 1];
+        double p_uni[ACTIONS], p_bi[ACTIONS];
+        policy(p_uni);
+        {   /* byte-bigram row, before any update of this step */
+            double d2 = (double)bi_row[pv] + (double)ACTIONS;
+            double sum = 0.0;
+            for (int b = 0; b < ACTIONS; ++b) {
+                p_bi[b] = ((double)bi_count[pv][b] + 1.0) / d2;
+                sum += p_bi[b];
+            }
+            if (fabs(sum - 1.0) > 1e-6) {
+                fprintf(stderr, "netta: bigram row is not a "
+                                "distribution (sum=%.9f)\n", sum);
+                exit(1);
+            }
+        }
+        const double *p_act = actor_current ? p_bi : p_uni;
+        int action = sample(p_act);
         int truth = isl->bytes[pos];
-        double loss = -log2(p[truth]);
+        double loss = -log2(p_act[truth]);
         snprintf(line, sizeof line,
                  "%llu\t%llu\t%d\t%llu\t%016llx\t%d\t%d\t%.6f\t%016llx\t"
-                 "atomic\t1\n",
+                 "atomic\t1\t%s\n",
                  (unsigned long long)episode_no, (unsigned long long)s,
                  isl_id, (unsigned long long)pos,
                  (unsigned long long)ctx_digest, action, truth, loss,
-                 (unsigned long long)rng_before);
+                 (unsigned long long)rng_before,
+                 actor_current ? "bi" : "uni");
         bio_append(line);
+        /* model prices stay prequential and actor-independent */
+        atomic_bits_lived += -log2(p_uni[truth]);
+        atomic_bytes_lived++;
+        bilm_bits += -log2(p_bi[truth]);
+        bilm_bytes++;
         counts[truth]++;
         counts_total++;
         steps_total++;
         bits += loss;
-        atomic_bits_lived += loss;
-        atomic_bytes_lived++;
-        {   /* byte-bigram shadow: context is the previous WORLD byte */
-            uint8_t pv = isl->bytes[pos - 1];
-            double d2 = (double)bi_row[pv] + (double)ACTIONS;
-            double p2 = ((double)bi_count[pv][truth] + 1.0) / d2;
-            bilm_bits += -log2(p2);
-            bilm_bytes++;
-            bi_count[pv][truth]++;
-            bi_row[pv]++;
-        }
+        bi_count[pv][truth]++;
+        bi_row[pv]++;
         if (units_enabled)
             matcher_feed((uint8_t)truth, pos, isl_id);
     }
@@ -635,6 +690,15 @@ int main(int argc, char **argv) {
             reset = 1;
         else if (!strcmp(argv[i], "--no-units"))
             units_enabled = 0;
+        else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
+            ++i;
+            if (!strcmp(argv[i], "uni")) actor_lock = 0;
+            else if (!strcmp(argv[i], "bi")) actor_lock = 1;
+            else {
+                fprintf(stderr, "netta: --actor-lock takes uni|bi\n");
+                exit(1);
+            }
+        }
         else if (argv[i][0] == '-') {
             fprintf(stderr, "netta: unknown flag %s\n", argv[i]);
             exit(1);
@@ -709,6 +773,9 @@ int main(int argc, char **argv) {
     if (units_enabled && mvlm_bytes)
         printf("model move-bi bits/byte %.6f\n",
                mvlm_bits / (double)mvlm_bytes);
+    printf("actor episodes: uni %llu, bi %llu%s\n",
+           (unsigned long long)ep_uni, (unsigned long long)ep_bi,
+           actor_lock >= 0 ? " (locked)" : "");
     printf("biography: %llu lines, chain %016llx\n",
            (unsigned long long)bio_lines, (unsigned long long)bio_chain);
     return 0;

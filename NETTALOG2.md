@@ -237,3 +237,55 @@ Still no one may act but the newborn policy. The court now holds four
 priced witnesses; the fifth body decides who among them earns the right
 to choose -- and that right will be earned per the research law, against
 a matched control, with the loser's testimony kept.
+
+## The fifth body: the right to act is earned
+
+The law, declared before code: the actuator of the game becomes earned.
+Candidates are the byte models only -- the newborn atomic-uni, acting
+since birth, and byte-bi, the court's best witness; move-level models
+are not admitted as actors in this body. The right is granted by the
+lived prequential record alone: byte-bi acts when its cumulative lived
+bits per byte beats atomic by at least 0.1 after at least 1000 lived
+bytes, and steps down if the lead falls under 0.05. Elections happen
+only at episode boundaries and are biography events of their own kind.
+The judge prices the acting model in the receipt; the shadow prices of
+all four models remain prequential and untouched by who acts, so the
+record that grants the right can never be polluted by the right itself.
+Where the right is not earned, intervention must be exactly zero.
+
+Measured. On the alternating world (six episodes of 600 steps, seed 5)
+the right is earned mid-life: episodes one and two are played by the
+newborn, episodes three through six by byte-bi, and the life with the
+earned actor costs 0.800969 bits per byte in its receipts against
+1.373074 for the same life locked to the newborn -- same seed, same
+world, 0.57 bits per byte returned by an earned right. The shadow
+prices printed by both lives are identical to the digit, proving the
+election record is actor-independent. On the full-binary world the
+right is never earned and the earned-mechanism biography is
+bit-identical to the locked-newborn biography: zero intervention
+without the record. Elections survive a restart bit-for-bit in state
+version 5.
+
+One declared prediction was refuted by the measurement, and the
+refutation is kept as the finding it is. The author predicted that
+forcing byte-bi on the structureless world would be measurably worse
+than the newborn. The fact: forced byte-bi scores exactly 8.000000
+bits per byte -- its rows stay virgin on a world without repetition,
+so it answers with honest uniform ignorance -- while the newborn
+scores 8.454211, because it has learned frequencies of a world that
+never repeats them. On a non-repeating world, learned confidence is
+self-deception and ignorance is the better witness. The suite pins the
+measured fact (locked-bi exactly 8.0 on virgin rows), not the wished
+sign.
+
+Gates: thirty-four machine verdicts, ALL GATES PASS, rc=0 -- the
+twenty-nine of the fourth body (two parsers tightened to skip election
+lines), plus: the right is earned mid-life; the earned actor lives
+cheaper than the locked newborn; zero intervention where the right is
+not earned; elections survive restart; forced ignorance stays exactly
+uniform. ASan and UBSan silent on four worlds.
+
+For the first time in this line, a lived record -- not age, not
+existence, not beauty -- moved authority from one organ to another, in
+the open, with the losing configuration's testimony preserved in the
+same report.

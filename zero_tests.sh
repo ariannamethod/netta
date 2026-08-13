@@ -48,10 +48,10 @@ gate "Z1 UTF-8 island measured in raw bytes" $? 0
 W="$T/w.bytes"; cat NETTALOG2.md > "$W"
 "$N" "$W" --reset --seed 42 --episodes 1 --steps 64 --state "$T/a1.state" --bio "$T/a1.bio" >/dev/null 2>&1
 gate "Z2 newborn life runs" $? 0
-FIRST=$(head -1 "$T/a1.bio" | awk -F'\t' '{print $8}')
+FIRST=$(grep -v '^a	' "$T/a1.bio" | head -1 | awk -F'\t' '{print $8}')
 [ "$FIRST" = "8.000000" ]
 gate "Z2 newborn first step exactly 8 bits" $? 0
-NON8=$(awk -F'\t' '$8!="8.000000"{n++} END{print n+0}' "$T/a1.bio")
+NON8=$(awk -F'\t' 'NF>=11 && $8!="8.000000"{n++} END{print n+0}' "$T/a1.bio")
 [ "$NON8" -gt 0 ]
 gate "Z2 learning moves loss within one life (red: all-8 = dead)" $? 0
 "$N" "$W" --reset --seed 42 --episodes 1 --steps 64 --state "$T/a2.state" --bio "$T/a2.bio" >/dev/null 2>&1
@@ -137,6 +137,27 @@ gate "B4 move context helps: move-bi $MB < unit-uni $UU on repetition" $? 0
 "$N" "$T/rep.bytes" --episodes 1 --steps 2000 --state "$T/b4s.state" --bio "$T/b4s.bio" >/dev/null 2>&1
 cmp -s "$T/b4d.state" "$T/b4s.state"
 gate "B4 oracle counters survive restart (split state identical)" $? 0
+
+# --- B5: the earned right to act ---------------------------------------
+"$N" "$T/ab.bytes" --reset --seed 5 --episodes 6 --steps 600 --state "$T/e5.state" --bio "$T/e5.bio" > "$T/e5.out" 2>&1
+grep -q '^a	.*	bi$' "$T/e5.bio"
+gate "B5 the right is earned mid-life (bi acts after the threshold)" $? 0
+"$N" "$T/ab.bytes" --reset --seed 5 --episodes 6 --steps 600 --state "$T/l5.state" --bio "$T/l5.bio" --actor-lock uni > "$T/l5.out" 2>&1
+E5=$(awk -F': ' '/^bits per raw byte/{print $2}' "$T/e5.out")
+L5=$(awk -F': ' '/^bits per raw byte/{print $2}' "$T/l5.out")
+awk -v e="$E5" -v l="$L5" 'BEGIN{exit !(e < l)}'
+gate "B5 earned actor lives cheaper: $E5 < locked-uni $L5" $? 0
+"$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/z5e.state" --bio "$T/z5e.bio" >/dev/null 2>&1
+"$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/z5l.state" --bio "$T/z5l.bio" --actor-lock uni >/dev/null 2>&1
+cmp -s "$T/z5e.bio" "$T/z5l.bio"
+gate "B5 zero intervention where the right is not earned (bio identical)" $? 0
+"$N" "$T/ab.bytes" --reset --seed 5 --episodes 3 --steps 600 --state "$T/s5s.state" --bio "$T/s5s.bio" >/dev/null 2>&1
+"$N" "$T/ab.bytes" --episodes 3 --steps 600 --state "$T/s5s.state" --bio "$T/s5s.bio" >/dev/null 2>&1
+cmp -s "$T/e5.bio" "$T/s5s.bio" && cmp -s "$T/e5.state" "$T/s5s.state"
+gate "B5 actor elections survive restart (split life identical)" $? 0
+F5=$("$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/z5f.state" --bio "$T/z5f.bio" --actor-lock bi 2>/dev/null | awk -F': ' '/^bits per raw byte/{print $2}')
+[ "$F5" = "8.000000" ]
+gate "B5 forced ignorance stays uniform: locked-bi exactly 8.0 on virgin rows ($F5)" $? 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi
