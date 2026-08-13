@@ -289,3 +289,45 @@ For the first time in this line, a lived record -- not age, not
 existence, not beauty -- moved authority from one organ to another, in
 the open, with the losing configuration's testimony preserved in the
 same report.
+
+## The sixth body: the trigram floor, and power that skips a rung
+
+The law, declared before code: the oracle ladder gains its trigram
+floor -- P(byte | two previous tape bytes), contexts as byte pairs with
+a direct row-total array and the (context, byte) counts in an
+open-addressed table that fails loudly when full. Prequential, same
+ruler, and a third candidate for the seat. The election generalises
+from a duel to a law of succession: any candidate with at least 1000
+lived bytes and a 0.1 lead over the newborn is eligible; the strongest
+eligible challenger takes the seat if it leads the sitting actor by the
+hysteresis margin; a sitting actor that loses its mandate over the
+newborn vacates. Elections stay at episode boundaries, as biography
+events. Zero intervention without an earned record must survive the
+widening of the field.
+
+Measured on the period-3 world (abcacb repeated 700 times): the bigram
+is structurally blind there -- after 'a' the next byte is genuinely
+ambiguous in its one-byte context -- and prices the world at 1.803026,
+while the trigram, whose two-byte contexts make every continuation
+deterministic, prices it at 1.244322: a 0.56-bit gap exactly where the
+theory of the world says it must appear. The seat passes uni -> tri at
+the third episode, skipping bi entirely -- the succession law hands
+power to the strongest eligible challenger, not to the next rung of a
+hierarchy. The full ladder of power, lived on one seed: earned
+1.296476 < locked-bi 1.803026 < locked-uni 1.956410. On the
+alternating world the trigram collapses onto the bigram exactly --
+0.614734 equals 0.614734 to the printed digit, because there the
+two-byte contexts are in bijection with the one-byte contexts: the
+extra floor adds nothing where there is nothing to add, and the
+equality is the gate. Zero intervention on the structureless world
+holds bit-for-bit with three candidates in the field. Elections and
+trigram counters survive restart in state version 6.
+
+Gates: forty machine verdicts, ALL GATES PASS, rc=0. ASan and UBSan
+silent on five worlds: period-3, alternating, constant, repeated
+sentence, and full binary.
+
+The ladder now stands as ordered: context beats frequency, and deeper
+context beats shallower exactly where the world's structure lives
+deeper than one byte of memory. The next question belongs to travel:
+a second island, and what of all this survives the crossing.

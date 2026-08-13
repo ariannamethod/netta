@@ -159,6 +159,35 @@ F5=$("$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/z5f.state" --b
 [ "$F5" = "8.000000" ]
 gate "B5 forced ignorance stays uniform: locked-bi exactly 8.0 on virgin rows ($F5)" $? 0
 
+# --- B6: the trigram floor ---------------------------------------------
+i=0; : > "$T/p3.bytes"
+while [ $i -lt 700 ]; do printf 'abcacb' >> "$T/p3.bytes"; i=$((i+1)); done
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 6 --steps 600 --state "$T/p3.state" --bio "$T/p3.bio" > "$T/p3.out" 2>&1
+BB6=$(awk '/^model byte-bi /{print $NF}' "$T/p3.out")
+TT6=$(awk '/^model byte-tri /{print $NF}' "$T/p3.out")
+awk -v b="$BB6" -v t="$TT6" 'BEGIN{exit !(b - t >= 0.5)}'
+gate "B6 trigram sees period-3: byte-tri $TT6 vs byte-bi $BB6 (gap>=0.5)" $? 0
+grep -q '^a	.*	tri$' "$T/p3.bio"
+gate "B6 the seat passes to tri on the period-3 world" $? 0
+E6=$(awk -F': ' '/^bits per raw byte/{print $2}' "$T/p3.out")
+LB6=$("$N" "$T/p3.bytes" --reset --seed 5 --episodes 6 --steps 600 --state "$T/p3b.state" --bio "$T/p3b.bio" --actor-lock bi 2>/dev/null | awk -F': ' '/^bits per raw byte/{print $2}')
+LU6=$("$N" "$T/p3.bytes" --reset --seed 5 --episodes 6 --steps 600 --state "$T/p3u.state" --bio "$T/p3u.bio" --actor-lock uni 2>/dev/null | awk -F': ' '/^bits per raw byte/{print $2}')
+awk -v e="$E6" -v b="$LB6" -v u="$LU6" 'BEGIN{exit !(e < b && b < u)}'
+gate "B6 the ladder of power: earned $E6 < locked-bi $LB6 < locked-uni $LU6" $? 0
+"$N" "$T/ab.bytes" --reset --seed 5 --episodes 6 --steps 600 --state "$T/ab6.state" --bio "$T/ab6.bio" > "$T/ab6.out" 2>&1
+BB7=$(awk '/^model byte-bi /{print $NF}' "$T/ab6.out")
+TT7=$(awk '/^model byte-tri /{print $NF}' "$T/ab6.out")
+[ "$BB7" = "$TT7" ]
+gate "B6 tri collapses to bi where contexts are in bijection ($TT7)" $? 0
+"$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/z6e.state" --bio "$T/z6e.bio" >/dev/null 2>&1
+"$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/z6l.state" --bio "$T/z6l.bio" --actor-lock uni >/dev/null 2>&1
+cmp -s "$T/z6e.bio" "$T/z6l.bio"
+gate "B6 zero intervention still holds with three candidates" $? 0
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 3 --steps 600 --state "$T/p6s.state" --bio "$T/p6s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --episodes 3 --steps 600 --state "$T/p6s.state" --bio "$T/p6s.bio" >/dev/null 2>&1
+cmp -s "$T/p3.bio" "$T/p6s.bio" && cmp -s "$T/p3.state" "$T/p6s.state"
+gate "B6 trigram counters and elections survive restart" $? 0
+
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi
 echo "$FAIL GATE(S) FAILED"; exit 1

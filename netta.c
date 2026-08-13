@@ -36,7 +36,7 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    5u
+#define STATE_VER    6u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -281,9 +281,53 @@ static uint64_t mvlm_bytes = 0;
    The judge prices the ACTING model in the receipt; the shadow prices
    of all models stay prequential and untouched by who acts. Where the
    right is not earned, intervention must be exactly zero. */
-static int actor_current = 0;      /* 0 = atomic-uni, 1 = byte-bi */
-static int actor_lock = -1;        /* CLI: -1 earned, 0 uni, 1 bi */
-static uint64_t ep_uni = 0, ep_bi = 0;
+/* body 6: the trigram floor of the oracle ladder. Contexts are byte
+   pairs (65536 of them, a direct row-total array); the (context, byte)
+   counts live in an open-addressed table like the pair counts, failing
+   loudly when full. Prequential, same ruler, and a third candidate for
+   the seat. */
+#define TRI_SLOTS (1u << 20)
+static Pair    *tri;               /* key = ctx<<8 | byte */
+static uint64_t tri_used = 0;
+static uint64_t tri_row[65536];
+static double   trilm_bits = 0.0;
+static uint64_t trilm_bytes = 0;
+
+static uint64_t tri_get(uint32_t ctx, uint8_t b) {
+    uint64_t key = ((uint64_t)ctx << 8) | b;
+    uint64_t h = fnv1a64((const uint8_t *)&key, sizeof key, FNV_SEED);
+    for (uint64_t probe = 0; probe < TRI_SLOTS; ++probe) {
+        Pair *p = &tri[(h + probe) & (TRI_SLOTS - 1)];
+        if (p->cnt == 0) return 0;
+        if (p->key == key) return p->cnt;
+    }
+    return 0;
+}
+
+static void tri_add(uint32_t ctx, uint8_t b) {
+    uint64_t key = ((uint64_t)ctx << 8) | b;
+    uint64_t h = fnv1a64((const uint8_t *)&key, sizeof key, FNV_SEED);
+    for (uint64_t probe = 0; probe < TRI_SLOTS; ++probe) {
+        Pair *p = &tri[(h + probe) & (TRI_SLOTS - 1)];
+        if (p->cnt == 0) {
+            if (tri_used * 10 >= (uint64_t)TRI_SLOTS * 9) {
+                fprintf(stderr, "netta: trigram table full\n"); exit(1);
+            }
+            p->key = key; p->cnt = 1; tri_used++;
+            tri_row[ctx]++;
+            return;
+        }
+        if (p->key == key) { p->cnt++; tri_row[ctx]++; return; }
+    }
+    fprintf(stderr, "netta: trigram table full\n"); exit(1);
+}
+
+/* the seat: candidates 0 = atomic-uni (newborn), 1 = byte-bi,
+   2 = byte-tri. Granted by the lived prequential record alone. */
+static int actor_current = 0;
+static int actor_lock = -1;        /* CLI: -1 earned, 0/1/2 locked */
+static uint64_t ep_actor[3] = {0, 0, 0};
+static const char *actor_name[3] = {"uni", "bi", "tri"};
 
 #define ACTOR_MIN_BYTES 1000
 #define ACTOR_GAIN      0.1
@@ -291,16 +335,27 @@ static uint64_t ep_uni = 0, ep_bi = 0;
 
 static void actor_elect(void) {
     if (actor_lock >= 0) { actor_current = actor_lock; return; }
-    if (atomic_bytes_lived >= ACTOR_MIN_BYTES &&
-        bilm_bytes >= ACTOR_MIN_BYTES) {
-        double au = atomic_bits_lived / (double)atomic_bytes_lived;
-        double bb = bilm_bits / (double)bilm_bytes;
-        if (actor_current == 0 && au - bb >= ACTOR_GAIN)
-            actor_current = 1;
-        else if (actor_current == 1 && au - bb < ACTOR_KEEP)
-            actor_current = 0;
-    } else
+    if (atomic_bytes_lived < ACTOR_MIN_BYTES) { actor_current = 0; return; }
+    double lv[3];
+    lv[0] = atomic_bits_lived / (double)atomic_bytes_lived;
+    lv[1] = bilm_bytes ? bilm_bits / (double)bilm_bytes : 1e9;
+    lv[2] = trilm_bytes ? trilm_bits / (double)trilm_bytes : 1e9;
+    /* mandate: a sitting non-newborn actor must keep a KEEP lead over
+       the newborn or vacate the seat */
+    if (actor_current != 0 && lv[0] - lv[actor_current] < ACTOR_KEEP)
         actor_current = 0;
+    /* strongest eligible challenger (GAIN lead over the newborn) */
+    int ch = -1;
+    for (int c = 1; c <= 2; ++c) {
+        if (c == actor_current) continue;
+        if (lv[0] - lv[c] < ACTOR_GAIN) continue;
+        if (ch < 0 || lv[c] < lv[ch]) ch = c;
+    }
+    if (ch >= 0) {
+        if (actor_current == 0) actor_current = ch;
+        else if (lv[actor_current] - lv[ch] >= ACTOR_KEEP)
+            actor_current = ch;
+    }
 }
 
 static void emit_move(uint32_t m, uint64_t pos, int isl) {
@@ -439,11 +494,22 @@ static void state_save(const char *path) {
         fwrite(&mvlm_bits, sizeof mvlm_bits, 1, f) != 1 ||
         fwrite(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
         fwrite(&actor_current, sizeof actor_current, 1, f) != 1 ||
-        fwrite(&ep_uni, sizeof ep_uni, 1, f) != 1 ||
-        fwrite(&ep_bi, sizeof ep_bi, 1, f) != 1 ||
+        fwrite(ep_actor, sizeof ep_actor[0], 3, f) != 3 ||
+        fwrite(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
+        fwrite(&trilm_bits, sizeof trilm_bits, 1, f) != 1 ||
+        fwrite(&trilm_bytes, sizeof trilm_bytes, 1, f) != 1 ||
         fwrite(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: state write failed\n"); exit(1);
     }
+    uint64_t ntri = 0;
+    for (uint64_t i = 0; i < TRI_SLOTS; ++i) if (tri[i].cnt) ntri++;
+    if (fwrite(&ntri, sizeof ntri, 1, f) != 1) {
+        fprintf(stderr, "netta: state write failed\n"); exit(1);
+    }
+    for (uint64_t i = 0; i < TRI_SLOTS; ++i)
+        if (tri[i].cnt && fwrite(&tri[i], sizeof(Pair), 1, f) != 1) {
+            fprintf(stderr, "netta: state write failed\n"); exit(1);
+        }
     for (int i = 0; i < island_count; ++i) {
         if (fwrite(&islands[i].digest, sizeof(uint64_t), 1, f) != 1 ||
             fwrite(&islands[i].len, sizeof(uint64_t), 1, f) != 1) {
@@ -539,11 +605,31 @@ static int state_load(const char *path) {
         fread(&mvlm_bits, sizeof mvlm_bits, 1, f) != 1 ||
         fread(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
         fread(&actor_current, sizeof actor_current, 1, f) != 1 ||
-        fread(&ep_uni, sizeof ep_uni, 1, f) != 1 ||
-        fread(&ep_bi, sizeof ep_bi, 1, f) != 1 ||
+        fread(ep_actor, sizeof ep_actor[0], 3, f) != 3 ||
+        fread(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
+        fread(&trilm_bits, sizeof trilm_bits, 1, f) != 1 ||
+        fread(&trilm_bytes, sizeof trilm_bytes, 1, f) != 1 ||
         fread(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: %s truncated; refusing\n", path);
         exit(1);
+    }
+    uint64_t ntri;
+    if (fread(&ntri, sizeof ntri, 1, f) != 1 || ntri > TRI_SLOTS) {
+        fprintf(stderr, "netta: %s truncated; refusing\n", path);
+        exit(1);
+    }
+    for (uint64_t i = 0; i < ntri; ++i) {
+        Pair e;
+        if (fread(&e, sizeof e, 1, f) != 1 || e.cnt == 0) {
+            fprintf(stderr, "netta: %s truncated; refusing\n", path);
+            exit(1);
+        }
+        uint64_t h = fnv1a64((const uint8_t *)&e.key, sizeof e.key,
+                             FNV_SEED);
+        for (uint64_t probe = 0; probe < TRI_SLOTS; ++probe) {
+            Pair *p = &tri[(h + probe) & (TRI_SLOTS - 1)];
+            if (p->cnt == 0) { *p = e; tri_used++; break; }
+        }
     }
     if (nisl != (uint32_t)island_count) {
         fprintf(stderr, "netta: state carries %u islands, world has %d; "
@@ -606,10 +692,9 @@ static double run_episode(int isl_id, uint64_t steps) {
     char line[256];
     episode_no++;
     actor_elect();
-    if (actor_current) ep_bi++; else ep_uni++;
+    ep_actor[actor_current]++;
     snprintf(line, sizeof line, "a\t%llu\t%s\n",
-             (unsigned long long)episode_no,
-             actor_current ? "bi" : "uni");
+             (unsigned long long)episode_no, actor_name[actor_current]);
     bio_append(line);
     for (uint64_t s = 0; s < steps; ++s) {
         uint64_t pos = start + s;
@@ -617,7 +702,8 @@ static double run_episode(int isl_id, uint64_t steps) {
             fnv1a64(isl->bytes + pos - CTX, CTX, FNV_SEED);
         uint64_t rng_before = rng_state;
         uint8_t pv = isl->bytes[pos - 1];
-        double p_uni[ACTIONS], p_bi[ACTIONS];
+        uint32_t tctx = ((uint32_t)isl->bytes[pos - 2] << 8) | pv;
+        double p_uni[ACTIONS], p_bi[ACTIONS], p_tri[ACTIONS];
         policy(p_uni);
         {   /* byte-bigram row, before any update of this step */
             double d2 = (double)bi_row[pv] + (double)ACTIONS;
@@ -632,7 +718,22 @@ static double run_episode(int isl_id, uint64_t steps) {
                 exit(1);
             }
         }
-        const double *p_act = actor_current ? p_bi : p_uni;
+        {   /* byte-trigram row, before any update of this step */
+            double d3 = (double)tri_row[tctx] + (double)ACTIONS;
+            double sum = 0.0;
+            for (int b = 0; b < ACTIONS; ++b) {
+                p_tri[b] = ((double)tri_get(tctx, (uint8_t)b) + 1.0)
+                           / d3;
+                sum += p_tri[b];
+            }
+            if (fabs(sum - 1.0) > 1e-6) {
+                fprintf(stderr, "netta: trigram row is not a "
+                                "distribution (sum=%.9f)\n", sum);
+                exit(1);
+            }
+        }
+        const double *p_act = actor_current == 2 ? p_tri
+                            : actor_current == 1 ? p_bi : p_uni;
         int action = sample(p_act);
         int truth = isl->bytes[pos];
         double loss = -log2(p_act[truth]);
@@ -643,19 +744,22 @@ static double run_episode(int isl_id, uint64_t steps) {
                  isl_id, (unsigned long long)pos,
                  (unsigned long long)ctx_digest, action, truth, loss,
                  (unsigned long long)rng_before,
-                 actor_current ? "bi" : "uni");
+                 actor_name[actor_current]);
         bio_append(line);
         /* model prices stay prequential and actor-independent */
         atomic_bits_lived += -log2(p_uni[truth]);
         atomic_bytes_lived++;
         bilm_bits += -log2(p_bi[truth]);
         bilm_bytes++;
+        trilm_bits += -log2(p_tri[truth]);
+        trilm_bytes++;
         counts[truth]++;
         counts_total++;
         steps_total++;
         bits += loss;
         bi_count[pv][truth]++;
         bi_row[pv]++;
+        tri_add(tctx, (uint8_t)truth);
         if (units_enabled)
             matcher_feed((uint8_t)truth, pos, isl_id);
     }
@@ -694,8 +798,10 @@ int main(int argc, char **argv) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
             else if (!strcmp(argv[i], "bi")) actor_lock = 1;
+            else if (!strcmp(argv[i], "tri")) actor_lock = 2;
             else {
-                fprintf(stderr, "netta: --actor-lock takes uni|bi\n");
+                fprintf(stderr,
+                        "netta: --actor-lock takes uni|bi|tri\n");
                 exit(1);
             }
         }
@@ -715,6 +821,8 @@ int main(int argc, char **argv) {
     }
     pairs = (Pair *)calloc(PAIR_SLOTS, sizeof(Pair));
     if (!pairs) { fprintf(stderr, "netta: oom\n"); exit(1); }
+    tri = (Pair *)calloc(TRI_SLOTS, sizeof(Pair));
+    if (!tri) { fprintf(stderr, "netta: oom\n"); exit(1); }
     for (int i = 0; i < paths_n; ++i) island_load(paths[i]);
     for (int i = 0; i < island_count; ++i)
         printf("island %d: %s len=%llu digest=%016llx\n", i,
@@ -773,8 +881,13 @@ int main(int argc, char **argv) {
     if (units_enabled && mvlm_bytes)
         printf("model move-bi bits/byte %.6f\n",
                mvlm_bits / (double)mvlm_bytes);
-    printf("actor episodes: uni %llu, bi %llu%s\n",
-           (unsigned long long)ep_uni, (unsigned long long)ep_bi,
+    if (trilm_bytes)
+        printf("model byte-tri bits/byte %.6f\n",
+               trilm_bits / (double)trilm_bytes);
+    printf("actor episodes: uni %llu, bi %llu, tri %llu%s\n",
+           (unsigned long long)ep_actor[0],
+           (unsigned long long)ep_actor[1],
+           (unsigned long long)ep_actor[2],
            actor_lock >= 0 ? " (locked)" : "");
     printf("biography: %llu lines, chain %016llx\n",
            (unsigned long long)bio_lines, (unsigned long long)bio_chain);
