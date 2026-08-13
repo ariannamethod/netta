@@ -1696,3 +1696,306 @@ pre-commit hook and re-taken each time by the auditor from a separately
 built binary. The wave changed no game by a single byte -- which is the
 point: these were faults of structure, and structure is what the next
 arc stands on.
+
+## The markov organ: the same silence twice, and the class it named
+
+The first organ built on wave zero's structure was a markov organ
+(SPEC_NETTA_MARKOV_ORGAN_2026-08-07.md, branch markov-organ): chains
+grown not from corpus statistics but from her own confirmed play --
+runs of consecutive chosen==truth steps become a chain, an inventory
+of paths she has already walked correctly, silent until asked
+(afca417). The stage-1 harness immediately earned its keep twice over:
+the auditor's own re-read found eight chains born in 80 episodes, all
+variations of one attractor, two of them exact duplicates -- the same
+n-gram born once at episode 17 and again at episode 20 -- and dedup at
+birth plus one name per chain went in before anything was measured on
+top (0040e99).
+
+Iteration 2 replaced string chains wholesale with bundles of edges
+carrying a birth snapshot and a parent slot for reconnection lineage
+(40a12e2). Birth became judge-confirmed with an anti-echo filter;
+activation became hebbian and gap-tolerant -- greedy subsequence match
+against her last 12 played edges instead of exact-prefix lookup; and a
+SONAR-style reconnection was wired for edges whose target is absent
+from the active island. The gates held where they must: organ-off is
+bit-parity with the pre-organ reference, and organ-on survives restart
+exactly (160 direct == 80+restart+80, history and state byte for
+byte).
+
+Coverage did not hold, and the number is the finding. Over 194736
+(chain, step) observations in a 1200-episode life, the match histogram
+read: zero edges recur 194716 times; one edge, 9; two edges (the one
+case that contributes), 1; full exact recurrence with nothing left to
+propose, 10. active_steps=1 against a gate of >=96. Loosening the
+match from exact-prefix to gap-tolerant subsequence did not touch the
+bottleneck, because the bottleneck was never the shape of the match:
+even a single token bigram essentially never recurs inside a 12-edge
+window, in part because her own anti-repetition machinery suppresses
+exactly what chains need to see again. The same silence stage 1 heard,
+sharper. Thresholds were not retuned to force a pass.
+
+Two nulls with one cause is a diagnosis, not a defeat: language
+repeats as classes, not as addresses. A chain that stores the literal
+path "innovations seem obvious in retrospect" will wait a lifetime for
+those exact coordinates to come around again; what recurs is the shape
+of the transition, not its address. That conclusion -- an organ of
+memorized addresses cannot generalize, so the abstraction has to live
+at the class level -- is what S6 (edge-class nomination, below) now
+carries. The branch itself was audited to its end anyway: a chain
+parent field widened past its wrap, reconnect and expansion receipts
+gated on actual births instead of attempts, unvisited chains allowed
+to die of age, and a chains-on restart probe pinned (c89dfff, 52cf15a,
+1e05203, d9a1478, 17595e1). The outside audit's verdict on the branch:
+keep it as fossil and harness, do not merge it -- the knowledge moves
+forward, the code stays as the record of how it was earned.
+
+## The geometry crisis: a number that rose while she fell
+
+Bringing in a second island the size of Dracula (195476 tokens beside
+netta.txt's 82167) tripped a guard that had never been asked the
+question before. The word-geometry pass accumulates unbounded across
+the whole corpus and normalizes once at the end; two islands (277643
+tokens) pushed a high-degree word's raw accumulator past FLT_MAX to
+literal +-Inf, and normalize()'s division turned that into Inf/Inf =
+NaN, poisoning 6 of 12 coherence channels on the very first candidate
+of episode 1. The immediate fix was refusal, not repair: a
+finiteness check that exits loud rather than letting her live on NaN
+(3990911).
+
+The other half of the defect was silent, and worse. Checking what the
+new guard was letting through on worlds that never tripped it found
+that netta.txt alone already drives the same accumulator to ~1e29 per
+dimension -- still a finite float32, but its square overflows to Inf,
+so normalization computes finite/Inf = 0: a degenerate zero embedding
+wearing a normal-looking float. Counted directly after the pass, 4421
+of 8153 words -- 54% of her vocabulary -- had an all-zero embedding,
+and always had. This is why whole channels sat at a suspiciously flat
+0.500 for so many words: cosine against a zero vector is 0 by
+construction, not a measurement. The pass now accumulates and
+normalizes in double, not one coefficient changed, and the count reads
+0/8153 on all three embedding families (ef2b0b4).
+
+Then came the error this log owes its own honesty to. With the real
+embeddings in place, the newborn's composite coherence rose 0.5738 ->
+0.7218, and the builder's report called her sighted. The outside audit
+decomposed the composite and found the opposite underneath: at 512
+positions, first-token accuracy fell 0.3594 -> 0.2520 and token
+accuracy fell 0.0796 -> 0.0515 while the composite rose -- almost all
+of the apparent gain was cosine channels declaring nearly every
+candidate equivalent to truth as the geometry collapsed toward a cone.
+One passing number was hiding a losing one. The law that came out of
+it: a composite is never interpreted without decomposition into its
+channels, and bit-for-bit agreement between two hands proves
+reproducibility, never meaning.
+
+## The first outside audit, and the order it set
+
+Sol's foundation audit (arianna-shared/resonance_connections/reports/
+2026-08-10-sol-netta-foundation-audit.md, 578 lines) is the document
+this arc was rebuilt around. Its verdicts, in its own order: 8 of 12
+reward channels are self-referential, so no internal composite can
+anchor a quality claim; the 0.7218 is a reproducibility pin for the
+program, not a quality anchor; the geometry is a cone (background
+cosine median 1.0, 81% of a 128-word sample sharing one nearest
+neighbour) and nothing statistical should be graded in it; the path
+forward is repair of geometry and examiner, not a new matcher; and the
+markov-organ branch is fossil plus harness. The repair waves that
+follow ran in the audit's order, not the builder's.
+
+S1 closed the wounds that could not wait. Destiny observation was
+bounded by corpus_n instead of the active island's end, so on any
+non-last island up to 16 destiny tokens taught a causal glyph in
+island A with the opening tokens of whatever island the corpus
+concatenation put next -- an instrumented red probe read 78/240
+destiny slices carrying a foreign island's marker before the fix and
+0/240 after, and MIN_ISLAND rose 34 -> 39 to cover the true widest
+read (a83eda4). The state loader validated magic, version and byte
+length but took every header count and cursor at its word; a real
+snapshot with basin_count hex-patched to 0x7fffffff resumed cleanly
+before the fix and is refused after, same for a poisoned edge token
+id (7d7d6f8). And the one number the old probe suite leaned on was
+split into three honest instruments: probe 11 keeps its pin and its
+demoted meaning -- reproducibility, not quality; probe 12 pins the
+external coordinates the composite was hiding (first-token 0.2520,
+token accuracy 0.0515, bigram 0.9848, trigram 0.6589 at 512 positions,
+matching the audit's independently taken numbers exactly); probe 13
+measures geometry health itself and was born honestly red -- every
+threshold failing on the cone, excluded from the default gate on
+purpose, waiting for S3 (fc484e6).
+
+## Three honest faces, and an examiner that never lives what it grades
+
+One embedding array had been serving as immutable source evidence, her
+own biography, and the supposed cross-island floor at once -- three
+jobs, one compromised face. S3 factored them (c15d0c0, branch
+geometry-faces). The island world is now built by a frozen-seed sweep:
+every neighbour is read from a hash-seeded buffer, never from the
+sweep's own in-progress accumulator, so the pass cannot feed back into
+itself -- and the cone died of exactly that. Probe 13 went from
+all-red to all-green on the same thresholds it was born failing:
+background cosine median 1.0 -> -0.0004, hub share 0.8125 -> 0.0156,
+centroid norm 0.0488, actual directional rank 3054 against random
+4369. External first-token rose 0.2520 -> 0.2910; trigram gave back
+0.0141 -- a disclosed trade, visible because the instruments now
+separate. Her biography moved into a residual: sleep and waking learn
+into a clamped delta over the frozen island vectors, and the island
+layer itself is provably untouched by living -- the source-layer hash
+reads identical at birth and after 80 episodes, where the pre-S3 tree
+drifted. Two bugs were found on the way by reproduce-hypothesis-fix
+rather than by plan, one of which -- a stale pre-swept vector loaded
+back into the sweep's input -- was quietly compounding the geometry a
+second time on every resume. And the earned language floor now exists
+as structure: relations recorded from the source trajectory, gated on
+earned glyph authority, island-confirmed by mask -- 6 glyphs, 23
+entries, 0 floor-eligible after 120 two-island episodes, a legitimate
+zero reported as fact. A new anchor probe pins a canonical 80-episode
+life's state and history hashes bit for bit (probe 14), so every
+future re-pin has to say out loud whether decisions moved or only
+format did.
+
+S4 gave her an examiner that never lives what it grades (bf744a1).
+Held-out text, refused outright if its content hash matches any island
+she has lived; teacher-forced scoring with the probability mass
+predeclared before any truth is looked at -- pool, out-of-pool and an
+escape class for words she has never met, summing to 1 at every
+position by construction; bits-per-token as the proper score. The
+examiner reads her state and leaves no mark: state saved before and
+after an exam is byte-identical, and a life run with and without
+--exam produces the same bytes (probe 16). Its newborn numbers are
+pinned as reproducibility, in probe 11's demoted tradition: bpt
+12.9674, in_pool 0.1914 (probe 15). The fixture is the opening of
+Alice in Wonderland; she has never read it.
+
+## Requalification: every geometry-era claim retried on the honest ruler
+
+Every lever this log had previously called load-bearing had earned
+that name inside the compromised geometry, so S5 retried them all on
+the repaired one: 30 lives, 8 single-flag arms plus a transfer pair,
+3 seeds each, one shared binary, external metrics only, composite
+never read (S5_REQUALIFICATION_2026-08-10.md, full tables). What
+survived, what didn't: causal glyphs CONFIRMED twice -- beat random
+and beat off on trigram validity 3/3, with the prior's own first-token
+caveat reproduced exactly; the autocurriculum SPLIT -- its core claim
+(trigram and token-level validity over uniform) survives at the
+original magnitudes, its first-token claim cleanly reversed;
+neighbours and the dream channels NULL, matching their own priors
+where priors existed. The loudest result was the freshness weight: the
+0.168 adopted specifically to buy trigram validity now measurably
+costs it -- weight-off wins +0.043 to +0.054 on trigram, 3/3 seeds, an
+order of magnitude above every other arm's deltas. REVERSED, on
+exactly the metric the adoption decision was built on. And transfer
+(A400->B200 against a B-newborn) came out SPLIT, not collapsed to one
+word: bits-per-token and pool coverage confirm that experience helps,
+3/3 with real magnitude, while first-token accuracy reverses, also
+3/3 -- the old composite had conflated coordinates that disagree. Two
+anomalies were kept as data instead of smoothed over: seed 42's
+true-default trajectory is a reproducible outlier that any single flag
+knocks into the generic cluster, and glyph-off versus glyph-random
+converge byte-identical on 2 of 3 seeds -- activity is not causal
+influence.
+
+S5b chased the ceiling itself. The exam's in-pool share sits frozen at
+0.1914 from episode 0 through 5000 regardless of training, and of 950
+sampled pool misses, 100% were positions where truth was never among
+the recorded successors of the previous token at all -- zero were
+budget exclusions. The ceiling is an absent generalization mechanism,
+not a small buffer: widening the candidate pool bought +0.01/+0.03
+in-pool at a 5-10x bits-per-token cost as softmax mass diluted over
+junk (net negative, pool stays 32), and the recursive core's age-ramp
+gate measurably eroded what it touched -- switching it off held a
+newborn's probe accuracies flat through 5000 episodes while the
+default declined continuously, the gap widening with training
+(81cb957). Numbers only; every default stayed where it was, because
+default changes are the maintainer's call.
+
+## The second audit: three seams, and a constitution
+
+Sol's second audit (reports/2026-08-11-sol-netta-s5-audit.md, 545
+lines) accepted the engineering and cut into the interpretation. Three
+causal seams, all confirmed against the code and all repaired in S5c:
+
+First seam: entering a new island initialised its curriculum slice and
+then load_state overwrote it with the old snapshot's smaller count and
+a disk-zeroed tail -- every region of the new island read priority
+0.000, forever. And curriculum scheduling was keyed to her whole-life
+clock, so a transfer arm and a newborn entering the same island at
+different ages surveyed different halves of it: the transfer arm
+entered Dracula at region 895 with priority 0.000 while the newborn
+entered at region 495 with priority 0.270 -- the S5 transfer
+comparison had its arms living in different parts of the same world.
+The fix gives each island its own persisted clock, remapped through
+the same token-hash identity as everything else that survives a
+restart, and re-initialises the slice after load; a strengthened probe
+8 now proves paired entry causally -- transfer arm and newborn land on
+the same opening region with live priority (afda1a0). The anchor
+re-pin that came with the new persisted field was the fifth of the
+arc, and the cleanest kind: state hash moves with the format, history
+byte-identical -- no decision changed.
+
+Second seam: the S4 examiner was scoring a screening surrogate --
+sampling 256 positions with replacement (only 210 unique), blind to
+provenance, and stopping short of the finalist cut, rollout, survival
+and freshness -- not the chooser she actually acts with. The audit
+showed how little the headline numbers were resting on: the seed-42
+BPT anomaly was exactly two extra in-pool events, and the S5 transfer
+gain exactly one. Examiner v2 scores the census -- all 611 admissible
+positions, once each; reports in-pool, known-out and OOV strata
+separately; tags every candidate with the source that first offered
+it; and shadows her actual live decision through the real
+choose_candidate, read-only, with the receipt ledger nulled for the
+exam's duration so the shadow never leaks into her biography. A
+calibration fixture from a text she has also never read (the opening
+of Frankenstein) now exists so no threshold is ever tuned on the text
+being judged (8dfcaf4).
+
+Third seam, and the one that became constitution: the recursive core's
+live gate was a pure function of age -- clamp(episode_count/2500), up
+to 65% of the mixture for having existed, while it learned only from
+actions a policy carrying its growing vote had already selected. On
+frozen same-state counterfactuals it lost to its own absence 5/5
+probe seeds. The audit's sentence -- authority is earned, not aged --
+is now code: the core always learns, its voice starts at zero per
+island, and every real decision is silently run two more ways from
+identical inputs (core silent, core at full voice); where the brackets
+disagree, the core's preferred token is judged against hard truth and
+the win or loss written into a per-island ring of the last 400
+disagreement receipts. The gate ramps up only when wins minus losses
+reach +24 in that window, and ramps back down if the record decays. A
+rollout cache keeps the three-bracket run affordable (56.4s -> 64s
+where a naive twin run tripled it). The re-pin this time was the
+honest opposite of the fifth: history moved, because decisions
+themselves moved -- the old gate had already reached 0.032 by episode
+80, the new one holds exactly 0.000 until earned (2fc506c). A
+diagnostic lever pins the gate for counterfactual work without faking
+an earned record; the ledger keeps recording underneath it (41d1a12).
+
+The requalification vector then ran clean end to end. The core, asked
+constitutionally from the inside: after 6000 episodes a fresh core's
+disagreement record reads wins minus losses -374 against the +24 it
+needs -- not even close to earning a voice. Asked experimentally from
+the outside: forced to full voice it scores worse than silent on the
+census exam (13.0965 vs 13.0943 bits-per-token, retaken by the
+auditor's own hand on an independent build). Two instruments, one
+verdict, no amputation -- it keeps learning, and it will get its vote
+the day it proves an island wrong. The ngram reversal, retried on the
+census examiner with paired entry: full-chooser accuracy identically
+tied at weight 0.168 and 0.0 on all three seeds, bpt deltas at
+-0.0002/+0.0002/+0.0005 -- the S5 effect was a property of the
+surrogate and the sampled positions, not of the organism, and the
+default stands, exactly as the audit predicted. And transfer, on
+paired entry and the census: bits-per-token favours the travelled arm
+3/3 (-0.0190/-0.0377/-0.0362) with accuracy never worse -- the one
+early claim of this log's island era that is now confirmed on
+external metrics under three audits. She carries experience into a
+foreign city; that much is measured, not hoped.
+
+Sixteen probes now stand where eleven did at wave zero:
+reproducibility pins that say so out loud, external quality
+coordinates, geometry health, an anchor life, examiner pins and
+observer invariance. What stands next is S6: the markov organ's
+diagnosis says abstraction lives at the class level, S5b's says the
+ceiling is exactly the absent class -- an edge-class that recognises
+the shape of a transition and nominates a concrete local successor,
+judged by whether similarity predicts held-out futures, is the organ
+both numbers point at. Its specification goes on the table before its
+code.
