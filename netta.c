@@ -36,7 +36,7 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    3u
+#define STATE_VER    4u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -203,6 +203,17 @@ static void unit_birth(uint32_t a, uint32_t b, uint64_t support) {
     unit_count++;
 }
 
+static uint64_t pair_get(uint32_t prev, uint32_t cur) {
+    uint64_t key = ((uint64_t)prev << 32) | cur;
+    uint64_t h = fnv1a64((const uint8_t *)&key, sizeof key, FNV_SEED);
+    for (uint64_t probe = 0; probe < PAIR_SLOTS; ++probe) {
+        Pair *p = &pairs[(h + probe) & (PAIR_SLOTS - 1)];
+        if (p->cnt == 0) return 0;
+        if (p->key == key) return p->cnt;
+    }
+    return 0;
+}
+
 static void pair_feed(uint32_t prev, uint32_t cur) {
     uint64_t key = ((uint64_t)prev << 32) | cur;
     uint64_t h = fnv1a64((const uint8_t *)&key, sizeof key, FNV_SEED);
@@ -247,6 +258,20 @@ static uint64_t unitlm_bytes = 0;
 static double   atomic_bits_lived = 0.0;
 static uint64_t atomic_bytes_lived = 0;
 
+/* body 4: two context-bearing shadow oracles (postgpt lineage), same
+   ruler, prequential. The byte bigram conditions on the previous WORLD
+   byte, so no seam can exist across episodes by construction. The move
+   bigram's statistics ARE the nursery's pair counts -- the oracle and
+   the vocabulary growth are one tissue; it only adds an outgoing total
+   per move and pays its price before pair_feed updates the pair. */
+static uint64_t bi_count[ACTIONS][ACTIONS];
+static uint64_t bi_row[ACTIONS];
+static double   bilm_bits = 0.0;
+static uint64_t bilm_bytes = 0;
+static uint64_t mv_out[ACTIONS + MAX_UNITS];
+static double   mvlm_bits = 0.0;
+static uint64_t mvlm_bytes = 0;
+
 static void emit_move(uint32_t m, uint64_t pos, int isl) {
     /* prequential shadow price, strictly before the count update */
     double denom = (double)move_total + (double)(ACTIONS + unit_count);
@@ -269,7 +294,18 @@ static void emit_move(uint32_t m, uint64_t pos, int isl) {
         bio_append(line);
     }
     moves_emitted++;
-    if (prev_move >= 0) pair_feed((uint32_t)prev_move, m);
+    if (prev_move >= 0) {
+        /* move-bigram shadow price, strictly before pair_feed updates
+           the pair count that is its own statistic */
+        uint32_t pv = (uint32_t)prev_move;
+        double d2 = (double)mv_out[pv] +
+                    (double)(ACTIONS + unit_count);
+        double p2 = ((double)pair_get(pv, m) + 1.0) / d2;
+        mvlm_bits += -log2(p2);
+        mvlm_bytes += move_len(m);
+        mv_out[pv]++;
+        pair_feed(pv, m);
+    }
     prev_move = (int64_t)m;
 }
 
@@ -362,6 +398,15 @@ static void state_save(const char *path) {
         fwrite(&atomic_bits_lived, sizeof atomic_bits_lived, 1, f) != 1 ||
         fwrite(&atomic_bytes_lived, sizeof atomic_bytes_lived, 1, f)
             != 1 ||
+        fwrite(bi_count, sizeof(uint64_t), ACTIONS * ACTIONS, f)
+            != ACTIONS * ACTIONS ||
+        fwrite(bi_row, sizeof bi_row[0], ACTIONS, f) != ACTIONS ||
+        fwrite(&bilm_bits, sizeof bilm_bits, 1, f) != 1 ||
+        fwrite(&bilm_bytes, sizeof bilm_bytes, 1, f) != 1 ||
+        fwrite(mv_out, sizeof mv_out[0], ACTIONS + MAX_UNITS, f)
+            != ACTIONS + MAX_UNITS ||
+        fwrite(&mvlm_bits, sizeof mvlm_bits, 1, f) != 1 ||
+        fwrite(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
         fwrite(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: state write failed\n"); exit(1);
     }
@@ -450,6 +495,15 @@ static int state_load(const char *path) {
         fread(&atomic_bits_lived, sizeof atomic_bits_lived, 1, f) != 1 ||
         fread(&atomic_bytes_lived, sizeof atomic_bytes_lived, 1, f)
             != 1 ||
+        fread(bi_count, sizeof(uint64_t), ACTIONS * ACTIONS, f)
+            != ACTIONS * ACTIONS ||
+        fread(bi_row, sizeof bi_row[0], ACTIONS, f) != ACTIONS ||
+        fread(&bilm_bits, sizeof bilm_bits, 1, f) != 1 ||
+        fread(&bilm_bytes, sizeof bilm_bytes, 1, f) != 1 ||
+        fread(mv_out, sizeof mv_out[0], ACTIONS + MAX_UNITS, f)
+            != ACTIONS + MAX_UNITS ||
+        fread(&mvlm_bits, sizeof mvlm_bits, 1, f) != 1 ||
+        fread(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
         fread(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: %s truncated; refusing\n", path);
         exit(1);
@@ -538,6 +592,15 @@ static double run_episode(int isl_id, uint64_t steps) {
         bits += loss;
         atomic_bits_lived += loss;
         atomic_bytes_lived++;
+        {   /* byte-bigram shadow: context is the previous WORLD byte */
+            uint8_t pv = isl->bytes[pos - 1];
+            double d2 = (double)bi_row[pv] + (double)ACTIONS;
+            double p2 = ((double)bi_count[pv][truth] + 1.0) / d2;
+            bilm_bits += -log2(p2);
+            bilm_bytes++;
+            bi_count[pv][truth]++;
+            bi_row[pv]++;
+        }
         if (units_enabled)
             matcher_feed((uint8_t)truth, pos, isl_id);
     }
@@ -634,6 +697,18 @@ int main(int argc, char **argv) {
                    atomic_bits_lived / (double)atomic_bytes_lived,
                    (unsigned long long)unitlm_bytes);
     }
+    if (atomic_bytes_lived)
+        printf("model atomic-uni bits/byte %.6f\n",
+               atomic_bits_lived / (double)atomic_bytes_lived);
+    if (units_enabled && unitlm_bytes)
+        printf("model unit-uni bits/byte %.6f\n",
+               unitlm_bits / (double)unitlm_bytes);
+    if (bilm_bytes)
+        printf("model byte-bi bits/byte %.6f\n",
+               bilm_bits / (double)bilm_bytes);
+    if (units_enabled && mvlm_bytes)
+        printf("model move-bi bits/byte %.6f\n",
+               mvlm_bits / (double)mvlm_bytes);
     printf("biography: %llu lines, chain %016llx\n",
            (unsigned long long)bio_lines, (unsigned long long)bio_chain);
     return 0;

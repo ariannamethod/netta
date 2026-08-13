@@ -191,3 +191,49 @@ choose -- stand as an actuator inside the game -- is the fourth body's
 question, and it will be asked against a matched control with the
 context-bearing oracle (the postgpt-lineage organ: contextual counts
 over bytes and moves) entering the same court.
+
+## The fourth body: two oracles enter the court
+
+The law, declared before code: two context-bearing shadow oracles of
+the postgpt lineage, same ruler, prequential. The byte bigram
+conditions on the previous world byte -- the context comes from the
+tape, not from the episode, so no seam can exist across episodes by
+construction. The move bigram conditions on the previous move of the
+segmented tape, and its statistics are the nursery's own pair counts:
+the oracle and the vocabulary growth are one tissue; the organ adds
+only an outgoing total per move and pays its price strictly before
+pair_feed updates the pair. Game, judge, and atomic biography stay
+untouched to the byte. Four models now stand in one report under one
+ruler: atomic-uni, unit-uni, byte-bi, move-bi.
+
+Measured on the separating worlds. On the alternating island (ab
+repeated 2000 times): atomic-uni 1.568536, byte-bi 0.908803 -- context
+beats contextlessness by 0.66 bits where structure is purely
+sequential; unit-uni 0.794432 and move-bi 0.695269 go further still,
+because the born units make the tape itself predictable. On the
+constant island the twins converge exactly: byte-bi 0.571440 equals
+atomic-uni 0.571440 to the printed digit -- with one context the bigram
+row is the unigram, and the identity is the gate. A scratch red run
+with the prequential order broken shifts byte-bi to 0.565957, so the
+convergence gate detects the dishonesty it was written against. And an
+honest surprise the constant world exposed: unit-uni there is worse
+than atomic (0.654687 against 0.571440) -- births widen the alphabet
+and the vocabulary pays for its own existence where there is nothing
+left to predict. Anti-fetishism, measured in bits.
+
+On the repeated-sentence island the ladder of models stands in full:
+atomic-uni 3.784616 > unit-uni 3.388430 > move-bi 3.073982 > byte-bi
+2.935410. Context wins, both oracles are alive, and the earned
+vocabulary helps most exactly where its units mean something.
+
+Gates: twenty-nine machine verdicts, ALL GATES PASS, rc=0 -- the
+twenty-five of the third body unchanged, plus the ab-world separation
+(gap >= 0.5 declared before the run), the constant-world twin identity,
+the move-context win on repetition, and oracle counters surviving a
+restart bit-for-bit in state version 4. ASan and UBSan silent on the
+alternating, constant, repeated, and full-binary islands.
+
+Still no one may act but the newborn policy. The court now holds four
+priced witnesses; the fifth body decides who among them earns the right
+to choose -- and that right will be earned per the research law, against
+a matched control, with the loser's testimony kept.

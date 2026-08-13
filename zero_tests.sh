@@ -114,6 +114,30 @@ gate "B3 units predict: unit-LM $UR < atomic $AR on repetition" $? 0
 cmp -s "$T/b3d.bio" "$T/b3s.bio" && cmp -s "$T/b3d.state" "$T/b3s.state"
 gate "B3 shadow counters survive restart (split life identical)" $? 0
 
+# --- B4: context oracles ------------------------------------------------
+i=0; : > "$T/ab.bytes"
+while [ $i -lt 2000 ]; do printf 'ab' >> "$T/ab.bytes"; i=$((i+1)); done
+i=0; : > "$T/const.bytes"
+while [ $i -lt 4000 ]; do printf 'a' >> "$T/const.bytes"; i=$((i+1)); done
+mdl() { grep "^model $2 " "$1" | awk '{print $NF}'; }
+"$N" "$T/ab.bytes" --reset --seed 5 --steps 2000 --state "$T/ab.state" --bio "$T/ab.bio" > "$T/ab.out" 2>&1
+AU=$(mdl "$T/ab.out" atomic-uni); BB=$(mdl "$T/ab.out" byte-bi)
+awk -v a="$AU" -v b="$BB" 'BEGIN{exit !(a - b >= 0.5)}'
+gate "B4 context wins on ab-world: byte-bi $BB vs atomic $AU (gap>=0.5)" $? 0
+"$N" "$T/const.bytes" --reset --seed 5 --steps 2000 --state "$T/c4.state" --bio "$T/c4.bio" > "$T/c4.out" 2>&1
+AUC=$(mdl "$T/c4.out" atomic-uni); BBC=$(mdl "$T/c4.out" byte-bi)
+[ "$AUC" = "$BBC" ]
+gate "B4 twins converge on constant world ($BBC == $AUC)" $? 0
+"$N" "$T/rep.bytes" --reset --seed 42 --steps 4000 --state "$T/r4.state" --bio "$T/r4.bio" > "$T/r4.out" 2>&1
+UU=$(mdl "$T/r4.out" unit-uni); MB=$(mdl "$T/r4.out" move-bi)
+awk -v u="$UU" -v m="$MB" 'BEGIN{exit !(m < u)}'
+gate "B4 move context helps: move-bi $MB < unit-uni $UU on repetition" $? 0
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 2 --steps 2000 --state "$T/b4d.state" --bio "$T/b4d.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 2000 --state "$T/b4s.state" --bio "$T/b4s.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" --episodes 1 --steps 2000 --state "$T/b4s.state" --bio "$T/b4s.bio" >/dev/null 2>&1
+cmp -s "$T/b4d.state" "$T/b4s.state"
+gate "B4 oracle counters survive restart (split state identical)" $? 0
+
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi
 echo "$FAIL GATE(S) FAILED"; exit 1
