@@ -105,3 +105,48 @@ chains, dreams, transfer. It knows how to see bytes, act on them, be
 judged by them, remember exactly, and come back from a restart as the
 same life. The floor is load-bearing; the vocabulary will be earned on
 top of it, not instead of it.
+
+## The second body: an earned vocabulary that cannot cheat
+
+The unit law was declared before the code. Netta always samples atomic
+bytes: a unit peeks at no future and receives no bit of discount. A unit
+is recognition over the lived truth tape -- when consecutive lived bytes
+equal a living unit under greedy longest match, one additional macro
+line enters the biography; atomic lines are never altered, replaced or
+buffered. Growth is BPE over lived moves: adjacent-move pairs are
+counted on the segmented tape, a pair lived 64 times births the
+concatenated unit if its bytes are exact, its length is at most 16, and
+it contains no whitespace byte (the first-version boundary discipline).
+Unit identity is its bytes -- two birth paths cannot create two units.
+Pairs never span an episode boundary, so no false adjacency crosses a
+seam. Births and macro events are biography lines of their own kind and
+persist with the pair counts in state (version 2; version 1 files are
+refused loudly). All judgment stays in raw bytes.
+
+Because the counted pairs live on the segmented tape, growth is
+iterative: on a 13200-byte island of one repeated sentence (seed 42,
+4000 lived steps) the first births are two-byte -- "at", "th", "he",
+"an" -- and the fifth is the three-byte "the", a composite of a unit and
+a byte. Fourteen units were born; 642 macro events covered 1445 lived
+bytes; decisions per lived byte 0.7993 against exactly 1.0000 on the
+anti-repeat control (the 256-value island, where nothing repeats and
+nothing is born). The economy is real and the prediction is untouched:
+with units disabled the atomic subset of the biography is bit-identical
+to the full run's atomic lines, so the layer provably cannot move the
+game it watches.
+
+Gates taken (zero_tests.sh, twenty-two machine verdicts, ALL GATES
+PASS, rc=0): the fourteen gates of the first body unchanged, plus:
+units are born from lived repetition; the anti-repeat control births
+nothing; the no-op subset is identical; births and pair counts survive
+a restart bit-for-bit (a split life with births equals a direct life);
+no duplicate unit identity exists; decisions per lived byte is below 1
+where repetition exists and exactly 1 where it does not. ASan and UBSan
+are silent on the repeated, binary, and text islands.
+
+What the units still are not, on purpose: they do not predict, do not
+vote, do not act, and cannot be chosen. They are named roads over lived
+ground. The right to act -- to let a unit stand as a chooseable move
+with its own priors -- is a separate organ with its own falsifier, and
+it will have to earn that voice against a matched control, like
+everything else in this line.

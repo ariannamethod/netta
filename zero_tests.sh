@@ -68,6 +68,37 @@ gate "Z2 split life equals direct life across restart" $? 0
 "$N" "$T/tiny.bytes" --reset --steps 64 --state "$T/t.state" --bio "$T/t.bio" >/dev/null 2>&1
 gate "Z2 island too small fails loud" $? 1
 
+# --- B2: earned units --------------------------------------------------
+i=0; : > "$T/rep.bytes"
+while [ $i -lt 300 ]; do printf 'the cat sat on the mat and the dog ran off. ' >> "$T/rep.bytes"; i=$((i+1)); done
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 4000 --state "$T/r.state" --bio "$T/r.bio" >"$T/r.out" 2>&1
+gate "B2 repeated island life runs" $? 0
+B=$(grep -c '^b	' "$T/r.bio")
+[ "$B" -gt 0 ]
+gate "B2 units are born from lived repetition" $? 0
+"$N" "$T/all.bytes" --reset --seed 7 --episodes 1 --steps 200 --state "$T/ar.state" --bio "$T/ar.bio" >/dev/null 2>&1
+AB=$(grep -c '^b	' "$T/ar.bio")
+[ "$AB" -eq 0 ]
+gate "B2 anti-repeat control births nothing (red twin of the above)" $? 0
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 4000 --state "$T/ro.state" --bio "$T/ro.bio" --no-units >/dev/null 2>&1
+grep -v '^[bm]	' "$T/r.bio" > "$T/r.atomic"
+cmp -s "$T/r.atomic" "$T/ro.bio"
+gate "B2 units never touch the atomic game (no-op subset identical)" $? 0
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 2 --steps 2000 --state "$T/du.state" --bio "$T/du.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 2000 --state "$T/su.state" --bio "$T/su.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" --episodes 1 --steps 2000 --state "$T/su.state" --bio "$T/su.bio" >/dev/null 2>&1
+cmp -s "$T/du.bio" "$T/su.bio" && cmp -s "$T/du.state" "$T/su.state"
+gate "B2 births and pairs survive restart (split life identical)" $? 0
+DUP=$(grep '^b	' "$T/r.bio" | awk -F'\t' '{print $5}' | sort | uniq -d | wc -l | tr -d ' ')
+[ "$DUP" = "0" ]
+gate "B2 same bytes, same identity (no duplicate unit)" $? 0
+DPB=$(awk '/decisions per lived byte/{print $NF}' "$T/r.out")
+awk -v d="$DPB" 'BEGIN{exit !(d < 1.0)}'
+gate "B2 decisions per lived byte < 1 on repeated island ($DPB)" $? 0
+DPB2=$(awk '/decisions per lived byte/{print $NF}' /dev/null 2>/dev/null; "$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/a2r.state" --bio "$T/a2r.bio" 2>/dev/null | awk '/decisions per lived byte/{print $NF}')
+[ "$DPB2" = "1.0000" ]
+gate "B2 decisions per lived byte == 1 without repetition (red twin)" $? 0
+
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi
 echo "$FAIL GATE(S) FAILED"; exit 1
