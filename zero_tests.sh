@@ -99,6 +99,21 @@ DPB2=$(awk '/decisions per lived byte/{print $NF}' /dev/null 2>/dev/null; "$N" "
 [ "$DPB2" = "1.0000" ]
 gate "B2 decisions per lived byte == 1 without repetition (red twin)" $? 0
 
+# --- B3: shadow unit-LM ------------------------------------------------
+LM=$("$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/b3a.state" --bio "$T/b3a.bio" 2>/dev/null | tr -d ',' | awk '/unit-LM/{print $6, $8}')
+U=$(echo "$LM" | awk '{print $1}'); A=$(echo "$LM" | awk '{print $2}')
+[ -n "$U" ] && [ "$U" = "$A" ]
+gate "B3 no units: unit-LM identical to atomic (prequential twin, $U)" $? 0
+LMR=$("$N" "$T/rep.bytes" --reset --seed 42 --steps 4000 --state "$T/b3r.state" --bio "$T/b3r.bio" 2>/dev/null | tr -d ',' | awk '/unit-LM/{print $6, $8}')
+UR=$(echo "$LMR" | awk '{print $1}'); AR=$(echo "$LMR" | awk '{print $2}')
+awk -v u="$UR" -v a="$AR" 'BEGIN{exit !(u < a)}'
+gate "B3 units predict: unit-LM $UR < atomic $AR on repetition" $? 0
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 2 --steps 2000 --state "$T/b3d.state" --bio "$T/b3d.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 2000 --state "$T/b3s.state" --bio "$T/b3s.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" --episodes 1 --steps 2000 --state "$T/b3s.state" --bio "$T/b3s.bio" >/dev/null 2>&1
+cmp -s "$T/b3d.bio" "$T/b3s.bio" && cmp -s "$T/b3d.state" "$T/b3s.state"
+gate "B3 shadow counters survive restart (split life identical)" $? 0
+
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi
 echo "$FAIL GATE(S) FAILED"; exit 1

@@ -150,3 +150,44 @@ ground. The right to act -- to let a unit stand as a chooseable move
 with its own priors -- is a separate organ with its own falsifier, and
 it will have to earn that voice against a matched control, like
 everything else in this line.
+
+## The third body: the units learn to predict, in shadow
+
+The law, declared before code: a second model of the world appears -- a
+semi-Markov unigram over the moves of the segmented lived tape (the
+unit-LM). It lives in shadow: game, judge, and atomic biography lines
+are untouched to the byte (the B2 no-op gate still holds). At every
+move boundary the shadow pays a prequential price, -log2 P(move),
+strictly before the move's count is updated; macro biography lines
+carry their move's price as a new field. The ruler is unchanged: bits
+per raw byte, with the canonical segmentation being the same greedy
+longest match that cuts the tape. The alphabet is nonstationary by law:
+births widen the Laplace denominator. Built into the design is its own
+red twin: with no living units the segmentation is trivial, move counts
+equal byte counts, and the unit-LM must be identical to the atomic
+model -- not approximately, identically.
+
+Measured: on the anti-repeat island the twin holds exactly (unit-LM
+8.454211, atomic 8.454211 -- equal to the printed digit). A scratch red
+run that breaks the prequential order (pricing as if the count were
+updated first) shifts the number to 7.454211, so the identity gate
+genuinely detects the one dishonesty it was written against. On the
+repeated island the units earn their first predictive signal: unit-LM
+3.388430 bits per raw byte against atomic 3.784616 on the same 4000
+lived bytes -- the earned vocabulary prices the world 0.396 bits per
+byte cheaper than bytes alone, under the same judge, with no discount
+anywhere: every macro is priced at a boundary it must reach honestly.
+
+Gates: twenty-five machine verdicts, ALL GATES PASS, rc=0 -- the
+twenty-two of the second body unchanged, plus the prequential twin
+identity, the predictive win on repetition (a FAIL here would have been
+recorded as a null), and shadow counters surviving a restart
+bit-for-bit inside state version 3. ASan and UBSan silent on the
+repeated and binary islands.
+
+The right to act is still not granted. The shadow has shown it can
+price the world better where the world repeats; whether that shadow may
+choose -- stand as an actuator inside the game -- is the fourth body's
+question, and it will be asked against a matched control with the
+context-bearing oracle (the postgpt-lineage organ: contextual counts
+over bytes and moves) entering the same court.

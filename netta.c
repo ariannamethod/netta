@@ -36,7 +36,7 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    2u
+#define STATE_VER    3u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -234,16 +234,38 @@ static int      mstart_isl = 0;
 static uint64_t macro_events = 0, macro_bytes = 0;
 static uint64_t moves_emitted = 0;
 
+/* shadow unit-LM: a semi-Markov unigram over moves of the segmented
+   lived tape. Prequential: each move is priced before its count is
+   updated. Same ruler as the game -- bits per raw byte. The alphabet
+   is nonstationary by law: births widen the Laplace denominator. With
+   no living units the segmentation is trivial and this model is
+   identical to the atomic one -- its built-in red twin. */
+static uint64_t move_count[ACTIONS + MAX_UNITS];
+static uint64_t move_total = 0;
+static double   unitlm_bits = 0.0;
+static uint64_t unitlm_bytes = 0;
+static double   atomic_bits_lived = 0.0;
+static uint64_t atomic_bytes_lived = 0;
+
 static void emit_move(uint32_t m, uint64_t pos, int isl) {
+    /* prequential shadow price, strictly before the count update */
+    double denom = (double)move_total + (double)(ACTIONS + unit_count);
+    double pm = ((double)move_count[m] + 1.0) / denom;
+    double nll = -log2(pm);
+    unitlm_bits += nll;
+    unitlm_bytes += move_len(m);
+    move_count[m]++;
+    move_total++;
     if (m >= ACTIONS) {
         Unit *u = &units[m - ACTIONS];
         u->uses++;
         macro_events++;
         macro_bytes += u->len;
         char line[128];
-        snprintf(line, sizeof line, "m\t%llu\t%d\t%llu\t%d\t%u\n",
+        snprintf(line, sizeof line, "m\t%llu\t%d\t%llu\t%d\t%u\t%.6f\n",
                  (unsigned long long)episode_no, isl,
-                 (unsigned long long)pos, (int)(m - ACTIONS), u->len);
+                 (unsigned long long)pos, (int)(m - ACTIONS), u->len,
+                 nll);
         bio_append(line);
     }
     moves_emitted++;
@@ -332,6 +354,14 @@ static void state_save(const char *path) {
         fwrite(&moves_emitted, sizeof moves_emitted, 1, f) != 1 ||
         fwrite(&births_rejected_cap, sizeof births_rejected_cap, 1, f)
             != 1 ||
+        fwrite(move_count, sizeof move_count[0], ACTIONS + MAX_UNITS, f)
+            != ACTIONS + MAX_UNITS ||
+        fwrite(&move_total, sizeof move_total, 1, f) != 1 ||
+        fwrite(&unitlm_bits, sizeof unitlm_bits, 1, f) != 1 ||
+        fwrite(&unitlm_bytes, sizeof unitlm_bytes, 1, f) != 1 ||
+        fwrite(&atomic_bits_lived, sizeof atomic_bits_lived, 1, f) != 1 ||
+        fwrite(&atomic_bytes_lived, sizeof atomic_bytes_lived, 1, f)
+            != 1 ||
         fwrite(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: state write failed\n"); exit(1);
     }
@@ -411,6 +441,14 @@ static int state_load(const char *path) {
         fread(&macro_bytes, sizeof macro_bytes, 1, f) != 1 ||
         fread(&moves_emitted, sizeof moves_emitted, 1, f) != 1 ||
         fread(&births_rejected_cap, sizeof births_rejected_cap, 1, f)
+            != 1 ||
+        fread(move_count, sizeof move_count[0], ACTIONS + MAX_UNITS, f)
+            != ACTIONS + MAX_UNITS ||
+        fread(&move_total, sizeof move_total, 1, f) != 1 ||
+        fread(&unitlm_bits, sizeof unitlm_bits, 1, f) != 1 ||
+        fread(&unitlm_bytes, sizeof unitlm_bytes, 1, f) != 1 ||
+        fread(&atomic_bits_lived, sizeof atomic_bits_lived, 1, f) != 1 ||
+        fread(&atomic_bytes_lived, sizeof atomic_bytes_lived, 1, f)
             != 1 ||
         fread(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: %s truncated; refusing\n", path);
@@ -498,6 +536,8 @@ static double run_episode(int isl_id, uint64_t steps) {
         counts_total++;
         steps_total++;
         bits += loss;
+        atomic_bits_lived += loss;
+        atomic_bytes_lived++;
         if (units_enabled)
             matcher_feed((uint8_t)truth, pos, isl_id);
     }
@@ -587,6 +627,12 @@ int main(int argc, char **argv) {
         if (births_rejected_cap)
             printf("units: %llu births rejected at cap %d\n",
                    (unsigned long long)births_rejected_cap, MAX_UNITS);
+        if (unitlm_bytes && atomic_bytes_lived)
+            printf("unit-LM bits per raw byte: %.6f (atomic %.6f, "
+                   "lived %llu bytes)\n",
+                   unitlm_bits / (double)unitlm_bytes,
+                   atomic_bits_lived / (double)atomic_bytes_lived,
+                   (unsigned long long)unitlm_bytes);
     }
     printf("biography: %llu lines, chain %016llx\n",
            (unsigned long long)bio_lines, (unsigned long long)bio_chain);
