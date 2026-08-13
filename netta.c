@@ -837,6 +837,13 @@ int main(int argc, char **argv) {
     int resumed = 0;
     if (!reset) resumed = state_load(state_path);
     bio_open(bio_path, reset || !resumed);
+    /* this-life baselines: the price of THIS stretch of life, not the
+       cumulative one -- the transfer court reads these deltas */
+    double  tl_ab = atomic_bits_lived, tl_bb = bilm_bits,
+            tl_tb = trilm_bits, tl_ub = unitlm_bits, tl_mb = mvlm_bits;
+    uint64_t tl_aby = atomic_bytes_lived, tl_bby = bilm_bytes,
+             tl_tby = trilm_bytes, tl_uby = unitlm_bytes,
+             tl_mby = mvlm_bytes;
     printf("%s: episode %llu, %llu lived bytes, %d units\n",
            resumed ? "resumed" : "born",
            (unsigned long long)episode_no,
@@ -889,6 +896,38 @@ int main(int argc, char **argv) {
            (unsigned long long)ep_actor[1],
            (unsigned long long)ep_actor[2],
            actor_lock >= 0 ? " (locked)" : "");
+    if (atomic_bytes_lived > tl_aby)
+        printf("this-life model atomic-uni bits/byte %.6f\n",
+               (atomic_bits_lived - tl_ab) /
+               (double)(atomic_bytes_lived - tl_aby));
+    if (bilm_bytes > tl_bby)
+        printf("this-life model byte-bi bits/byte %.6f\n",
+               (bilm_bits - tl_bb) / (double)(bilm_bytes - tl_bby));
+    if (trilm_bytes > tl_tby)
+        printf("this-life model byte-tri bits/byte %.6f\n",
+               (trilm_bits - tl_tb) / (double)(trilm_bytes - tl_tby));
+    if (units_enabled && unitlm_bytes > tl_uby)
+        printf("this-life model unit-uni bits/byte %.6f\n",
+               (unitlm_bits - tl_ub) / (double)(unitlm_bytes - tl_uby));
+    if (units_enabled && mvlm_bytes > tl_mby)
+        printf("this-life model move-bi bits/byte %.6f\n",
+               (mvlm_bits - tl_mb) / (double)(mvlm_bytes - tl_mby));
+    for (int i = 0; i < island_count; ++i) {
+        int rec = 0;
+        for (int u = 0; u < unit_count; ++u) {
+            Island *w = &islands[i];
+            uint32_t L = units[u].len;
+            int found = 0;
+            if (w->len >= L)
+                for (uint64_t o = 0; o + L <= w->len; ++o)
+                    if (memcmp(w->bytes + o, units[u].bytes, L) == 0) {
+                        found = 1; break;
+                    }
+            rec += found;
+        }
+        printf("units recognisable on island %d: %d of %d\n",
+               i, rec, unit_count);
+    }
     printf("biography: %llu lines, chain %016llx\n",
            (unsigned long long)bio_lines, (unsigned long long)bio_chain);
     return 0;

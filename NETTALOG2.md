@@ -331,3 +331,60 @@ The ladder now stands as ordered: context beats frequency, and deeper
 context beats shallower exactly where the world's structure lives
 deeper than one byte of memory. The next question belongs to travel:
 a second island, and what of all this survives the crossing.
+
+## The seventh body: the second island, and what survives the crossing
+
+The law, declared before code: the transfer body adds not one persisted
+structure to the organism -- it is a court, not an organ. State stays at
+version 6; the counters remain global because they are biography and
+biography travels with the traveller; the worlds remain immutable and
+their immutability becomes an explicit gate. What is added is honest
+optics only: this-life slices of all five models (the price of this
+stretch of life, not the cumulative), and a census of forms (how many
+living units find their exact bytes on a given island). The court's
+worlds: island A, "the cat sat on the mat and the dog ran off"; island
+B, "the dog sat on the log and the cat ran off" -- shared words, alien
+order. Controls: a shuffled B (same bytes, murdered structure) and an
+alien donor C (the period-3 world). Three predictions were declared
+before the measurement: kin experience transfers; shuffling kills the
+transfer; kinship out-transfers alienage.
+
+All three held, and the numbers are loud. A traveller with 3200 lived
+bytes of A, on an 1600-byte budget of B, against a newborn on the same
+budget and seed: atomic-uni 3.672418 vs 4.134162; byte-bi 2.223834 vs
+3.830080; byte-tri 2.142641 vs 3.923884; unit-uni 2.737994 vs 4.115180;
+move-bi 2.395819 vs 3.977704. Kin experience is worth 0.46 bits per
+byte to the frequency model and 1.61 to 1.78 bits per byte to the
+context models -- the transfer grows with the depth of context, which is
+the byte-level thesis in one line: what crosses between worlds is
+structure, and the deeper the structure, the more of it crosses. All
+fifteen living units find their exact bytes on the kin island: the
+earned vocabulary arrives recognisable.
+
+The controls cut cleanly. On the shuffled island the 1.6-bit transfer
+collapses to noise (byte-bi 5.684552 travelled vs 5.694420 newborn, a
+0.01 gap), so what transferred was structure, not an alphabet. The
+alien donor C arrives on B worse than a newborn on the frequency
+channel (5.776488 vs 4.134162) -- unrelated experience does not merely
+transfer less, it harms: alien frequencies are worse than ignorance,
+the second appearance of the self-deception law found in the fifth
+body. And the return is priced: after the voyage A->B->A the third
+stretch at home costs 1.914068/1.565895 (bi/tri) against
+1.897624/1.510803 for a stay-at-home life of equal total budget -- the
+voyage taxed the home rows by 0.02 to 0.06 bits per byte, a measured
+toll, not the catastrophe the old line feared, and not free either.
+
+Gates: forty-five machine verdicts, ALL GATES PASS, rc=0 -- the forty
+of the sixth body (four test anchors tightened after the census line
+collided with a lazy grep), plus: kin transfer with a declared 0.5-bit
+gap on both context channels; shuffled-world collapse under 0.1;
+kinship over alienage by 0.5; island digests identical across all
+lives; exact forms recognised on the kin island. ASan and UBSan silent
+on the two-island voyage.
+
+What stands after seven bodies: a world that cannot be rewritten, a
+biography that cannot be edited, a vocabulary that pays for itself, a
+court of five priced witnesses, power that is earned and revocable,
+and now -- measured, controlled, and cheap to reproduce -- the fact the
+whole line exists for: experience of one world makes another world
+legible, in proportion to how deeply their structures rhyme.

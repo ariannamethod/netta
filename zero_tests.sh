@@ -27,7 +27,7 @@ gate "Z0 foreign state refused" $? 1
 
 # --- Z1: byte world -----------------------------------------------------
 printf 'a' > "$T/a.bytes"
-D=$("$N" "$T/a.bytes" --reset --episodes 0 --state "$T/z.state" --bio "$T/z.bio" 2>/dev/null | awk '/island 0/{print $NF}')
+D=$("$N" "$T/a.bytes" --reset --episodes 0 --state "$T/z.state" --bio "$T/z.bio" 2>/dev/null | awk "/^island 0: /{print \$NF}")
 [ "$D" = "digest=af63dc4c8601ec8c" ]
 gate "Z1 FNV-1a-64 matches external vector (\"a\")" $? 0
 i=0; : > "$T/all.bytes"
@@ -35,12 +35,12 @@ while [ $i -lt 256 ]; do printf "\\x$(printf %02x $i)" >> "$T/all.bytes"; i=$((i
 L=$(wc -c < "$T/all.bytes" | tr -d ' ')
 [ "$L" = "256" ]
 gate "Z1 all 256 byte values round-trip incl NUL" $? 0
-D1=$("$N" "$T/all.bytes" --reset --episodes 0 --state "$T/z1.state" --bio "$T/z1.bio" 2>/dev/null | awk '/island 0/{print $NF}')
-D2=$("$N" "$T/all.bytes" --reset --episodes 0 --state "$T/z2.state" --bio "$T/z2.bio" 2>/dev/null | awk '/island 0/{print $NF}')
+D1=$("$N" "$T/all.bytes" --reset --episodes 0 --state "$T/z1.state" --bio "$T/z1.bio" 2>/dev/null | awk "/^island 0: /{print \$NF}")
+D2=$("$N" "$T/all.bytes" --reset --episodes 0 --state "$T/z2.state" --bio "$T/z2.bio" 2>/dev/null | awk "/^island 0: /{print \$NF}")
 [ -n "$D1" ] && [ "$D1" = "$D2" ]
 gate "Z1 digest deterministic across runs" $? 0
 printf 'мир שלום world\n' > "$T/u.bytes"
-UL=$("$N" "$T/u.bytes" --reset --episodes 0 --state "$T/u.state" --bio "$T/u.bio" 2>/dev/null | awk '/island 0/{print $(NF-1)}')
+UL=$("$N" "$T/u.bytes" --reset --episodes 0 --state "$T/u.state" --bio "$T/u.bio" 2>/dev/null | awk "/^island 0: /{print \$(NF-1)}")
 [ "$UL" = "len=22" ]
 gate "Z1 UTF-8 island measured in raw bytes" $? 0
 
@@ -187,6 +187,43 @@ gate "B6 zero intervention still holds with three candidates" $? 0
 "$N" "$T/p3.bytes" --episodes 3 --steps 600 --state "$T/p6s.state" --bio "$T/p6s.bio" >/dev/null 2>&1
 cmp -s "$T/p3.bio" "$T/p6s.bio" && cmp -s "$T/p3.state" "$T/p6s.state"
 gate "B6 trigram counters and elections survive restart" $? 0
+
+# --- B7: the second island ---------------------------------------------
+i=0; : > "$T/wA.bytes"; : > "$T/wB.bytes"
+while [ $i -lt 300 ]; do
+  printf 'the cat sat on the mat and the dog ran off. ' >> "$T/wA.bytes"
+  printf 'the dog sat on the log and the cat ran off. ' >> "$T/wB.bytes"
+  i=$((i+1))
+done
+od -An -v -tu1 "$T/wB.bytes" | tr -s ' ' '\n' | grep -v '^$' | awk 'BEGIN{s=12345}{a[NR]=$1}END{n=NR; for(i=n;i>1;i--){s=(s*1103515245+12345)%2147483648; j=(s%i)+1; t=a[i];a[i]=a[j];a[j]=t} for(i=1;i<=n;i++)printf "%c", a[i]}' > "$T/wBs.bytes"
+tl() { grep "^this-life model $2 " "$1" | awk '{print $NF}'; }
+"$N" "$T/wA.bytes" "$T/wB.bytes" --reset --seed 11 --episodes 4 --steps 800 --island 0 --state "$T/tr.state" --bio "$T/tr.bio" >/dev/null 2>&1
+"$N" "$T/wA.bytes" "$T/wB.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/tr.state" --bio "$T/tr.bio" > "$T/trB.out" 2>&1
+"$N" "$T/wA.bytes" "$T/wB.bytes" --reset --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/nb.state" --bio "$T/nb.bio" > "$T/nbB.out" 2>&1
+TRB=$(tl "$T/trB.out" byte-bi); NBB=$(tl "$T/nbB.out" byte-bi)
+TRT=$(tl "$T/trB.out" byte-tri); NBT=$(tl "$T/nbB.out" byte-tri)
+awk -v a="$TRB" -v b="$NBB" -v c="$TRT" -v d="$NBT" 'BEGIN{exit !(b-a >= 0.5 && d-c >= 0.5)}'
+gate "B7 kin experience transfers: bi $TRB vs $NBB, tri $TRT vs $NBT (gap>=0.5)" $? 0
+"$N" "$T/wA.bytes" "$T/wBs.bytes" --reset --seed 11 --episodes 4 --steps 800 --island 0 --state "$T/sh.state" --bio "$T/sh.bio" >/dev/null 2>&1
+"$N" "$T/wA.bytes" "$T/wBs.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/sh.state" --bio "$T/sh.bio" > "$T/shB.out" 2>&1
+"$N" "$T/wA.bytes" "$T/wBs.bytes" --reset --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/shn.state" --bio "$T/shn.bio" > "$T/shN.out" 2>&1
+SHB=$(tl "$T/shB.out" byte-bi); SHN=$(tl "$T/shN.out" byte-bi)
+awk -v a="$SHB" -v b="$SHN" 'BEGIN{d=b-a; if(d<0)d=-d; exit !(d < 0.1)}'
+gate "B7 shuffled world kills the transfer: $SHB vs $SHN (|gap|<0.1)" $? 0
+"$N" "$T/p3.bytes" "$T/wB.bytes" --reset --seed 11 --episodes 4 --steps 800 --island 0 --state "$T/dc.state" --bio "$T/dc.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/wB.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/dc.state" --bio "$T/dc.bio" > "$T/dcB.out" 2>&1
+DCB=$(tl "$T/dcB.out" byte-bi)
+awk -v kin="$TRB" -v don="$DCB" 'BEGIN{exit !(don - kin >= 0.5)}'
+gate "B7 kinship is measurable: kin donor $TRB beats alien donor $DCB (gap>=0.5)" $? 0
+DA1=$(grep '^island 0: ' "$T/trB.out" | awk '{print $NF}')
+DA2=$(grep '^island 0: ' "$T/nbB.out" | awk '{print $NF}')
+DB1=$(grep '^island 1: ' "$T/trB.out" | awk '{print $NF}')
+DB2=$(grep '^island 1: ' "$T/nbB.out" | awk '{print $NF}')
+[ -n "$DA1" ] && [ "$DA1" = "$DA2" ] && [ -n "$DB1" ] && [ "$DB1" = "$DB2" ]
+gate "B7 no life mutates a world: island digests identical across lives" $? 0
+UR=$(grep 'units recognisable on island 1' "$T/trB.out" | awk '{print $6}')
+[ -n "$UR" ] && [ "$UR" -gt 0 ]
+gate "B7 exact forms are recognised on the kin island ($UR units)" $? 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi
