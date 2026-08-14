@@ -388,3 +388,59 @@ court of five priced witnesses, power that is earned and revocable,
 and now -- measured, controlled, and cheap to reproduce -- the fact the
 whole line exists for: experience of one world makes another world
 legible, in proportion to how deeply their structures rhyme.
+
+## The eighth body: the emission seat, a regression, and probation
+
+The law, declared before code: a fourth candidate for the seat -- the
+semi-Markov move-player, which emits whole moves, bytes or earned
+units, priced by the move bigram whose statistics are the nursery's
+own pair counts. The environment advances by the matched prefix of the
+emitted move, never less than one byte, so a wrong long move is never
+cheaper than the same wrong bytes: the price is paid in full and the
+advance shrinks. Every lived truth byte still flows through every
+per-byte organ, blind to which move lived it. Move receipts are
+biography lines of their own kind.
+
+The first draft of the law seated mv on its shadow record and the
+regression gates caught the mistake before any commit: earned lives
+collapsed (0.800969 became 2.532679 on the alternating world, 1.296476
+became 4.359787 on period-3). The finding is constitutional and is
+kept: **the record of pricing moves does not transfer to the right to
+emit them.** The shadow prices teacher-forced segmentations of lived
+truth; the player generates, and generation errors pay full move price
+for one byte of advance. A right must be earned in the discipline in
+which it will be exercised -- the same category law the old line
+learned as "the metric must measure the actuator," now rediscovered by
+the organism's own gates.
+
+The corrected constitution: the shadow record only opens probation --
+a rare, deterministic probation episode (every eighth, while the
+played mandate is not yet earned) in which mv actually plays; only the
+record played there can win the seat. Measured on a 24-episode
+period-3 life: the seat passes uni to tri at episode three; probation
+fires exactly twice (episodes 7 and 15, 380 real move receipts); mv
+earns its mandate minimum of 1200 played bytes -- and the verdict is
+numeric and against it: mv played 1.557730 bits per byte against the
+sitting trigram's 0.502630, so the seat stays with tri and mv's claim
+is refused by the very ruler that granted tri its power. The right to
+emit exists, was tried in the open, and lost on the record -- which is
+the system working, not failing. With the corrected law the earned
+lives returned to their exact former numbers (0.800969, 1.296476), and
+zero intervention on the structureless world holds bit-for-bit with
+four candidates and probation in the field.
+
+Gates: fifty-one machine verdicts, ALL GATES PASS, rc=0 -- the
+forty-five of the seventh body restored exactly, plus: probation opens
+from the shadow record; probation emits real moves; the verdict is
+numeric; the seat follows the played record; zero intervention
+survives the widened field; probation and the played record survive
+restart in state version 7. ASan and UBSan silent on five worlds and
+the probation life. A red prequential run shifts the played record
+(1.403676 against 1.557730), so the record's honesty is itself
+guarded.
+
+The seat of emission is now a real institution with a losing first
+claimant. Somewhere on a world whose structure lives in whole moves
+rather than in two bytes of memory, a future mv will win it -- and
+when it does, the win will mean something, because this one was
+allowed to lose.

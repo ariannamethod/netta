@@ -36,7 +36,7 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    6u
+#define STATE_VER    7u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -271,6 +271,13 @@ static uint64_t bilm_bytes = 0;
 static uint64_t mv_out[ACTIONS + MAX_UNITS];
 static double   mvlm_bits = 0.0;
 static uint64_t mvlm_bytes = 0;
+/* mv's PLAYED record: the emission seat is earned in this discipline
+   only -- pricing moves in shadow does not transfer to the right to
+   emit them (measured in this body: seating mv on its shadow record
+   collapsed earned lives; generation errors pay the full move price
+   for one byte of advance). The shadow record merely opens probation. */
+static double   mvp_bits = 0.0;
+static uint64_t mvp_bytes = 0;
 
 /* body 5: the right to act is earned. Candidates are the byte models
    only: atomic-uni (the newborn actor) and byte-bi. The right is
@@ -323,11 +330,14 @@ static void tri_add(uint32_t ctx, uint8_t b) {
 }
 
 /* the seat: candidates 0 = atomic-uni (newborn), 1 = byte-bi,
-   2 = byte-tri. Granted by the lived prequential record alone. */
+   2 = byte-tri, 3 = mv (the semi-Markov move-player, body 8: emits
+   whole moves -- bytes or earned units -- priced by the move bigram
+   whose statistics are the nursery's own pair counts). Granted by the
+   lived prequential record alone. */
 static int actor_current = 0;
-static int actor_lock = -1;        /* CLI: -1 earned, 0/1/2 locked */
-static uint64_t ep_actor[3] = {0, 0, 0};
-static const char *actor_name[3] = {"uni", "bi", "tri"};
+static int actor_lock = -1;        /* CLI: -1 earned, 0..3 locked */
+static uint64_t ep_actor[4] = {0, 0, 0, 0};
+static const char *actor_name[4] = {"uni", "bi", "tri", "mv"};
 
 #define ACTOR_MIN_BYTES 1000
 #define ACTOR_GAIN      0.1
@@ -336,17 +346,19 @@ static const char *actor_name[3] = {"uni", "bi", "tri"};
 static void actor_elect(void) {
     if (actor_lock >= 0) { actor_current = actor_lock; return; }
     if (atomic_bytes_lived < ACTOR_MIN_BYTES) { actor_current = 0; return; }
-    double lv[3];
+    double lv[4];
     lv[0] = atomic_bits_lived / (double)atomic_bytes_lived;
     lv[1] = bilm_bytes ? bilm_bits / (double)bilm_bytes : 1e9;
     lv[2] = trilm_bytes ? trilm_bits / (double)trilm_bytes : 1e9;
+    lv[3] = (units_enabled && mvp_bytes >= ACTOR_MIN_BYTES)
+            ? mvp_bits / (double)mvp_bytes : 1e9;
     /* mandate: a sitting non-newborn actor must keep a KEEP lead over
        the newborn or vacate the seat */
     if (actor_current != 0 && lv[0] - lv[actor_current] < ACTOR_KEEP)
         actor_current = 0;
     /* strongest eligible challenger (GAIN lead over the newborn) */
     int ch = -1;
-    for (int c = 1; c <= 2; ++c) {
+    for (int c = 1; c <= 3; ++c) {
         if (c == actor_current) continue;
         if (lv[0] - lv[c] < ACTOR_GAIN) continue;
         if (ch < 0 || lv[c] < lv[ch]) ch = c;
@@ -493,8 +505,10 @@ static void state_save(const char *path) {
             != ACTIONS + MAX_UNITS ||
         fwrite(&mvlm_bits, sizeof mvlm_bits, 1, f) != 1 ||
         fwrite(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
+        fwrite(&mvp_bits, sizeof mvp_bits, 1, f) != 1 ||
+        fwrite(&mvp_bytes, sizeof mvp_bytes, 1, f) != 1 ||
         fwrite(&actor_current, sizeof actor_current, 1, f) != 1 ||
-        fwrite(ep_actor, sizeof ep_actor[0], 3, f) != 3 ||
+        fwrite(ep_actor, sizeof ep_actor[0], 4, f) != 4 ||
         fwrite(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
         fwrite(&trilm_bits, sizeof trilm_bits, 1, f) != 1 ||
         fwrite(&trilm_bytes, sizeof trilm_bytes, 1, f) != 1 ||
@@ -604,8 +618,10 @@ static int state_load(const char *path) {
             != ACTIONS + MAX_UNITS ||
         fread(&mvlm_bits, sizeof mvlm_bits, 1, f) != 1 ||
         fread(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
+        fread(&mvp_bits, sizeof mvp_bits, 1, f) != 1 ||
+        fread(&mvp_bytes, sizeof mvp_bytes, 1, f) != 1 ||
         fread(&actor_current, sizeof actor_current, 1, f) != 1 ||
-        fread(ep_actor, sizeof ep_actor[0], 3, f) != 3 ||
+        fread(ep_actor, sizeof ep_actor[0], 4, f) != 4 ||
         fread(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
         fread(&trilm_bits, sizeof trilm_bits, 1, f) != 1 ||
         fread(&trilm_bytes, sizeof trilm_bytes, 1, f) != 1 ||
@@ -679,6 +695,60 @@ static int sample(const double p[ACTIONS]) {
     return ACTIONS - 1;
 }
 
+static void build_dists(Island *isl, uint64_t pos, double p_uni[ACTIONS],
+                        double p_bi[ACTIONS], double p_tri[ACTIONS]) {
+    uint8_t pv = isl->bytes[pos - 1];
+    uint32_t tctx = ((uint32_t)isl->bytes[pos - 2] << 8) | pv;
+    policy(p_uni);
+    double d2 = (double)bi_row[pv] + (double)ACTIONS;
+    double s2 = 0.0;
+    for (int b = 0; b < ACTIONS; ++b) {
+        p_bi[b] = ((double)bi_count[pv][b] + 1.0) / d2;
+        s2 += p_bi[b];
+    }
+    if (fabs(s2 - 1.0) > 1e-6) {
+        fprintf(stderr, "netta: bigram row is not a distribution "
+                        "(sum=%.9f)\n", s2);
+        exit(1);
+    }
+    double d3 = (double)tri_row[tctx] + (double)ACTIONS;
+    double s3 = 0.0;
+    for (int b = 0; b < ACTIONS; ++b) {
+        p_tri[b] = ((double)tri_get(tctx, (uint8_t)b) + 1.0) / d3;
+        s3 += p_tri[b];
+    }
+    if (fabs(s3 - 1.0) > 1e-6) {
+        fprintf(stderr, "netta: trigram row is not a distribution "
+                        "(sum=%.9f)\n", s3);
+        exit(1);
+    }
+}
+
+static void absorb_truth(int isl_id, Island *isl, uint64_t pos,
+                         const double p_uni[ACTIONS],
+                         const double p_bi[ACTIONS],
+                         const double p_tri[ACTIONS]) {
+    /* model prices stay prequential and actor-independent; every organ
+       learns from the lived truth byte, blind to which move lived it */
+    int truth = isl->bytes[pos];
+    uint8_t pv = isl->bytes[pos - 1];
+    uint32_t tctx = ((uint32_t)isl->bytes[pos - 2] << 8) | pv;
+    atomic_bits_lived += -log2(p_uni[truth]);
+    atomic_bytes_lived++;
+    bilm_bits += -log2(p_bi[truth]);
+    bilm_bytes++;
+    trilm_bits += -log2(p_tri[truth]);
+    trilm_bytes++;
+    counts[truth]++;
+    counts_total++;
+    steps_total++;
+    bi_count[pv][truth]++;
+    bi_row[pv]++;
+    tri_add(tctx, (uint8_t)truth);
+    if (units_enabled)
+        matcher_feed((uint8_t)truth, pos, isl_id);
+}
+
 static double run_episode(int isl_id, uint64_t steps) {
     Island *isl = &islands[isl_id];
     if (isl->len < CTX + steps + 1) {
@@ -692,46 +762,96 @@ static double run_episode(int isl_id, uint64_t steps) {
     char line[256];
     episode_no++;
     actor_elect();
+    int probation = 0;
+    if (actor_lock < 0 && units_enabled && actor_current != 3 &&
+        mvp_bytes < ACTOR_MIN_BYTES && episode_no % 8 == 7 &&
+        atomic_bytes_lived >= ACTOR_MIN_BYTES && mvlm_bytes &&
+        atomic_bits_lived / (double)atomic_bytes_lived -
+        mvlm_bits / (double)mvlm_bytes >= ACTOR_GAIN) {
+        /* the shadow record opens a rare, deterministic probation
+           episode; only the record played here can earn the seat */
+        actor_current = 3;
+        probation = 1;
+    }
     ep_actor[actor_current]++;
     snprintf(line, sizeof line, "a\t%llu\t%s\n",
-             (unsigned long long)episode_no, actor_name[actor_current]);
+             (unsigned long long)episode_no,
+             probation ? "mvp" : actor_name[actor_current]);
     bio_append(line);
+    if (actor_current == 3) {
+        /* semi-Markov walk: the actor emits whole moves; the world
+           advances by the matched prefix, never less than one byte, so
+           a wrong long move is never cheaper than the same wrong bytes
+           (the price is paid in full, the advance shrinks). */
+        uint64_t s = 0;
+        double p_uni[ACTIONS], p_bi[ACTIONS], p_tri[ACTIONS];
+        while (s < steps) {
+            uint64_t pos = start + s;
+            int alive = ACTIONS + unit_count;
+            double denom, psum = 0.0, r, acc;
+            uint32_t m = 0;
+            if (prev_move >= 0)
+                denom = (double)mv_out[(uint32_t)prev_move] +
+                        (double)alive;
+            else
+                denom = (double)move_total + (double)alive;
+            /* one rng draw per move; walk the cumulative mass */
+            r = (double)(rng_next() >> 11) *
+                (1.0 / 9007199254740992.0);
+            acc = 0.0;
+            m = (uint32_t)(alive - 1);   /* float-tail fallback */
+            for (int c = 0; c < alive; ++c) {
+                uint64_t cnt = prev_move >= 0
+                    ? pair_get((uint32_t)prev_move, (uint32_t)c)
+                    : move_count[c];
+                double pc = ((double)cnt + 1.0) / denom;
+                psum += pc;
+                acc += pc;
+                if (r < acc) { m = (uint32_t)c; break; }
+            }
+            if (psum > 1.0 + 1e-6) {
+                fprintf(stderr, "netta: move mass exceeds 1 "
+                                "(sum=%.9f)\n", psum);
+                exit(1);
+            }
+            uint8_t tmp[1];
+            const uint8_t *mb = move_bytes(m, tmp);
+            uint32_t L = move_len(m);
+            uint64_t room = steps - s;
+            uint32_t matched = 0;
+            while (matched < L && (uint64_t)matched < room &&
+                   mb[matched] == isl->bytes[pos + matched])
+                matched++;
+            uint32_t advance = matched ? matched : 1;
+            if ((uint64_t)advance > room) advance = (uint32_t)room;
+            double cnt_m = prev_move >= 0
+                ? (double)pair_get((uint32_t)prev_move, m)
+                : (double)move_count[m];
+            double nll = -log2((cnt_m + 1.0) / denom);
+            snprintf(line, sizeof line,
+                     "v\t%llu\t%d\t%llu\t%u\t%u\t%u\t%.6f\n",
+                     (unsigned long long)episode_no, isl_id,
+                     (unsigned long long)pos, m, L, advance, nll);
+            bio_append(line);
+            bits += nll;
+            mvp_bits += nll;
+            mvp_bytes += advance;
+            for (uint32_t j = 0; j < advance; ++j) {
+                build_dists(isl, pos + j, p_uni, p_bi, p_tri);
+                absorb_truth(isl_id, isl, pos + j, p_uni, p_bi, p_tri);
+            }
+            s += advance;
+        }
+        if (units_enabled) matcher_end_episode();
+        return bits / (double)steps;
+    }
     for (uint64_t s = 0; s < steps; ++s) {
         uint64_t pos = start + s;
         uint64_t ctx_digest =
             fnv1a64(isl->bytes + pos - CTX, CTX, FNV_SEED);
         uint64_t rng_before = rng_state;
-        uint8_t pv = isl->bytes[pos - 1];
-        uint32_t tctx = ((uint32_t)isl->bytes[pos - 2] << 8) | pv;
         double p_uni[ACTIONS], p_bi[ACTIONS], p_tri[ACTIONS];
-        policy(p_uni);
-        {   /* byte-bigram row, before any update of this step */
-            double d2 = (double)bi_row[pv] + (double)ACTIONS;
-            double sum = 0.0;
-            for (int b = 0; b < ACTIONS; ++b) {
-                p_bi[b] = ((double)bi_count[pv][b] + 1.0) / d2;
-                sum += p_bi[b];
-            }
-            if (fabs(sum - 1.0) > 1e-6) {
-                fprintf(stderr, "netta: bigram row is not a "
-                                "distribution (sum=%.9f)\n", sum);
-                exit(1);
-            }
-        }
-        {   /* byte-trigram row, before any update of this step */
-            double d3 = (double)tri_row[tctx] + (double)ACTIONS;
-            double sum = 0.0;
-            for (int b = 0; b < ACTIONS; ++b) {
-                p_tri[b] = ((double)tri_get(tctx, (uint8_t)b) + 1.0)
-                           / d3;
-                sum += p_tri[b];
-            }
-            if (fabs(sum - 1.0) > 1e-6) {
-                fprintf(stderr, "netta: trigram row is not a "
-                                "distribution (sum=%.9f)\n", sum);
-                exit(1);
-            }
-        }
+        build_dists(isl, pos, p_uni, p_bi, p_tri);
         const double *p_act = actor_current == 2 ? p_tri
                             : actor_current == 1 ? p_bi : p_uni;
         int action = sample(p_act);
@@ -746,22 +866,8 @@ static double run_episode(int isl_id, uint64_t steps) {
                  (unsigned long long)rng_before,
                  actor_name[actor_current]);
         bio_append(line);
-        /* model prices stay prequential and actor-independent */
-        atomic_bits_lived += -log2(p_uni[truth]);
-        atomic_bytes_lived++;
-        bilm_bits += -log2(p_bi[truth]);
-        bilm_bytes++;
-        trilm_bits += -log2(p_tri[truth]);
-        trilm_bytes++;
-        counts[truth]++;
-        counts_total++;
-        steps_total++;
+        absorb_truth(isl_id, isl, pos, p_uni, p_bi, p_tri);
         bits += loss;
-        bi_count[pv][truth]++;
-        bi_row[pv]++;
-        tri_add(tctx, (uint8_t)truth);
-        if (units_enabled)
-            matcher_feed((uint8_t)truth, pos, isl_id);
     }
     if (units_enabled) matcher_end_episode();
     return bits / (double)steps;
@@ -799,6 +905,7 @@ int main(int argc, char **argv) {
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
             else if (!strcmp(argv[i], "bi")) actor_lock = 1;
             else if (!strcmp(argv[i], "tri")) actor_lock = 2;
+            else if (!strcmp(argv[i], "mv")) actor_lock = 3;
             else {
                 fprintf(stderr,
                         "netta: --actor-lock takes uni|bi|tri\n");
@@ -812,6 +919,11 @@ int main(int argc, char **argv) {
             paths[paths_n++] = argv[i];
     }
 
+    if (actor_lock == 3 && !units_enabled) {
+        fprintf(stderr,
+                "netta: --actor-lock mv requires units enabled\n");
+        exit(1);
+    }
     printf("NETTA ZERO\n");
     if (paths_n == 0) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
@@ -891,10 +1003,15 @@ int main(int argc, char **argv) {
     if (trilm_bytes)
         printf("model byte-tri bits/byte %.6f\n",
                trilm_bits / (double)trilm_bytes);
-    printf("actor episodes: uni %llu, bi %llu, tri %llu%s\n",
+    if (mvp_bytes)
+        printf("mv played record: %.6f bits/byte over %llu bytes\n",
+               mvp_bits / (double)mvp_bytes,
+               (unsigned long long)mvp_bytes);
+    printf("actor episodes: uni %llu, bi %llu, tri %llu, mv %llu%s\n",
            (unsigned long long)ep_actor[0],
            (unsigned long long)ep_actor[1],
            (unsigned long long)ep_actor[2],
+           (unsigned long long)ep_actor[3],
            actor_lock >= 0 ? " (locked)" : "");
     if (atomic_bytes_lived > tl_aby)
         printf("this-life model atomic-uni bits/byte %.6f\n",

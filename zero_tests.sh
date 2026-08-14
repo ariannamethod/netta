@@ -225,6 +225,32 @@ UR=$(grep 'units recognisable on island 1' "$T/trB.out" | awk '{print $6}')
 [ -n "$UR" ] && [ "$UR" -gt 0 ]
 gate "B7 exact forms are recognised on the kin island ($UR units)" $? 0
 
+# --- B8: the emission seat and its probation ---------------------------
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 --state "$T/p8.state" --bio "$T/p8.bio" > "$T/p8.out" 2>&1
+MVP=$(grep -c '^a	.*	mvp$' "$T/p8.bio")
+[ "$MVP" -gt 0 ]
+gate "B8 the shadow record opens probation episodes ($MVP played)" $? 0
+VC=$(grep -c '^v	' "$T/p8.bio")
+[ "$VC" -gt 0 ]
+gate "B8 probation emits real moves ($VC move receipts)" $? 0
+MVREC=$(awk '/mv played record/{print $4}' "$T/p8.out")
+TRIREC=$(awk '/^model byte-tri /{print $NF}' "$T/p8.out")
+[ -n "$MVREC" ] && [ -n "$TRIREC" ]
+gate "B8 the verdict is numeric: mv played $MVREC vs sitting tri $TRIREC" $? 0
+awk -v m="$MVREC" -v t="$TRIREC" 'BEGIN{exit !(m > t)}'
+SEAT=$(awk -v r="$?" 'BEGIN{print r}')
+MVSEAT=$(grep -c '^a	.*	mv$' "$T/p8.bio")
+if [ "$SEAT" = "0" ]; then [ "$MVSEAT" -eq 0 ]; else [ "$MVSEAT" -gt 0 ]; fi
+gate "B8 the seat follows the played record (mv seats: $MVSEAT)" $? 0
+"$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/z8e.state" --bio "$T/z8e.bio" >/dev/null 2>&1
+"$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/z8l.state" --bio "$T/z8l.bio" --actor-lock uni >/dev/null 2>&1
+cmp -s "$T/z8e.bio" "$T/z8l.bio"
+gate "B8 zero intervention with four candidates and probation" $? 0
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 12 --steps 600 --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --episodes 12 --steps 600 --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
+cmp -s "$T/p8.bio" "$T/p8s.bio" && cmp -s "$T/p8.state" "$T/p8s.state"
+gate "B8 probation and played record survive restart" $? 0
+
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi
 echo "$FAIL GATE(S) FAILED"; exit 1
