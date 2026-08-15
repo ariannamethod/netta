@@ -787,3 +787,104 @@ the red traveller is minute, and the episode-granularity quarantine can spend
 less than the full comity budget. Search evidence and the probation schedule
 remain global across islands. Those are attacks for the next hand, not claims
 smuggled into this body.
+
+## The eleventh body audited: two organs refused for lack of a red world
+
+Both incoming commits reproduced whole: eighty-six gates by the auditor's
+own hand before any reading. The conservation repair was attacked on all
+three named surfaces. Sixty-one restarts interleaving three islands over
+244 episodes produced zero false refusals, so the tolerance admits honest
+addition-order noise at realistic life lengths; a verdict-reversing edit
+needs on the order of a hundred bits where the tolerance admits about a
+microbit, eight orders of margin; and the one-bit forgery was verified to
+target the intended double by the state layout itself, 96 bytes per
+island record with the atomic score at offset 24. The birth floor was
+attacked next: 1800 null steps priced exactly 8.000000 with 255 distinct
+emitted bytes from one causal draw each, the version-12 header refused,
+probation blocked inside null episodes by the acting-hand predicate, and
+the seat untouched throughout.
+
+The audit then measured one corollary the body had not gated. A
+structureless home, revisited after any real travel, loses its
+learned-confidence hand: the global court already prefers the least
+confident witness there (travelled tri at nearly exact uniform against
+uni at 8.161840), and the island floor then chooses honest ignorance
+outright, null against a 7.991742 local record. The fifth-body
+self-deception law is now enforced by the court at home, and this
+section's gate pins it on the unchanged court.
+
+Two organs proposed as next floors were then refused for lack of a red
+world, and both refusals are measurements. The flap: five world families
+tuned so a travelled hand's local record crosses the 7.9-bit boundary
+produced at most three hand transitions per thirty-episode life;
+cumulative records cross the boundary once and settle, so no stationary
+world exhibits a sustained oscillation, and island-local hysteresis is
+refused as an organ until a world exhibits the flap. The door: a
+word-salad island, home words intact in random order, was built as the
+candidate red world for island-local probation scheduling; all eighteen
+units are recognised there, the home door opens probation, and the mover
+honestly loses 2.869828 against a best matched byte witness of 2.009348.
+But the salad's own local move shadow gains 1.88 bits over its local
+atomic record, so a local door would have opened too: the move shadow
+prices atomic moves through the byte context and therefore inherits
+byte-context gain wherever a byte hand acts, while the null hand already
+blocks probation wherever context is empty. Between those two laws no
+island remains where localising the schedule would change a verdict.
+Island-local probation is refused as an organ; the schedule stays global
+as a matter of measured indifference, not oversight.
+
+What is not proved: the mover-comity crossing still lacks its direct red
+world, the route anchor and the one-ply rollout still share one flag, and
+the refusals above hold for stationary worlds only; a drifting world
+could still exhibit the flap and would reopen the hysteresis question.
+
+## The twelfth body: the vocabulary pays rent
+
+Units had a birth law and no death law, an open wound since the
+checkpoint correction. The cost of that asymmetry was already on record:
+the fourth body measured a vocabulary paying for its own alphabet where
+there was nothing to predict. Every living unit widens every Laplace
+denominator forever, so a vocabulary earned on one life becomes a
+permanent tax on every later one, and nothing in the constitution could
+ever take a slot back.
+
+The death law mirrors the birth law it joins. A unit that the lived
+truth has not named for 16384 bytes dies at the next episode boundary: a
+biography event carrying its uses and the age of its silence. Death is a
+tombstone, not an erasure. The identity keeps its name and its frozen
+counts, so no second unit can ever be born with the same bytes; the
+matcher, the canonical truth judge, the route search, and the sampled
+policy all skip the dead; and the living Laplace alphabet shrinks by
+one. The frozen counts stay in the row totals as a mass leak that decays
+with life instead of a rent that never ends, and the whole living policy
+is renormalized wherever a tombstone exists. Renewed lived support --
+every fresh BIRTH_SUPPORT of the same adjacency -- resurrects the same
+name in place. Nothing else moves: on a world where no rent falls due,
+the organism is bit-identical with the law present or disabled, and
+every previously gated life is too short for a death by construction.
+
+Measured on a two-phase life: fourteen units earned on the repeated
+sentence, then thirty episodes on a structureless byte island their
+forms never match. The deaths arrive on each unit's own rent clock,
+spread over five distinct episodes, and the island ends at zero living
+of fourteen born. The dead weight is a real tax with the predicted
+decay: on the same truth bytes, with atomic records string-identical
+between arms, the living arm prices unit-uni at 8.128361 against the
+undead arm's 8.129289; the gap is exactly the fourteen ghosts in the
+denominator, and it shrinks as the biography grows, which is the
+difference between a debt paid off and a rent in perpetuity. Returning
+to the birth island resurrects all fourteen under their original names
+and births three new longer composites; no duplicate identity exists in
+the biography. An extinction split across restart is bit-identical to
+the direct life. State advances to version 14 for the rent clocks and
+tombstones. Ninety-five verdicts, ALL GATES PASS, ASan/UBSan through
+extinction and resurrection.
+
+What is not proved: the rent term is one declared constant, not an
+earned quantity, and a slow world could starve a good unit that a
+kinder clock would keep; death is global, not island-local, though the
+records it releases are not; the mass leak is measured only where
+advances stay atomic, and a probation episode under a changed alphabet
+is a different organism episode by construction, priced differently on
+the same bytes. The tax is small in a long life by design; its size at
+the capacity wall, where MAX_UNITS matters, is unmeasured.

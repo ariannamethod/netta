@@ -550,6 +550,66 @@ gate "B11 a long first episode cannot overrun blind comity (null vs red $Q11R)" 
 cmp -s "$T/b11.bio" "$T/b11d.bio" && cmp -s "$T/b11.state" "$T/b11d.state"
 gate "B11 null verdict and actor count survive restart (split voyage identical)" $? 0
 
+# The fifth-body law is enforced at home too: after any real travel, a
+# structureless home island cannot keep a learned-confidence hand. The
+# global court already prefers the least confident witness there; the
+# island floor then chooses honest uniform ignorance.
+awk 'BEGIN{s=31337; for(i=0;i<30000;i++){s=(s*1103515245+12345)%2147483648; printf "%c", int(s/65536)%256}}' > "$T/uhome.bytes"
+"$N" "$T/uhome.bytes" "$T/p3.bytes" --reset --no-units --seed 5 --episodes 2 --steps 600 --island 0 --state "$T/b11h.state" --bio "$T/b11h.bio" >/dev/null 2>&1
+"$N" "$T/uhome.bytes" "$T/p3.bytes" --no-units --seed 5 --episodes 1 --steps 600 --island 1 --state "$T/b11h.state" --bio "$T/b11h.bio" >/dev/null 2>&1
+"$N" "$T/uhome.bytes" "$T/p3.bytes" --no-units --seed 5 --episodes 3 --steps 600 --island 0 --state "$T/b11h.state" --bio "$T/b11h.bio" >/dev/null 2>&1
+H11=$(awk -F'\t' '$1=="a" && $2>=4{printf "%s", $3}' "$T/b11h.bio")
+HN8=$(awk -F'\t' 'NF>=11 && $1>=4 && $8!="8.000000"{n++} END{print n+0}' "$T/b11h.bio")
+HRV=$(awk -F'\t' '$1=="r" && $3==0 && $5=="null"{n++} END{print n+0}' "$T/b11h.bio")
+[ "$H11" = "nullnullnull" ] && [ "$HN8" -eq 0 ] && [ "$HRV" -eq 3 ]
+gate "B11 a structureless home is nulled after travel (fifth-body law enforced)" $? 0
+
+# --- B12: the vocabulary pays rent ---------------------------------------
+# A unit unrecognised for UNIT_TTL lived bytes dies: it leaves the living
+# alphabet, keeps its identity and frozen counts, and renewed pair support
+# resurrects the same name. Dead weight is measurable: the undead arm
+# carries a wider Laplace alphabet on a world its units never match.
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --reset --seed 42 --episodes 1 --steps 4000 --island 0 --state "$T/b12.state" --bio "$T/b12.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 30 --steps 600 --island 1 --state "$T/b12.state" --bio "$T/b12.bio" > "$T/b12b.out" 2>&1
+B12B=$(grep -c '^b	' "$T/b12.bio")
+B12D=$(grep -c '^d	' "$T/b12.bio")
+B12L=$(awk '/living of .* born/{print $2}' "$T/b12b.out")
+[ "$B12B" -gt 0 ] && [ "$B12D" -eq "$B12B" ] && [ "$B12L" = "0" ]
+gate "B12 an unrecognised vocabulary dies ($B12B born, $B12D deaths, $B12L living)" $? 0
+DEP=$(awk -F'\t' '$1=="d"{print $2}' "$T/b12.bio" | sort -un | wc -l | tr -d ' ')
+[ "$DEP" -gt 1 ]
+gate "B12 deaths follow each unit's own rent clock, not one bell ($DEP distinct episodes)" $? 0
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 1 --steps 600 --island 1 --state "$T/b12.state" --bio "$T/b12.bio" > "$T/b12t.out" 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --reset --seed 42 --episodes 1 --steps 4000 --island 0 --no-unit-death --state "$T/b12n.state" --bio "$T/b12n.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 30 --steps 600 --island 1 --no-unit-death --state "$T/b12n.state" --bio "$T/b12n.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 1 --steps 600 --island 1 --no-unit-death --state "$T/b12n.state" --bio "$T/b12n.bio" > "$T/b12nt.out" 2>&1
+TAU=$(grep '^this-life model atomic-uni' "$T/b12t.out")
+TAUN=$(grep '^this-life model atomic-uni' "$T/b12nt.out")
+TUU=$(awk '/^this-life model unit-uni/{print $NF}' "$T/b12t.out")
+TUUN=$(awk '/^this-life model unit-uni/{print $NF}' "$T/b12nt.out")
+[ -n "$TAU" ] && [ "$TAU" = "$TAUN" ] && awk -v d="$TUU" -v n="$TUUN" 'BEGIN{exit !(d < n)}'
+gate "B12 dead weight is a measured tax: unit-uni $TUU < undead arm $TUUN on the same truth" $? 0
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 1 --steps 4000 --island 0 --state "$T/b12.state" --bio "$T/b12.bio" >/dev/null 2>&1
+B12U=$(grep -c '^u	' "$T/b12.bio")
+B12DUP=$(awk -F'\t' '$1=="b"{print $5}' "$T/b12.bio" | sort | uniq -d | wc -l | tr -d ' ')
+B12UIN=$(awk -F'\t' -v born="$B12B" '$1=="u" && $3 >= born {bad=1} END{exit bad}' "$T/b12.bio"; echo $?)
+[ "$B12U" -gt 0 ] && [ "$B12DUP" = "0" ] && [ "$B12UIN" = "0" ]
+gate "B12 renewed support resurrects the same name, never a twin ($B12U resurrections)" $? 0
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --reset --seed 42 --episodes 1 --steps 4000 --island 0 --state "$T/b12s.state" --bio "$T/b12s.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 26 --steps 600 --island 1 --state "$T/b12s.state" --bio "$T/b12s.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 4 --steps 600 --island 1 --state "$T/b12s.state" --bio "$T/b12s.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --reset --seed 42 --episodes 1 --steps 4000 --island 0 --state "$T/b12dd.state" --bio "$T/b12dd.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 30 --steps 600 --island 1 --state "$T/b12dd.state" --bio "$T/b12dd.bio" >/dev/null 2>&1
+cmp -s "$T/b12s.bio" "$T/b12dd.bio" && cmp -s "$T/b12s.state" "$T/b12dd.state"
+gate "B12 deaths and rent clocks survive restart (split extinction identical)" $? 0
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 4000 --state "$T/b12z.state" --bio "$T/b12z.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 4000 --no-unit-death --state "$T/b12zn.state" --bio "$T/b12zn.bio" >/dev/null 2>&1
+cmp -s "$T/b12z.bio" "$T/b12zn.bio" && cmp -s "$T/b12z.state" "$T/b12zn.state"
+gate "B12 zero intervention where no rent is due (bit-identical)" $? 0
+printf '\x0d\x00\x00\x00' | dd of="$T/b12z.state" bs=1 seek=8 conv=notrunc 2>/dev/null
+"$N" "$T/rep.bytes" --episodes 1 --steps 4000 --state "$T/b12z.state" --bio "$T/b12z.bio" >/dev/null 2>&1
+gate "B12 a version-13 state cannot enter the rent court" $? 1
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -568,7 +628,7 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move navigation and restart state v13" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v14" $rc 0
 "$S" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 \
     --island 0 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>"$T/si.err"
 rc=$?
@@ -576,6 +636,15 @@ rc=$?
     --island 1 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>>"$T/si.err" || rc=$?
 [ -s "$T/si.err" ] && rc=98
 gate "S ASan/UBSan silent through island travel and local revocation" $rc 0
+"$S" "$T/rep.bytes" "$T/uhome.bytes" --reset --seed 42 --episodes 1 --steps 4000 \
+    --island 0 --state "$T/sd.state" --bio "$T/sd.bio" >/dev/null 2>"$T/sd.err"
+rc=$?
+"$S" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 30 --steps 600 \
+    --island 1 --state "$T/sd.state" --bio "$T/sd.bio" >/dev/null 2>>"$T/sd.err" || rc=$?
+"$S" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 1 --steps 4000 \
+    --island 0 --state "$T/sd.state" --bio "$T/sd.bio" >/dev/null 2>>"$T/sd.err" || rc=$?
+[ -s "$T/sd.err" ] && rc=98
+gate "S ASan/UBSan silent through extinction and resurrection" $rc 0
 "$S" "$T/p3.bytes" "$T/null.bytes" --reset --no-units --seed 5 \
     --episodes 6 --steps 600 --island 0 \
     --state "$T/sn.state" --bio "$T/sn.bio" >/dev/null 2>"$T/sn.err"
