@@ -975,3 +975,38 @@ not exercised at 4096 live identities, and the living totals are a reversible
 view of historical counts rather than island-local memory. A dead unit's past
 prequential scores remain in the biography, as they must; the new law removes
 only its present mechanical vote.
+
+## The thirteenth turn audited: the overturning stands
+
+All hundred and one incoming verdicts reproduced by the auditor's own
+hand before reading. The de Bruijn counterexample was then rebuilt and
+its properties verified independently against the raw tape: all 1024
+ordered pairs present at counts 39 to 40, zero ambiguous trigram
+contexts, maximum pair support 40 and therefore no possible birth. On
+the incoming checkpoint the local door keeps tri at episode fifteen
+while `--no-local-probation` sends the mover on the identical state.
+The overturning of the eleventh-body refusal is confirmed: the refusal's
+fallback argument quietly assumed the bigram class carries the trigram
+class, and the de Bruijn island separates them exactly. The refusal
+stays in the log as negative experience; this section records that its
+revocation was independently reproduced, not accepted on faith.
+
+Tombstone silence was attacked on every named path: the living mass is a
+derived view, absent from the wire, rebuilt deterministically on load,
+and therefore unforgeable by construction -- the conservation lesson of
+the tenth-body audit applied before the forgery could exist. No
+remaining path lets a dead destination count reach a living decision:
+route, anchor, rollout, both shadows, the door, and the court were each
+traced to living-mass or record terms. The sixteen-seed sweep reproduced
+exactly: eight full-null returns of sixteen, seed five the standing null
+witness, seed sixteen lawfully keeping tri.
+
+One constitutional question is named open rather than repaired: the law
+of a life is not part of its state. The control flags that change
+pricing or jurisdiction are per-invocation, so a life can be resumed
+under a different law than the one its records accumulated, and the
+biography does not mark the seam. The suite always holds flags constant
+within a comparison, and the forced-control quarantine covers the actor
+lock, but nothing machine-checks law continuity across resume. Whether
+the law belongs in the state, and which flags are law rather than
+instrument, is a body-sized question left for a future hand.
