@@ -14,12 +14,14 @@ technical source of truth for the living line.
 - The floor always has 256 atomic actions. Repeated lived sequences may earn
   byte-exact units without retokenizing or rewriting the world. The
   vocabulary pays rent: a unit unrecognised for 16384 lived bytes dies and
-  releases the living alphabet, and renewed lived support resurrects the
-  same identity, never a twin.
+  releases the living alphabet. Its frozen counts keep the history but lose
+  all current probability mass; renewed support resurrects the same identity
+  and restores that evidence, never a twin.
 - Five prequential witnesses share one ruler, bits per raw byte:
   `atomic-uni`, `byte-bi`, `byte-tri`, `unit-uni`, and `move-bi`.
 - Authority is earned and revocable. Byte actors compete on their lived
-  records; the semi-Markov move actor must first survive real probation.
+  records; the semi-Markov move actor must first survive real probation,
+  and an island opens that probation only from its own matched shadow record.
 - The move actor can search its last 16 already-observed bytes for an exact
   semi-Markov route and run one model-only move ahead. Search never reads the
   target span, and its resulting policy is still priced by the external world.
@@ -45,12 +47,12 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 95-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 101-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
-uniform birth-floor control, byte-bounded comity, unit death and resurrection
-arms, and failure-closed state and biography checks. A passing build ends
-with `ALL GATES PASS`.
+uniform birth-floor control, byte-bounded comity, an island-local probation
+door, unit death, tombstone silence and resurrection arms, and failure-closed
+state and biography checks. A passing build ends with `ALL GATES PASS`.
 
 ## Start a life
 
@@ -105,8 +107,13 @@ Useful experimental flags:
 - `--no-birth-floor` keeps the body-10 court but disables fixed uniform `null`
   and the byte-bounded comity rule; this is the matched red control for the
   island birth floor.
+- `--no-local-probation` restores the old lifetime-wide probation promise;
+  this is the matched red control for the island-local door.
 - `--no-unit-death` lets the vocabulary keep its seats without rent; this is
   the matched red control for the dead-weight tax.
+- `--keep-dead-mass` restores the body-12 leak, letting frozen tombstone
+  counts enter current probability denominators; this is the red control for
+  tombstone silence.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.

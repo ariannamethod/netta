@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B11. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B13. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -317,17 +317,18 @@ gate "A8 forced move control never enters the persisted mandate record" $? 0
 # island decays the uni-tri lead into the hysteresis band [KEEP, GAIN).
 # The probation at episode 7 must not erase tri's incumbency: episode 8
 # is elected on a lead that still satisfies KEEP, so the seat stays tri.
-# The island court is disabled on this world to isolate the probation
-# law; the local verdict is body 10's own gated organ below.
+# The island court and local probation door are disabled on this world to
+# isolate the incumbent law; the two jurisdictional laws have their own
+# gates below.
 awk 'BEGIN{s=99; for(i=0;i<25000;i++){s=(s*1103515245+12345)%2147483648; n=7+int(s/65536)%2; for(j=0;j<n;j++)printf "a"; printf "b"}}' > "$T/skew.bytes"
-"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --no-island-court --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
-"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 4 --steps 600 --island 1 --no-island-court --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --no-island-court --no-local-probation --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 4 --steps 600 --island 1 --no-island-court --no-local-probation --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
 S7=$(awk -F'\t' '$1=="a" && $2==7{print $3}' "$T/a9.bio")
 S8=$(awk -F'\t' '$1=="a" && $2==8{print $3}' "$T/a9.bio")
 [ "$S7" = "mvp" ] && [ "$S8" = "tri" ]
 gate "A9 probation does not depose the sitting incumbent (ep7=$S7, ep8=$S8)" $? 0
-"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --no-island-court --state "$T/a9b.state" --bio "$T/a9b.bio" >/dev/null 2>&1
-"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 3 --steps 600 --island 1 --no-island-court --state "$T/a9b.state" --bio "$T/a9b.bio" > "$T/a9b.out" 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --no-island-court --no-local-probation --state "$T/a9b.state" --bio "$T/a9b.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 3 --steps 600 --island 1 --no-island-court --no-local-probation --state "$T/a9b.state" --bio "$T/a9b.bio" > "$T/a9b.out" 2>&1
 AU9=$(awk '/^model atomic-uni /{print $NF}' "$T/a9b.out")
 TR9=$(awk '/^model byte-tri /{print $NF}' "$T/a9b.out")
 LEAD9=$(awk -v u="$AU9" -v t="$TR9" 'BEGIN{printf "%.6f", u-t}')
@@ -564,6 +565,66 @@ HRV=$(awk -F'\t' '$1=="r" && $3==0 && $5=="null"{n++} END{print n+0}' "$T/b11h.b
 [ "$H11" = "nullnullnull" ] && [ "$HN8" -eq 0 ] && [ "$HRV" -eq 3 ]
 gate "B11 a structureless home is nulled after travel (fifth-body law enforced)" $? 0
 
+# The fixed pseudo-random tape is not universally structureless once it is
+# revisited: another causal seed re-enters learned spans and tri can earn the
+# full 0.1-bit local margin. This bounds the seed-5 corollary rather than
+# weakening the floor; earned structure must not be nulled by its filename.
+"$N" "$T/uhome.bytes" "$T/p3.bytes" --reset --no-units --seed 16 \
+    --episodes 2 --steps 600 --island 0 \
+    --state "$T/b11hs.state" --bio "$T/b11hs.bio" >/dev/null 2>&1
+"$N" "$T/uhome.bytes" "$T/p3.bytes" --no-units --seed 16 \
+    --episodes 1 --steps 600 --island 1 \
+    --state "$T/b11hs.state" --bio "$T/b11hs.bio" >/dev/null 2>&1
+"$N" "$T/uhome.bytes" "$T/p3.bytes" --no-units --seed 16 \
+    --episodes 1 --steps 600 --island 0 \
+    --state "$T/b11hs.state" --bio "$T/b11hs.bio" >/dev/null 2>&1
+H16=$(awk -F'\t' '$1=="a" && $2==4{print $3}' "$T/b11hs.bio")
+H16R=$(awk -F'\t' '$1=="r" && $2==4{n++} END{print n+0}' "$T/b11hs.bio")
+[ "$H16" = "tri" ] && [ "$H16R" -eq 0 ]
+gate "A11 the fixed random home may earn a hand (seed 16 tri, not forced null)" $? 0
+
+# --- A11: probation has an island-local door -----------------------------
+# A de Bruijn order-2 island is the red world the incoming audit could not
+# find: its trigram is predictive, every bigram row is uniform, no adjacency
+# reaches birth support, and its alphabet is disjoint from the home units.
+# The byte hand therefore acts while the local move shadow lacks the 0.1-bit
+# promise. The old global door nevertheless sent the mover at episode 15.
+awk '
+function db(t,p,j) {
+    if (t > 2) {
+        if (2 % p == 0) for (j=1; j<=p; j++) seq[++n] = a[j]
+    } else {
+        a[t] = a[t-p]; db(t+1,p)
+        for (j=a[t-p]+1; j<k; j++) { a[t]=j; db(t+1,t) }
+    }
+}
+BEGIN {
+    k=32; db(1,1)
+    for (r=0; r<40; r++) for (i=1; i<=n; i++) printf "%c", 64+seq[i]
+}' > "$T/db2.bytes"
+"$N" "$T/rep.bytes" "$T/db2.bytes" --reset --seed 5 \
+    --episodes 7 --steps 600 --island 0 \
+    --state "$T/a11.state" --bio "$T/a11.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/db2.bytes" --seed 5 \
+    --episodes 7 --steps 600 --island 1 \
+    --state "$T/a11.state" --bio "$T/a11.bio" >/dev/null 2>&1
+cp "$T/a11.state" "$T/a11r.state"
+cp "$T/a11.bio" "$T/a11r.bio"
+"$N" "$T/rep.bytes" "$T/db2.bytes" --seed 5 \
+    --episodes 1 --steps 600 --island 1 \
+    --state "$T/a11.state" --bio "$T/a11.bio" >"$T/a11.out" 2>&1
+"$N" "$T/rep.bytes" "$T/db2.bytes" --seed 5 --no-local-probation \
+    --episodes 1 --steps 600 --island 1 \
+    --state "$T/a11r.state" --bio "$T/a11r.bio" >/dev/null 2>&1
+A11=$(awk -F'\t' '$1=="a" && $2==15{print $3}' "$T/a11.bio")
+A11R=$(awk -F'\t' '$1=="a" && $2==15{print $3}' "$T/a11r.bio")
+A11B=$(awk -F'\t' '$1=="b" && $2>=8{n++} END{print n+0}' "$T/a11.bio")
+A11M=$(awk '/^island 1 shadow move-bi/{gsub(",", "", $5); print $5}' "$T/a11.out")
+A11U=$(awk '/^island 1 shadow move-bi/{print $8}' "$T/a11.out")
+[ "$A11" = "tri" ] && [ "$A11R" = "mvp" ] && [ "$A11B" -eq 0 ] &&
+    awk -v u="$A11U" -v m="$A11M" 'BEGIN{exit !(u-m < 0.1)}'
+gate "A11 local shadow closes a foreign probation door (tri vs red $A11R; local gain $(awk -v u="$A11U" -v m="$A11M" 'BEGIN{printf "%.6f", u-m}'))" $? 0
+
 # --- B12: the vocabulary pays rent ---------------------------------------
 # A unit unrecognised for UNIT_TTL lived bytes dies: it leaves the living
 # alphabet, keeps its identity and frozen counts, and renewed pair support
@@ -606,9 +667,69 @@ gate "B12 deaths and rent clocks survive restart (split extinction identical)" $
 "$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 4000 --no-unit-death --state "$T/b12zn.state" --bio "$T/b12zn.bio" >/dev/null 2>&1
 cmp -s "$T/b12z.bio" "$T/b12zn.bio" && cmp -s "$T/b12z.state" "$T/b12zn.state"
 gate "B12 zero intervention where no rent is due (bit-identical)" $? 0
-printf '\x0d\x00\x00\x00' | dd of="$T/b12z.state" bs=1 seek=8 conv=notrunc 2>/dev/null
+printf '\x0e\x00\x00\x00' | dd of="$T/b12z.state" bs=1 seek=8 conv=notrunc 2>/dev/null
 "$N" "$T/rep.bytes" --episodes 1 --steps 4000 --state "$T/b12z.state" --bio "$T/b12z.bio" >/dev/null 2>&1
-gate "B12 a version-13 state cannot enter the rent court" $? 1
+gate "B12 a version-14 state cannot enter the local probation court" $? 1
+
+# --- B13: tombstones keep history and lose authority --------------------
+# Frozen counts are resurrection memory, not a vote. With every unit dead,
+# the default searched player and the old-mass control start from the exact
+# same state and truth addresses; a changed receipt proves the ghosts used to
+# enter the one-ply distribution. Without navigation the common denominator
+# cancels and the paired receipts remain identical, locating the influence.
+B13UM=$(awk '/^tombstones:/{print $2}' "$T/b12b.out")
+B13PM=$(awk '/^tombstones:/{print $6}' "$T/b12b.out")
+[ "$B13UM" -gt 0 ] && [ "$B13PM" -gt 0 ]
+gate "B13 death excludes frozen evidence from living mass ($B13UM unigram, $B13PM transition events)" $? 0
+
+for arm in b13 b13g b13n b13ng; do
+    cp "$T/b12s.state" "$T/$arm.state"
+    cp "$T/b12s.bio" "$T/$arm.bio"
+done
+B13BASE=$(wc -l < "$T/b12s.bio")
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --start 16 --episodes 1 --steps 600 --island 1 \
+    --state "$T/b13.state" --bio "$T/b13.bio" >"$T/b13.out" 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --start 16 --keep-dead-mass --episodes 1 --steps 600 --island 1 \
+    --state "$T/b13g.state" --bio "$T/b13g.bio" >"$T/b13g.out" 2>&1
+tail -n "+$((B13BASE+1))" "$T/b13.bio" | grep '^v' > "$T/b13.v"
+tail -n "+$((B13BASE+1))" "$T/b13g.bio" | grep '^v' > "$T/b13g.v"
+cmp -s "$T/b13.v" "$T/b13g.v"
+B13DIFF=$?
+B13REF=$(awk '/^mv control record:/{gsub(",", ""); print $12,$14,$16}' "$T/b13.out")
+B13GREF=$(awk '/^mv control record:/{gsub(",", ""); print $12,$14,$16}' "$T/b13g.out")
+[ "$B13DIFF" -eq 1 ] && [ -n "$B13REF" ] && [ "$B13REF" = "$B13GREF" ]
+gate "B13 dead counts cannot steer searched life (red ghost arm diverges on matched truth)" $? 0
+
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --no-mv-nav --start 16 --episodes 1 --steps 600 --island 1 \
+    --state "$T/b13n.state" --bio "$T/b13n.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --no-mv-nav --start 16 --keep-dead-mass --episodes 1 --steps 600 \
+    --island 1 --state "$T/b13ng.state" --bio "$T/b13ng.bio" >/dev/null 2>&1
+tail -n "+$((B13BASE+1))" "$T/b13n.bio" | grep '^v' > "$T/b13n.v"
+tail -n "+$((B13BASE+1))" "$T/b13ng.bio" | grep '^v' > "$T/b13ng.v"
+cmp -s "$T/b13n.v" "$T/b13ng.v"
+gate "B13 ghost influence is isolated to searched continuation (600 no-nav receipts identical)" $? 0
+
+# Resurrection restores the frozen evidence exactly: when all identities are
+# living again, the silent and historical denominators are the same number.
+cp "$T/b12.state" "$T/b13r.state"
+cp "$T/b12.bio" "$T/b13r.bio"
+cp "$T/b12.state" "$T/b13rg.state"
+cp "$T/b12.bio" "$T/b13rg.bio"
+B13RBASE=$(wc -l < "$T/b12.bio")
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --start 16 --episodes 1 --steps 600 --island 0 \
+    --state "$T/b13r.state" --bio "$T/b13r.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --start 16 --keep-dead-mass --episodes 1 --steps 600 --island 0 \
+    --state "$T/b13rg.state" --bio "$T/b13rg.bio" >/dev/null 2>&1
+tail -n "+$((B13RBASE+1))" "$T/b13r.bio" | grep '^v' > "$T/b13r.v"
+tail -n "+$((B13RBASE+1))" "$T/b13rg.bio" | grep '^v' > "$T/b13rg.v"
+cmp -s "$T/b13r.v" "$T/b13rg.v"
+gate "B13 resurrection restores frozen evidence to living authority exactly" $? 0
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
@@ -628,7 +749,7 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move navigation and restart state v14" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v15" $rc 0
 "$S" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 \
     --island 0 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>"$T/si.err"
 rc=$?
@@ -641,10 +762,13 @@ gate "S ASan/UBSan silent through island travel and local revocation" $rc 0
 rc=$?
 "$S" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 30 --steps 600 \
     --island 1 --state "$T/sd.state" --bio "$T/sd.bio" >/dev/null 2>>"$T/sd.err" || rc=$?
+"$S" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv --start 16 \
+    --episodes 1 --steps 128 --island 1 --state "$T/sd.state" \
+    --bio "$T/sd.bio" >/dev/null 2>>"$T/sd.err" || rc=$?
 "$S" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 1 --steps 4000 \
     --island 0 --state "$T/sd.state" --bio "$T/sd.bio" >/dev/null 2>>"$T/sd.err" || rc=$?
 [ -s "$T/sd.err" ] && rc=98
-gate "S ASan/UBSan silent through extinction and resurrection" $rc 0
+gate "S ASan/UBSan silent through extinction, searched tombstones, and resurrection" $rc 0
 "$S" "$T/p3.bytes" "$T/null.bytes" --reset --no-units --seed 5 \
     --episodes 6 --steps 600 --island 0 \
     --state "$T/sn.state" --bio "$T/sn.bio" >/dev/null 2>"$T/sn.err"

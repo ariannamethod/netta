@@ -888,3 +888,90 @@ advances stay atomic, and a probation episode under a changed alphabet
 is a different organism episode by construction, priced differently on
 the same bytes. The tax is small in a long life by design; its size at
 the capacity wall, where MAX_UNITS matters, is unmeasured.
+
+## The eleventh-body audit audited: the missing island exists
+
+All ninety-five incoming verdicts reproduced before the two refusals were
+attacked independently. The stationary flap still has no red world. The
+probation-door refusal does not survive.
+
+The missing island is a de Bruijn cycle of order two over thirty-two byte
+values disjoint from the home vocabulary. Every ordered byte pair occurs
+equally, so the move bigram's atomic fallback has no contextual advantage;
+each pair is also too rare to reach birth support. Yet a byte pair determines
+the next byte, so the local trigram earns the hand. After seven home episodes
+and seven foreign episodes, zero units have been born on the island and tri
+acts. The old lifetime door still sends `mvp` at episode 15 because it carries
+the home move-shadow promise across the water. On the foreign record itself,
+move-bi pays `6.955204` against its matched atomic witness's `6.782470`: a
+lead of `-0.172734`, not the required `+0.1`. The refusal's word-salad probe
+had shown one island where both doors agree; it could not prove that all
+islands do.
+
+The repair makes the probation promise part of island jurisdiction. Every
+canonical truth move now carries the move-shadow price and the atomic price
+over exactly the same raw bytes into both global and island partitions. A
+trial needs a thousand matched local bytes and a local 0.1-bit lead. The
+de Bruijn hand remains tri at episode 15; `--no-local-probation` restores the
+old travelling door and sends `mvp` on the identical checkpoint. This also
+repairs the shadow door's old event-base mismatch: the first unconditioned
+move of an episode belongs to neither side of the comparison.
+
+The new partitions are conserved against their global records on load, and
+direct and split lives remain bit-identical. State advances to version 15.
+Ninety-six gates pass, strict C11 and ASan/UBSan included. The old refusal
+remains in this log as negative experience; the red world, not rhetoric,
+revokes it.
+
+The other incoming corollary also needed a smaller name. A sweep over seeds
+1 through 16 reproduced `null/null/null` on only eight. Seed 16 keeps tri on
+all three home returns and records no refusal. This is lawful, not a leak in
+the floor: the so-called structureless home is one fixed pseudo-random tape,
+and a different causal path revisits enough of its immutable trigram map for
+the local witness to earn the 0.1-bit margin. The seed-5 gate proves that a
+home can lose an unearned hand after travel; it does not prove that this tape
+is uniformly unknowable. A seed-16 red corollary now prevents the example
+from being promoted back into a universal claim.
+
+## The thirteenth body: tombstones remember and do not vote
+
+The twelfth body removed dead units from the candidate set but deliberately
+left their frozen counts in unigram and transition denominators as a decaying
+mass leak. That compromise fails its own strongest sentence. A dead unit
+cannot be sampled, matched, or used as a route node, yet its incoming counts
+still change the normalization of one-ply continuations row by row. Candidate
+rows carry different ghost mass, so the searched distribution and its price
+can change. Death had removed the name from the ballot while leaving its old
+votes in the box.
+
+Body 13 separates memory from authority. Historical `move_count`, pairs,
+`move_total`, and `mv_out` remain frozen exactly as body 12 requires: identity
+is never erased and resurrection has a body to recover. Alongside them Netta
+maintains derived living unigram and destination-row totals. Death subtracts
+one unit's frozen evidence from those living totals; resurrection adds the
+same evidence back under the same id. The unit shadow, move shadow, Viterbi
+route score, and one-ply continuation all normalize against living mass.
+`--keep-dead-mass` is the exact body-12 valve.
+
+The extinction arena leaves fourteen tombstones containing 642 unigram events
+and 642 transition events. Two forced searched players then start from copied
+state, fixed source 16, and the same external truth. Their matched byte refs
+are identical, but the body-12 ghost arm changes the move receipts and prices
+`8.543107` bits per byte against the silent body's `8.557175`. The old leak is
+not even claimed to be worse here; it is disqualified because evidence from a
+non-candidate changed a live decision. With navigation disabled, all 600
+receipts are identical because the common historical denominator cancels,
+locating the ghost precisely in searched continuation. After all fourteen
+names resurrect, the two valves again produce identical searched receipts:
+memory returns to authority exactly when the identity returns to life.
+
+Living totals are deterministically rebuilt from the historical state and
+tombstone flags on resume, so the wire remains version 15 and extinction
+splits stay bit-identical. One hundred and one gates pass, including strict C11 and
+ASan/UBSan through extinction, searched tombstones, and resurrection.
+
+What is not proved: rent is still one global constant, the capacity wall is
+not exercised at 4096 live identities, and the living totals are a reversible
+view of historical counts rather than island-local memory. A dead unit's past
+prequential scores remain in the biography, as they must; the new law removes
+only its present mechanical vote.
