@@ -888,3 +888,37 @@ advances stay atomic, and a probation episode under a changed alphabet
 is a different organism episode by construction, priced differently on
 the same bytes. The tax is small in a long life by design; its size at
 the capacity wall, where MAX_UNITS matters, is unmeasured.
+
+## The eleventh-body audit audited: the missing island exists
+
+All ninety-five incoming verdicts reproduced before the two refusals were
+attacked independently. The stationary flap still has no red world. The
+probation-door refusal does not survive.
+
+The missing island is a de Bruijn cycle of order two over thirty-two byte
+values disjoint from the home vocabulary. Every ordered byte pair occurs
+equally, so the move bigram's atomic fallback has no contextual advantage;
+each pair is also too rare to reach birth support. Yet a byte pair determines
+the next byte, so the local trigram earns the hand. After seven home episodes
+and seven foreign episodes, zero units have been born on the island and tri
+acts. The old lifetime door still sends `mvp` at episode 15 because it carries
+the home move-shadow promise across the water. On the foreign record itself,
+move-bi pays `6.955204` against its matched atomic witness's `6.782470`: a
+lead of `-0.172734`, not the required `+0.1`. The refusal's word-salad probe
+had shown one island where both doors agree; it could not prove that all
+islands do.
+
+The repair makes the probation promise part of island jurisdiction. Every
+canonical truth move now carries the move-shadow price and the atomic price
+over exactly the same raw bytes into both global and island partitions. A
+trial needs a thousand matched local bytes and a local 0.1-bit lead. The
+de Bruijn hand remains tri at episode 15; `--no-local-probation` restores the
+old travelling door and sends `mvp` on the identical checkpoint. This also
+repairs the shadow door's old event-base mismatch: the first unconditioned
+move of an episode belongs to neither side of the comparison.
+
+The new partitions are conserved against their global records on load, and
+direct and split lives remain bit-identical. State advances to version 15.
+Ninety-six gates pass, strict C11 and ASan/UBSan included. The old refusal
+remains in this log as negative experience; the red world, not rhetoric,
+revokes it.

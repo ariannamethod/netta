@@ -42,7 +42,7 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    14u
+#define STATE_VER    15u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -314,6 +314,7 @@ static void pair_feed(uint32_t prev, uint32_t cur) {
 /* matcher: segments the lived truth tape into moves (greedy longest
    unit match), feeds adjacent-move pairs, emits macro receipts. */
 static uint8_t  mbuf[UNIT_MAX_LEN];
+static double   mbuf_atomic_bits[UNIT_MAX_LEN];
 static uint32_t mlen = 0;
 static int64_t  prev_move = -1;
 static uint64_t mstart_pos = 0;     /* world offset of mbuf[0] */
@@ -347,6 +348,8 @@ static uint64_t bilm_bytes = 0;
 static uint64_t mv_out[ACTIONS + MAX_UNITS];
 static double   mvlm_bits = 0.0;
 static uint64_t mvlm_bytes = 0;
+static double   mvlm_ref_bits = 0.0;
+static uint64_t mvlm_ref_bytes = 0;
 /* mv's PLAYED record: the emission seat is earned in this discipline
    only -- pricing moves in shadow does not transfer to the right to
    emit them (measured in this body: seating mv on its shadow record
@@ -441,7 +444,14 @@ static double   isl_mvp_bits[MAX_ISLANDS];
 static uint64_t isl_mvp_bytes[MAX_ISLANDS];
 static double   isl_mvp_ref_bits[MAX_ISLANDS][3];
 static uint64_t isl_mvp_ref_bytes[MAX_ISLANDS];
+/* The probation door is jurisdiction too. These are the move shadow and
+   its atomic witness on the exact same canonical moves, partitioned by
+   island; a trial cannot travel on another island's promise. */
+static double   isl_mvlm_bits[MAX_ISLANDS];
+static double   isl_mvlm_ref_bits[MAX_ISLANDS];
+static uint64_t isl_mvlm_bytes[MAX_ISLANDS];
 static int island_court_enabled = 1;
+static int local_probation_enabled = 1;
 /* body 11: fixed uniform null is a local hand, never a global seat. A
    travelled byte hand must earn ACTOR_GAIN over its eight-bit floor, and an
    episode cannot carry blind comity beyond ACTOR_MIN_BYTES. */
@@ -800,7 +810,8 @@ static void build_move_dist(int64_t prev, int range, int alphabet,
     }
 }
 
-static void emit_move(uint32_t m, uint64_t pos, int isl) {
+static void emit_move(uint32_t m, uint64_t pos, int isl,
+                      double atomic_ref_bits) {
     /* prequential shadow price, strictly before the count update; the
        Laplace alphabet is the living one, dead counts stay behind as a
        decaying mass leak */
@@ -832,8 +843,14 @@ static void emit_move(uint32_t m, uint64_t pos, int isl) {
         double d2 = (double)mv_out[pv] +
                     (double)(ACTIONS + unit_living);
         double p2 = ((double)pair_get(pv, m) + 1.0) / d2;
-        mvlm_bits += -log2(p2);
+        double move_bits = -log2(p2);
+        mvlm_bits += move_bits;
         mvlm_bytes += move_len(m);
+        mvlm_ref_bits += atomic_ref_bits;
+        mvlm_ref_bytes += move_len(m);
+        isl_mvlm_bits[isl] += move_bits;
+        isl_mvlm_ref_bits[isl] += atomic_ref_bits;
+        isl_mvlm_bytes[isl] += move_len(m);
         mv_out[pv]++;
         pair_feed(pv, m);
     }
@@ -847,23 +864,35 @@ static void matcher_flush_front(void) {
         int u = unit_find_living(mbuf, k);
         if (u >= 0) { best = k; best_u = u; break; }
     }
+    double atomic_ref_bits = 0.0;
+    for (uint32_t j = 0; j < best; ++j)
+        atomic_ref_bits += mbuf_atomic_bits[j];
     if (best_u >= 0) emit_move((uint32_t)(ACTIONS + best_u),
-                               mstart_pos, mstart_isl);
-    else emit_move((uint32_t)mbuf[0], mstart_pos, mstart_isl);
+                               mstart_pos, mstart_isl, atomic_ref_bits);
+    else emit_move((uint32_t)mbuf[0], mstart_pos, mstart_isl,
+                   atomic_ref_bits);
     memmove(mbuf, mbuf + best, mlen - best);
+    memmove(mbuf_atomic_bits, mbuf_atomic_bits + best,
+            (mlen - best) * sizeof mbuf_atomic_bits[0]);
     mlen -= best;
     mstart_pos += best;
 }
 
-static void matcher_feed(uint8_t truth, uint64_t pos, int isl) {
+static void matcher_feed(uint8_t truth, uint64_t pos, int isl,
+                         double atomic_bits) {
     if (mlen == 0) { mstart_pos = pos; mstart_isl = isl; }
-    mbuf[mlen++] = truth;
+    mbuf[mlen] = truth;
+    mbuf_atomic_bits[mlen] = atomic_bits;
+    mlen++;
     while (mlen > 0 &&
            (mlen == UNIT_MAX_LEN || !unit_prefix_alive(mbuf, mlen))) {
         if (mlen < UNIT_MAX_LEN && unit_prefix_alive(mbuf, mlen)) break;
         if (mlen == UNIT_MAX_LEN && unit_find_living(mbuf, mlen) >= 0) {
+            double atomic_ref_bits = 0.0;
+            for (uint32_t j = 0; j < mlen; ++j)
+                atomic_ref_bits += mbuf_atomic_bits[j];
             emit_move((uint32_t)(ACTIONS + unit_find_living(mbuf, mlen)),
-                      mstart_pos, mstart_isl);
+                      mstart_pos, mstart_isl, atomic_ref_bits);
             mlen = 0;
             break;
         }
@@ -977,6 +1006,8 @@ static void state_save(const char *path) {
             != ACTIONS + MAX_UNITS ||
         fwrite(&mvlm_bits, sizeof mvlm_bits, 1, f) != 1 ||
         fwrite(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
+        fwrite(&mvlm_ref_bits, sizeof mvlm_ref_bits, 1, f) != 1 ||
+        fwrite(&mvlm_ref_bytes, sizeof mvlm_ref_bytes, 1, f) != 1 ||
         fwrite(&mvp_bits, sizeof mvp_bits, 1, f) != 1 ||
         fwrite(&mvp_bytes, sizeof mvp_bytes, 1, f) != 1 ||
         fwrite(mvp_ref_bits, sizeof mvp_ref_bits[0], 3, f) != 3 ||
@@ -1006,7 +1037,10 @@ static void state_save(const char *path) {
             fwrite(&isl_mvp_bits[i], sizeof(double), 1, f) != 1 ||
             fwrite(&isl_mvp_bytes[i], sizeof(uint64_t), 1, f) != 1 ||
             fwrite(isl_mvp_ref_bits[i], sizeof(double), 3, f) != 3 ||
-            fwrite(&isl_mvp_ref_bytes[i], sizeof(uint64_t), 1, f) != 1) {
+            fwrite(&isl_mvp_ref_bytes[i], sizeof(uint64_t), 1, f) != 1 ||
+            fwrite(&isl_mvlm_bits[i], sizeof(double), 1, f) != 1 ||
+            fwrite(&isl_mvlm_ref_bits[i], sizeof(double), 1, f) != 1 ||
+            fwrite(&isl_mvlm_bytes[i], sizeof(uint64_t), 1, f) != 1) {
             fprintf(stderr, "netta: state write failed\n"); exit(1);
         }
     }
@@ -1132,6 +1166,8 @@ static int state_load(const char *path) {
             != ACTIONS + MAX_UNITS ||
         fread(&mvlm_bits, sizeof mvlm_bits, 1, f) != 1 ||
         fread(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
+        fread(&mvlm_ref_bits, sizeof mvlm_ref_bits, 1, f) != 1 ||
+        fread(&mvlm_ref_bytes, sizeof mvlm_ref_bytes, 1, f) != 1 ||
         fread(&mvp_bits, sizeof mvp_bits, 1, f) != 1 ||
         fread(&mvp_bytes, sizeof mvp_bytes, 1, f) != 1 ||
         fread(mvp_ref_bits, sizeof mvp_ref_bits[0], 3, f) != 3 ||
@@ -1185,7 +1221,10 @@ static int state_load(const char *path) {
             fread(&isl_mvp_bits[i], sizeof(double), 1, f) != 1 ||
             fread(&isl_mvp_bytes[i], sizeof(uint64_t), 1, f) != 1 ||
             fread(isl_mvp_ref_bits[i], sizeof(double), 3, f) != 3 ||
-            fread(&isl_mvp_ref_bytes[i], sizeof(uint64_t), 1, f) != 1) {
+            fread(&isl_mvp_ref_bytes[i], sizeof(uint64_t), 1, f) != 1 ||
+            fread(&isl_mvlm_bits[i], sizeof(double), 1, f) != 1 ||
+            fread(&isl_mvlm_ref_bits[i], sizeof(double), 1, f) != 1 ||
+            fread(&isl_mvlm_bytes[i], sizeof(uint64_t), 1, f) != 1) {
             fprintf(stderr, "netta: %s truncated; refusing\n", path);
             exit(1);
         }
@@ -1210,6 +1249,7 @@ static int state_load(const char *path) {
         trilm_bytes != steps_total)
         state_refuse(path, "raw-byte totals disagree");
     if (unitlm_bytes > steps_total || mvlm_bytes > unitlm_bytes ||
+        mvlm_ref_bytes != mvlm_bytes ||
         mvp_bytes > steps_total || mvp_ref_bytes != mvp_bytes ||
         macro_bytes > steps_total ||
         macro_events > moves_emitted)
@@ -1228,15 +1268,19 @@ static int state_load(const char *path) {
                     "actor episode overflow");
     if (actor_eps != episode_no)
         state_refuse(path, "actor episodes disagree");
-    uint64_t isl_lived_sum = 0, isl_mv_sum = 0;
+    uint64_t isl_lived_sum = 0, isl_mv_sum = 0, isl_shadow_sum = 0;
     long double isl_score_sum[3] = {0.0L, 0.0L, 0.0L};
     long double isl_mv_score_sum = 0.0L;
     long double isl_mv_ref_sum[3] = {0.0L, 0.0L, 0.0L};
+    long double isl_shadow_score_sum = 0.0L;
+    long double isl_shadow_ref_sum = 0.0L;
     for (int i = 0; i < island_count; ++i) {
         checked_add(&isl_lived_sum, isl_lived[i], path,
                     "island lived overflow");
         checked_add(&isl_mv_sum, isl_mvp_bytes[i], path,
                     "island move overflow");
+        checked_add(&isl_shadow_sum, isl_mvlm_bytes[i], path,
+                    "island shadow overflow");
         if (isl_mvp_ref_bytes[i] != isl_mvp_bytes[i] ||
             isl_mvp_bytes[i] > isl_lived[i])
             state_refuse(path, "island move evidence disagrees");
@@ -1253,8 +1297,16 @@ static int state_load(const char *path) {
         if (!isfinite(isl_mvp_bits[i]) || isl_mvp_bits[i] < 0.0)
             state_refuse(path, "non-finite island record");
         isl_mv_score_sum += (long double)isl_mvp_bits[i];
+        if (!isfinite(isl_mvlm_bits[i]) || isl_mvlm_bits[i] < 0.0 ||
+            !isfinite(isl_mvlm_ref_bits[i]) ||
+            isl_mvlm_ref_bits[i] < 0.0 ||
+            isl_mvlm_bytes[i] > isl_lived[i])
+            state_refuse(path, "island shadow record");
+        isl_shadow_score_sum += (long double)isl_mvlm_bits[i];
+        isl_shadow_ref_sum += (long double)isl_mvlm_ref_bits[i];
     }
-    if (isl_lived_sum != steps_total || isl_mv_sum != mvp_bytes)
+    if (isl_lived_sum != steps_total || isl_mv_sum != mvp_bytes ||
+        isl_shadow_sum != mvlm_bytes)
         state_refuse(path, "island records disagree with the life");
     score_agrees(path, "island atomic score disagrees",
                  isl_score_sum[0], atomic_bits_lived);
@@ -1267,10 +1319,15 @@ static int state_load(const char *path) {
     for (int c = 0; c < 3; ++c)
         score_agrees(path, "island move reference score disagrees",
                      isl_mv_ref_sum[c], mvp_ref_bits[c]);
+    score_agrees(path, "island shadow score disagrees",
+                 isl_shadow_score_sum, mvlm_bits);
+    score_agrees(path, "island shadow reference score disagrees",
+                 isl_shadow_ref_sum, mvlm_ref_bits);
     if (!isfinite(unitlm_bits) || unitlm_bits < 0.0 ||
         !isfinite(atomic_bits_lived) || atomic_bits_lived < 0.0 ||
         !isfinite(bilm_bits) || bilm_bits < 0.0 ||
         !isfinite(mvlm_bits) || mvlm_bits < 0.0 ||
+        !isfinite(mvlm_ref_bits) || mvlm_ref_bits < 0.0 ||
         !isfinite(mvp_bits) || mvp_bits < 0.0 ||
         !isfinite(mvp_ref_bits[0]) || mvp_ref_bits[0] < 0.0 ||
         !isfinite(mvp_ref_bits[1]) || mvp_ref_bits[1] < 0.0 ||
@@ -1375,13 +1432,14 @@ static void absorb_truth(int isl_id, Island *isl, uint64_t pos,
     int truth = isl->bytes[pos];
     uint8_t pv = isl->bytes[pos - 1];
     uint32_t tctx = ((uint32_t)isl->bytes[pos - 2] << 8) | pv;
-    atomic_bits_lived += -log2(p_uni[truth]);
+    double atomic_nll = -log2(p_uni[truth]);
+    atomic_bits_lived += atomic_nll;
     atomic_bytes_lived++;
     bilm_bits += -log2(p_bi[truth]);
     bilm_bytes++;
     trilm_bits += -log2(p_tri[truth]);
     trilm_bytes++;
-    isl_bits[isl_id][0] += -log2(p_uni[truth]);
+    isl_bits[isl_id][0] += atomic_nll;
     isl_bits[isl_id][1] += -log2(p_bi[truth]);
     isl_bits[isl_id][2] += -log2(p_tri[truth]);
     isl_lived[isl_id]++;
@@ -1392,7 +1450,7 @@ static void absorb_truth(int isl_id, Island *isl, uint64_t pos,
     bi_row[pv]++;
     tri_add(tctx, (uint8_t)truth);
     if (units_enabled)
-        matcher_feed((uint8_t)truth, pos, isl_id);
+        matcher_feed((uint8_t)truth, pos, isl_id, atomic_nll);
 }
 
 static double run_episode(int isl_id, uint64_t steps) {
@@ -1441,15 +1499,22 @@ static double run_episode(int isl_id, uint64_t steps) {
     actor_elect();
     int acting = island_court(isl_id, steps);
     int probation = 0;
+    double door_move_bits = local_probation_enabled
+                          ? isl_mvlm_bits[isl_id] : mvlm_bits;
+    double door_ref_bits = local_probation_enabled
+                         ? isl_mvlm_ref_bits[isl_id] : mvlm_ref_bits;
+    uint64_t door_bytes = local_probation_enabled
+                        ? isl_mvlm_bytes[isl_id] : mvlm_bytes;
     if (actor_lock < 0 && units_enabled && acting >= 0 && acting <= 2 &&
-        episode_no % 8 == 7 &&
-        atomic_bytes_lived >= ACTOR_MIN_BYTES && mvlm_bytes &&
-        atomic_bits_lived / (double)atomic_bytes_lived -
-        mvlm_bits / (double)mvlm_bytes >= ACTOR_GAIN) {
+        episode_no % 8 == 7 && door_bytes >= ACTOR_MIN_BYTES &&
+        door_ref_bits / (double)door_bytes -
+        door_move_bits / (double)door_bytes >= ACTOR_GAIN) {
         /* the shadow record opens a rare, deterministic probation
            episode; only the record played here can earn the seat.
            Probation borrows the body, never the seat: the elected
-           incumbent keeps its mandate through the trial. */
+           incumbent keeps its mandate through the trial. The promise is
+           judged on this island unless the audit valve restores the old
+           travelling door. */
         acting = 3;
         probation = 1;
     }
@@ -1671,6 +1736,8 @@ int main(int argc, char **argv) {
             island_court_enabled = 0;
         else if (!strcmp(argv[i], "--no-birth-floor"))
             birth_floor_enabled = 0;
+        else if (!strcmp(argv[i], "--no-local-probation"))
+            local_probation_enabled = 0;
         else if (!strcmp(argv[i], "--no-unit-death"))
             unit_death_enabled = 0;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
@@ -1703,7 +1770,8 @@ int main(int argc, char **argv) {
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
-                        "[--no-birth-floor] [--no-unit-death] "
+                        "[--no-birth-floor] [--no-local-probation] "
+                        "[--no-unit-death] "
                         "[--actor-lock uni|bi|tri|mv]\n");
         exit(1);
     }
@@ -1798,6 +1866,13 @@ int main(int argc, char **argv) {
     if (units_enabled && mvlm_bytes)
         printf("model move-bi bits/byte %.6f\n",
                mvlm_bits / (double)mvlm_bytes);
+    if (units_enabled && isl_mvlm_bytes[isl_id])
+        printf("island %d shadow move-bi %.6f, atomic ref %.6f over "
+               "%llu bytes\n", isl_id,
+               isl_mvlm_bits[isl_id] / (double)isl_mvlm_bytes[isl_id],
+               isl_mvlm_ref_bits[isl_id] /
+               (double)isl_mvlm_bytes[isl_id],
+               (unsigned long long)isl_mvlm_bytes[isl_id]);
     if (trilm_bytes)
         printf("model byte-tri bits/byte %.6f\n",
                trilm_bits / (double)trilm_bytes);
