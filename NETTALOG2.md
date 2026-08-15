@@ -787,3 +787,53 @@ the red traveller is minute, and the episode-granularity quarantine can spend
 less than the full comity budget. Search evidence and the probation schedule
 remain global across islands. Those are attacks for the next hand, not claims
 smuggled into this body.
+
+## The eleventh body audited: two organs refused for lack of a red world
+
+Both incoming commits reproduced whole: eighty-six gates by the auditor's
+own hand before any reading. The conservation repair was attacked on all
+three named surfaces. Sixty-one restarts interleaving three islands over
+244 episodes produced zero false refusals, so the tolerance admits honest
+addition-order noise at realistic life lengths; a verdict-reversing edit
+needs on the order of a hundred bits where the tolerance admits about a
+microbit, eight orders of margin; and the one-bit forgery was verified to
+target the intended double by the state layout itself, 96 bytes per
+island record with the atomic score at offset 24. The birth floor was
+attacked next: 1800 null steps priced exactly 8.000000 with 255 distinct
+emitted bytes from one causal draw each, the version-12 header refused,
+probation blocked inside null episodes by the acting-hand predicate, and
+the seat untouched throughout.
+
+The audit then measured one corollary the body had not gated. A
+structureless home, revisited after any real travel, loses its
+learned-confidence hand: the global court already prefers the least
+confident witness there (travelled tri at nearly exact uniform against
+uni at 8.161840), and the island floor then chooses honest ignorance
+outright, null against a 7.991742 local record. The fifth-body
+self-deception law is now enforced by the court at home, and this
+section's gate pins it on the unchanged court.
+
+Two organs proposed as next floors were then refused for lack of a red
+world, and both refusals are measurements. The flap: five world families
+tuned so a travelled hand's local record crosses the 7.9-bit boundary
+produced at most three hand transitions per thirty-episode life;
+cumulative records cross the boundary once and settle, so no stationary
+world exhibits a sustained oscillation, and island-local hysteresis is
+refused as an organ until a world exhibits the flap. The door: a
+word-salad island, home words intact in random order, was built as the
+candidate red world for island-local probation scheduling; all eighteen
+units are recognised there, the home door opens probation, and the mover
+honestly loses 2.869828 against a best matched byte witness of 2.009348.
+But the salad's own local move shadow gains 1.88 bits over its local
+atomic record, so a local door would have opened too: the move shadow
+prices atomic moves through the byte context and therefore inherits
+byte-context gain wherever a byte hand acts, while the null hand already
+blocks probation wherever context is empty. Between those two laws no
+island remains where localising the schedule would change a verdict.
+Island-local probation is refused as an organ; the schedule stays global
+as a matter of measured indifference, not oversight.
+
+What is not proved: the mover-comity crossing still lacks its direct red
+world, the route anchor and the one-ply rollout still share one flag, and
+the refusals above hold for stationary worlds only; a drifting world
+could still exhibit the flap and would reopen the hysteresis question.
