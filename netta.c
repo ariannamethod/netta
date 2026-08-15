@@ -43,7 +43,7 @@
 #define MAX_REGISTRY 1024   /* islands one life may ever meet */
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    16u
+#define STATE_VER    17u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -62,6 +62,15 @@ static uint64_t fnv1a64(const uint8_t *p, uint64_t n, uint64_t h) {
     return h;
 }
 #define FNV_SEED 0xcbf29ce484222325ULL
+#define FNV_WITNESS_SEED 0x6c62272e07bb0142ULL
+
+static uint64_t fnv1a64_reverse(const uint8_t *p, uint64_t n, uint64_t h) {
+    while (n) {
+        h ^= p[--n];
+        h *= 0x100000001b3ULL;
+    }
+    return h;
+}
 
 /* ----------------------------------------------------------------- rng */
 
@@ -80,11 +89,19 @@ typedef struct {
     uint8_t *bytes;
     uint64_t len;
     uint64_t digest;
+    uint64_t witness;
     char     name[256];
 } Island;
 
 static Island islands[MAX_ISLANDS];
 static int island_count = 0;
+static uint64_t reg_digest[MAX_REGISTRY];
+static uint64_t reg_witness[MAX_REGISTRY];
+static uint64_t reg_len[MAX_REGISTRY];
+static int reg_count = 0;
+static uint64_t episode_no;   /* forward: persisted state below */
+static int fixed_start_set = 0;
+static uint64_t fixed_start = 0;
 
 static void island_load(const char *path) {
     if (island_count >= MAX_ISLANDS) {
@@ -110,6 +127,8 @@ static void island_load(const char *path) {
     }
     fclose(f);
     isl->digest = fnv1a64(isl->bytes, isl->len, FNV_SEED);
+    isl->witness = fnv1a64_reverse(isl->bytes, isl->len,
+                                   FNV_WITNESS_SEED);
     snprintf(isl->name, sizeof isl->name, "%s", path);
     island_count++;
 }
@@ -127,22 +146,40 @@ static void bio_verify(const char *path) {
                 path);
         exit(1);
     }
-    uint8_t buf[8192];
+    char *line = NULL;
+    size_t cap = 0;
+    ssize_t n;
     uint64_t chain = FNV_SEED, lines = 0;
-    size_t n;
-    int last = -1;
-    while ((n = fread(buf, 1, sizeof buf, f)) != 0) {
-        chain = fnv1a64(buf, (uint64_t)n, chain);
-        for (size_t i = 0; i < n; ++i)
-            if (buf[i] == '\n') lines++;
-        last = buf[n - 1];
+    int arrivals = 0, malformed = 0;
+    while ((n = getline(&line, &cap, f)) >= 0) {
+        chain = fnv1a64((const uint8_t *)line, (uint64_t)n, chain);
+        lines++;
+        if (n == 0 || line[n - 1] != '\n') malformed = 1;
+        if (n >= 2 && line[0] == 'i' && line[1] == '\t') {
+            unsigned long long ep, digest, witness, len;
+            int id, used = -1;
+            if (sscanf(line, "i\t%llu\t%d\t%16llx\t%16llx\t%llu%n",
+                       &ep, &id, &digest, &witness, &len, &used) != 5 ||
+                (ssize_t)used != n - 1 || id != arrivals || id < 0 ||
+                id >= reg_count || ep > episode_no ||
+                digest != reg_digest[id] ||
+                witness != reg_witness[id] || len != reg_len[id])
+                malformed = 1;
+            arrivals++;
+        }
     }
+    free(line);
     if (ferror(f) || fclose(f) != 0) {
         fprintf(stderr, "netta: cannot verify biography %s\n", path);
         exit(1);
     }
-    if (chain != bio_chain || lines != bio_lines ||
-        (bio_lines != 0 && last != '\n')) {
+    if (malformed || arrivals != reg_count) {
+        fprintf(stderr,
+                "netta: biography %s does not conserve the island registry; "
+                "refusing\n", path);
+        exit(1);
+    }
+    if (chain != bio_chain || lines != bio_lines) {
         fprintf(stderr,
                 "netta: biography %s does not match state "
                 "(lines %llu/%llu, chain %016llx/%016llx); refusing\n",
@@ -233,7 +270,6 @@ static int unit_prefix_alive(const uint8_t *b, uint32_t len) {
     return 0;
 }
 
-static uint64_t episode_no;   /* forwards: defined with state below */
 static uint64_t steps_total;
 
 static void unit_birth(uint32_t a, uint32_t b, uint64_t support) {
@@ -463,31 +499,79 @@ static double   isl_mvlm_ref_bits[MAX_REGISTRY];
 static uint64_t isl_mvlm_bytes[MAX_REGISTRY];
 
 /* body 14: the island registry. An island's identity is its content --
-   digest and length -- never its position in today's command line. The
-   registry is the append-only journal of every island this life has
+   forward digest, reverse witness, and length -- never its position in
+   today's command line. The registry is the append-only journal of every
+   island this life has
    met: records live under registry ids, an arrival is a biography
    event, and an island absent from today's convoy keeps its memory. A
    changed file is by construction a different island; arrivals are
    loud, never silent. */
-static uint64_t reg_digest[MAX_REGISTRY];
-static uint64_t reg_len[MAX_REGISTRY];
-static int reg_count = 0;
 static int present_reg[MAX_ISLANDS];
 static int arrivals_pending[MAX_ISLANDS];
 static int arrivals_pending_n = 0;
 
-static int registry_resolve(uint64_t digest, uint64_t len) {
+static int registry_find(uint64_t digest, uint64_t witness, uint64_t len) {
     for (int r = 0; r < reg_count; ++r)
-        if (reg_digest[r] == digest && reg_len[r] == len) return r;
+        if (reg_digest[r] == digest && reg_witness[r] == witness &&
+            reg_len[r] == len) return r;
+    return -1;
+}
+
+static int same_island_identity(const Island *a, const Island *b) {
+    return a->digest == b->digest && a->witness == b->witness &&
+           a->len == b->len;
+}
+
+static int registry_add(const Island *isl) {
     if (reg_count >= MAX_REGISTRY) {
         fprintf(stderr, "netta: island registry full (max %d)\n",
                 MAX_REGISTRY);
         exit(1);
     }
-    reg_digest[reg_count] = digest;
-    reg_len[reg_count] = len;
+    reg_digest[reg_count] = isl->digest;
+    reg_witness[reg_count] = isl->witness;
+    reg_len[reg_count] = isl->len;
     arrivals_pending[arrivals_pending_n++] = reg_count;
     return reg_count++;
+}
+
+static int island_identity_less(const Island *a, const Island *b) {
+    if (a->digest != b->digest) return a->digest < b->digest;
+    if (a->witness != b->witness) return a->witness < b->witness;
+    return a->len < b->len;
+}
+
+static void registry_resolve_convoy(void) {
+    for (int i = 0; i < island_count; ++i) {
+        present_reg[i] = registry_find(islands[i].digest,
+                                       islands[i].witness, islands[i].len);
+        for (int j = 0; j < i; ++j)
+            if (same_island_identity(&islands[i], &islands[j]) &&
+                (islands[i].len != islands[j].len ||
+                 memcmp(islands[i].bytes, islands[j].bytes,
+                        islands[i].len) != 0)) {
+                fprintf(stderr, "netta: island identity collision; refusing\n");
+                exit(1);
+            }
+    }
+
+    /* Simultaneous acquaintances are ordered by content, never by their
+       seats in today's command line or by the island selected for play.
+       Identity and navigation are deliberately separate laws. */
+    for (;;) {
+        int best = -1;
+        for (int i = 0; i < island_count; ++i)
+            if (present_reg[i] < 0 &&
+                (best < 0 || island_identity_less(&islands[i],
+                                                  &islands[best])))
+                best = i;
+        if (best < 0) break;
+        int r = registry_add(&islands[best]);
+        for (int i = 0; i < island_count; ++i)
+            if (present_reg[i] < 0 &&
+                same_island_identity(&islands[i], &islands[best]))
+                present_reg[i] = r;
+    }
 }
 static int island_court_enabled = 1;
 static int local_probation_enabled = 1;
@@ -506,6 +590,116 @@ static int unit_death_enabled = 1;
 #define ACTOR_MIN_BYTES 1000
 #define ACTOR_GAIN      0.1
 #define ACTOR_KEEP      0.05
+
+/* body 15: the atlas is an earned navigation policy, not another actor.
+   It may choose only among identities physically present in today's
+   convoy and able to hold the requested episode. Before an island has a
+   full local record, the least-lived shore has priority; afterwards the
+   cheapest already-measured byte witness is the expected structural
+   rhyme. Registry id breaks exact ties, so argv order cannot steer it. */
+static int atlas_enabled = 0;
+static uint64_t atlas_decisions = 0;
+
+static int island_can_hold(int i, uint64_t steps) {
+    Island *isl = &islands[i];
+    if (isl->len < CTX + 2 || steps > isl->len - CTX - 1)
+        return 0;
+    if (fixed_start_set &&
+        (fixed_start < CTX || fixed_start >= isl->len ||
+         steps > isl->len - fixed_start))
+        return 0;
+    return 1;
+}
+
+static double atlas_score(int reg) {
+    double best = 8.0;              /* honest ignorance is the ceiling */
+    for (int c = 0; c < 3; ++c) {
+        double score = isl_bits[reg][c] / (double)isl_lived[reg];
+        if (score < best) best = score;
+    }
+    return best;
+}
+
+static int atlas_choose(int fallback, uint64_t steps) {
+    int candidate[MAX_ISLANDS], n = 0, unique_present = 0;
+    for (int i = 0; i < island_count; ++i) {
+        int seen = 0;
+        for (int j = 0; j < i; ++j)
+            if (present_reg[j] == present_reg[i]) { seen = 1; break; }
+        if (seen) continue;
+        unique_present++;
+        if (island_can_hold(i, steps)) candidate[n++] = i;
+    }
+    if (unique_present == 1) return fallback; /* exact one-world no-op */
+    if (n == 0) return fallback;              /* old refusal names why */
+    if (n == 1) {
+        int r = present_reg[candidate[0]];
+        char line[96];
+        snprintf(line, sizeof line, "t\t%llu\t%d\teligible\n",
+                 (unsigned long long)(episode_no + 1), r);
+        bio_append(line);
+        atlas_decisions++;
+        printf("atlas: episode %llu registry %d sole eligible shore\n",
+               (unsigned long long)(episode_no + 1), r);
+        return candidate[0];
+    }
+
+    int best = -1, chart = 0;
+    for (int j = 0; j < n; ++j) {
+        int i = candidate[j], r = present_reg[i];
+        if (isl_lived[r] >= ACTOR_MIN_BYTES) continue;
+        if (!chart || isl_lived[r] < isl_lived[present_reg[best]] ||
+            (isl_lived[r] == isl_lived[present_reg[best]] &&
+             r < present_reg[best]))
+            best = i;
+        chart = 1;
+    }
+    if (!chart) {
+        for (int j = 0; j < n; ++j) {
+            int i = candidate[j], r = present_reg[i];
+            if (best < 0 || atlas_score(r) < atlas_score(present_reg[best]) ||
+                (atlas_score(r) == atlas_score(present_reg[best]) &&
+                 r < present_reg[best]))
+                best = i;
+        }
+    }
+
+    int r = present_reg[best];
+    char line[144];
+    if (chart) {
+        uint64_t runner = UINT64_MAX;
+        for (int j = 0; j < n; ++j)
+            if (candidate[j] != best &&
+                isl_lived[present_reg[candidate[j]]] < runner)
+                runner = isl_lived[present_reg[candidate[j]]];
+        snprintf(line, sizeof line,
+                 "t\t%llu\t%d\tchart\t%llu\t%llu\n",
+                 (unsigned long long)(episode_no + 1), r,
+                 (unsigned long long)isl_lived[r],
+                 (unsigned long long)runner);
+    } else {
+        double runner = 1e9;
+        for (int j = 0; j < n; ++j)
+            if (candidate[j] != best &&
+                atlas_score(present_reg[candidate[j]]) < runner)
+                runner = atlas_score(present_reg[candidate[j]]);
+        snprintf(line, sizeof line,
+                 "t\t%llu\t%d\tearned\t%.6f\t%.6f\t%llu\n",
+                 (unsigned long long)(episode_no + 1), r, atlas_score(r), runner,
+                 (unsigned long long)isl_lived[r]);
+    }
+    bio_append(line);
+    atlas_decisions++;
+    printf("atlas: episode %llu registry %d %s ",
+           (unsigned long long)(episode_no + 1), r,
+           chart ? "chart" : "earned");
+    if (chart)
+        printf("lived %llu\n", (unsigned long long)isl_lived[r]);
+    else
+        printf("score %.6f over %llu bytes\n", atlas_score(r),
+               (unsigned long long)isl_lived[r]);
+    return best;
+}
 
 static void actor_elect(void) {
     if (actor_lock >= 0) { actor_current = actor_lock; return; }
@@ -961,8 +1155,6 @@ static uint64_t counts[ACTIONS];
 static uint64_t counts_total = 0;
 static uint64_t episode_no = 0;
 static uint64_t steps_total = 0;
-static int fixed_start_set = 0;
-static uint64_t fixed_start = 0;
 
 static void state_refuse(const char *path, const char *why) {
     fprintf(stderr, "netta: %s is inconsistent (%s); refusing\n", path, why);
@@ -1130,6 +1322,7 @@ static void state_save(const char *path) {
         }
     for (int i = 0; i < reg_count; ++i) {
         if (fwrite(&reg_digest[i], sizeof(uint64_t), 1, f) != 1 ||
+            fwrite(&reg_witness[i], sizeof(uint64_t), 1, f) != 1 ||
             fwrite(&reg_len[i], sizeof(uint64_t), 1, f) != 1 ||
             fwrite(&isl_lived[i], sizeof isl_lived[0], 1, f) != 1 ||
             fwrite(isl_bits[i], sizeof(double), 3, f) != 3 ||
@@ -1311,6 +1504,7 @@ static int state_load(const char *path) {
     reg_count = (int)nisl;
     for (int i = 0; i < reg_count; ++i) {
         if (fread(&reg_digest[i], sizeof(uint64_t), 1, f) != 1 ||
+            fread(&reg_witness[i], sizeof(uint64_t), 1, f) != 1 ||
             fread(&reg_len[i], sizeof(uint64_t), 1, f) != 1 ||
             fread(&isl_lived[i], sizeof isl_lived[0], 1, f) != 1 ||
             fread(isl_bits[i], sizeof(double), 3, f) != 3 ||
@@ -1325,7 +1519,9 @@ static int state_load(const char *path) {
             exit(1);
         }
         for (int r = 0; r < i; ++r)
-            if (reg_digest[r] == reg_digest[i] && reg_len[r] == reg_len[i]) {
+            if (reg_digest[r] == reg_digest[i] &&
+                reg_witness[r] == reg_witness[i] &&
+                reg_len[r] == reg_len[i]) {
             fprintf(stderr, "netta: %s carries a duplicate island identity; "
                             "refusing\n", path);
             exit(1);
@@ -1828,6 +2024,8 @@ int main(int argc, char **argv) {
             bio_path = argv[++i];
         else if (!strcmp(argv[i], "--reset"))
             reset = 1;
+        else if (!strcmp(argv[i], "--atlas"))
+            atlas_enabled = 1;
         else if (!strcmp(argv[i], "--no-units"))
             units_enabled = 0;
         else if (!strcmp(argv[i], "--no-mv-nav"))
@@ -1871,6 +2069,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
+                        "[--atlas] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -1915,20 +2114,22 @@ int main(int argc, char **argv) {
     }
     /* today's convoy is resolved against the life's registry; an
        unknown identity is an arrival, never a refusal */
-    for (int i = 0; i < island_count; ++i)
-        present_reg[i] = registry_resolve(islands[i].digest,
-                                          islands[i].len);
+    registry_resolve_convoy();
     bio_open(bio_path, reset || !resumed);
     for (int j = 0; j < arrivals_pending_n; ++j) {
         int r = arrivals_pending[j];
         char al[96];
-        snprintf(al, sizeof al, "i\t%llu\t%d\t%016llx\t%llu\n",
+        snprintf(al, sizeof al,
+                 "i\t%llu\t%d\t%016llx\t%016llx\t%llu\n",
                  (unsigned long long)episode_no, r,
                  (unsigned long long)reg_digest[r],
+                 (unsigned long long)reg_witness[r],
                  (unsigned long long)reg_len[r]);
         bio_append(al);
-        printf("island arrival: registry %d digest %016llx len %llu\n",
+        printf("island arrival: registry %d digest %016llx witness %016llx "
+               "len %llu\n",
                r, (unsigned long long)reg_digest[r],
+               (unsigned long long)reg_witness[r],
                (unsigned long long)reg_len[r]);
     }
     /* this-life baselines: the price of THIS stretch of life, not the
@@ -1944,8 +2145,11 @@ int main(int argc, char **argv) {
            (unsigned long long)counts_total, unit_count);
 
     double sum_bits = 0.0;
-    for (uint64_t e = 0; e < episodes; ++e)
-        sum_bits += run_episode(isl_id, steps);
+    int played_isl_id = isl_id;
+    for (uint64_t e = 0; e < episodes; ++e) {
+        played_isl_id = atlas_enabled ? atlas_choose(isl_id, steps) : isl_id;
+        sum_bits += run_episode(played_isl_id, steps);
+    }
     if (fflush(bio_file) != 0 || fclose(bio_file) != 0) {
         fprintf(stderr, "netta: biography close failed\n"); exit(1);
     }
@@ -1996,14 +2200,14 @@ int main(int argc, char **argv) {
     if (units_enabled && mvlm_bytes)
         printf("model move-bi bits/byte %.6f\n",
                mvlm_bits / (double)mvlm_bytes);
-    if (units_enabled && isl_mvlm_bytes[present_reg[isl_id]])
+    if (units_enabled && isl_mvlm_bytes[present_reg[played_isl_id]])
         printf("island %d shadow move-bi %.6f, atomic ref %.6f over "
-               "%llu bytes\n", present_reg[isl_id],
-               isl_mvlm_bits[present_reg[isl_id]] /
-               (double)isl_mvlm_bytes[present_reg[isl_id]],
-               isl_mvlm_ref_bits[present_reg[isl_id]] /
-               (double)isl_mvlm_bytes[present_reg[isl_id]],
-               (unsigned long long)isl_mvlm_bytes[present_reg[isl_id]]);
+               "%llu bytes\n", present_reg[played_isl_id],
+               isl_mvlm_bits[present_reg[played_isl_id]] /
+               (double)isl_mvlm_bytes[present_reg[played_isl_id]],
+               isl_mvlm_ref_bits[present_reg[played_isl_id]] /
+               (double)isl_mvlm_bytes[present_reg[played_isl_id]],
+               (unsigned long long)isl_mvlm_bytes[present_reg[played_isl_id]]);
     if (trilm_bytes)
         printf("model byte-tri bits/byte %.6f\n",
                trilm_bits / (double)trilm_bytes);
@@ -2044,6 +2248,9 @@ int main(int argc, char **argv) {
     if (null_refusals)
         printf("island birth floor: %llu null refusals this run\n",
                (unsigned long long)null_refusals);
+    if (atlas_decisions)
+        printf("atlas: %llu autonomous choices this run\n",
+               (unsigned long long)atlas_decisions);
     if (atomic_bytes_lived > tl_aby)
         printf("this-life model atomic-uni bits/byte %.6f\n",
                (atomic_bits_lived - tl_ab) /

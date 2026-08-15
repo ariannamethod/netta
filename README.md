@@ -32,19 +32,27 @@ technical source of truth for the living line.
   lead, and blind comity cannot be overrun by one oversized episode.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
+- With `--atlas`, navigation becomes an earned organ: among islands present
+  in today's convoy, Netta first charts the least-lived shore to 1000 bytes,
+  then chooses the lowest already-measured local byte-witness price. Every
+  competitive autonomous choice records both winner and runner-up in the
+  biography; with one present identity the Atlas is an exact no-op.
 - An island's identity is its content, never its seat in today's command
   line. The life keeps an append-only registry of every island it has met
-  (capacity 1024): arrivals are loud biography events, islands absent from
-  today's convoy keep their memory, and a changed file is by construction a
-  different island.
+  (capacity 1024): a forward digest, an independently seeded reverse witness,
+  and the byte length name the content; arrivals are loud biography events,
+  islands absent from today's convoy keep their memory, and a changed file is
+  by construction a different island. Simultaneous arrivals are canonically
+  ordered by that identity, never by their CLI seats or the selected route.
 - State is restart-safe and published atomically. Resume is refused if the
   state invariants or the external hash-chained biography do not match;
-  islands resolve by digest and length, so the convoy's order never decides
-  a life's identity.
+  every persisted island identity must agree with its external arrival
+  receipt, so neither a forged absent record nor the convoy's order can
+  silently change a life's identity.
 
 This is a foundation, not a finished language model. The present arenas are
 mostly controlled synthetic worlds. There is no neural core, prompt mode,
-dreaming, glyph system, island atlas, or unbounded life yet.
+dreaming, glyph system, generalizing travel predictor, or unbounded life yet.
 
 ## Build and test
 
@@ -53,13 +61,14 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 108-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 116-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
 door, unit death, tombstone silence and resurrection arms, the island
-registry with convoy-order invariance, and failure-closed state and
-biography checks. A passing build ends with `ALL GATES PASS`.
+registry with fresh and resumed convoy-order invariance, an absent-identity
+forgery arm, Atlas exploration and earned-choice arms, and failure-closed
+state and biography checks. A passing build ends with `ALL GATES PASS`.
 
 ## Start a life
 
@@ -90,7 +99,7 @@ source truth cannot become writable memory.
 
 ## Multiple islands and matched controls
 
-Register islands in a stable order and choose one by index:
+Present the available islands and either choose one by index:
 
 ```sh
 ./netta island-a.bytes island-b.bytes \
@@ -99,6 +108,15 @@ Register islands in a stable order and choose one by index:
 
 ./netta island-a.bytes island-b.bytes \
   --island 1 --start 16 --episodes 2 --steps 800 \
+  --state voyage.state --bio voyage.bio.tsv
+```
+
+Or let the Atlas choose from the present convoy using only records already
+earned by this life:
+
+```sh
+./netta island-a.bytes island-b.bytes \
+  --atlas --episodes 4 --steps 800 \
   --state voyage.state --bio voyage.bio.tsv
 ```
 
@@ -122,6 +140,9 @@ Useful experimental flags:
 - `--keep-dead-mass` restores the body-12 leak, letting frozen tombstone
   counts enter current probability denominators; this is the red control for
   tombstone silence.
+- `--atlas` enables earned navigation among the identities present in this
+  invocation. Manual `--island N` remains the matched helm and the fallback
+  when fewer than two distinct shores can be chosen.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.
