@@ -711,3 +711,23 @@ a locally newborn organism: a world where every travelled model, uni
 included, is worse than uniform ignorance would still seat the least bad
 traveller. Search remains global, and the probation schedule still opens
 on a lifetime shadow gain measured across all islands.
+
+## The tenth body audited, and a repair: the local record is not a second truth
+
+All seventy-nine inherited gates reproduced before the court was attacked.
+The state loader correctly rejected non-finite local scores and inconsistent
+local byte counts, but a finite local score had no conservation law: one
+island's atomic, bigram, trigram, played-move, or matched-reference total could
+be rewritten without touching the corresponding global record or the external
+biography. Because the court reads that unsigned plane directly, the edit could
+forge jurisdiction while every version-12 check passed.
+
+The red probe adds exactly one bit to an island's persisted atomic score and
+changes nothing else. It resumed on the inherited body. The repair sums every
+partitioned score in extended precision and requires it to agree with its
+global prequential witness, allowing only floating-point addition-order noise.
+The same forged state is now refused as an inconsistent island atomic score;
+direct and split voyages remain byte-identical. Eighty gates pass, including
+strict C11 and ASan/UBSan. State stays at version 12 because the wire format and
+the meaning of every valid state are unchanged; the loader has learned to
+reject a state that was never valid.

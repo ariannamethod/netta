@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B9. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B10. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -456,6 +456,27 @@ gate "B10 zero intervention where no second island exists (bit-identical)" $? 0
 "$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 8 --steps 600 --island 1 --state "$T/b10d.state" --bio "$T/b10d.bio" >/dev/null 2>&1
 cmp -s "$T/b10s.bio" "$T/b10d.bio" && cmp -s "$T/b10s.state" "$T/b10d.state"
 gate "B10 local records and revocations survive restart (split voyage identical)" $? 0
+
+# The local plane is redundant evidence, not an unsigned second truth. A
+# finite forged score used to pass every v12 check and could reverse a court
+# verdict without touching the global record or the external biography.
+cp "$T/b10d.state" "$T/b10f.state"
+perl -e '
+  use strict; use warnings;
+  my $p = shift; my $record = 96; my $islands = 2;
+  open my $f, "+<:raw", $p or die $!;
+  seek($f, 0, 2) or die $!;
+  my $off = tell($f) - $record * $islands + 24;
+  seek($f, $off, 0) or die $!;
+  read($f, my $raw, 8) == 8 or die "short local score";
+  my $v = unpack("d", $raw);
+  seek($f, $off, 0) or die $!;
+  print {$f} pack("d", $v + 1.0) or die $!;
+  close $f or die $!;
+' "$T/b10f.state"
+"$N" "$T/p3.bytes" "$T/alien.bytes" --episodes 0 \
+    --state "$T/b10f.state" --bio "$T/b10d.bio" >/dev/null 2>&1
+gate "B10 forged local court score is refused against the global record" $? 1
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \

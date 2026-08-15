@@ -41,7 +41,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 79-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 80-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, and
 failure-closed state and biography checks. A passing build ends with

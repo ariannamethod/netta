@@ -739,6 +739,19 @@ static void checked_add(uint64_t *sum, uint64_t value,
     *sum += value;
 }
 
+static void score_agrees(const char *path, const char *what,
+                         long double local_sum, double global) {
+    /* The same positive prequential prices are accumulated globally and in
+       island partitions. Their addition order can differ across voyages, so
+       allow rounding noise but no score large enough to alter a verdict. */
+    long double scale = fabsl(local_sum);
+    if (fabsl((long double)global) > scale)
+        scale = fabsl((long double)global);
+    if (scale < 1.0L) scale = 1.0L;
+    if (fabsl(local_sum - (long double)global) > 1e-9L + 1e-10L * scale)
+        state_refuse(path, what);
+}
+
 static void state_save(const char *path) {
     size_t tmp_n = strlen(path) + 12;
     char *tmp = (char *)malloc(tmp_n);
@@ -1055,6 +1068,9 @@ static int state_load(const char *path) {
     if (actor_eps != episode_no)
         state_refuse(path, "actor episodes disagree");
     uint64_t isl_lived_sum = 0, isl_mv_sum = 0;
+    long double isl_score_sum[3] = {0.0L, 0.0L, 0.0L};
+    long double isl_mv_score_sum = 0.0L;
+    long double isl_mv_ref_sum[3] = {0.0L, 0.0L, 0.0L};
     for (int i = 0; i < island_count; ++i) {
         checked_add(&isl_lived_sum, isl_lived[i], path,
                     "island lived overflow");
@@ -1068,11 +1084,28 @@ static int state_load(const char *path) {
                 !isfinite(isl_mvp_ref_bits[i][c]) ||
                 isl_mvp_ref_bits[i][c] < 0.0)
                 state_refuse(path, "non-finite island record");
+            else {
+                isl_score_sum[c] += (long double)isl_bits[i][c];
+                isl_mv_ref_sum[c] +=
+                    (long double)isl_mvp_ref_bits[i][c];
+            }
         if (!isfinite(isl_mvp_bits[i]) || isl_mvp_bits[i] < 0.0)
             state_refuse(path, "non-finite island record");
+        isl_mv_score_sum += (long double)isl_mvp_bits[i];
     }
     if (isl_lived_sum != steps_total || isl_mv_sum != mvp_bytes)
         state_refuse(path, "island records disagree with the life");
+    score_agrees(path, "island atomic score disagrees",
+                 isl_score_sum[0], atomic_bits_lived);
+    score_agrees(path, "island bigram score disagrees",
+                 isl_score_sum[1], bilm_bits);
+    score_agrees(path, "island trigram score disagrees",
+                 isl_score_sum[2], trilm_bits);
+    score_agrees(path, "island move score disagrees",
+                 isl_mv_score_sum, mvp_bits);
+    for (int c = 0; c < 3; ++c)
+        score_agrees(path, "island move reference score disagrees",
+                     isl_mv_ref_sum[c], mvp_ref_bits[c]);
     if (!isfinite(unitlm_bits) || unitlm_bits < 0.0 ||
         !isfinite(atomic_bits_lived) || atomic_bits_lived < 0.0 ||
         !isfinite(bilm_bits) || bilm_bits < 0.0 ||
