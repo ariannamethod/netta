@@ -100,6 +100,8 @@ static uint64_t reg_witness[MAX_REGISTRY];
 static uint64_t reg_len[MAX_REGISTRY];
 static int reg_count = 0;
 static uint64_t episode_no;   /* forward: persisted state below */
+static int fixed_start_set = 0;
+static uint64_t fixed_start = 0;
 
 static void island_load(const char *path) {
     if (island_count >= MAX_ISLANDS) {
@@ -497,8 +499,9 @@ static double   isl_mvlm_ref_bits[MAX_REGISTRY];
 static uint64_t isl_mvlm_bytes[MAX_REGISTRY];
 
 /* body 14: the island registry. An island's identity is its content --
-   digest and length -- never its position in today's command line. The
-   registry is the append-only journal of every island this life has
+   forward digest, reverse witness, and length -- never its position in
+   today's command line. The registry is the append-only journal of every
+   island this life has
    met: records live under registry ids, an arrival is a biography
    event, and an island absent from today's convoy keeps its memory. A
    changed file is by construction a different island; arrivals are
@@ -587,6 +590,116 @@ static int unit_death_enabled = 1;
 #define ACTOR_MIN_BYTES 1000
 #define ACTOR_GAIN      0.1
 #define ACTOR_KEEP      0.05
+
+/* body 15: the atlas is an earned navigation policy, not another actor.
+   It may choose only among identities physically present in today's
+   convoy and able to hold the requested episode. Before an island has a
+   full local record, the least-lived shore has priority; afterwards the
+   cheapest already-measured byte witness is the expected structural
+   rhyme. Registry id breaks exact ties, so argv order cannot steer it. */
+static int atlas_enabled = 0;
+static uint64_t atlas_decisions = 0;
+
+static int island_can_hold(int i, uint64_t steps) {
+    Island *isl = &islands[i];
+    if (isl->len < CTX + 2 || steps > isl->len - CTX - 1)
+        return 0;
+    if (fixed_start_set &&
+        (fixed_start < CTX || fixed_start >= isl->len ||
+         steps > isl->len - fixed_start))
+        return 0;
+    return 1;
+}
+
+static double atlas_score(int reg) {
+    double best = 8.0;              /* honest ignorance is the ceiling */
+    for (int c = 0; c < 3; ++c) {
+        double score = isl_bits[reg][c] / (double)isl_lived[reg];
+        if (score < best) best = score;
+    }
+    return best;
+}
+
+static int atlas_choose(int fallback, uint64_t steps) {
+    int candidate[MAX_ISLANDS], n = 0, unique_present = 0;
+    for (int i = 0; i < island_count; ++i) {
+        int seen = 0;
+        for (int j = 0; j < i; ++j)
+            if (present_reg[j] == present_reg[i]) { seen = 1; break; }
+        if (seen) continue;
+        unique_present++;
+        if (island_can_hold(i, steps)) candidate[n++] = i;
+    }
+    if (unique_present == 1) return fallback; /* exact one-world no-op */
+    if (n == 0) return fallback;              /* old refusal names why */
+    if (n == 1) {
+        int r = present_reg[candidate[0]];
+        char line[96];
+        snprintf(line, sizeof line, "t\t%llu\t%d\teligible\n",
+                 (unsigned long long)(episode_no + 1), r);
+        bio_append(line);
+        atlas_decisions++;
+        printf("atlas: episode %llu registry %d sole eligible shore\n",
+               (unsigned long long)(episode_no + 1), r);
+        return candidate[0];
+    }
+
+    int best = -1, chart = 0;
+    for (int j = 0; j < n; ++j) {
+        int i = candidate[j], r = present_reg[i];
+        if (isl_lived[r] >= ACTOR_MIN_BYTES) continue;
+        if (!chart || isl_lived[r] < isl_lived[present_reg[best]] ||
+            (isl_lived[r] == isl_lived[present_reg[best]] &&
+             r < present_reg[best]))
+            best = i;
+        chart = 1;
+    }
+    if (!chart) {
+        for (int j = 0; j < n; ++j) {
+            int i = candidate[j], r = present_reg[i];
+            if (best < 0 || atlas_score(r) < atlas_score(present_reg[best]) ||
+                (atlas_score(r) == atlas_score(present_reg[best]) &&
+                 r < present_reg[best]))
+                best = i;
+        }
+    }
+
+    int r = present_reg[best];
+    char line[144];
+    if (chart) {
+        uint64_t runner = UINT64_MAX;
+        for (int j = 0; j < n; ++j)
+            if (candidate[j] != best &&
+                isl_lived[present_reg[candidate[j]]] < runner)
+                runner = isl_lived[present_reg[candidate[j]]];
+        snprintf(line, sizeof line,
+                 "t\t%llu\t%d\tchart\t%llu\t%llu\n",
+                 (unsigned long long)(episode_no + 1), r,
+                 (unsigned long long)isl_lived[r],
+                 (unsigned long long)runner);
+    } else {
+        double runner = 1e9;
+        for (int j = 0; j < n; ++j)
+            if (candidate[j] != best &&
+                atlas_score(present_reg[candidate[j]]) < runner)
+                runner = atlas_score(present_reg[candidate[j]]);
+        snprintf(line, sizeof line,
+                 "t\t%llu\t%d\tearned\t%.6f\t%.6f\t%llu\n",
+                 (unsigned long long)(episode_no + 1), r, atlas_score(r), runner,
+                 (unsigned long long)isl_lived[r]);
+    }
+    bio_append(line);
+    atlas_decisions++;
+    printf("atlas: episode %llu registry %d %s ",
+           (unsigned long long)(episode_no + 1), r,
+           chart ? "chart" : "earned");
+    if (chart)
+        printf("lived %llu\n", (unsigned long long)isl_lived[r]);
+    else
+        printf("score %.6f over %llu bytes\n", atlas_score(r),
+               (unsigned long long)isl_lived[r]);
+    return best;
+}
 
 static void actor_elect(void) {
     if (actor_lock >= 0) { actor_current = actor_lock; return; }
@@ -1042,8 +1155,6 @@ static uint64_t counts[ACTIONS];
 static uint64_t counts_total = 0;
 static uint64_t episode_no = 0;
 static uint64_t steps_total = 0;
-static int fixed_start_set = 0;
-static uint64_t fixed_start = 0;
 
 static void state_refuse(const char *path, const char *why) {
     fprintf(stderr, "netta: %s is inconsistent (%s); refusing\n", path, why);
@@ -1913,6 +2024,8 @@ int main(int argc, char **argv) {
             bio_path = argv[++i];
         else if (!strcmp(argv[i], "--reset"))
             reset = 1;
+        else if (!strcmp(argv[i], "--atlas"))
+            atlas_enabled = 1;
         else if (!strcmp(argv[i], "--no-units"))
             units_enabled = 0;
         else if (!strcmp(argv[i], "--no-mv-nav"))
@@ -1956,6 +2069,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
+                        "[--atlas] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -2031,8 +2145,11 @@ int main(int argc, char **argv) {
            (unsigned long long)counts_total, unit_count);
 
     double sum_bits = 0.0;
-    for (uint64_t e = 0; e < episodes; ++e)
-        sum_bits += run_episode(isl_id, steps);
+    int played_isl_id = isl_id;
+    for (uint64_t e = 0; e < episodes; ++e) {
+        played_isl_id = atlas_enabled ? atlas_choose(isl_id, steps) : isl_id;
+        sum_bits += run_episode(played_isl_id, steps);
+    }
     if (fflush(bio_file) != 0 || fclose(bio_file) != 0) {
         fprintf(stderr, "netta: biography close failed\n"); exit(1);
     }
@@ -2083,14 +2200,14 @@ int main(int argc, char **argv) {
     if (units_enabled && mvlm_bytes)
         printf("model move-bi bits/byte %.6f\n",
                mvlm_bits / (double)mvlm_bytes);
-    if (units_enabled && isl_mvlm_bytes[present_reg[isl_id]])
+    if (units_enabled && isl_mvlm_bytes[present_reg[played_isl_id]])
         printf("island %d shadow move-bi %.6f, atomic ref %.6f over "
-               "%llu bytes\n", present_reg[isl_id],
-               isl_mvlm_bits[present_reg[isl_id]] /
-               (double)isl_mvlm_bytes[present_reg[isl_id]],
-               isl_mvlm_ref_bits[present_reg[isl_id]] /
-               (double)isl_mvlm_bytes[present_reg[isl_id]],
-               (unsigned long long)isl_mvlm_bytes[present_reg[isl_id]]);
+               "%llu bytes\n", present_reg[played_isl_id],
+               isl_mvlm_bits[present_reg[played_isl_id]] /
+               (double)isl_mvlm_bytes[present_reg[played_isl_id]],
+               isl_mvlm_ref_bits[present_reg[played_isl_id]] /
+               (double)isl_mvlm_bytes[present_reg[played_isl_id]],
+               (unsigned long long)isl_mvlm_bytes[present_reg[played_isl_id]]);
     if (trilm_bytes)
         printf("model byte-tri bits/byte %.6f\n",
                trilm_bits / (double)trilm_bytes);
@@ -2131,6 +2248,9 @@ int main(int argc, char **argv) {
     if (null_refusals)
         printf("island birth floor: %llu null refusals this run\n",
                (unsigned long long)null_refusals);
+    if (atlas_decisions)
+        printf("atlas: %llu autonomous choices this run\n",
+               (unsigned long long)atlas_decisions);
     if (atomic_bytes_lived > tl_aby)
         printf("this-life model atomic-uni bits/byte %.6f\n",
                (atomic_bits_lived - tl_ab) /

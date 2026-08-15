@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B13. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B15. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -787,6 +787,83 @@ printf '\x10\x00\x00\x00' | dd of="$T/b14c.state" bs=1 seek=8 conv=notrunc 2>/de
 "$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 1 --steps 600 --state "$T/b14c.state" --bio "$T/b14c.bio" >/dev/null 2>&1
 gate "B14 a version-16 state cannot enter the witnessed registry" $? 1
 
+# --- B15: the atlas ------------------------------------------------------
+# Navigation is earned from local prequential records. New shores are
+# charted before mature ones are ranked; exact ties answer to stable registry
+# identity, never to today's CLI order. With one available identity the organ
+# is absent from the event stream and the old life is bit-identical.
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 2 --steps 600 \
+    --state "$T/b15n.state" --bio "$T/b15n.bio" > "$T/b15n.out" 2>&1
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 2 --steps 600 --atlas \
+    --state "$T/b15a.state" --bio "$T/b15a.bio" > "$T/b15a.out" 2>&1
+cmp -s "$T/b15n.state" "$T/b15a.state" && \
+cmp -s "$T/b15n.bio" "$T/b15a.bio" && \
+cmp -s "$T/b15n.out" "$T/b15a.out"
+gate "B15 a one-island atlas is an exact no-op" $? 0
+
+"$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 1 \
+    --steps 600 --atlas --state "$T/b15o1.state" --bio "$T/b15o1.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/p3.bytes" --reset --seed 5 --episodes 1 \
+    --steps 600 --atlas --state "$T/b15o2.state" --bio "$T/b15o2.bio" >/dev/null 2>&1
+cmp -s "$T/b15o1.state" "$T/b15o2.state" && \
+cmp -s "$T/b15o1.bio" "$T/b15o2.bio"
+gate "B15 a fresh atlas cannot be steered by convoy order" $? 0
+
+"$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 2 \
+    --steps 600 --island 0 --state "$T/b15c.state" --bio "$T/b15c.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 1 --steps 600 \
+    --atlas --state "$T/b15c.state" --bio "$T/b15c.bio" >/dev/null 2>&1
+C15=$(awk -F'\t' '$1=="t"{print $3}' "$T/b15c.bio")
+CM15=$(awk -F'\t' '$1=="t"{print $4}' "$T/b15c.bio")
+CL15=$(awk -F'\t' '$1=="t"{print $5}' "$T/b15c.bio")
+CR15=$(awk -F'\t' '$1=="t"{print $6}' "$T/b15c.bio")
+CE15=$(awk -F'\t' '$1=="t"{print $2}' "$T/b15c.bio")
+awk -F'\t' -v e="$CE15" -v r="$C15" \
+    'NF>=11 && $1==e {n++; if($3!=r) bad=1} END{exit !(n==600 && !bad)}' \
+    "$T/b15c.bio"
+rc=$?
+[ "$CM15" = "chart" ] && [ "$CL15" -eq 0 ] && [ "$CR15" -ge 1000 ] || rc=1
+gate "B15 an uncharted shore outranks a familiar one ($CL15 vs $CR15 bytes) and is lived" $rc 0
+
+"$N" "$T/p3.bytes" "$T/uhome.bytes" --reset --no-units --seed 5 \
+    --episodes 2 --steps 600 --island 0 --state "$T/b15e.state" \
+    --bio "$T/b15e.bio" > "$T/b15e0.out" 2>&1
+"$N" "$T/p3.bytes" "$T/uhome.bytes" --no-units --seed 5 \
+    --episodes 2 --steps 600 --island 1 --state "$T/b15e.state" \
+    --bio "$T/b15e.bio" >/dev/null 2>&1
+P15D=$(awk '/^island 0: /{sub(/^.*digest=/, ""); print}' "$T/b15e0.out")
+U15D=$(awk '/^island 1: /{sub(/^.*digest=/, ""); print}' "$T/b15e0.out")
+P15R=$(awk -F'\t' -v d="$P15D" '$1=="i" && $4==d{print $3}' "$T/b15e.bio")
+U15R=$(awk -F'\t' -v d="$U15D" '$1=="i" && $4==d{print $3}' "$T/b15e.bio")
+cp "$T/b15e.state" "$T/b15m.state"
+cp "$T/b15e.bio" "$T/b15m.bio"
+"$N" "$T/p3.bytes" "$T/uhome.bytes" --no-units --seed 5 \
+    --episodes 1 --steps 600 --atlas --state "$T/b15e.state" \
+    --bio "$T/b15e.bio" >/dev/null 2>&1
+E15R=$(awk -F'\t' '$1=="t"{r=$3;m=$4} END{print r}' "$T/b15e.bio")
+E15M=$(awk -F'\t' '$1=="t"{m=$4} END{print m}' "$T/b15e.bio")
+E15S=$(awk -F'\t' '$1=="t"{s=$5} END{print s}' "$T/b15e.bio")
+E15L=$(awk -F'\t' '$1=="t"{s=$6} END{print s}' "$T/b15e.bio")
+[ "$E15M" = "earned" ] && [ "$E15R" = "$P15R" ] && \
+awk -v w="$E15S" -v l="$E15L" 'BEGIN{exit !(w < l)}'
+gate "B15 earned navigation chooses measured structural rhyme ($E15S vs $E15L bit/byte)" $? 0
+"$N" "$T/p3.bytes" "$T/uhome.bytes" --no-units --seed 5 \
+    --episodes 1 --steps 600 --island 1 --state "$T/b15m.state" \
+    --bio "$T/b15m.bio" >/dev/null 2>&1
+ME15=$(awk -F'\t' -v r="$U15R" 'NF>=11 && $1==5 && $3==r{n++} END{print n+0}' "$T/b15m.bio")
+[ "$ME15" -eq 600 ] && ! cmp -s "$T/b15e.bio" "$T/b15m.bio"
+gate "B15 the manual helm remains a red arm against atlas choice" $? 0
+
+"$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 4 \
+    --steps 600 --atlas --state "$T/b15r.state" --bio "$T/b15r.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 2 \
+    --steps 600 --atlas --state "$T/b15s.state" --bio "$T/b15s.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/p3.bytes" --seed 5 --episodes 2 \
+    --steps 600 --atlas --state "$T/b15s.state" --bio "$T/b15s.bio" >/dev/null 2>&1
+cmp -s "$T/b15r.state" "$T/b15s.state" && \
+cmp -s "$T/b15r.bio" "$T/b15s.bio"
+gate "B15 atlas choices survive restart and a reversed convoy" $? 0
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -835,12 +912,12 @@ rc=$?
 [ -s "$T/sn.err" ] && rc=98
 gate "S ASan/UBSan silent through byte-bounded comity and null action" $rc 0
 "$S" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 2 --steps 600 \
-    --island 0 --state "$T/sr14.state" --bio "$T/sr14.bio" >/dev/null 2>"$T/sr14.err"
+    --atlas --state "$T/sr14.state" --bio "$T/sr14.bio" >/dev/null 2>"$T/sr14.err"
 rc=$?
 "$S" "$T/rep.bytes" "$T/p3.bytes" --seed 5 --episodes 2 --steps 600 \
-    --island 0 --state "$T/sr14.state" --bio "$T/sr14.bio" >/dev/null 2>>"$T/sr14.err" || rc=$?
+    --atlas --state "$T/sr14.state" --bio "$T/sr14.bio" >/dev/null 2>>"$T/sr14.err" || rc=$?
 [ -s "$T/sr14.err" ] && rc=98
-gate "S ASan/UBSan silent through the registry and a reversed convoy" $rc 0
+gate "S ASan/UBSan silent through the atlas and a reversed convoy" $rc 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi
