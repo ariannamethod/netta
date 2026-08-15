@@ -444,3 +444,270 @@ claimant. Somewhere on a world whose structure lives in whole moves
 rather than in two bytes of memory, a future mv will win it -- and
 when it does, the win will mean something, because this one was
 allowed to lose.
+
+## Checkpoint correction: the judge looks outward
+
+The eight-body checkpoint `c32843f` was taken into an independent tree and
+its fifty-one gates first reproduced without a changed byte. Three red
+probes then broke three claims at the foundation rather than at the model
+surface.
+
+First, the played move record was not a judgment of the world. It wrote
+`-log2 P(emitted move)`: the self-information of the move Netta sampled. In
+a paired counterfactual, two organisms with identical a-only biographies
+emitted the same byte under the same prior into two unread islands, one
+a-only and one b-only. The old court wrote the same `4.177085` bits in both
+worlds, although the move was truth in one and false in the other. A
+confident lie and a confident truth were literally the same evidence.
+
+The correction keeps emission causal -- the sampled move still determines
+how far the world advances -- but makes the external judge price the
+canonical truth move at the current byte address. Canonical here means the
+same greedy longest exact-form segmentation already used by the shadow
+move model; the actor cannot see that target before acting. The paired
+losses are now `0.816909` on the kin truth and `10.243174` on the alien
+truth. The first outward retake still contained a subtler teacher leak:
+the player conditioned its next emission on the truth matcher's previous
+move instead of its own previous emission. Removing that hand from the
+trajectory produces the final period-3 verdict below. The earlier
+`1.557730` played figure and the intermediate `2.053519` retake are invalid,
+while the preserved story of a losing claimant remains true.
+
+The event base of the election was broken too. Two early probation episodes
+reached the 1200-byte minimum, a losing record then stopped probation forever,
+and that frozen record was compared with lifetime byte models measured on
+other episodes. Probation is now rare but recurrent; every byte it lives also
+records uni, bi and tri counterfactual prices at that exact address. Move
+authority must beat the best byte witness on those matched bytes. On the
+24-episode period-3 life probation now opens three times and emits 1596 real
+moves. The causal player loses `7.057066` against a best matched byte record
+of `0.288818`. A search over five deliberately move-structured worlds, up to
+128 episodes each, found shadow move prices as low as `0.095302` while played
+prices remained `6.07` to `9.30`: recognition is not yet free-running life.
+The refusal branch and the right to reapply are proved; appointment is not.
+Forced `--actor-lock mv` lives now report a separate this-run control record
+which is never persisted as mandate evidence; a counterfactual cannot later
+present itself as earned biography. State advances to version 9 so neither
+self-priced evidence nor unmatched probation records can silently enter the
+corrected court.
+
+Second, the biography chain had not been connected to the biography file.
+State persisted a chain head and line count, but resume never recomputed
+either from disk: a missing biography was silently recreated under the old
+head and returned `rc=0`. Resume now streams and verifies the whole external
+biography before opening it for append. Missing, truncated, edited, or
+unterminated histories fail closed. The inverse orphan is guarded too: if
+state is missing while a biography exists, implicit rebirth refuses rather
+than truncating the surviving record; only explicit `--reset` may do that.
+State publication now writes a uniquely created sibling and renames only
+after a complete close, so an interrupted save does not first truncate the
+last valid snapshot. Loaded state also rejects
+trailing bytes, impossible actors or units, duplicate/foreign pair keys,
+non-finite records, and disagreement among byte, move, row, episode, and
+model totals.
+
+Third, numeric syntax was not an input boundary. `--steps -1` -- still
+advertised by the dead README -- became `UINT64_MAX`; the tape-length guard
+wrapped, and ASan caught a real heap-buffer-overflow beyond the island.
+All numeric flags are now parsed exactly and address arithmetic is ordered
+to make overflow impossible. State, biography, and islands must be distinct
+files, including hard-link or symlink aliases, so a requested output cannot
+rewrite source truth. The dead word-level README, model card, generation
+examples, calibration prose, and old probe harness have been removed from
+the living tree; README now describes only NETTA ZERO.
+
+The transfer court was retaken with one more matched variable: `--start 16`
+holds traveller and newborn at byte-identical source positions. Kin transfer
+survives: byte-bi `2.227203` travelled against `3.828710` newborn, and
+byte-tri `2.147926` against `3.921547` (advantages `1.601507` and `1.773621`
+bits per byte). Kin still beats the alien donor (`2.227203` against
+`3.950850`). But the old shuffled-null did not survive its own wording.
+On shuffled B the travelled/newborn atomic prices are
+`3.693113/4.147372`, while byte-bi is `5.608769/5.748157`: total bi transfer
+is `0.139388`, not the claimed `<0.1` null. The correct controlled question
+subtracts frequency transfer. Contextual excess is
+`(5.748157-5.608769) - (4.147372-3.693113) = -0.314871` bits per byte.
+Shuffling kills context beyond frequency; it cannot and should not erase the
+transfer of the byte census it preserves. The former null remains above as
+the dirty measurement that led to this correction.
+
+The amended law has sixty-two machine verdicts. The new verdicts pin
+finite address syntax, external biography continuity, source/output
+separation, exact state extent, matched inter-island positions, and the
+external-truth move judge; strict ASan/UBSan builds and representative lives
+are now executable gates rather than remembered side runs. The original
+fifty-one remain green under the corrected court, with superseded played
+numbers changed openly rather than forced back into place.
+
+What is not proved yet: the election gate has observed a move claimant lose
+and reapply, not win; closing the measured exposure gap likely needs search or
+a state organ rather than a kinder threshold. Global cumulative authority may
+carry a byte actor into an alien island long after its local mandate has
+vanished; greedy truth segmentation is a declared first court, not yet a
+marginal likelihood over all byte-equivalent move paths; units have a birth
+law but no death law. Those are open bodies, not implications of this repair.
+
+## The ninth body: navigation earns the first move mandate
+
+The wager was fixed against the corrected refusal, not against the earlier
+self-priced player. No threshold or court changed. With `--no-mv-nav`, the
+period-3 red arm remains exactly where the checkpoint left it: move play costs
+`7.057066` bits per raw byte against the best matched byte witness at
+`0.288818`, three probation episodes reopen, and no ordinary `mv` episode is
+seated. The ninth body had to close that exposure gap by changing what the
+player can know before emission, not by forgiving what happens afterward.
+
+The first navigation organ has two bounded operations. At every move decision
+it searches all exact semi-Markov segmentations of the previous 16 observable
+world bytes. A Viterbi route, scored by the lived move unigram and bigram,
+selects the most probable final move as an anchor. Atomic moves guarantee an
+exact route even when no learned unit fits. From that anchor, a one-move
+model-only rollout scores each candidate as its current transition probability
+times the strongest learned continuation available after it; those scores are
+renormalized into the policy that actually samples. The search may inspect
+unit forms, counts, and bytes strictly before the current address. It never
+reads the target byte, tests a candidate against its future world span, or
+consults the truth matcher. The external judge prices the resulting searched
+distribution against the same canonical truth move as before, so a confident
+internal attractor is still an expensive lie when the world rejects it.
+
+On the preregistered 24-episode period-3 life, seed 5, the searched player opens
+two probation episodes and then earns nine ordinary `mv` episodes. Its played
+record is `0.049384` bits per raw byte over 6600 matched bytes, against
+`1.622828 / 1.110387 / 0.212070` for uni, bi, and tri on those same bytes. The
+margin over the best byte witness is `0.162686`, above the unchanged 0.1
+appointment threshold. In the whole life, 590 move decisions were searched;
+571 routes ended in learned-unit anchors. Ten seeds all repeated the positive
+appointment (`0.027413..0.055753` played versus `0.212070` tri). A 64-episode
+side life kept the seat for 49 ordinary `mv` episodes and finished at
+`0.040604` played against `0.114199` matched tri. This is the first earned
+emission mandate in the zero line.
+
+The positive gate has three red edges. First, disabling navigation reproduces
+the exact `7.057066 / 0.288818` loss and refusal rather than merely making the
+new player a little worse. Second, two unread islands with the same 16-byte
+prefix and different target spans produce the same route anchor and emitted
+move; only the outward target and loss differ. Third, a deterministic
+random-order three-byte-census world grows 49 units but gives the move shadow
+no predictive advantage, so search receives neither probation nor mandate.
+The new player and the unanchored control both survive split restart exactly.
+Searched move receipts now carry the policy anchor, while the no-navigation
+red arm preserves the checkpoint receipt bytes. State advances to version 10
+so the new emission semantics cannot be mistaken for the version-9 life.
+
+Gates: sixty-eight machine verdicts, `ALL GATES PASS`, strict C11 with zero
+warnings, ASan/UBSan through searched probation, appointment, and restart. The
+six new B9 verdicts prove a matched win, a real seat, the old refusal, the
+causal observation boundary, restart identity, and the random-order null.
+
+What is not proved: this is bounded route recovery plus one move of lookahead,
+not yet the GTA/AlphaZero-scale planning body. Its appointment is synthetic;
+real-text and adversarial-attractor lives have not qualified it. Search and
+mandate evidence remain global across islands, so the island-local revocation
+valve is now the next constitutional organ. Greedy truth segmentation, unit
+death, and capacity lives remain open behind it.
+
+## The ninth body audited, and a repair: probation borrows the body, never the seat
+
+The two commits of the previous turn were retaken independently. The
+sixty-eight gates reproduced without a changed byte; the searched-policy
+court was read line by line; three refusal probes -- an edited biography
+byte, a hard-linked island alias, and a version-9 header under a live
+magic -- all failed closed. A deliberate wrong-attractor world, one
+candidate with a deterministic continuation against one with ten equally
+lived continuations, opened probation in both arms and earned a seat in
+neither: searched play recorded 2.124276 bits per raw byte against a best
+matched witness of 1.283528, the unanchored arm 7.770698. The declared
+prediction that navigation would play worse than its own red arm on this
+world was refuted by the measurement and is preserved: the anchor's
+correct context outweighs the one-ply tilt. The ninth-body mandate was
+retaken at its own election boundary: the margin after the second
+probation was 0.329243, three times the appointment threshold. The seat
+was earned lawfully, and both commits stand.
+
+The audit then found an eighth-body debt at the foundation. Probation
+seated its trial by overwriting the elected actor, so the next election
+saw a false incumbent. Two constitutional wrongs flowed from that one
+variable: a mover coming out of probation was judged by the retention bar
+instead of the appointment bar, and the byte actor that lawfully held the
+seat before probation lost its incumbency and had to re-earn the place at
+the appointment bar. On a two-phase life -- four period-3 episodes, then
+a skewed-census island whose lead decays into the hysteresis band -- the
+machine exhibited the second wrong: at the episode-8 election the uni-tri
+lead was 0.074940, inside [0.05, 0.1), where the fifth-body hysteresis law
+keeps tri seated; the old code seated uni, permanently. No previously
+gated life had crossed the band, so no published number changes; the gate
+built for this world ran red on the old court before the repair landed.
+
+The repair is one separation: the episode's acting model is local, and
+probation sets only it. The elected seat survives the trial untouched.
+State advances to version 11 because a persisted seat can no longer mean
+a probation in flight. Three new verdicts pin the law: the incumbent
+survives an in-band probation, the band itself is measured inside
+[0.05, 0.1) by a split life, and a life split exactly at a probation
+boundary stays bit-identical.
+
+What is not proved: the first wrong -- a mover taking its first seat
+between the two bars through the probation door -- was not exhibited by
+any world found. Post-probation margins were bimodal in all four world
+families tried, either far above the appointment bar or far below the
+retention bar; the repair closes both wrongs with the same variable, but
+only the byte face carries a measured red world. The route anchor and the
+one-ply rollout also still share a single flag, so the attractor question
+cannot yet be isolated by the machine.
+
+## The tenth body: the island court
+
+The ninth-body handoff named the open wound: search and mandate evidence
+were global, so a seat earned on one island could act on another long
+after any local justification had vanished. The seventh body had already
+measured the class of harm in shadow -- foreign frequencies are worse
+than ignorance -- but nothing in the constitution could refuse the hand.
+
+The tenth body is a court, not a model. No world model gains an island
+dimension. Every island now keeps its own prequential record of the
+three byte witnesses on the bytes it lived, plus the move player's local
+played and matched-reference evidence. The seat is still elected on the
+whole biography, and the elected seat is never rewritten -- the repair
+that opened this turn is the load-bearing wall here. What the island owns
+is the verdict on the hand: once it has lived a thousand bytes, a seated
+actor whose local lead over the island's own newborn record falls under
+the 0.05 retention lead is refused for this island and this episode. The
+best locally eligible byte witness acts instead, the refusal is a
+biography event carrying its numbers, and the mandate travels on intact.
+No local evidence, no local verdict: authority moves on comity until the
+island can judge. A locally refused move seat keeps the right to reapply
+through the probation door, which now opens on the acting hand rather
+than the global seat.
+
+The court's arrival immediately collided with the repair gate of this
+same turn: on the A9 two-phase world the island court honestly refused
+tri's hand at episode 8 by the skew island's local record, which is
+lawful under this body but is not the question that gate asks. The A9
+world now runs with the valve disabled so each law is measured alone;
+the collision itself -- seat kept, hand refused, both visible in the
+biography -- is exactly the separation the repair was for.
+
+Measured on a period-3 home and a skew-census iid island. The traveller
+carries tri authority earned at home; the alien island prices its first
+1200 lived bytes and refuses: local newborn 2.134932 bits per raw byte
+against the seat's local 2.759167 -- the fifth-body self-deception law,
+now enforceable locally. Over the eight-episode stay the life with the
+court runs at 2.070787 bits per raw byte; with the valve disabled the
+same seed pays 2.366611 while the seat burns unrefused. Back home the
+mandate is untouched and tri acts again. On a rotated period-3 kin island
+-- the same cyclic map in a different phase -- the traveller thrives and
+the court never speaks: transfer is not punished. A single-island life is
+bit-identical with the court present or disabled; a voyage split across
+restart is bit-identical to the direct voyage. State advances to version
+12 for the per-island evidence plane. Seventy-nine machine verdicts,
+ALL GATES PASS, ASan/UBSan through travel and revocation.
+
+What is not proved: the local verdict has one threshold where the global
+election has two, so a lead oscillating around the retention bar can flap
+the acting hand between episodes; local hysteresis is future law if a
+real world exhibits the flap. The local floor is the newborn witness, not
+a locally newborn organism: a world where every travelled model, uni
+included, is worse than uniform ignorance would still seat the least bad
+traveller. Search remains global, and the probation schedule still opens
+on a lifetime shadow gain measured across all islands.

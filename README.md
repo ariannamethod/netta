@@ -1,144 +1,117 @@
-# NETTA's Empirical Topological Training Agent | by Arianna Method
+# NETTA ZERO
 
-> netta : atten : recursive neural network  
+**NETTA's Empirical Topological Training Agent** is a continual-learning
+research organism that plays next-action games on immutable byte worlds.
 
-## NETTA
-  
-Somewhere between LM-hero and AlphaZero there's Netta. Netta is a sovereign language learning model. She has a her own .txt file and she treats this as a observable worldmodel game. No gradient descent, no loss you minimize — a shared recurrent core plays itself against a corpus, imagines a few steps ahead, prices its own guesses like a market, and keeps every failure as a scar instead of erasing it. 
+This is the zero line: the earlier word-level prototype is invalid and is
+kept only in git history below commit `5ea1374`. `NETTALOG2.md` is the sole
+technical source of truth for the living line.
 
-Netta repeatedly enters local regions of that world, builds possible futures, acts, compares prophecy with destiny, keeps both successful and failed experience, dreams over old episodes, and continues without a separate training phase.
+## What exists now
 
-Netta reads a line, hides the continuation, generates its own attempt, compares it against both the hidden truth and a statistical oracle mirror, and settles the difference as experience — support if it was right, opposition if it wasn't. A living ledger of transitions with debt, volatility, momentum, and age.  
+- The world is an immutable byte tape. Its canonical address is
+  `(island, byte offset)`; every byte value is legal.
+- The floor always has 256 atomic actions. Repeated lived sequences may earn
+  byte-exact units without retokenizing or rewriting the world.
+- Five prequential witnesses share one ruler, bits per raw byte:
+  `atomic-uni`, `byte-bi`, `byte-tri`, `unit-uni`, and `move-bi`.
+- Authority is earned and revocable. Byte actors compete on their lived
+  records; the semi-Markov move actor must first survive real probation.
+- The move actor can search its last 16 already-observed bytes for an exact
+  semi-Markov route and run one model-only move ahead. Search never reads the
+  target span, and its resulting policy is still priced by the external world.
+- Mandates are global, verdicts are local. Every island keeps its own record
+  of every witness; a travelling seat that cannot keep a KEEP lead over the
+  island's own newborn record is refused on that island only, while the home
+  mandate and kin transfer stay untouched.
+- Experience can cross islands, while worlds, receipts, and counterfactual
+  controls remain distinguishable.
+- State is restart-safe and published atomically. Resume is refused if the
+  ordered islands, state invariants, or external hash-chained biography do
+  not match.
 
-  
-## NETTA also has:
+This is a foundation, not a finished language model. The present arenas are
+mostly controlled synthetic worlds. There is no neural core, prompt mode,
+dreaming, glyph system, island atlas, unit retirement, or unbounded life yet.
 
-- embeddings seeded from corpus co-occurrence; a small recurrent core predicts coherence dimensions, and only the readout learns, by reward-modulated Hebbian update.
-- transitions that quoted like a market — mark-to-market value, unresolved `prophetic debt`, volatility, momentum — revalued every move from the gap between what the core prophesied and what actually happened.
-- every game carries an immutable intent anchor from where it started; drifting from it costs, fulfilling it pays.
-- before committing to a token, netta imagines a few steps of plausible future and prices the semantic basin it's about to walk into.
-- repetition is punished at the phrase and basin level — reusing a trajectory fatigues its own support.
-- every so often it dreams: NREM and REM replay over its own episodes, no new data, just re-settling old debt.
-- semantic-basin novelty consults the 64 most recent basins rather than all 256, preserving local memory while reducing repeated work.
-- vocabulary, edges and trigrams grow as she meets new words instead of stopping at a fixed wall — starts at 16384 slots, doubles on demand.
-- experience scans are capped for high-degree tokens.
-- read NETTALOG.md for more.
+## Build and test
 
-## NETA's memory separation
-  
-- `netta.txt` — source truth, never rewritten.
-- `oracle` — generated fresh from source transitions, a coherence reference, not an authority.
-- `netta.state` — embeddings (semantic, left-context, right-context), recurrent core, readout, signed experience.
-- `netta.history.tsv` — immutable ledger: context, oracle line, netta's attempt, the full coherence vector.
-  
-Candidate selection is Pareto preference over that vector, not a single number to chase. 
-
-  
-### Coherence mirror and search teacher
-
-An oracle is a permanent coherence mirror. Candidate moves are screened cheaply; finalists receive recursive and counterfactual evaluation.
-Search leaves a soft improved policy rather than one mandatory sentence.
-
-### Prophecy Stack
-
-Sparse future obligations are carried at three horizons:
-
-- near: 1 token;
-- clause: 2–5 tokens;
-- discourse: 6–16 tokens.
-
-A move pays some obligations, leaves others overdue and opens new ones. The difference between prophecy and destiny becomes dynamic debt.
-
-### Recurrent core
-
-A small shared MLP may pass over the same state several times. Debt and volatility buy additional depth. Its readout and slow recurrent dynamics change through local reward-modulated Hebbian updates rather than backpropagation.
-
-### Language-independent causal glyphs
-
-A causal glyph is an online equivalence class of source histories that promise similar futures. A candidate state first enters a nursery. A glyph matures only after repeated rediscovery. It learns only from real source trajectories; agent-generated histories receive read-only projection into glyph space.
-
-A glyph has no automatic authority. Its semantic voice remains exactly neutraluntil its **prequential prediction** beats the corpus-wide future prior. Meaning must earn the right to affect action.
-
-### Experience market
-
-Each transition carries a changing quote, prophetic debt, momentum, volatility, support and opposition. Old success decays without confirmation. Negative experience remains in biography but is never promoted into source truth.
-
-### Dream Replay
-
-- **NREM:** replays surprising or unresolved source-grounded trajectories and consolidates delayed destiny.
-- **REM:** recombines related memories and evaluates imagined bridges without inserting them into the corpus.
-  
-## Build & run  
-
-```bash
-cc -O2 -std=c11 -Wall -Wextra -o netta netta.c -lm
-./netta netta.txt --steps 5000
+```sh
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
+sh zero_tests.sh
 ```
 
-Sovereign continuous mode, no step limit:  
+The 79-gate suite includes red twins, restart equivalence, sanitizer runs,
+matched transfer controls, played-action judgment, a causal-prefix search
+twin, a random-order navigation null, island-local revocation arms, and
+failure-closed state and biography checks. A passing build ends with
+`ALL GATES PASS`.
 
-```bash
-./netta netta.txt --steps -1
-```
+## Start a life
 
-Talk to Netta after she's lived a while:
-  
-```bash
-./netta netta.txt --prompt "the forest"
-```
-
-Wipe the biography and start over:
-  
-```bash
-rm -f netta.state netta.history.tsv
-./netta netta.txt --reset --steps 1000
-```
-
-Matched falsifier controls:
-
-```bash
-./netta netta.txt --reset --seed 424242 --steps 1200 --no-glyph
-./netta netta.txt --reset --seed 424242 --steps 1200 --random-glyph
-./netta netta.txt --reset --seed 424242 --steps 1200 --no-stack
-./netta netta.txt --reset --seed 424242 --steps 1200 --no-policy
-./netta netta.txt --reset --seed 424242 --steps 1200 --no-dream
+```sh
+./netta netta.txt \
+  --reset \
+  --seed 42 \
+  --episodes 4 \
+  --steps 800 \
+  --state netta0.state \
+  --bio netta0.bio.tsv
 ```
 
-Each run writes `netta.state` and the immutable episode ledger
-`netta.history.tsv`.
-  
-## A run, mid-life
-```
-[episode 5]
-  source context: , the journey valued more than the arrival, each mile a new landscape, each
-  hidden truth:   turn a new decision. morning dew teaches
-  oracle: answer received, an underwater blizzard of pink
-  netta attempt:  one of being understood underwater mountains rise and
-  coherence: local=0.643 source=0.500 oracle=0.562 semantic=0.641 intent=0.610 ...
-  recursive depth: 5.77 shared-block passes per evaluation
-  dreams: cycles=0 nrem=0 rem=0 replay_memories=5
-[episode 300]
-  source context: removing — taking away the dull edge, exposing the keen one beneath. it teaches
-  hidden truth:   that sometimes improvement is not about adding but
-  oracle: that carrying is temporary — it rots,
-  netta attempt:  that has been given enough to be asking
-  coherence: local=0.898 source=0.749 oracle=0.749 semantic=0.772 intent=0.657 ...
-  dreams: cycles=4 nrem=48 rem=32 replay_memories=300
-```
-And a prompt, after 400 lived episodes:
-```
-netta> the forest behind clouds recognized across time — it is attention is
-       the universe is an act is to grow tall trees enact universe is
+`--reset` begins a new biography. Without `--reset`, Netta resumes and
+requires the same ordered list of island files:
+
+```sh
+./netta netta.txt \
+  --episodes 4 \
+  --steps 800 \
+  --state netta0.state \
+  --bio netta0.bio.tsv
 ```
 
-Beatiful. An organism mid-sentence about itself.
+Never use an island path as `--state` or `--bio`; Netta refuses aliases so
+source truth cannot become writable memory.
 
-After 10000 games she's still nobody's stenographer, but the clauses hold:
+## Multiple islands and matched controls
+
+Register islands in a stable order and choose one by index:
+
+```sh
+./netta island-a.bytes island-b.bytes \
+  --reset --island 0 --episodes 4 --steps 800 \
+  --state voyage.state --bio voyage.bio.tsv
+
+./netta island-a.bytes island-b.bytes \
+  --island 1 --start 16 --episodes 2 --steps 800 \
+  --state voyage.state --bio voyage.bio.tsv
 ```
-a conversation ending well lived resonates when it
-and darkness respectfully withdraws to grow tall loves
-be interrupting a conversation becomes a child learning
-```  
-  
-   
-  
+
+`--start OFFSET` fixes the source address of each requested episode. It is a
+measurement instrument for paired controls; ordinary lives omit it.
+
+Useful experimental flags:
+
+- `--no-units` disables the earned-vocabulary tissue.
+- `--no-mv-nav` disables route search and restores the unanchored move player;
+  this is the matched red control for the first earned move mandate.
+- `--no-island-court` disables the local revocation valve; this is the matched
+  red control for island-local authority.
+- `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
+- `--seed N` initializes a newborn life. On resume, RNG continuity comes from
+  state; use `--start` when source positions must be held equal across arms.
+
+Counts must be finite non-negative integers. Infinite-life syntax such as
+`--steps -1` is not part of NETTA ZERO.
+
+## Living files
+
+- `netta.c` — the organism.
+- `NETTALOG2.md` — constitutional and empirical record.
+- `zero_tests.sh` — executable research law.
+- `netta.txt` — an optional raw-byte example island, not model authority.
+- `netta0.state` — restart state (generated, not source truth).
+- `netta0.bio.tsv` — append-only external biography (generated).
+
+Negative experience is not cleaned out of the record. A failed claimant, a
+reopened null, or a superseded measurement stays visible with its correction.

@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-Z2. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B9. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -67,6 +67,27 @@ cmp -s "$T/d.bio" "$T/s.bio" && cmp -s "$T/d.state" "$T/s.state"
 gate "Z2 split life equals direct life across restart" $? 0
 "$N" "$T/tiny.bytes" --reset --steps 64 --state "$T/t.state" --bio "$T/t.bio" >/dev/null 2>&1
 gate "Z2 island too small fails loud" $? 1
+"$N" NETTALOG2.md --reset --steps -1 --state "$T/neg.state" --bio "$T/neg.bio" >/dev/null 2>&1
+gate "Z2 negative step syntax is refused before address arithmetic" $? 1
+"$N" "$W" --reset --seed 42 --episodes 1 --steps 64 --state "$T/bc.state" --bio "$T/bc.bio" >/dev/null 2>&1
+mv "$T/bc.bio" "$T/bc.withheld"
+"$N" "$W" --episodes 1 --steps 64 --state "$T/bc.state" --bio "$T/bc.bio" >/dev/null 2>&1
+gate "Z2 a missing biography refuses resume (chain is externally verified)" $? 1
+"$N" "$W" --reset --seed 42 --episodes 1 --steps 64 --state "$T/orphan.state" --bio "$T/orphan.bio" >/dev/null 2>&1
+cp "$T/orphan.bio" "$T/orphan.before"
+mv "$T/orphan.state" "$T/orphan.withheld"
+"$N" "$W" --episodes 1 --steps 64 --state "$T/orphan.state" --bio "$T/orphan.bio" >/dev/null 2>&1
+rc=$?; cmp -s "$T/orphan.bio" "$T/orphan.before" || rc=98
+gate "Z2 an orphan biography is preserved and refuses implicit rebirth" $rc 1
+cp "$W" "$T/alias.bytes"
+cp "$T/alias.bytes" "$T/alias.before"
+"$N" "$T/alias.bytes" --reset --steps 64 --state "$T/alias.bytes" --bio "$T/alias.bio" >/dev/null 2>&1
+rc=$?; cmp -s "$T/alias.bytes" "$T/alias.before" || rc=98
+gate "Z2 an immutable island cannot alias writable state" $rc 1
+"$N" "$W" --reset --seed 42 --episodes 1 --steps 64 --state "$T/trail.state" --bio "$T/trail.bio" >/dev/null 2>&1
+printf 'x' >> "$T/trail.state"
+"$N" "$W" --episodes 1 --steps 64 --state "$T/trail.state" --bio "$T/trail.bio" >/dev/null 2>&1
+gate "Z2 state with trailing bytes is refused" $? 1
 
 # --- B2: earned units --------------------------------------------------
 i=0; : > "$T/rep.bytes"
@@ -198,20 +219,27 @@ done
 od -An -v -tu1 "$T/wB.bytes" | tr -s ' ' '\n' | grep -v '^$' | awk 'BEGIN{s=12345}{a[NR]=$1}END{n=NR; for(i=n;i>1;i--){s=(s*1103515245+12345)%2147483648; j=(s%i)+1; t=a[i];a[i]=a[j];a[j]=t} for(i=1;i<=n;i++)printf "%c", a[i]}' > "$T/wBs.bytes"
 tl() { grep "^this-life model $2 " "$1" | awk '{print $NF}'; }
 "$N" "$T/wA.bytes" "$T/wB.bytes" --reset --seed 11 --episodes 4 --steps 800 --island 0 --state "$T/tr.state" --bio "$T/tr.bio" >/dev/null 2>&1
-"$N" "$T/wA.bytes" "$T/wB.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/tr.state" --bio "$T/tr.bio" > "$T/trB.out" 2>&1
-"$N" "$T/wA.bytes" "$T/wB.bytes" --reset --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/nb.state" --bio "$T/nb.bio" > "$T/nbB.out" 2>&1
+"$N" "$T/wA.bytes" "$T/wB.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --start 16 --state "$T/tr.state" --bio "$T/tr.bio" > "$T/trB.out" 2>&1
+"$N" "$T/wA.bytes" "$T/wB.bytes" --reset --seed 12 --episodes 2 --steps 800 --island 1 --start 16 --state "$T/nb.state" --bio "$T/nb.bio" > "$T/nbB.out" 2>&1
 TRB=$(tl "$T/trB.out" byte-bi); NBB=$(tl "$T/nbB.out" byte-bi)
 TRT=$(tl "$T/trB.out" byte-tri); NBT=$(tl "$T/nbB.out" byte-tri)
 awk -v a="$TRB" -v b="$NBB" -v c="$TRT" -v d="$NBT" 'BEGIN{exit !(b-a >= 0.5 && d-c >= 0.5)}'
 gate "B7 kin experience transfers: bi $TRB vs $NBB, tri $TRT vs $NBT (gap>=0.5)" $? 0
+awk -F'\t' 'NF >= 11 && $3 == 1 {print $4}' "$T/tr.bio" > "$T/tr.pos"
+awk -F'\t' 'NF >= 11 && $3 == 1 {print $4}' "$T/nb.bio" > "$T/nb.pos"
+cmp -s "$T/tr.pos" "$T/nb.pos"
+gate "B7 traveller and newborn are judged at identical source positions" $? 0
 "$N" "$T/wA.bytes" "$T/wBs.bytes" --reset --seed 11 --episodes 4 --steps 800 --island 0 --state "$T/sh.state" --bio "$T/sh.bio" >/dev/null 2>&1
-"$N" "$T/wA.bytes" "$T/wBs.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/sh.state" --bio "$T/sh.bio" > "$T/shB.out" 2>&1
-"$N" "$T/wA.bytes" "$T/wBs.bytes" --reset --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/shn.state" --bio "$T/shn.bio" > "$T/shN.out" 2>&1
+"$N" "$T/wA.bytes" "$T/wBs.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --start 16 --state "$T/sh.state" --bio "$T/sh.bio" > "$T/shB.out" 2>&1
+"$N" "$T/wA.bytes" "$T/wBs.bytes" --reset --seed 12 --episodes 2 --steps 800 --island 1 --start 16 --state "$T/shn.state" --bio "$T/shn.bio" > "$T/shN.out" 2>&1
 SHB=$(tl "$T/shB.out" byte-bi); SHN=$(tl "$T/shN.out" byte-bi)
-awk -v a="$SHB" -v b="$SHN" 'BEGIN{d=b-a; if(d<0)d=-d; exit !(d < 0.1)}'
-gate "B7 shuffled world kills the transfer: $SHB vs $SHN (|gap|<0.1)" $? 0
+SHA=$(tl "$T/shB.out" atomic-uni); SHNA=$(tl "$T/shN.out" atomic-uni)
+EXCESS=$(awk -v at="$SHA" -v an="$SHNA" -v bt="$SHB" -v bn="$SHN" \
+  'BEGIN{printf "%.6f", (bn-bt)-(an-at)}')
+awk -v x="$EXCESS" 'BEGIN{exit !(x < 0.1)}'
+gate "B7 shuffle kills contextual excess beyond frequency: $EXCESS bit/byte (<0.1)" $? 0
 "$N" "$T/p3.bytes" "$T/wB.bytes" --reset --seed 11 --episodes 4 --steps 800 --island 0 --state "$T/dc.state" --bio "$T/dc.bio" >/dev/null 2>&1
-"$N" "$T/p3.bytes" "$T/wB.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/dc.state" --bio "$T/dc.bio" > "$T/dcB.out" 2>&1
+"$N" "$T/p3.bytes" "$T/wB.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --start 16 --state "$T/dc.state" --bio "$T/dc.bio" > "$T/dcB.out" 2>&1
 DCB=$(tl "$T/dcB.out" byte-bi)
 awk -v kin="$TRB" -v don="$DCB" 'BEGIN{exit !(don - kin >= 0.5)}'
 gate "B7 kinship is measurable: kin donor $TRB beats alien donor $DCB (gap>=0.5)" $? 0
@@ -226,7 +254,8 @@ UR=$(grep 'units recognisable on island 1' "$T/trB.out" | awk '{print $6}')
 gate "B7 exact forms are recognised on the kin island ($UR units)" $? 0
 
 # --- B8: the emission seat and its probation ---------------------------
-"$N" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 --state "$T/p8.state" --bio "$T/p8.bio" > "$T/p8.out" 2>&1
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
+    --no-mv-nav --state "$T/p8.state" --bio "$T/p8.bio" > "$T/p8.out" 2>&1
 MVP=$(grep -c '^a	.*	mvp$' "$T/p8.bio")
 [ "$MVP" -gt 0 ]
 gate "B8 the shadow record opens probation episodes ($MVP played)" $? 0
@@ -234,10 +263,10 @@ VC=$(grep -c '^v	' "$T/p8.bio")
 [ "$VC" -gt 0 ]
 gate "B8 probation emits real moves ($VC move receipts)" $? 0
 MVREC=$(awk '/mv played record/{print $4}' "$T/p8.out")
-TRIREC=$(awk '/^model byte-tri /{print $NF}' "$T/p8.out")
-[ -n "$MVREC" ] && [ -n "$TRIREC" ]
-gate "B8 the verdict is numeric: mv played $MVREC vs sitting tri $TRIREC" $? 0
-awk -v m="$MVREC" -v t="$TRIREC" 'BEGIN{exit !(m > t)}'
+REFREC=$(awk '/^mv matched byte refs:/{gsub(",",""); r=$6; if($8<r)r=$8; if($10<r)r=$10; print r}' "$T/p8.out")
+[ -n "$MVREC" ] && [ -n "$REFREC" ]
+gate "B8 the verdict is numeric on matched bytes: mv $MVREC vs best byte $REFREC" $? 0
+awk -v m="$MVREC" -v t="$REFREC" 'BEGIN{exit !(m > t)}'
 SEAT=$(awk -v r="$?" 'BEGIN{print r}')
 MVSEAT=$(grep -c '^a	.*	mv$' "$T/p8.bio")
 if [ "$SEAT" = "0" ]; then [ "$MVSEAT" -eq 0 ]; else [ "$MVSEAT" -gt 0 ]; fi
@@ -246,10 +275,214 @@ gate "B8 the seat follows the played record (mv seats: $MVSEAT)" $? 0
 "$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/z8l.state" --bio "$T/z8l.bio" --actor-lock uni >/dev/null 2>&1
 cmp -s "$T/z8e.bio" "$T/z8l.bio"
 gate "B8 zero intervention with four candidates and probation" $? 0
-"$N" "$T/p3.bytes" --reset --seed 5 --episodes 12 --steps 600 --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
-"$N" "$T/p3.bytes" --episodes 12 --steps 600 --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 12 --steps 600 \
+    --no-mv-nav --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --episodes 12 --steps 600 --no-mv-nav \
+    --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
 cmp -s "$T/p8.bio" "$T/p8s.bio" && cmp -s "$T/p8.state" "$T/p8s.state"
 gate "B8 probation and played record survive restart" $? 0
+
+# --- A8: checkpoint audit repairs --------------------------------------
+# Paired external-truth court for the played move record. The two organisms
+# live the same a-only biography; their unread second island is either a-only
+# or b-only. The first emitted move and its prior are identical, but truth is
+# not. A loss that remains equal is self-information, not judgment.
+i=0; : > "$T/aa.bytes"; : > "$T/bb.bytes"
+while [ $i -lt 500 ]; do
+  printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' >> "$T/aa.bytes"
+  printf 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' >> "$T/bb.bytes"
+  i=$((i+1))
+done
+"$N" "$T/aa.bytes" "$T/aa.bytes" --reset --seed 9 --episodes 4 --steps 3000 --island 0 --state "$T/hit.state" --bio "$T/hit.bio" >/dev/null 2>&1
+"$N" "$T/aa.bytes" "$T/bb.bytes" --reset --seed 9 --episodes 4 --steps 3000 --island 0 --state "$T/miss.state" --bio "$T/miss.bio" >/dev/null 2>&1
+HL=$(wc -l < "$T/hit.bio"); ML=$(wc -l < "$T/miss.bio")
+"$N" "$T/aa.bytes" "$T/aa.bytes" --actor-lock mv --no-mv-nav \
+    --episodes 1 --steps 128 --island 1 \
+    --state "$T/hit.state" --bio "$T/hit.bio" >"$T/hit.out" 2>&1
+"$N" "$T/aa.bytes" "$T/bb.bytes" --actor-lock mv --no-mv-nav \
+    --episodes 1 --steps 128 --island 1 \
+    --state "$T/miss.state" --bio "$T/miss.bio" >"$T/miss.out" 2>&1
+HIT=$(tail -n "+$((HL+1))" "$T/hit.bio" | awk -F'\t' '$1=="v"{print $5, $8, $9; exit}')
+MISS=$(tail -n "+$((ML+1))" "$T/miss.bio" | awk -F'\t' '$1=="v"{print $5, $8, $9; exit}')
+HM=$(echo "$HIT" | awk '{print $1}'); MM=$(echo "$MISS" | awk '{print $1}')
+HX=$(echo "$HIT" | awk '{print $2}'); MX=$(echo "$MISS" | awk '{print $2}')
+HT=$(echo "$HIT" | awk '{print $3}'); MT=$(echo "$MISS" | awk '{print $3}')
+[ -n "$HM" ] && [ "$HM" = "$MM" ] && [ "$HT" != "$MT" ] && [ "$HX" != "$MX" ]
+gate "A8 played judge prices external truth: same emission, loss $HX vs $MX" $? 0
+grep -q '^mv control record:' "$T/hit.out" && ! grep -q '^mv played record:' "$T/hit.out"
+gate "A8 forced move control never enters the persisted mandate record" $? 0
+
+# --- A9: probation borrows the body, never the seat ---------------------
+# Two-phase life: tri earns the seat on period-3, then a skewed-census
+# island decays the uni-tri lead into the hysteresis band [KEEP, GAIN).
+# The probation at episode 7 must not erase tri's incumbency: episode 8
+# is elected on a lead that still satisfies KEEP, so the seat stays tri.
+# The island court is disabled on this world to isolate the probation
+# law; the local verdict is body 10's own gated organ below.
+awk 'BEGIN{s=99; for(i=0;i<25000;i++){s=(s*1103515245+12345)%2147483648; n=7+int(s/65536)%2; for(j=0;j<n;j++)printf "a"; printf "b"}}' > "$T/skew.bytes"
+"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --no-island-court --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 4 --steps 600 --island 1 --no-island-court --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
+S7=$(awk -F'\t' '$1=="a" && $2==7{print $3}' "$T/a9.bio")
+S8=$(awk -F'\t' '$1=="a" && $2==8{print $3}' "$T/a9.bio")
+[ "$S7" = "mvp" ] && [ "$S8" = "tri" ]
+gate "A9 probation does not depose the sitting incumbent (ep7=$S7, ep8=$S8)" $? 0
+"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --no-island-court --state "$T/a9b.state" --bio "$T/a9b.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 3 --steps 600 --island 1 --no-island-court --state "$T/a9b.state" --bio "$T/a9b.bio" > "$T/a9b.out" 2>&1
+AU9=$(awk '/^model atomic-uni /{print $NF}' "$T/a9b.out")
+TR9=$(awk '/^model byte-tri /{print $NF}' "$T/a9b.out")
+LEAD9=$(awk -v u="$AU9" -v t="$TR9" 'BEGIN{printf "%.6f", u-t}')
+awk -v l="$LEAD9" 'BEGIN{exit !(l >= 0.05 && l < 0.1)}'
+gate "A9 the election lead sits in the hysteresis band ($LEAD9 in [0.05,0.1))" $? 0
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 7 --steps 600 --state "$T/a9s.state" --bio "$T/a9s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --episodes 1 --steps 600 --state "$T/a9s.state" --bio "$T/a9s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 8 --steps 600 --state "$T/a9d.state" --bio "$T/a9d.bio" >/dev/null 2>&1
+cmp -s "$T/a9s.bio" "$T/a9d.bio" && cmp -s "$T/a9s.state" "$T/a9d.state"
+gate "A9 a life split at the probation boundary is bit-identical" $? 0
+
+# --- B9: navigation searches only the observable wake ------------------
+# The no-navigation B8 arm above is the red control: it preserves the
+# corrected refusal (mv 7.057066 vs matched tri 0.288818, no ordinary mv
+# seats). The new policy must close that exposure gap without changing the
+# court or looking at bytes at/after the current address.
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
+    --state "$T/p9.state" --bio "$T/p9.bio" > "$T/p9.out" 2>&1
+MV9=$(awk '/mv played record/{print $4}' "$T/p9.out")
+REF9=$(awk '/^mv matched byte refs:/{gsub(",",""); r=$6; if($8<r)r=$8; if($10<r)r=$10; print r}' "$T/p9.out")
+awk -v m="$MV9" -v r="$REF9" 'BEGIN{exit !(r-m >= 0.1)}'
+gate "B9 searched mv beats matched byte court: $MV9 vs $REF9 (gain>=0.1)" $? 0
+MV9SEAT=$(awk -F'\t' '$1=="a" && $3=="mv"{n++} END{print n+0}' "$T/p9.bio")
+[ "$MV9SEAT" -gt 0 ]
+gate "B9 the first move mandate is earned in played life ($MV9SEAT seats)" $? 0
+OLD9=$(awk '/mv played record/{print $4}' "$T/p8.out")
+OLDREF9=$(awk '/^mv matched byte refs:/{gsub(",",""); r=$6; if($8<r)r=$8; if($10<r)r=$10; print r}' "$T/p8.out")
+OLD9SEAT=$(awk -F'\t' '$1=="a" && $3=="mv"{n++} END{print n+0}' "$T/p8.bio")
+awk -v m="$OLD9" -v r="$OLDREF9" -v s="$OLD9SEAT" \
+    'BEGIN{exit !(m > r && s == 0)}'
+gate "B9 no-navigation red control still loses: $OLD9 vs $OLDREF9" $? 0
+
+# Two unread islands share the exact 16-byte observable wake at --start 16
+# and diverge at the target. Independently trained states have identical
+# model/RNG histories. Search must therefore choose the same anchor and emit
+# the same move before the external judge is allowed to distinguish truth.
+printf 'abcacbabcacbabca' > "$T/nav-hit.bytes"
+printf 'abcacbabcacbabca' > "$T/nav-miss.bytes"
+i=0
+while [ $i -lt 300 ]; do
+  printf 'cbabcacbabcacb' >> "$T/nav-hit.bytes"
+  printf 'xxxxxxxxxxxxxx' >> "$T/nav-miss.bytes"
+  i=$((i+1))
+done
+"$N" "$T/p3.bytes" "$T/nav-hit.bytes" --reset --seed 9 \
+    --episodes 4 --steps 3000 --island 0 \
+    --state "$T/nh.state" --bio "$T/nh.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/nav-miss.bytes" --reset --seed 9 \
+    --episodes 4 --steps 3000 --island 0 \
+    --state "$T/nm.state" --bio "$T/nm.bio" >/dev/null 2>&1
+NHL=$(wc -l < "$T/nh.bio"); NML=$(wc -l < "$T/nm.bio")
+"$N" "$T/p3.bytes" "$T/nav-hit.bytes" --actor-lock mv --start 16 \
+    --episodes 1 --steps 128 --island 1 \
+    --state "$T/nh.state" --bio "$T/nh.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/nav-miss.bytes" --actor-lock mv --start 16 \
+    --episodes 1 --steps 128 --island 1 \
+    --state "$T/nm.state" --bio "$T/nm.bio" >/dev/null 2>&1
+NH=$(tail -n "+$((NHL+1))" "$T/nh.bio" | awk -F'\t' '$1=="v"{print $5, $8, $9, $10; exit}')
+NM=$(tail -n "+$((NML+1))" "$T/nm.bio" | awk -F'\t' '$1=="v"{print $5, $8, $9, $10; exit}')
+NHA=$(echo "$NH" | awk '{print $1}'); NMA=$(echo "$NM" | awk '{print $1}')
+NHLSS=$(echo "$NH" | awk '{print $2}'); NMLSS=$(echo "$NM" | awk '{print $2}')
+NHT=$(echo "$NH" | awk '{print $3}'); NMT=$(echo "$NM" | awk '{print $3}')
+NHANCH=$(echo "$NH" | awk '{print $4}'); NMANCH=$(echo "$NM" | awk '{print $4}')
+[ -n "$NHA" ] && [ "$NHA" = "$NMA" ] && \
+    [ "$NHANCH" = "$NMANCH" ] && [ "$NHT" != "$NMT" ] && \
+    [ "$NHLSS" != "$NMLSS" ]
+gate "B9 identical past fixes anchor/action; only outward truth changes loss" $? 0
+
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 12 --steps 600 \
+    --state "$T/p9s.state" --bio "$T/p9s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --episodes 12 --steps 600 \
+    --state "$T/p9s.state" --bio "$T/p9s.bio" >/dev/null 2>&1
+cmp -s "$T/p9.bio" "$T/p9s.bio" && cmp -s "$T/p9.state" "$T/p9s.state"
+gate "B9 navigation and earned move mandate survive restart" $? 0
+
+# A deterministic three-byte-census null has units but no predictive route:
+# search never reaches probation, much less authority.
+awk 'BEGIN{s=12345; for(i=0;i<30000;i++){s=(s*1103515245+12345)%2147483648; printf "%c", 97+(s%3)}}' > "$T/nav-null.bytes"
+"$N" "$T/nav-null.bytes" --reset --seed 5 --episodes 24 --steps 600 \
+    --state "$T/nnull.state" --bio "$T/nnull.bio" > "$T/nnull.out" 2>&1
+NNMVP=$(awk -F'\t' '$1=="a" && $3=="mvp"{n++} END{print n+0}' "$T/nnull.bio")
+NNMV=$(awk -F'\t' '$1=="a" && $3=="mv"{n++} END{print n+0}' "$T/nnull.bio")
+[ "$NNMVP" -eq 0 ] && [ "$NNMV" -eq 0 ]
+gate "B9 random-order null grants search no probation or mandate" $? 0
+
+# --- B10: the island court ----------------------------------------------
+# Global models travel; records are local. A globally seated actor must
+# still satisfy the island it acts on: after ACTOR_MIN_BYTES of local
+# evidence, a seat whose local lead over the local newborn record falls
+# under KEEP is refused for that island only. Home mandate and kin
+# transfer stay untouched; a single-island life must be bit-identical.
+awk 'BEGIN{s=555; for(i=0;i<30000;i++){s=(s*1103515245+12345)%2147483648; r=int(s/65536)%100; if(r<87)printf "a"; else {s=(s*1103515245+12345)%2147483648; printf "%c", 98+int(s/65536)%10}}}' > "$T/alien.bytes"
+awk 'BEGIN{for(i=0;i<700;i++) printf "cacbab"}' > "$T/kin.bytes"
+"$N" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 --island 0 --state "$T/b10.state" --bio "$T/b10.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 8 --steps 600 --island 1 --state "$T/b10.state" --bio "$T/b10.bio" > "$T/b10.out" 2>&1
+RV=$(grep -c '^r	' "$T/b10.bio")
+A9S=$(awk -F'\t' '$1=="a" && $2==9{print $3}' "$T/b10.bio")
+[ "$RV" -gt 0 ] && [ "$A9S" = "uni" ]
+gate "B10 an alien island revokes the travelling seat ($RV revocations, ep9=$A9S)" $? 0
+grep '^r	' "$T/b10.bio" | head -1 | awk -F'\t' '{exit !($4 == "tri" && $5 == "uni" && $6+0 < $7+0)}'
+gate "B10 the revocation is numeric: the local newborn record beats the seat" $? 0
+"$N" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 --island 0 --no-island-court --state "$T/b10n.state" --bio "$T/b10n.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 8 --steps 600 --island 1 --no-island-court --state "$T/b10n.state" --bio "$T/b10n.bio" > "$T/b10n.out" 2>&1
+RVN=$(grep -c '^r	' "$T/b10n.bio")
+CB=$(awk -F': ' '/^bits per raw byte/{print $2}' "$T/b10.out")
+NB=$(awk -F': ' '/^bits per raw byte/{print $2}' "$T/b10n.out")
+[ "$RVN" -eq 0 ] && awk -v c="$CB" -v n="$NB" 'BEGIN{exit !(c < n)}'
+gate "B10 the red arm burns: court $CB < no-court $NB on the alien stay" $? 0
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 2 --steps 600 --island 0 --state "$T/b10.state" --bio "$T/b10.bio" >/dev/null 2>&1
+HR=$(awk -F'\t' '$1=="a" && $2==16{print $3}' "$T/b10.bio")
+[ "$HR" = "tri" ]
+gate "B10 revocation is local: the mandate still acts at home (ep16=$HR)" $? 0
+"$N" "$T/p3.bytes" "$T/kin.bytes" --reset --seed 5 --episodes 6 --steps 600 --island 0 --state "$T/b10k.state" --bio "$T/b10k.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/kin.bytes" --seed 5 --episodes 8 --steps 600 --island 1 --state "$T/b10k.state" --bio "$T/b10k.bio" >/dev/null 2>&1
+RVK=$(grep -c '^r	' "$T/b10k.bio")
+[ "$RVK" -eq 0 ]
+gate "B10 kin transfer is not punished (0 revocations on the rotated island)" $? 0
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 8 --steps 600 --state "$T/b10z.state" --bio "$T/b10z.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 8 --steps 600 --no-island-court --state "$T/b10zn.state" --bio "$T/b10zn.bio" >/dev/null 2>&1
+cmp -s "$T/b10z.bio" "$T/b10zn.bio" && cmp -s "$T/b10z.state" "$T/b10zn.state"
+gate "B10 zero intervention where no second island exists (bit-identical)" $? 0
+"$N" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 --island 0 --state "$T/b10s.state" --bio "$T/b10s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 4 --steps 600 --island 1 --state "$T/b10s.state" --bio "$T/b10s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 4 --steps 600 --island 1 --state "$T/b10s.state" --bio "$T/b10s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 --island 0 --state "$T/b10d.state" --bio "$T/b10d.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 8 --steps 600 --island 1 --state "$T/b10d.state" --bio "$T/b10d.bio" >/dev/null 2>&1
+cmp -s "$T/b10s.bio" "$T/b10d.bio" && cmp -s "$T/b10s.state" "$T/b10d.state"
+gate "B10 local records and revocations survive restart (split voyage identical)" $? 0
+
+# --- S: sanitizers are executable law, not a remembered side run --------
+cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
+   -fsanitize=address,undefined -fno-omit-frame-pointer \
+   netta.c -lm -o "$T/netta-san" >"$T/san-build.log" 2>&1
+rc=$?; [ -s "$T/san-build.log" ] && rc=98
+gate "S sanitizer build is strict and silent" $rc 0
+S="$T/netta-san"
+"$S" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 4000 \
+    --state "$T/sr.state" --bio "$T/sr.bio" >/dev/null 2>"$T/sr.err"
+rc=$?
+"$S" "$T/all.bytes" --reset --seed 7 --episodes 1 --steps 200 \
+    --state "$T/sb.state" --bio "$T/sb.bio" >/dev/null 2>"$T/sb.err" || rc=$?
+[ -s "$T/sr.err" ] && rc=98
+[ -s "$T/sb.err" ] && rc=98
+gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
+"$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
+    --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
+rc=$?; [ -s "$T/sm.err" ] && rc=98
+gate "S ASan/UBSan silent through move navigation and restart state v12" $rc 0
+"$S" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 \
+    --island 0 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>"$T/si.err"
+rc=$?
+"$S" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 8 --steps 600 \
+    --island 1 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>>"$T/si.err" || rc=$?
+[ -s "$T/si.err" ] && rc=98
+gate "S ASan/UBSan silent through island travel and local revocation" $rc 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi
