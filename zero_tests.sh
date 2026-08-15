@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-Z2. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B9. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -254,7 +254,8 @@ UR=$(grep 'units recognisable on island 1' "$T/trB.out" | awk '{print $6}')
 gate "B7 exact forms are recognised on the kin island ($UR units)" $? 0
 
 # --- B8: the emission seat and its probation ---------------------------
-"$N" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 --state "$T/p8.state" --bio "$T/p8.bio" > "$T/p8.out" 2>&1
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
+    --no-mv-nav --state "$T/p8.state" --bio "$T/p8.bio" > "$T/p8.out" 2>&1
 MVP=$(grep -c '^a	.*	mvp$' "$T/p8.bio")
 [ "$MVP" -gt 0 ]
 gate "B8 the shadow record opens probation episodes ($MVP played)" $? 0
@@ -274,8 +275,10 @@ gate "B8 the seat follows the played record (mv seats: $MVSEAT)" $? 0
 "$N" "$T/all.bytes" --reset --seed 7 --steps 200 --state "$T/z8l.state" --bio "$T/z8l.bio" --actor-lock uni >/dev/null 2>&1
 cmp -s "$T/z8e.bio" "$T/z8l.bio"
 gate "B8 zero intervention with four candidates and probation" $? 0
-"$N" "$T/p3.bytes" --reset --seed 5 --episodes 12 --steps 600 --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
-"$N" "$T/p3.bytes" --episodes 12 --steps 600 --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 12 --steps 600 \
+    --no-mv-nav --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --episodes 12 --steps 600 --no-mv-nav \
+    --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
 cmp -s "$T/p8.bio" "$T/p8s.bio" && cmp -s "$T/p8.state" "$T/p8s.state"
 gate "B8 probation and played record survive restart" $? 0
 
@@ -293,8 +296,12 @@ done
 "$N" "$T/aa.bytes" "$T/aa.bytes" --reset --seed 9 --episodes 4 --steps 3000 --island 0 --state "$T/hit.state" --bio "$T/hit.bio" >/dev/null 2>&1
 "$N" "$T/aa.bytes" "$T/bb.bytes" --reset --seed 9 --episodes 4 --steps 3000 --island 0 --state "$T/miss.state" --bio "$T/miss.bio" >/dev/null 2>&1
 HL=$(wc -l < "$T/hit.bio"); ML=$(wc -l < "$T/miss.bio")
-"$N" "$T/aa.bytes" "$T/aa.bytes" --actor-lock mv --episodes 1 --steps 128 --island 1 --state "$T/hit.state" --bio "$T/hit.bio" >"$T/hit.out" 2>&1
-"$N" "$T/aa.bytes" "$T/bb.bytes" --actor-lock mv --episodes 1 --steps 128 --island 1 --state "$T/miss.state" --bio "$T/miss.bio" >"$T/miss.out" 2>&1
+"$N" "$T/aa.bytes" "$T/aa.bytes" --actor-lock mv --no-mv-nav \
+    --episodes 1 --steps 128 --island 1 \
+    --state "$T/hit.state" --bio "$T/hit.bio" >"$T/hit.out" 2>&1
+"$N" "$T/aa.bytes" "$T/bb.bytes" --actor-lock mv --no-mv-nav \
+    --episodes 1 --steps 128 --island 1 \
+    --state "$T/miss.state" --bio "$T/miss.bio" >"$T/miss.out" 2>&1
 HIT=$(tail -n "+$((HL+1))" "$T/hit.bio" | awk -F'\t' '$1=="v"{print $5, $8, $9; exit}')
 MISS=$(tail -n "+$((ML+1))" "$T/miss.bio" | awk -F'\t' '$1=="v"{print $5, $8, $9; exit}')
 HM=$(echo "$HIT" | awk '{print $1}'); MM=$(echo "$MISS" | awk '{print $1}')
@@ -304,6 +311,80 @@ HT=$(echo "$HIT" | awk '{print $3}'); MT=$(echo "$MISS" | awk '{print $3}')
 gate "A8 played judge prices external truth: same emission, loss $HX vs $MX" $? 0
 grep -q '^mv control record:' "$T/hit.out" && ! grep -q '^mv played record:' "$T/hit.out"
 gate "A8 forced move control never enters the persisted mandate record" $? 0
+
+# --- B9: navigation searches only the observable wake ------------------
+# The no-navigation B8 arm above is the red control: it preserves the
+# corrected refusal (mv 7.057066 vs matched tri 0.288818, no ordinary mv
+# seats). The new policy must close that exposure gap without changing the
+# court or looking at bytes at/after the current address.
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
+    --state "$T/p9.state" --bio "$T/p9.bio" > "$T/p9.out" 2>&1
+MV9=$(awk '/mv played record/{print $4}' "$T/p9.out")
+REF9=$(awk '/^mv matched byte refs:/{gsub(",",""); r=$6; if($8<r)r=$8; if($10<r)r=$10; print r}' "$T/p9.out")
+awk -v m="$MV9" -v r="$REF9" 'BEGIN{exit !(r-m >= 0.1)}'
+gate "B9 searched mv beats matched byte court: $MV9 vs $REF9 (gain>=0.1)" $? 0
+MV9SEAT=$(awk -F'\t' '$1=="a" && $3=="mv"{n++} END{print n+0}' "$T/p9.bio")
+[ "$MV9SEAT" -gt 0 ]
+gate "B9 the first move mandate is earned in played life ($MV9SEAT seats)" $? 0
+OLD9=$(awk '/mv played record/{print $4}' "$T/p8.out")
+OLDREF9=$(awk '/^mv matched byte refs:/{gsub(",",""); r=$6; if($8<r)r=$8; if($10<r)r=$10; print r}' "$T/p8.out")
+OLD9SEAT=$(awk -F'\t' '$1=="a" && $3=="mv"{n++} END{print n+0}' "$T/p8.bio")
+awk -v m="$OLD9" -v r="$OLDREF9" -v s="$OLD9SEAT" \
+    'BEGIN{exit !(m > r && s == 0)}'
+gate "B9 no-navigation red control still loses: $OLD9 vs $OLDREF9" $? 0
+
+# Two unread islands share the exact 16-byte observable wake at --start 16
+# and diverge at the target. Independently trained states have identical
+# model/RNG histories. Search must therefore choose the same anchor and emit
+# the same move before the external judge is allowed to distinguish truth.
+printf 'abcacbabcacbabca' > "$T/nav-hit.bytes"
+printf 'abcacbabcacbabca' > "$T/nav-miss.bytes"
+i=0
+while [ $i -lt 300 ]; do
+  printf 'cbabcacbabcacb' >> "$T/nav-hit.bytes"
+  printf 'xxxxxxxxxxxxxx' >> "$T/nav-miss.bytes"
+  i=$((i+1))
+done
+"$N" "$T/p3.bytes" "$T/nav-hit.bytes" --reset --seed 9 \
+    --episodes 4 --steps 3000 --island 0 \
+    --state "$T/nh.state" --bio "$T/nh.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/nav-miss.bytes" --reset --seed 9 \
+    --episodes 4 --steps 3000 --island 0 \
+    --state "$T/nm.state" --bio "$T/nm.bio" >/dev/null 2>&1
+NHL=$(wc -l < "$T/nh.bio"); NML=$(wc -l < "$T/nm.bio")
+"$N" "$T/p3.bytes" "$T/nav-hit.bytes" --actor-lock mv --start 16 \
+    --episodes 1 --steps 128 --island 1 \
+    --state "$T/nh.state" --bio "$T/nh.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/nav-miss.bytes" --actor-lock mv --start 16 \
+    --episodes 1 --steps 128 --island 1 \
+    --state "$T/nm.state" --bio "$T/nm.bio" >/dev/null 2>&1
+NH=$(tail -n "+$((NHL+1))" "$T/nh.bio" | awk -F'\t' '$1=="v"{print $5, $8, $9, $10; exit}')
+NM=$(tail -n "+$((NML+1))" "$T/nm.bio" | awk -F'\t' '$1=="v"{print $5, $8, $9, $10; exit}')
+NHA=$(echo "$NH" | awk '{print $1}'); NMA=$(echo "$NM" | awk '{print $1}')
+NHLSS=$(echo "$NH" | awk '{print $2}'); NMLSS=$(echo "$NM" | awk '{print $2}')
+NHT=$(echo "$NH" | awk '{print $3}'); NMT=$(echo "$NM" | awk '{print $3}')
+NHANCH=$(echo "$NH" | awk '{print $4}'); NMANCH=$(echo "$NM" | awk '{print $4}')
+[ -n "$NHA" ] && [ "$NHA" = "$NMA" ] && \
+    [ "$NHANCH" = "$NMANCH" ] && [ "$NHT" != "$NMT" ] && \
+    [ "$NHLSS" != "$NMLSS" ]
+gate "B9 identical past fixes anchor/action; only outward truth changes loss" $? 0
+
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 12 --steps 600 \
+    --state "$T/p9s.state" --bio "$T/p9s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --episodes 12 --steps 600 \
+    --state "$T/p9s.state" --bio "$T/p9s.bio" >/dev/null 2>&1
+cmp -s "$T/p9.bio" "$T/p9s.bio" && cmp -s "$T/p9.state" "$T/p9s.state"
+gate "B9 navigation and earned move mandate survive restart" $? 0
+
+# A deterministic three-byte-census null has units but no predictive route:
+# search never reaches probation, much less authority.
+awk 'BEGIN{s=12345; for(i=0;i<30000;i++){s=(s*1103515245+12345)%2147483648; printf "%c", 97+(s%3)}}' > "$T/nav-null.bytes"
+"$N" "$T/nav-null.bytes" --reset --seed 5 --episodes 24 --steps 600 \
+    --state "$T/nnull.state" --bio "$T/nnull.bio" > "$T/nnull.out" 2>&1
+NNMVP=$(awk -F'\t' '$1=="a" && $3=="mvp"{n++} END{print n+0}' "$T/nnull.bio")
+NNMV=$(awk -F'\t' '$1=="a" && $3=="mv"{n++} END{print n+0}' "$T/nnull.bio")
+[ "$NNMVP" -eq 0 ] && [ "$NNMV" -eq 0 ]
+gate "B9 random-order null grants search no probation or mandate" $? 0
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
@@ -323,7 +404,7 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move probation and restart state v9" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v10" $rc 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi

@@ -546,3 +546,63 @@ carry a byte actor into an alien island long after its local mandate has
 vanished; greedy truth segmentation is a declared first court, not yet a
 marginal likelihood over all byte-equivalent move paths; units have a birth
 law but no death law. Those are open bodies, not implications of this repair.
+
+## The ninth body: navigation earns the first move mandate
+
+The wager was fixed against the corrected refusal, not against the earlier
+self-priced player. No threshold or court changed. With `--no-mv-nav`, the
+period-3 red arm remains exactly where the checkpoint left it: move play costs
+`7.057066` bits per raw byte against the best matched byte witness at
+`0.288818`, three probation episodes reopen, and no ordinary `mv` episode is
+seated. The ninth body had to close that exposure gap by changing what the
+player can know before emission, not by forgiving what happens afterward.
+
+The first navigation organ has two bounded operations. At every move decision
+it searches all exact semi-Markov segmentations of the previous 16 observable
+world bytes. A Viterbi route, scored by the lived move unigram and bigram,
+selects the most probable final move as an anchor. Atomic moves guarantee an
+exact route even when no learned unit fits. From that anchor, a one-move
+model-only rollout scores each candidate as its current transition probability
+times the strongest learned continuation available after it; those scores are
+renormalized into the policy that actually samples. The search may inspect
+unit forms, counts, and bytes strictly before the current address. It never
+reads the target byte, tests a candidate against its future world span, or
+consults the truth matcher. The external judge prices the resulting searched
+distribution against the same canonical truth move as before, so a confident
+internal attractor is still an expensive lie when the world rejects it.
+
+On the preregistered 24-episode period-3 life, seed 5, the searched player opens
+two probation episodes and then earns nine ordinary `mv` episodes. Its played
+record is `0.049384` bits per raw byte over 6600 matched bytes, against
+`1.622828 / 1.110387 / 0.212070` for uni, bi, and tri on those same bytes. The
+margin over the best byte witness is `0.162686`, above the unchanged 0.1
+appointment threshold. In the whole life, 590 move decisions were searched;
+571 routes ended in learned-unit anchors. Ten seeds all repeated the positive
+appointment (`0.027413..0.055753` played versus `0.212070` tri). A 64-episode
+side life kept the seat for 49 ordinary `mv` episodes and finished at
+`0.040604` played against `0.114199` matched tri. This is the first earned
+emission mandate in the zero line.
+
+The positive gate has three red edges. First, disabling navigation reproduces
+the exact `7.057066 / 0.288818` loss and refusal rather than merely making the
+new player a little worse. Second, two unread islands with the same 16-byte
+prefix and different target spans produce the same route anchor and emitted
+move; only the outward target and loss differ. Third, a deterministic
+random-order three-byte-census world grows 49 units but gives the move shadow
+no predictive advantage, so search receives neither probation nor mandate.
+The new player and the unanchored control both survive split restart exactly.
+Searched move receipts now carry the policy anchor, while the no-navigation
+red arm preserves the checkpoint receipt bytes. State advances to version 10
+so the new emission semantics cannot be mistaken for the version-9 life.
+
+Gates: sixty-eight machine verdicts, `ALL GATES PASS`, strict C11 with zero
+warnings, ASan/UBSan through searched probation, appointment, and restart. The
+six new B9 verdicts prove a matched win, a real seat, the old refusal, the
+causal observation boundary, restart identity, and the random-order null.
+
+What is not proved: this is bounded route recovery plus one move of lookahead,
+not yet the GTA/AlphaZero-scale planning body. Its appointment is synthetic;
+real-text and adversarial-attractor lives have not qualified it. Search and
+mandate evidence remain global across islands, so the island-local revocation
+valve is now the next constitutional organ. Greedy truth segmentation, unit
+death, and capacity lives remain open behind it.

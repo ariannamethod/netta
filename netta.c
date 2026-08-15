@@ -42,7 +42,7 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    9u
+#define STATE_VER    10u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -385,8 +385,10 @@ static void tri_add(uint32_t ctx, uint8_t b) {
    lived prequential record alone. */
 static int actor_current = 0;
 static int actor_lock = -1;        /* CLI: -1 earned, 0..3 locked */
+static int move_nav_enabled = 1;   /* body 9: search the observable wake */
 static uint64_t ep_actor[4] = {0, 0, 0, 0};
 static const char *actor_name[4] = {"uni", "bi", "tri", "mv"};
+static uint64_t move_nav_steps = 0, move_nav_unit_anchors = 0;
 
 #define ACTOR_MIN_BYTES 1000
 #define ACTOR_GAIN      0.1
@@ -452,6 +454,131 @@ static uint32_t truth_move(Island *isl, uint64_t pos, uint64_t room) {
     }
     return best_u >= 0 ? (uint32_t)(ACTIONS + best_u)
                        : (uint32_t)isl->bytes[pos];
+}
+
+typedef struct {
+    uint32_t move;
+    double score;
+    int live;
+} Route;
+
+static double move_prob(int64_t prev, uint32_t cur, int alive) {
+    double denom;
+    uint64_t cnt;
+    if (prev >= 0) {
+        denom = (double)mv_out[(uint32_t)prev] + (double)alive;
+        cnt = pair_get((uint32_t)prev, cur);
+    } else {
+        denom = (double)move_total + (double)alive;
+        cnt = move_count[cur];
+    }
+    return ((double)cnt + 1.0) / denom;
+}
+
+static double move_logp(int64_t prev, uint32_t cur, int alive) {
+    return log(move_prob(prev, cur, alive));
+}
+
+static int move_matches(const Island *isl, uint64_t pos, uint64_t room,
+                        uint32_t move) {
+    uint8_t tmp[1];
+    uint32_t len = move_len(move);
+    if ((uint64_t)len > room || (uint64_t)len > isl->len ||
+        pos > isl->len - len) return 0;
+    return memcmp(isl->bytes + pos, move_bytes(move, tmp), len) == 0;
+}
+
+static void route_offer(Route routes[UNIT_MAX_LEN + 1], uint32_t move,
+                        double score) {
+    uint32_t len = move_len(move);
+    Route *r = &routes[len];
+    if (!r->live || score > r->score ||
+        (score == r->score && move < r->move)) {
+        r->move = move;
+        r->score = score;
+        r->live = 1;
+    }
+}
+
+/* Body 9's first navigation organ is a bounded Viterbi search over the
+   already-observed byte wake. It reconstructs the most probable exact
+   semi-Markov route through the previous CTX bytes, then uses the final
+   move as the current move-bigram state. The search can inspect unit forms,
+   learned counts, and bytes strictly before pos. It never reads the target
+   byte or any proposed move's future span. Atomic moves guarantee that an
+   exact route always exists. */
+static uint32_t move_route_anchor(const Island *isl, uint64_t pos, int alive) {
+    Route routes[CTX + 1][UNIT_MAX_LEN + 1];
+    memset(routes, 0, sizeof routes);
+    uint64_t base = pos - CTX;
+
+    for (int m = 0; m < alive; ++m) {
+        uint32_t len = move_len((uint32_t)m);
+        if (len <= CTX && move_matches(isl, base, CTX, (uint32_t)m))
+            route_offer(routes[len], (uint32_t)m,
+                        move_logp(-1, (uint32_t)m, alive));
+    }
+    for (uint32_t off = 1; off < CTX; ++off) {
+        for (uint32_t pl = 1; pl <= UNIT_MAX_LEN; ++pl) {
+            Route *prior = &routes[off][pl];
+            if (!prior->live) continue;
+            uint64_t room = CTX - off;
+            for (int m = 0; m < alive; ++m) {
+                uint32_t cur = (uint32_t)m;
+                uint32_t len = move_len(cur);
+                if ((uint64_t)len <= room &&
+                    move_matches(isl, base + off, room, cur))
+                    route_offer(routes[off + len], cur,
+                                prior->score +
+                                move_logp((int64_t)prior->move, cur, alive));
+            }
+        }
+    }
+    Route *best = NULL;
+    for (uint32_t len = 1; len <= UNIT_MAX_LEN; ++len) {
+        Route *r = &routes[CTX][len];
+        if (r->live && (!best || r->score > best->score ||
+            (r->score == best->score && r->move < best->move)))
+            best = r;
+    }
+    if (!best) {
+        fprintf(stderr, "netta: no exact route through observable wake\n");
+        exit(1);
+    }
+    return best->move;
+}
+
+static void build_move_dist(int64_t prev, int alive, int search,
+                            double move_p[ACTIONS + MAX_UNITS]) {
+    /* The searched policy multiplies each current prior by the strongest
+       one-move continuation available from that candidate, then renormalizes.
+       This is a model-only rollout: candidate identities and learned pair
+       counts are visible, future world bytes are not. The external court
+       prices the resulting policy, so a confident wrong attractor remains
+       expensive and cannot earn authority from its internal score. */
+    double sum = 0.0;
+    for (int c = 0; c < alive; ++c) {
+        move_p[c] = move_prob(prev, (uint32_t)c, alive);
+        if (search) {
+            double best_future = 0.0;
+            for (int d = 0; d < alive; ++d) {
+                double p = move_prob(c, (uint32_t)d, alive);
+                if (p > best_future) best_future = p;
+            }
+            move_p[c] *= best_future;
+        }
+        sum += move_p[c];
+    }
+    if (search) {
+        for (int c = 0; c < alive; ++c) move_p[c] /= sum;
+        sum = 0.0;
+        for (int c = 0; c < alive; ++c) sum += move_p[c];
+    }
+    if (fabs(sum - 1.0) > 1e-6) {
+        fprintf(stderr, "netta: move policy is not a distribution "
+                        "(sum=%.9f)\n", sum);
+        exit(1);
+    }
 }
 
 static void emit_move(uint32_t m, uint64_t pos, int isl) {
@@ -1028,26 +1155,16 @@ static double run_episode(int isl_id, uint64_t steps) {
         while (s < steps) {
             uint64_t pos = start + s;
             int alive = ACTIONS + unit_count;
-            double denom, psum = 0.0, r, acc;
+            double r, acc;
             double move_p[ACTIONS + MAX_UNITS];
             uint32_t m = 0;
-            if (player_prev >= 0)
-                denom = (double)mv_out[(uint32_t)player_prev] +
-                        (double)alive;
-            else
-                denom = (double)move_total + (double)alive;
-            for (int c = 0; c < alive; ++c) {
-                uint64_t cnt = player_prev >= 0
-                    ? pair_get((uint32_t)player_prev, (uint32_t)c)
-                    : move_count[c];
-                move_p[c] = ((double)cnt + 1.0) / denom;
-                psum += move_p[c];
+            int64_t policy_prev = player_prev;
+            if (move_nav_enabled) {
+                policy_prev = (int64_t)move_route_anchor(isl, pos, alive);
+                move_nav_steps++;
+                if (policy_prev >= ACTIONS) move_nav_unit_anchors++;
             }
-            if (fabs(psum - 1.0) > 1e-6) {
-                fprintf(stderr, "netta: move policy is not a distribution "
-                                "(sum=%.9f)\n", psum);
-                exit(1);
-            }
+            build_move_dist(policy_prev, alive, move_nav_enabled, move_p);
             /* one rng draw per move; walk the cumulative mass */
             r = (double)(rng_next() >> 11) *
                 (1.0 / 9007199254740992.0);
@@ -1073,10 +1190,17 @@ static double run_episode(int isl_id, uint64_t steps) {
                confident lie identically on a matching and alien island. */
             uint32_t target = truth_move(isl, pos, room);
             double nll = -log2(move_p[target]);
-            snprintf(line, sizeof line,
-                     "v\t%llu\t%d\t%llu\t%u\t%u\t%u\t%.6f\t%u\n",
-                     (unsigned long long)episode_no, isl_id,
-                     (unsigned long long)pos, m, L, advance, nll, target);
+            if (move_nav_enabled)
+                snprintf(line, sizeof line,
+                         "v\t%llu\t%d\t%llu\t%u\t%u\t%u\t%.6f\t%u\t%lld\n",
+                         (unsigned long long)episode_no, isl_id,
+                         (unsigned long long)pos, m, L, advance, nll, target,
+                         (long long)policy_prev);
+            else
+                snprintf(line, sizeof line,
+                         "v\t%llu\t%d\t%llu\t%u\t%u\t%u\t%.6f\t%u\n",
+                         (unsigned long long)episode_no, isl_id,
+                         (unsigned long long)pos, m, L, advance, nll, target);
             bio_append(line);
             bits += nll;
             if (actor_lock == 3) {
@@ -1210,6 +1334,8 @@ int main(int argc, char **argv) {
             reset = 1;
         else if (!strcmp(argv[i], "--no-units"))
             units_enabled = 0;
+        else if (!strcmp(argv[i], "--no-mv-nav"))
+            move_nav_enabled = 0;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -1239,7 +1365,8 @@ int main(int argc, char **argv) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
-                        "[--no-units] [--actor-lock uni|bi|tri|mv]\n");
+                        "[--no-units] [--no-mv-nav] "
+                        "[--actor-lock uni|bi|tri|mv]\n");
         exit(1);
     }
     pairs = (Pair *)calloc(PAIR_SLOTS, sizeof(Pair));
@@ -1352,6 +1479,10 @@ int main(int argc, char **argv) {
                mvc_ref_bits[0] / (double)mvc_bytes,
                mvc_ref_bits[1] / (double)mvc_bytes,
                mvc_ref_bits[2] / (double)mvc_bytes);
+    if (move_nav_steps)
+        printf("mv navigation: %llu searched decisions, %llu unit anchors\n",
+               (unsigned long long)move_nav_steps,
+               (unsigned long long)move_nav_unit_anchors);
     printf("actor episodes: uni %llu, bi %llu, tri %llu, mv %llu%s\n",
            (unsigned long long)ep_actor[0],
            (unsigned long long)ep_actor[1],

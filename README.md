@@ -17,6 +17,9 @@ technical source of truth for the living line.
   `atomic-uni`, `byte-bi`, `byte-tri`, `unit-uni`, and `move-bi`.
 - Authority is earned and revocable. Byte actors compete on their lived
   records; the semi-Markov move actor must first survive real probation.
+- The move actor can search its last 16 already-observed bytes for an exact
+  semi-Markov route and run one model-only move ahead. Search never reads the
+  target span, and its resulting policy is still priced by the external world.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - State is restart-safe and published atomically. Resume is refused if the
@@ -34,9 +37,10 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The gate suite includes red twins, restart equivalence, sanitizer runs,
-matched transfer controls, played-action judgment, and failure-closed state
-and biography checks. A passing build ends with `ALL GATES PASS`.
+The 68-gate suite includes red twins, restart equivalence, sanitizer runs,
+matched transfer controls, played-action judgment, a causal-prefix search
+twin, a random-order navigation null, and failure-closed state and biography
+checks. A passing build ends with `ALL GATES PASS`.
 
 ## Start a life
 
@@ -84,6 +88,8 @@ measurement instrument for paired controls; ordinary lives omit it.
 Useful experimental flags:
 
 - `--no-units` disables the earned-vocabulary tissue.
+- `--no-mv-nav` disables route search and restores the unanchored move player;
+  this is the matched red control for the first earned move mandate.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.
