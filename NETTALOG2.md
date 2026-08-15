@@ -837,3 +837,54 @@ What is not proved: the mover-comity crossing still lacks its direct red
 world, the route anchor and the one-ply rollout still share one flag, and
 the refusals above hold for stationary worlds only; a drifting world
 could still exhibit the flap and would reopen the hysteresis question.
+
+## The twelfth body: the vocabulary pays rent
+
+Units had a birth law and no death law, an open wound since the
+checkpoint correction. The cost of that asymmetry was already on record:
+the fourth body measured a vocabulary paying for its own alphabet where
+there was nothing to predict. Every living unit widens every Laplace
+denominator forever, so a vocabulary earned on one life becomes a
+permanent tax on every later one, and nothing in the constitution could
+ever take a slot back.
+
+The death law mirrors the birth law it joins. A unit that the lived
+truth has not named for 16384 bytes dies at the next episode boundary: a
+biography event carrying its uses and the age of its silence. Death is a
+tombstone, not an erasure. The identity keeps its name and its frozen
+counts, so no second unit can ever be born with the same bytes; the
+matcher, the canonical truth judge, the route search, and the sampled
+policy all skip the dead; and the living Laplace alphabet shrinks by
+one. The frozen counts stay in the row totals as a mass leak that decays
+with life instead of a rent that never ends, and the whole living policy
+is renormalized wherever a tombstone exists. Renewed lived support --
+every fresh BIRTH_SUPPORT of the same adjacency -- resurrects the same
+name in place. Nothing else moves: on a world where no rent falls due,
+the organism is bit-identical with the law present or disabled, and
+every previously gated life is too short for a death by construction.
+
+Measured on a two-phase life: fourteen units earned on the repeated
+sentence, then thirty episodes on a structureless byte island their
+forms never match. The deaths arrive on each unit's own rent clock,
+spread over five distinct episodes, and the island ends at zero living
+of fourteen born. The dead weight is a real tax with the predicted
+decay: on the same truth bytes, with atomic records string-identical
+between arms, the living arm prices unit-uni at 8.128361 against the
+undead arm's 8.129289; the gap is exactly the fourteen ghosts in the
+denominator, and it shrinks as the biography grows, which is the
+difference between a debt paid off and a rent in perpetuity. Returning
+to the birth island resurrects all fourteen under their original names
+and births three new longer composites; no duplicate identity exists in
+the biography. An extinction split across restart is bit-identical to
+the direct life. State advances to version 14 for the rent clocks and
+tombstones. Ninety-five verdicts, ALL GATES PASS, ASan/UBSan through
+extinction and resurrection.
+
+What is not proved: the rent term is one declared constant, not an
+earned quantity, and a slow world could starve a good unit that a
+kinder clock would keep; death is global, not island-local, though the
+records it releases are not; the mass leak is measured only where
+advances stay atomic, and a probation episode under a changed alphabet
+is a different organism episode by construction, priced differently on
+the same bytes. The tax is small in a long life by design; its size at
+the capacity wall, where MAX_UNITS matters, is unmeasured.

@@ -42,11 +42,13 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    13u
+#define STATE_VER    14u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
 #define BIRTH_SUPPORT  64
+#define UNIT_TTL       16384   /* lived bytes without recognition = death
+                                  (first-version rent discipline) */
 #define PAIR_SLOTS     (1u << 18)
 
 /* ---------------------------------------------------------------- hash */
@@ -176,11 +178,15 @@ typedef struct {
     uint64_t born_episode;
     uint64_t support_at_birth;
     uint64_t uses;
+    uint64_t last_use;
+    uint64_t dead;
 } Unit;
 
 static Unit units[MAX_UNITS];
 static int  unit_count = 0;
+static int  unit_living = 0;
 static uint64_t births_rejected_cap = 0;
+static uint64_t unit_deaths = 0;
 
 typedef struct { uint64_t key; uint64_t cnt; } Pair;
 static Pair *pairs;              /* PAIR_SLOTS, heap */
@@ -202,16 +208,24 @@ static const uint8_t *move_bytes(uint32_t m, uint8_t *tmp) {
 }
 
 static int unit_find(const uint8_t *b, uint32_t len) {
+    /* identity scan: the dead keep their name so no second unit can
+       ever be born with the same bytes */
     for (int u = 0; u < unit_count; ++u)
         if (units[u].len == len && memcmp(units[u].bytes, b, len) == 0)
             return u;
     return -1;
 }
 
+static int unit_find_living(const uint8_t *b, uint32_t len) {
+    int u = unit_find(b, len);
+    return (u >= 0 && !units[u].dead) ? u : -1;
+}
+
 static int unit_prefix_alive(const uint8_t *b, uint32_t len) {
     /* is b[0..len) a strict or full prefix of any living unit? */
     for (int u = 0; u < unit_count; ++u)
-        if (units[u].len >= len && memcmp(units[u].bytes, b, len) == 0)
+        if (!units[u].dead && units[u].len >= len &&
+            memcmp(units[u].bytes, b, len) == 0)
             return 1;
     return 0;
 }
@@ -228,7 +242,21 @@ static void unit_birth(uint32_t a, uint32_t b, uint64_t support) {
     uint32_t L = la + lb;
     for (uint32_t i = 0; i < L; ++i)
         if (is_ws(buf[i])) return;            /* v1 boundary discipline */
-    if (unit_find(buf, L) >= 0) return;       /* same bytes, same unit  */
+    int prior = unit_find(buf, L);            /* same bytes, same unit  */
+    if (prior >= 0) {
+        if (!units[prior].dead) return;
+        /* resurrection: the pair earned the support again, the identity
+           returns under its own name */
+        units[prior].dead = 0;
+        units[prior].last_use = steps_total;
+        unit_living++;
+        char rl[96];
+        snprintf(rl, sizeof rl, "u\t%llu\t%d\t%llu\n",
+                 (unsigned long long)episode_no, prior,
+                 (unsigned long long)support);
+        bio_append(rl);
+        return;
+    }
     if (unit_count >= MAX_UNITS) { births_rejected_cap++; return; }
     Unit *u = &units[unit_count];
     memcpy(u->bytes, buf, L);
@@ -236,6 +264,8 @@ static void unit_birth(uint32_t a, uint32_t b, uint64_t support) {
     u->born_episode = episode_no;
     u->support_at_birth = support;
     u->uses = 0;
+    u->last_use = steps_total;
+    u->dead = 0;
     char line[128], hex[2 * UNIT_MAX_LEN + 1];
     for (uint32_t i = 0; i < L; ++i)
         snprintf(hex + 2 * i, 3, "%02x", buf[i]);
@@ -244,6 +274,7 @@ static void unit_birth(uint32_t a, uint32_t b, uint64_t support) {
              (unsigned long long)support);
     bio_append(line);
     unit_count++;
+    unit_living++;
 }
 
 static uint64_t pair_get(uint32_t prev, uint32_t cur) {
@@ -271,7 +302,9 @@ static void pair_feed(uint32_t prev, uint32_t cur) {
         }
         if (p->key == key) {
             p->cnt++;
-            if (p->cnt == BIRTH_SUPPORT) unit_birth(prev, cur, p->cnt);
+            /* every renewed BIRTH_SUPPORT of lived adjacency is a claim:
+               a first birth, a no-op for the living, or a resurrection */
+            if (p->cnt % BIRTH_SUPPORT == 0) unit_birth(prev, cur, p->cnt);
             return;
         }
     }
@@ -415,6 +448,11 @@ static int island_court_enabled = 1;
 static int birth_floor_enabled = 1;
 static uint64_t revocations = 0;
 static uint64_t null_refusals = 0;
+/* body 12: the vocabulary pays rent. A unit unrecognised for UNIT_TTL
+   lived bytes dies; its identity and frozen counts remain, its slot in
+   the living alphabet is released, and renewed pair support resurrects
+   the same name. */
+static int unit_death_enabled = 1;
 
 #define ACTOR_MIN_BYTES 1000
 #define ACTOR_GAIN      0.1
@@ -611,7 +649,8 @@ static uint32_t truth_move(Island *isl, uint64_t pos, uint64_t room) {
     int best_u = -1;
     for (int u = 0; u < unit_count; ++u) {
         uint32_t len = units[u].len;
-        if (len <= best_len || (uint64_t)len > room || pos > isl->len - len)
+        if (units[u].dead || len <= best_len || (uint64_t)len > room ||
+            pos > isl->len - len)
             continue;
         if (memcmp(isl->bytes + pos, units[u].bytes, len) == 0) {
             best_len = len;
@@ -673,30 +712,34 @@ static void route_offer(Route routes[UNIT_MAX_LEN + 1], uint32_t move,
    learned counts, and bytes strictly before pos. It never reads the target
    byte or any proposed move's future span. Atomic moves guarantee that an
    exact route always exists. */
-static uint32_t move_route_anchor(const Island *isl, uint64_t pos, int alive) {
+static uint32_t move_route_anchor(const Island *isl, uint64_t pos,
+                                  int range, int alphabet) {
     Route routes[CTX + 1][UNIT_MAX_LEN + 1];
     memset(routes, 0, sizeof routes);
     uint64_t base = pos - CTX;
 
-    for (int m = 0; m < alive; ++m) {
+    for (int m = 0; m < range; ++m) {
+        if (m >= ACTIONS && units[m - ACTIONS].dead) continue;
         uint32_t len = move_len((uint32_t)m);
         if (len <= CTX && move_matches(isl, base, CTX, (uint32_t)m))
             route_offer(routes[len], (uint32_t)m,
-                        move_logp(-1, (uint32_t)m, alive));
+                        move_logp(-1, (uint32_t)m, alphabet));
     }
     for (uint32_t off = 1; off < CTX; ++off) {
         for (uint32_t pl = 1; pl <= UNIT_MAX_LEN; ++pl) {
             Route *prior = &routes[off][pl];
             if (!prior->live) continue;
             uint64_t room = CTX - off;
-            for (int m = 0; m < alive; ++m) {
+            for (int m = 0; m < range; ++m) {
+                if (m >= ACTIONS && units[m - ACTIONS].dead) continue;
                 uint32_t cur = (uint32_t)m;
                 uint32_t len = move_len(cur);
                 if ((uint64_t)len <= room &&
                     move_matches(isl, base + off, room, cur))
                     route_offer(routes[off + len], cur,
                                 prior->score +
-                                move_logp((int64_t)prior->move, cur, alive));
+                                move_logp((int64_t)prior->move, cur,
+                                          alphabet));
             }
         }
     }
@@ -714,31 +757,41 @@ static uint32_t move_route_anchor(const Island *isl, uint64_t pos, int alive) {
     return best->move;
 }
 
-static void build_move_dist(int64_t prev, int alive, int search,
+static void build_move_dist(int64_t prev, int range, int alphabet,
+                            int search,
                             double move_p[ACTIONS + MAX_UNITS]) {
     /* The searched policy multiplies each current prior by the strongest
        one-move continuation available from that candidate, then renormalizes.
        This is a model-only rollout: candidate identities and learned pair
        counts are visible, future world bytes are not. The external court
        prices the resulting policy, so a confident wrong attractor remains
-       expensive and cannot earn authority from its internal score. */
+       expensive and cannot earn authority from its internal score. Dead
+       units hold probability zero; their frozen counts stay in the row
+       totals as a mass leak that decays with life instead of a rent that
+       never ends, so the whole living policy is renormalized. */
     double sum = 0.0;
-    for (int c = 0; c < alive; ++c) {
-        move_p[c] = move_prob(prev, (uint32_t)c, alive);
+    int tombs = range - alphabet;
+    for (int c = 0; c < range; ++c) {
+        if (c >= ACTIONS && units[c - ACTIONS].dead) {
+            move_p[c] = 0.0;
+            continue;
+        }
+        move_p[c] = move_prob(prev, (uint32_t)c, alphabet);
         if (search) {
             double best_future = 0.0;
-            for (int d = 0; d < alive; ++d) {
-                double p = move_prob(c, (uint32_t)d, alive);
+            for (int d = 0; d < range; ++d) {
+                if (d >= ACTIONS && units[d - ACTIONS].dead) continue;
+                double p = move_prob(c, (uint32_t)d, alphabet);
                 if (p > best_future) best_future = p;
             }
             move_p[c] *= best_future;
         }
         sum += move_p[c];
     }
-    if (search) {
-        for (int c = 0; c < alive; ++c) move_p[c] /= sum;
+    if (search || tombs) {
+        for (int c = 0; c < range; ++c) move_p[c] /= sum;
         sum = 0.0;
-        for (int c = 0; c < alive; ++c) sum += move_p[c];
+        for (int c = 0; c < range; ++c) sum += move_p[c];
     }
     if (fabs(sum - 1.0) > 1e-6) {
         fprintf(stderr, "netta: move policy is not a distribution "
@@ -748,8 +801,10 @@ static void build_move_dist(int64_t prev, int alive, int search,
 }
 
 static void emit_move(uint32_t m, uint64_t pos, int isl) {
-    /* prequential shadow price, strictly before the count update */
-    double denom = (double)move_total + (double)(ACTIONS + unit_count);
+    /* prequential shadow price, strictly before the count update; the
+       Laplace alphabet is the living one, dead counts stay behind as a
+       decaying mass leak */
+    double denom = (double)move_total + (double)(ACTIONS + unit_living);
     double pm = ((double)move_count[m] + 1.0) / denom;
     double nll = -log2(pm);
     unitlm_bits += nll;
@@ -759,6 +814,7 @@ static void emit_move(uint32_t m, uint64_t pos, int isl) {
     if (m >= ACTIONS) {
         Unit *u = &units[m - ACTIONS];
         u->uses++;
+        u->last_use = steps_total;
         macro_events++;
         macro_bytes += u->len;
         char line[128];
@@ -774,7 +830,7 @@ static void emit_move(uint32_t m, uint64_t pos, int isl) {
            the pair count that is its own statistic */
         uint32_t pv = (uint32_t)prev_move;
         double d2 = (double)mv_out[pv] +
-                    (double)(ACTIONS + unit_count);
+                    (double)(ACTIONS + unit_living);
         double p2 = ((double)pair_get(pv, m) + 1.0) / d2;
         mvlm_bits += -log2(p2);
         mvlm_bytes += move_len(m);
@@ -788,7 +844,7 @@ static void matcher_flush_front(void) {
     /* longest living unit equal to a prefix of mbuf; else one atomic */
     uint32_t best = 1; int best_u = -1;
     for (uint32_t k = mlen; k >= 2; --k) {
-        int u = unit_find(mbuf, k);
+        int u = unit_find_living(mbuf, k);
         if (u >= 0) { best = k; best_u = u; break; }
     }
     if (best_u >= 0) emit_move((uint32_t)(ACTIONS + best_u),
@@ -805,8 +861,8 @@ static void matcher_feed(uint8_t truth, uint64_t pos, int isl) {
     while (mlen > 0 &&
            (mlen == UNIT_MAX_LEN || !unit_prefix_alive(mbuf, mlen))) {
         if (mlen < UNIT_MAX_LEN && unit_prefix_alive(mbuf, mlen)) break;
-        if (mlen == UNIT_MAX_LEN && unit_find(mbuf, mlen) >= 0) {
-            emit_move((uint32_t)(ACTIONS + unit_find(mbuf, mlen)),
+        if (mlen == UNIT_MAX_LEN && unit_find_living(mbuf, mlen) >= 0) {
+            emit_move((uint32_t)(ACTIONS + unit_find_living(mbuf, mlen)),
                       mstart_pos, mstart_isl);
             mlen = 0;
             break;
@@ -1004,6 +1060,7 @@ static int state_load(const char *path) {
             exit(1);
         }
     unit_count = (int)nunits;
+    unit_living = 0;
     for (int u = 0; u < unit_count; ++u) {
         if (units[u].len == 0 || units[u].len > UNIT_MAX_LEN) {
             fprintf(stderr, "netta: %s carries a malformed unit; "
@@ -1013,6 +1070,9 @@ static int state_load(const char *path) {
         if (units[u].born_episode > episode_no ||
             units[u].support_at_birth < BIRTH_SUPPORT)
             state_refuse(path, "unit provenance");
+        if (units[u].dead > 1 || units[u].last_use > steps_total)
+            state_refuse(path, "unit rent record");
+        if (!units[u].dead) unit_living++;
         for (uint32_t j = 0; j < units[u].len; ++j)
             if (is_ws(units[u].bytes[j]))
                 state_refuse(path, "unit crosses a boundary");
@@ -1161,7 +1221,7 @@ static int state_load(const char *path) {
         state_refuse(path, "move totals disagree");
     for (int m = ACTIONS + unit_count; m < ACTIONS + MAX_UNITS; ++m)
         if (move_count[m] != 0 || mv_out[m] != 0)
-            state_refuse(path, "dead move carries statistics");
+            state_refuse(path, "unborn move carries statistics");
     uint64_t actor_eps = 0;
     for (int a = 0; a < 5; ++a)
         checked_add(&actor_eps, ep_actor[a], path,
@@ -1361,6 +1421,23 @@ static double run_episode(int isl_id, uint64_t steps) {
     double bits = 0.0;
     char line[256];
     episode_no++;
+    if (units_enabled && unit_death_enabled)
+        for (int u = 0; u < unit_count; ++u) {
+            if (units[u].dead ||
+                steps_total - units[u].last_use < UNIT_TTL)
+                continue;
+            /* the vocabulary pays rent in recognition; a unit that the
+               lived truth has stopped naming releases the alphabet */
+            units[u].dead = 1;
+            unit_living--;
+            unit_deaths++;
+            snprintf(line, sizeof line, "d\t%llu\t%d\t%llu\t%llu\n",
+                     (unsigned long long)episode_no, u,
+                     (unsigned long long)units[u].uses,
+                     (unsigned long long)(steps_total -
+                                          units[u].last_use));
+            bio_append(line);
+        }
     actor_elect();
     int acting = island_court(isl_id, steps);
     int probation = 0;
@@ -1391,23 +1468,32 @@ static double run_episode(int isl_id, uint64_t steps) {
         double p_uni[ACTIONS], p_bi[ACTIONS], p_tri[ACTIONS];
         while (s < steps) {
             uint64_t pos = start + s;
-            int alive = ACTIONS + unit_count;
+            int range = ACTIONS + unit_count;
+            int alphabet = ACTIONS + unit_living;
             double r, acc;
             double move_p[ACTIONS + MAX_UNITS];
             uint32_t m = 0;
             int64_t policy_prev = player_prev;
             if (move_nav_enabled) {
-                policy_prev = (int64_t)move_route_anchor(isl, pos, alive);
+                policy_prev = (int64_t)move_route_anchor(isl, pos, range,
+                                                         alphabet);
                 move_nav_steps++;
                 if (policy_prev >= ACTIONS) move_nav_unit_anchors++;
             }
-            build_move_dist(policy_prev, alive, move_nav_enabled, move_p);
+            build_move_dist(policy_prev, range, alphabet,
+                            move_nav_enabled, move_p);
             /* one rng draw per move; walk the cumulative mass */
             r = (double)(rng_next() >> 11) *
                 (1.0 / 9007199254740992.0);
             acc = 0.0;
-            m = (uint32_t)(alive - 1);   /* float-tail fallback */
-            for (int c = 0; c < alive; ++c) {
+            m = 0;                       /* float-tail fallback: the last
+                                            living move */
+            for (int c = range - 1; c >= 0; --c)
+                if (c < ACTIONS || !units[c - ACTIONS].dead) {
+                    m = (uint32_t)c;
+                    break;
+                }
+            for (int c = 0; c < range; ++c) {
                 acc += move_p[c];
                 if (r < acc) { m = (uint32_t)c; break; }
             }
@@ -1585,6 +1671,8 @@ int main(int argc, char **argv) {
             island_court_enabled = 0;
         else if (!strcmp(argv[i], "--no-birth-floor"))
             birth_floor_enabled = 0;
+        else if (!strcmp(argv[i], "--no-unit-death"))
+            unit_death_enabled = 0;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -1615,7 +1703,7 @@ int main(int argc, char **argv) {
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
-                        "[--no-birth-floor] "
+                        "[--no-birth-floor] [--no-unit-death] "
                         "[--actor-lock uni|bi|tri|mv]\n");
         exit(1);
     }
@@ -1680,11 +1768,14 @@ int main(int argc, char **argv) {
         printf("bits per raw byte: %.6f\n", sum_bits / (double)episodes);
     if (units_enabled && steps_total) {
         uint64_t decisions = steps_total - macro_bytes + macro_events;
-        printf("units: %d living, %llu macro events over %llu bytes, "
-               "decisions per lived byte %.4f\n",
-               unit_count, (unsigned long long)macro_events,
+        printf("units: %d living of %d born, %llu macro events over "
+               "%llu bytes, decisions per lived byte %.4f\n",
+               unit_living, unit_count, (unsigned long long)macro_events,
                (unsigned long long)macro_bytes,
                (double)decisions / (double)steps_total);
+        if (unit_deaths)
+            printf("units: %llu deaths this run\n",
+                   (unsigned long long)unit_deaths);
         if (births_rejected_cap)
             printf("units: %llu births rejected at cap %d\n",
                    (unsigned long long)births_rejected_cap, MAX_UNITS);
@@ -1769,6 +1860,7 @@ int main(int argc, char **argv) {
             Island *w = &islands[i];
             uint32_t L = units[u].len;
             int found = 0;
+            if (units[u].dead) continue;
             if (w->len >= L)
                 for (uint64_t o = 0; o + L <= w->len; ++o)
                     if (memcmp(w->bytes + o, units[u].bytes, L) == 0) {
@@ -1777,7 +1869,7 @@ int main(int argc, char **argv) {
             rec += found;
         }
         printf("units recognisable on island %d: %d of %d\n",
-               i, rec, unit_count);
+               i, rec, unit_living);
     }
     printf("biography: %llu lines, chain %016llx\n",
            (unsigned long long)bio_lines, (unsigned long long)bio_chain);
