@@ -923,6 +923,16 @@ Ninety-six gates pass, strict C11 and ASan/UBSan included. The old refusal
 remains in this log as negative experience; the red world, not rhetoric,
 revokes it.
 
+The other incoming corollary also needed a smaller name. A sweep over seeds
+1 through 16 reproduced `null/null/null` on only eight. Seed 16 keeps tri on
+all three home returns and records no refusal. This is lawful, not a leak in
+the floor: the so-called structureless home is one fixed pseudo-random tape,
+and a different causal path revisits enough of its immutable trigram map for
+the local witness to earn the 0.1-bit margin. The seed-5 gate proves that a
+home can lose an unearned hand after travel; it does not prove that this tape
+is uniformly unknowable. A seed-16 red corollary now prevents the example
+from being promoted back into a universal claim.
+
 ## The thirteenth body: tombstones remember and do not vote
 
 The twelfth body removed dead units from the candidate set but deliberately
@@ -957,7 +967,7 @@ memory returns to authority exactly when the identity returns to life.
 
 Living totals are deterministically rebuilt from the historical state and
 tombstone flags on resume, so the wire remains version 15 and extinction
-splits stay bit-identical. One hundred gates pass, including strict C11 and
+splits stay bit-identical. One hundred and one gates pass, including strict C11 and
 ASan/UBSan through extinction, searched tombstones, and resurrection.
 
 What is not proved: rent is still one global constant, the capacity wall is

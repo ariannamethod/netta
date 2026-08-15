@@ -565,6 +565,24 @@ HRV=$(awk -F'\t' '$1=="r" && $3==0 && $5=="null"{n++} END{print n+0}' "$T/b11h.b
 [ "$H11" = "nullnullnull" ] && [ "$HN8" -eq 0 ] && [ "$HRV" -eq 3 ]
 gate "B11 a structureless home is nulled after travel (fifth-body law enforced)" $? 0
 
+# The fixed pseudo-random tape is not universally structureless once it is
+# revisited: another causal seed re-enters learned spans and tri can earn the
+# full 0.1-bit local margin. This bounds the seed-5 corollary rather than
+# weakening the floor; earned structure must not be nulled by its filename.
+"$N" "$T/uhome.bytes" "$T/p3.bytes" --reset --no-units --seed 16 \
+    --episodes 2 --steps 600 --island 0 \
+    --state "$T/b11hs.state" --bio "$T/b11hs.bio" >/dev/null 2>&1
+"$N" "$T/uhome.bytes" "$T/p3.bytes" --no-units --seed 16 \
+    --episodes 1 --steps 600 --island 1 \
+    --state "$T/b11hs.state" --bio "$T/b11hs.bio" >/dev/null 2>&1
+"$N" "$T/uhome.bytes" "$T/p3.bytes" --no-units --seed 16 \
+    --episodes 1 --steps 600 --island 0 \
+    --state "$T/b11hs.state" --bio "$T/b11hs.bio" >/dev/null 2>&1
+H16=$(awk -F'\t' '$1=="a" && $2==4{print $3}' "$T/b11hs.bio")
+H16R=$(awk -F'\t' '$1=="r" && $2==4{n++} END{print n+0}' "$T/b11hs.bio")
+[ "$H16" = "tri" ] && [ "$H16R" -eq 0 ]
+gate "A11 the fixed random home may earn a hand (seed 16 tri, not forced null)" $? 0
+
 # --- A11: probation has an island-local door -----------------------------
 # A de Bruijn order-2 island is the red world the incoming audit could not
 # find: its trigram is predictive, every bigram row is uniform, no adjacency
