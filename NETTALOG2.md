@@ -1055,3 +1055,38 @@ registry remembers where she has been; nothing in it yet chooses where
 she goes -- the atlas, an earned travel policy, is deliberately a
 separate future organ, and the law of the life across resume remains
 the open question named in the audit above.
+
+## The fourteenth turn audited: a name needs a witness
+
+All one hundred eight incoming gates reproduced before the registry was
+attacked. Two claims did not survive. First, the state carried an absent
+island's digest as its sole authority. Flipping one bit in that identity and
+resuming with only the other island passed every conservation equation: the
+forged island was absent, so no current file could contradict it, and the
+biography hash proved only that the old receipt had not changed. The state had
+silently renamed a world behind its own arrival event. Second, simultaneous
+new islands were allocated registry ids in command-line order. Reversing a
+fresh convoy while remapping the selected island therefore changed both state
+and biography before the first played byte. The resumed-order gate could not
+see a defect that occurred only at acquaintance.
+
+State version 17 makes both surfaces answerable. Identity is now the triple of
+a forward FNV-1a digest, an independently seeded reverse-byte witness, and
+length. Every `i` receipt records all three, and resume parses the external
+biography rather than merely hashing it: ids must arrive exactly once in
+append order and every persisted triple must equal its historical receipt.
+The absent-state forgery is consequently refused before today's convoy is
+resolved. Simultaneous unknown contents are sorted by identity before ids are
+allocated; the selected route confers no naming privilege. Two older gates
+that had confused CLI seat with registry identity were repaired to resolve
+their target through the receipt they meant to measure. Their numerical laws
+remain unchanged.
+
+One hundred ten gates pass, strict C11 and ASan/UBSan included. A reversed
+fresh convoy with the same chosen content is bit-identical, and the absent
+identity forgery is a loud refusal. The two fingerprints make accidental
+aliasing much harder but are not a cryptographic proof of byte equality for an
+island no longer present. The arrival/state publication seam is also only
+failure-closed: a crash after biography append and before atomic state rename
+leaves an unverifiable tail and refuses resume. Recoverable two-object commit
+is a future body, not a property claimed here.

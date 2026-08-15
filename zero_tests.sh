@@ -225,8 +225,12 @@ TRB=$(tl "$T/trB.out" byte-bi); NBB=$(tl "$T/nbB.out" byte-bi)
 TRT=$(tl "$T/trB.out" byte-tri); NBT=$(tl "$T/nbB.out" byte-tri)
 awk -v a="$TRB" -v b="$NBB" -v c="$TRT" -v d="$NBT" 'BEGIN{exit !(b-a >= 0.5 && d-c >= 0.5)}'
 gate "B7 kin experience transfers: bi $TRB vs $NBB, tri $TRT vs $NBT (gap>=0.5)" $? 0
-awk -F'\t' 'NF >= 11 && $3 == 1 {print $4}' "$T/tr.bio" > "$T/tr.pos"
-awk -F'\t' 'NF >= 11 && $3 == 1 {print $4}' "$T/nb.bio" > "$T/nb.pos"
+TRD=$(awk '/^island 1: /{sub(/^.*digest=/, ""); print}' "$T/trB.out")
+NBD=$(awk '/^island 1: /{sub(/^.*digest=/, ""); print}' "$T/nbB.out")
+TRR=$(awk -F'\t' -v d="$TRD" '$1 == "i" && $4 == d {print $3}' "$T/tr.bio")
+NBR=$(awk -F'\t' -v d="$NBD" '$1 == "i" && $4 == d {print $3}' "$T/nb.bio")
+awk -F'\t' -v r="$TRR" 'NF >= 11 && $3 == r {print $4}' "$T/tr.bio" > "$T/tr.pos"
+awk -F'\t' -v r="$NBR" 'NF >= 11 && $3 == r {print $4}' "$T/nb.bio" > "$T/nb.pos"
 cmp -s "$T/tr.pos" "$T/nb.pos"
 gate "B7 traveller and newborn are judged at identical source positions" $? 0
 "$N" "$T/wA.bytes" "$T/wBs.bytes" --reset --seed 11 --episodes 4 --steps 800 --island 0 --state "$T/sh.state" --bio "$T/sh.bio" >/dev/null 2>&1
@@ -556,12 +560,14 @@ gate "B11 null verdict and actor count survive restart (split voyage identical)"
 # global court already prefers the least confident witness there; the
 # island floor then chooses honest uniform ignorance.
 awk 'BEGIN{s=31337; for(i=0;i<30000;i++){s=(s*1103515245+12345)%2147483648; printf "%c", int(s/65536)%256}}' > "$T/uhome.bytes"
-"$N" "$T/uhome.bytes" "$T/p3.bytes" --reset --no-units --seed 5 --episodes 2 --steps 600 --island 0 --state "$T/b11h.state" --bio "$T/b11h.bio" >/dev/null 2>&1
+"$N" "$T/uhome.bytes" "$T/p3.bytes" --reset --no-units --seed 5 --episodes 2 --steps 600 --island 0 --state "$T/b11h.state" --bio "$T/b11h.bio" > "$T/b11h0.out" 2>&1
 "$N" "$T/uhome.bytes" "$T/p3.bytes" --no-units --seed 5 --episodes 1 --steps 600 --island 1 --state "$T/b11h.state" --bio "$T/b11h.bio" >/dev/null 2>&1
 "$N" "$T/uhome.bytes" "$T/p3.bytes" --no-units --seed 5 --episodes 3 --steps 600 --island 0 --state "$T/b11h.state" --bio "$T/b11h.bio" >/dev/null 2>&1
 H11=$(awk -F'\t' '$1=="a" && $2>=4{printf "%s", $3}' "$T/b11h.bio")
 HN8=$(awk -F'\t' 'NF>=11 && $1>=4 && $8!="8.000000"{n++} END{print n+0}' "$T/b11h.bio")
-HRV=$(awk -F'\t' '$1=="r" && $3==0 && $5=="null"{n++} END{print n+0}' "$T/b11h.bio")
+HHD=$(awk '/^island 0: /{sub(/^.*digest=/, ""); print}' "$T/b11h0.out")
+HREG=$(awk -F'\t' -v d="$HHD" '$1 == "i" && $4 == d {print $3}' "$T/b11h.bio")
+HRV=$(awk -F'\t' -v r="$HREG" '$1=="r" && $3==r && $5=="null"{n++} END{print n+0}' "$T/b11h.bio")
 [ "$H11" = "nullnullnull" ] && [ "$HN8" -eq 0 ] && [ "$HRV" -eq 3 ]
 gate "B11 a structureless home is nulled after travel (fifth-body law enforced)" $? 0
 
@@ -736,6 +742,10 @@ gate "B13 resurrection restores frozen evidence to living authority exactly" $? 
 # The life keeps an append-only registry of every island it has met:
 # arrivals are biography events, absent islands keep their memory, and
 # the same content is always the same identity.
+"$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 1 --steps 600 --island 0 --state "$T/b14o1.state" --bio "$T/b14o1.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/p3.bytes" --reset --seed 5 --episodes 1 --steps 600 --island 1 --state "$T/b14o2.state" --bio "$T/b14o2.bio" >/dev/null 2>&1
+cmp -s "$T/b14o1.bio" "$T/b14o2.bio" && cmp -s "$T/b14o1.state" "$T/b14o2.state"
+gate "A14 simultaneous arrivals take causal identity, not CLI order" $? 0
 "$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 2 --steps 600 --island 0 --state "$T/b14a.state" --bio "$T/b14a.bio" >/dev/null 2>&1
 "$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 2 --steps 600 --island 1 --state "$T/b14a.state" --bio "$T/b14a.bio" >/dev/null 2>&1
 "$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 2 --steps 600 --island 0 --state "$T/b14b.state" --bio "$T/b14b.bio" >/dev/null 2>&1
@@ -760,13 +770,22 @@ SAME=$(grep -c '^i	' "$T/b14e.bio")
 gate "B14 the same content is one identity, wherever it sits ($SAME arrival)" $? 0
 "$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 1 --steps 600 --island 0 --state "$T/b14f.state" --bio "$T/b14f.bio" >/dev/null 2>&1
 "$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 1 --steps 600 --island 1 --state "$T/b14f.state" --bio "$T/b14f.bio" >/dev/null 2>&1
+cp "$T/b14f.state" "$T/b14g.state"
+cp "$T/b14f.bio" "$T/b14g.bio"
+SZ14=$(wc -c < "$T/b14g.state" | tr -d ' ')
+OFF14=$((SZ14-256))
+B14BYTE=$(od -An -tu1 -j "$OFF14" -N 1 "$T/b14g.state" | tr -d ' ')
+B14FLIP=$((B14BYTE ^ 1))
+printf "\\x$(printf %02x "$B14FLIP")" | dd of="$T/b14g.state" bs=1 seek="$OFF14" conv=notrunc 2>/dev/null
+"$N" "$T/rep.bytes" --seed 5 --episodes 0 --steps 600 --island 0 --state "$T/b14g.state" --bio "$T/b14g.bio" >/dev/null 2>&1
+gate "A14 an absent island cannot change identity behind its arrival receipt" $? 1
 SZ14=$(wc -c < "$T/b14f.state" | tr -d ' ')
-dd if="$T/b14f.state" of="$T/b14f.state" bs=1 skip=$((SZ14-240)) seek=$((SZ14-120)) count=16 conv=notrunc 2>/dev/null
+dd if="$T/b14f.state" of="$T/b14f.state" bs=1 skip=$((SZ14-256)) seek=$((SZ14-128)) count=24 conv=notrunc 2>/dev/null
 "$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 1 --steps 600 --island 0 --state "$T/b14f.state" --bio "$T/b14f.bio" >/dev/null 2>&1
 gate "B14 a forged duplicate island identity is refused" $? 1
-printf '\x0f\x00\x00\x00' | dd of="$T/b14c.state" bs=1 seek=8 conv=notrunc 2>/dev/null
+printf '\x10\x00\x00\x00' | dd of="$T/b14c.state" bs=1 seek=8 conv=notrunc 2>/dev/null
 "$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 1 --steps 600 --state "$T/b14c.state" --bio "$T/b14c.bio" >/dev/null 2>&1
-gate "B14 a version-15 state cannot enter the registry" $? 1
+gate "B14 a version-16 state cannot enter the witnessed registry" $? 1
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
@@ -786,7 +805,7 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move navigation and restart state v16" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v17" $rc 0
 "$S" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 \
     --island 0 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>"$T/si.err"
 rc=$?

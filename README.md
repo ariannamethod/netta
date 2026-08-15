@@ -34,13 +34,16 @@ technical source of truth for the living line.
   controls remain distinguishable.
 - An island's identity is its content, never its seat in today's command
   line. The life keeps an append-only registry of every island it has met
-  (capacity 1024): arrivals are loud biography events, islands absent from
-  today's convoy keep their memory, and a changed file is by construction a
-  different island.
+  (capacity 1024): a forward digest, an independently seeded reverse witness,
+  and the byte length name the content; arrivals are loud biography events,
+  islands absent from today's convoy keep their memory, and a changed file is
+  by construction a different island. Simultaneous arrivals are canonically
+  ordered by that identity, never by their CLI seats or the selected route.
 - State is restart-safe and published atomically. Resume is refused if the
   state invariants or the external hash-chained biography do not match;
-  islands resolve by digest and length, so the convoy's order never decides
-  a life's identity.
+  every persisted island identity must agree with its external arrival
+  receipt, so neither a forged absent record nor the convoy's order can
+  silently change a life's identity.
 
 This is a foundation, not a finished language model. The present arenas are
 mostly controlled synthetic worlds. There is no neural core, prompt mode,
@@ -53,13 +56,14 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 108-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 110-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
 door, unit death, tombstone silence and resurrection arms, the island
-registry with convoy-order invariance, and failure-closed state and
-biography checks. A passing build ends with `ALL GATES PASS`.
+  registry with fresh and resumed convoy-order invariance, an absent-identity
+  forgery arm, and failure-closed state and biography checks. A passing build
+  ends with `ALL GATES PASS`.
 
 ## Start a life
 
