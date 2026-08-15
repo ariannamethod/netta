@@ -711,3 +711,79 @@ a locally newborn organism: a world where every travelled model, uni
 included, is worse than uniform ignorance would still seat the least bad
 traveller. Search remains global, and the probation schedule still opens
 on a lifetime shadow gain measured across all islands.
+
+## The tenth body audited, and a repair: the local record is not a second truth
+
+All seventy-nine inherited gates reproduced before the court was attacked.
+The state loader correctly rejected non-finite local scores and inconsistent
+local byte counts, but a finite local score had no conservation law: one
+island's atomic, bigram, trigram, played-move, or matched-reference total could
+be rewritten without touching the corresponding global record or the external
+biography. Because the court reads that unsigned plane directly, the edit could
+forge jurisdiction while every version-12 check passed.
+
+The red probe adds exactly one bit to an island's persisted atomic score and
+changes nothing else. It resumed on the inherited body. The repair sums every
+partitioned score in extended precision and requires it to agree with its
+global prequential witness, allowing only floating-point addition-order noise.
+The same forged state is now refused as an inconsistent island atomic score;
+direct and split voyages remain byte-identical. Eighty gates pass, including
+strict C11 and ASan/UBSan. State stays at version 12 because the wire format and
+the meaning of every valid state are unchanged; the loader has learned to
+reject a state that was never valid.
+
+## The eleventh body: an island may remain ignorant
+
+The tenth body called global `atomic-uni` the island's newborn witness. It was
+not one. After life elsewhere it is a travelled frequency model, and an alien
+island could be forced to choose the least bad traveller even when every byte
+witness was worse than uniform ignorance. The comity boundary carried a second
+debt: it was checked only at episode boundaries. An island with zero evidence
+would admit a million-byte first episode just as readily as a short one, despite
+the constitution naming a thousand-byte evidence budget.
+
+The eleventh body gives an island one non-travelling hand: `null`, the fixed
+uniform distribution over all 256 bytes, always exactly 8 bits per raw byte.
+It is not a fifth global model and can never own the global seat. It is a local
+right to remain ignorant. Once a model has actually travelled to an island,
+the byte hand selected by the local court must beat `null` by the unchanged
+0.1 appointment margin; otherwise `null` acts for that episode while all
+prequential witnesses continue learning from external truth. A local refusal
+still leaves the global mandate intact, and move probation may not override a
+null verdict.
+
+Comity is now a byte budget. An episode that fits inside the remaining blind
+window still receives the travelling hand. If it would cross the boundary, the
+court uses only already-lived local receipts and renders the verdict early. If
+there are no receipts, the indivisible episode is null in full and a `q` event
+records that no future byte was borrowed to decide it. This is deliberately
+conservative at episode granularity. The rule applies only after foreign life
+exists; a first island and every single-island life retain the old body
+byte-for-byte. `--no-birth-floor` restores the body-10 floor and unbounded
+episode-boundary comity as the matched red arm.
+
+The preregistered null island is a deterministic full-byte stream. After its
+first 600-byte comity episode, the travelled local records are `10.963510`
+(uni), `8.048297` (bi), and `8.000000` (tri): no hand has earned a margin over
+uniform. At episode 8 the island chooses null and pays exactly `8.000000` bits
+per byte. With only the birth floor disabled, tri keeps acting and pays
+`8.000047` on the same next 600 bytes. The difference is intentionally tiny;
+the constitutional fact is sharp and the red arm proves the gate can fail. A
+separate 2000-byte first episode is null with a zero-evidence `q`, while its
+floor-off twin lets tri overrun the whole blind window.
+
+The earlier alien court now refuses at the crossing episode rather than one
+episode late: seven refusals instead of six and `2.018492` bits per byte over
+the stay, against the unchanged no-court `2.366611`. Kin transfer still has
+zero refusals, the one-island no-op remains bit-identical, and a null voyage is
+bit-identical across restart. State advances to version 13 because actor episode
+counts now include the local null hand. Eighty-six gates pass, including strict
+C11 and ASan/UBSan through null action and the oversized-episode boundary.
+
+What is not proved: the birth floor uses the appointment margin on every
+episode rather than a persistent island-local hysteresis state, so a hand near
+7.9 bits may still flap. The null arena is synthetic, the measured gain over
+the red traveller is minute, and the episode-granularity quarantine can spend
+less than the full comity budget. Search evidence and the probation schedule
+remain global across islands. Those are attacks for the next hand, not claims
+smuggled into this body.
