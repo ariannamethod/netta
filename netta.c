@@ -187,6 +187,8 @@ static int  unit_count = 0;
 static int  unit_living = 0;
 static uint64_t births_rejected_cap = 0;
 static uint64_t unit_deaths = 0;
+static void live_mass_add_unit(int u);
+static void live_mass_remove_unit(int u);
 
 typedef struct { uint64_t key; uint64_t cnt; } Pair;
 static Pair *pairs;              /* PAIR_SLOTS, heap */
@@ -246,7 +248,9 @@ static void unit_birth(uint32_t a, uint32_t b, uint64_t support) {
     if (prior >= 0) {
         if (!units[prior].dead) return;
         /* resurrection: the pair earned the support again, the identity
-           returns under its own name */
+           returns under its own name, and only then may its frozen history
+           vote in the living model again */
+        live_mass_add_unit(prior);
         units[prior].dead = 0;
         units[prior].last_use = steps_total;
         unit_living++;
@@ -330,6 +334,12 @@ static uint64_t moves_emitted = 0;
    identical to the atomic one -- its built-in red twin. */
 static uint64_t move_count[ACTIONS + MAX_UNITS];
 static uint64_t move_total = 0;
+/* Body 13: history is not authority. Tombstones retain the frozen totals
+   above for identity and resurrection, while current distributions use only
+   counts whose destination remains in the living alphabet. */
+static uint64_t move_live_total = 0;
+static uint64_t mv_live_out[ACTIONS + MAX_UNITS];
+static int tombstone_silence_enabled = 1;
 static double   unitlm_bits = 0.0;
 static uint64_t unitlm_bytes = 0;
 static double   atomic_bits_lived = 0.0;
@@ -681,10 +691,15 @@ static double move_prob(int64_t prev, uint32_t cur, int alive) {
     double denom;
     uint64_t cnt;
     if (prev >= 0) {
-        denom = (double)mv_out[(uint32_t)prev] + (double)alive;
+        uint64_t row = tombstone_silence_enabled
+                     ? mv_live_out[(uint32_t)prev]
+                     : mv_out[(uint32_t)prev];
+        denom = (double)row + (double)alive;
         cnt = pair_get((uint32_t)prev, cur);
     } else {
-        denom = (double)move_total + (double)alive;
+        uint64_t total = tombstone_silence_enabled
+                       ? move_live_total : move_total;
+        denom = (double)total + (double)alive;
         cnt = move_count[cur];
     }
     return ((double)cnt + 1.0) / denom;
@@ -776,9 +791,9 @@ static void build_move_dist(int64_t prev, int range, int alphabet,
        counts are visible, future world bytes are not. The external court
        prices the resulting policy, so a confident wrong attractor remains
        expensive and cannot earn authority from its internal score. Dead
-       units hold probability zero; their frozen counts stay in the row
-       totals as a mass leak that decays with life instead of a rent that
-       never ends, so the whole living policy is renormalized. */
+       units hold probability zero. Their frozen counts remain historical
+       evidence, but body 13 removes that mass from every living denominator;
+       resurrection restores it under the same identity. */
     double sum = 0.0;
     int tombs = range - alphabet;
     for (int c = 0; c < range; ++c) {
@@ -812,16 +827,19 @@ static void build_move_dist(int64_t prev, int range, int alphabet,
 
 static void emit_move(uint32_t m, uint64_t pos, int isl,
                       double atomic_ref_bits) {
-    /* prequential shadow price, strictly before the count update; the
-       Laplace alphabet is the living one, dead counts stay behind as a
-       decaying mass leak */
-    double denom = (double)move_total + (double)(ACTIONS + unit_living);
+    /* prequential shadow price, strictly before the count update; both the
+       Laplace alphabet and its evidence mass are living */
+    uint64_t live_or_history = tombstone_silence_enabled
+                             ? move_live_total : move_total;
+    double denom = (double)live_or_history +
+                   (double)(ACTIONS + unit_living);
     double pm = ((double)move_count[m] + 1.0) / denom;
     double nll = -log2(pm);
     unitlm_bits += nll;
     unitlm_bytes += move_len(m);
     move_count[m]++;
     move_total++;
+    move_live_total++;
     if (m >= ACTIONS) {
         Unit *u = &units[m - ACTIONS];
         u->uses++;
@@ -840,7 +858,9 @@ static void emit_move(uint32_t m, uint64_t pos, int isl,
         /* move-bigram shadow price, strictly before pair_feed updates
            the pair count that is its own statistic */
         uint32_t pv = (uint32_t)prev_move;
-        double d2 = (double)mv_out[pv] +
+        uint64_t live_row_or_history = tombstone_silence_enabled
+                                     ? mv_live_out[pv] : mv_out[pv];
+        double d2 = (double)live_row_or_history +
                     (double)(ACTIONS + unit_living);
         double p2 = ((double)pair_get(pv, m) + 1.0) / d2;
         double move_bits = -log2(p2);
@@ -852,6 +872,7 @@ static void emit_move(uint32_t m, uint64_t pos, int isl,
         isl_mvlm_ref_bits[isl] += atomic_ref_bits;
         isl_mvlm_bytes[isl] += move_len(m);
         mv_out[pv]++;
+        mv_live_out[pv]++;
         pair_feed(pv, m);
     }
     prev_move = (int64_t)m;
@@ -923,6 +944,55 @@ static void checked_add(uint64_t *sum, uint64_t value,
                         const char *path, const char *what) {
     if (UINT64_MAX - *sum < value) state_refuse(path, what);
     *sum += value;
+}
+
+static void live_mass_add_unit(int u) {
+    uint32_t move = (uint32_t)(ACTIONS + u);
+    if (UINT64_MAX - move_live_total < move_count[move]) {
+        fprintf(stderr, "netta: live move mass overflow\n"); exit(1);
+    }
+    move_live_total += move_count[move];
+    for (uint64_t i = 0; i < PAIR_SLOTS; ++i)
+        if (pairs[i].cnt && (uint32_t)pairs[i].key == move) {
+            uint32_t prev = (uint32_t)(pairs[i].key >> 32);
+            if (UINT64_MAX - mv_live_out[prev] < pairs[i].cnt) {
+                fprintf(stderr, "netta: live row mass overflow\n"); exit(1);
+            }
+            mv_live_out[prev] += pairs[i].cnt;
+        }
+}
+
+static void live_mass_remove_unit(int u) {
+    uint32_t move = (uint32_t)(ACTIONS + u);
+    if (move_live_total < move_count[move]) {
+        fprintf(stderr, "netta: live move mass underflow\n"); exit(1);
+    }
+    move_live_total -= move_count[move];
+    for (uint64_t i = 0; i < PAIR_SLOTS; ++i)
+        if (pairs[i].cnt && (uint32_t)pairs[i].key == move) {
+            uint32_t prev = (uint32_t)(pairs[i].key >> 32);
+            if (mv_live_out[prev] < pairs[i].cnt) {
+                fprintf(stderr, "netta: live row mass underflow\n"); exit(1);
+            }
+            mv_live_out[prev] -= pairs[i].cnt;
+        }
+}
+
+static void live_mass_rebuild(const char *path) {
+    move_live_total = 0;
+    memset(mv_live_out, 0, sizeof mv_live_out);
+    for (int m = 0; m < ACTIONS + unit_count; ++m)
+        if (m < ACTIONS || !units[m - ACTIONS].dead)
+            checked_add(&move_live_total, move_count[m], path,
+                        "live move mass overflow");
+    for (uint64_t i = 0; i < PAIR_SLOTS; ++i)
+        if (pairs[i].cnt) {
+            uint32_t prev = (uint32_t)(pairs[i].key >> 32);
+            uint32_t cur = (uint32_t)pairs[i].key;
+            if (cur < ACTIONS || !units[cur - ACTIONS].dead)
+                checked_add(&mv_live_out[prev], pairs[i].cnt, path,
+                            "live row mass overflow");
+        }
 }
 
 static void score_agrees(const char *path, const char *what,
@@ -1354,6 +1424,7 @@ static int state_load(const char *path) {
     for (int m = 0; m < ACTIONS + MAX_UNITS; ++m)
         if (pair_rows[m] != mv_out[m])
             state_refuse(path, "move-bigram row total");
+    live_mass_rebuild(path);
     for (uint64_t i = 0; i < TRI_SLOTS; ++i)
         if (tri[i].cnt) {
             uint32_t ctx = (uint32_t)(tri[i].key >> 8);
@@ -1486,6 +1557,7 @@ static double run_episode(int isl_id, uint64_t steps) {
                 continue;
             /* the vocabulary pays rent in recognition; a unit that the
                lived truth has stopped naming releases the alphabet */
+            live_mass_remove_unit(u);
             units[u].dead = 1;
             unit_living--;
             unit_deaths++;
@@ -1740,6 +1812,8 @@ int main(int argc, char **argv) {
             local_probation_enabled = 0;
         else if (!strcmp(argv[i], "--no-unit-death"))
             unit_death_enabled = 0;
+        else if (!strcmp(argv[i], "--keep-dead-mass"))
+            tombstone_silence_enabled = 0;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -1771,7 +1845,7 @@ int main(int argc, char **argv) {
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
-                        "[--no-unit-death] "
+                        "[--no-unit-death] [--keep-dead-mass] "
                         "[--actor-lock uni|bi|tri|mv]\n");
         exit(1);
     }
@@ -1844,6 +1918,17 @@ int main(int argc, char **argv) {
         if (unit_deaths)
             printf("units: %llu deaths this run\n",
                    (unsigned long long)unit_deaths);
+        if (unit_count != unit_living) {
+            uint64_t ghost_pairs = 0, live_pairs = 0;
+            for (int m = 0; m < ACTIONS + unit_count; ++m) {
+                ghost_pairs += mv_out[m];
+                live_pairs += mv_live_out[m];
+            }
+            printf("tombstones: %llu unigram events and %llu transition "
+                   "events excluded from living probability\n",
+                   (unsigned long long)(move_total - move_live_total),
+                   (unsigned long long)(ghost_pairs - live_pairs));
+        }
         if (births_rejected_cap)
             printf("units: %llu births rejected at cap %d\n",
                    (unsigned long long)births_rejected_cap, MAX_UNITS);

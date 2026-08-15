@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B12. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B13. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -653,6 +653,66 @@ printf '\x0e\x00\x00\x00' | dd of="$T/b12z.state" bs=1 seek=8 conv=notrunc 2>/de
 "$N" "$T/rep.bytes" --episodes 1 --steps 4000 --state "$T/b12z.state" --bio "$T/b12z.bio" >/dev/null 2>&1
 gate "B12 a version-14 state cannot enter the local probation court" $? 1
 
+# --- B13: tombstones keep history and lose authority --------------------
+# Frozen counts are resurrection memory, not a vote. With every unit dead,
+# the default searched player and the old-mass control start from the exact
+# same state and truth addresses; a changed receipt proves the ghosts used to
+# enter the one-ply distribution. Without navigation the common denominator
+# cancels and the paired receipts remain identical, locating the influence.
+B13UM=$(awk '/^tombstones:/{print $2}' "$T/b12b.out")
+B13PM=$(awk '/^tombstones:/{print $6}' "$T/b12b.out")
+[ "$B13UM" -gt 0 ] && [ "$B13PM" -gt 0 ]
+gate "B13 death excludes frozen evidence from living mass ($B13UM unigram, $B13PM transition events)" $? 0
+
+for arm in b13 b13g b13n b13ng; do
+    cp "$T/b12s.state" "$T/$arm.state"
+    cp "$T/b12s.bio" "$T/$arm.bio"
+done
+B13BASE=$(wc -l < "$T/b12s.bio")
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --start 16 --episodes 1 --steps 600 --island 1 \
+    --state "$T/b13.state" --bio "$T/b13.bio" >"$T/b13.out" 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --start 16 --keep-dead-mass --episodes 1 --steps 600 --island 1 \
+    --state "$T/b13g.state" --bio "$T/b13g.bio" >"$T/b13g.out" 2>&1
+tail -n "+$((B13BASE+1))" "$T/b13.bio" | grep '^v' > "$T/b13.v"
+tail -n "+$((B13BASE+1))" "$T/b13g.bio" | grep '^v' > "$T/b13g.v"
+cmp -s "$T/b13.v" "$T/b13g.v"
+B13DIFF=$?
+B13REF=$(awk '/^mv control record:/{gsub(",", ""); print $12,$14,$16}' "$T/b13.out")
+B13GREF=$(awk '/^mv control record:/{gsub(",", ""); print $12,$14,$16}' "$T/b13g.out")
+[ "$B13DIFF" -eq 1 ] && [ -n "$B13REF" ] && [ "$B13REF" = "$B13GREF" ]
+gate "B13 dead counts cannot steer searched life (red ghost arm diverges on matched truth)" $? 0
+
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --no-mv-nav --start 16 --episodes 1 --steps 600 --island 1 \
+    --state "$T/b13n.state" --bio "$T/b13n.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --no-mv-nav --start 16 --keep-dead-mass --episodes 1 --steps 600 \
+    --island 1 --state "$T/b13ng.state" --bio "$T/b13ng.bio" >/dev/null 2>&1
+tail -n "+$((B13BASE+1))" "$T/b13n.bio" | grep '^v' > "$T/b13n.v"
+tail -n "+$((B13BASE+1))" "$T/b13ng.bio" | grep '^v' > "$T/b13ng.v"
+cmp -s "$T/b13n.v" "$T/b13ng.v"
+gate "B13 ghost influence is isolated to searched continuation (600 no-nav receipts identical)" $? 0
+
+# Resurrection restores the frozen evidence exactly: when all identities are
+# living again, the silent and historical denominators are the same number.
+cp "$T/b12.state" "$T/b13r.state"
+cp "$T/b12.bio" "$T/b13r.bio"
+cp "$T/b12.state" "$T/b13rg.state"
+cp "$T/b12.bio" "$T/b13rg.bio"
+B13RBASE=$(wc -l < "$T/b12.bio")
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --start 16 --episodes 1 --steps 600 --island 0 \
+    --state "$T/b13r.state" --bio "$T/b13r.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv \
+    --start 16 --keep-dead-mass --episodes 1 --steps 600 --island 0 \
+    --state "$T/b13rg.state" --bio "$T/b13rg.bio" >/dev/null 2>&1
+tail -n "+$((B13RBASE+1))" "$T/b13r.bio" | grep '^v' > "$T/b13r.v"
+tail -n "+$((B13RBASE+1))" "$T/b13rg.bio" | grep '^v' > "$T/b13rg.v"
+cmp -s "$T/b13r.v" "$T/b13rg.v"
+gate "B13 resurrection restores frozen evidence to living authority exactly" $? 0
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -684,10 +744,13 @@ gate "S ASan/UBSan silent through island travel and local revocation" $rc 0
 rc=$?
 "$S" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 30 --steps 600 \
     --island 1 --state "$T/sd.state" --bio "$T/sd.bio" >/dev/null 2>>"$T/sd.err" || rc=$?
+"$S" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --actor-lock mv --start 16 \
+    --episodes 1 --steps 128 --island 1 --state "$T/sd.state" \
+    --bio "$T/sd.bio" >/dev/null 2>>"$T/sd.err" || rc=$?
 "$S" "$T/rep.bytes" "$T/uhome.bytes" --seed 42 --episodes 1 --steps 4000 \
     --island 0 --state "$T/sd.state" --bio "$T/sd.bio" >/dev/null 2>>"$T/sd.err" || rc=$?
 [ -s "$T/sd.err" ] && rc=98
-gate "S ASan/UBSan silent through extinction and resurrection" $rc 0
+gate "S ASan/UBSan silent through extinction, searched tombstones, and resurrection" $rc 0
 "$S" "$T/p3.bytes" "$T/null.bytes" --reset --no-units --seed 5 \
     --episodes 6 --steps 600 --island 0 \
     --state "$T/sn.state" --bio "$T/sn.bio" >/dev/null 2>"$T/sn.err"
