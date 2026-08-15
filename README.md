@@ -21,9 +21,10 @@ technical source of truth for the living line.
   semi-Markov route and run one model-only move ahead. Search never reads the
   target span, and its resulting policy is still priced by the external world.
 - Mandates are global, verdicts are local. Every island keeps its own record
-  of every witness; a travelling seat that cannot keep a KEEP lead over the
-  island's own newborn record is refused on that island only, while the home
-  mandate and kin transfer stay untouched.
+  of every witness; a travelling hand that fails the local court is refused
+  without losing its home mandate. Fixed uniform `null` is the island's
+  eight-bit birth floor until a travelled byte hand earns a local 0.1-bit
+  lead, and blind comity cannot be overrun by one oversized episode.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - State is restart-safe and published atomically. Resume is refused if the
@@ -41,11 +42,11 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 80-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 86-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
-twin, a random-order navigation null, island-local revocation arms, and
-failure-closed state and biography checks. A passing build ends with
-`ALL GATES PASS`.
+twin, a random-order navigation null, island-local revocation arms, a fixed
+uniform birth-floor control, byte-bounded comity, and failure-closed state and
+biography checks. A passing build ends with `ALL GATES PASS`.
 
 ## Start a life
 
@@ -97,6 +98,9 @@ Useful experimental flags:
   this is the matched red control for the first earned move mandate.
 - `--no-island-court` disables the local revocation valve; this is the matched
   red control for island-local authority.
+- `--no-birth-floor` keeps the body-10 court but disables fixed uniform `null`
+  and the byte-bounded comity rule; this is the matched red control for the
+  island birth floor.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.

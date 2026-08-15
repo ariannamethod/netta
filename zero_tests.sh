@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B10. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B11. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -478,6 +478,78 @@ perl -e '
     --state "$T/b10f.state" --bio "$T/b10d.bio" >/dev/null 2>&1
 gate "B10 forged local court score is refused against the global record" $? 1
 
+# --- B11: the island birth floor -----------------------------------------
+# A fixed uniform hand is not a travelling model. On a deterministic
+# full-byte null, every travelled byte witness fails to beat eight bits during
+# the blind-comity window. At the next episode the island may choose null;
+# disabling only this floor restores the inherited travelling hand.
+LC_ALL=C awk 'BEGIN{s=7*7919+17; for(i=0;i<5000;i++){s=(s*1103515245+12345)%2147483648; printf "%c", int(s/65536)%256}}' > "$T/null.bytes"
+"$N" "$T/p3.bytes" "$T/null.bytes" --reset --no-units --seed 5 \
+    --episodes 6 --steps 600 --island 0 \
+    --state "$T/b11.state" --bio "$T/b11.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/null.bytes" --no-units --seed 5 \
+    --episodes 1 --steps 600 --island 1 \
+    --state "$T/b11.state" --bio "$T/b11.bio" > "$T/b11e.out" 2>&1
+N11U=$(tl "$T/b11e.out" atomic-uni)
+N11B=$(tl "$T/b11e.out" byte-bi)
+N11T=$(tl "$T/b11e.out" byte-tri)
+awk -v u="$N11U" -v b="$N11B" -v t="$N11T" \
+    'BEGIN{exit !(u >= 8.0 && b >= 8.0 && t >= 8.0)}'
+gate "B11 no travelled byte witness beats uniform in the null window ($N11U/$N11B/$N11T)" $? 0
+"$N" "$T/p3.bytes" "$T/null.bytes" --no-units --seed 5 \
+    --episodes 1 --steps 600 --island 1 \
+    --state "$T/b11.state" --bio "$T/b11.bio" > "$T/b11f.out" 2>&1
+N11A=$(awk -F'\t' '$1=="a" && $2==8{print $3}' "$T/b11.bio")
+N11F=$(awk -F': ' '/^bits per raw byte/{print $2}' "$T/b11f.out")
+[ "$N11A" = "null" ] && [ "$N11F" = "8.000000" ] && \
+    awk -F'\t' '$1=="r" && $2==8 && $5=="null"{ok=1} END{exit !ok}' "$T/b11.bio"
+gate "B11 the island invokes fixed uniform null at the earned boundary (ep8=$N11A, $N11F bits)" $? 0
+
+"$N" "$T/p3.bytes" "$T/null.bytes" --reset --no-units --seed 5 \
+    --episodes 6 --steps 600 --island 0 --no-birth-floor \
+    --state "$T/b11r.state" --bio "$T/b11r.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/null.bytes" --no-units --seed 5 \
+    --episodes 1 --steps 600 --island 1 --no-birth-floor \
+    --state "$T/b11r.state" --bio "$T/b11r.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/null.bytes" --no-units --seed 5 \
+    --episodes 1 --steps 600 --island 1 --no-birth-floor \
+    --state "$T/b11r.state" --bio "$T/b11r.bio" > "$T/b11r.out" 2>&1
+N11R=$(awk -F': ' '/^bits per raw byte/{print $2}' "$T/b11r.out")
+N11RA=$(awk -F'\t' '$1=="a" && $2==8{print $3}' "$T/b11r.bio")
+[ "$N11RA" = "tri" ] && awk -v f="$N11F" -v r="$N11R" \
+    'BEGIN{exit !(f < r && r > 8.0)}'
+gate "B11 red floor-off traveller burns: null $N11F < tri $N11R" $? 0
+
+# Comity is a byte budget, not permission for an arbitrarily large first
+# episode. With zero local receipts, an episode that would cross 1000 bytes is
+# null in full; the floor-off twin demonstrates the inherited overrun.
+"$N" "$T/p3.bytes" "$T/null.bytes" --reset --no-units --seed 5 \
+    --episodes 6 --steps 600 --island 0 \
+    --state "$T/b11q.state" --bio "$T/b11q.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/null.bytes" --no-units --seed 5 \
+    --episodes 1 --steps 2000 --island 1 \
+    --state "$T/b11q.state" --bio "$T/b11q.bio" > "$T/b11q.out" 2>&1
+Q11A=$(awk -F'\t' '$1=="a" && $2==7{print $3}' "$T/b11q.bio")
+Q11=$(grep -c '^q	' "$T/b11q.bio")
+"$N" "$T/p3.bytes" "$T/null.bytes" --reset --no-units --seed 5 \
+    --episodes 6 --steps 600 --island 0 --no-birth-floor \
+    --state "$T/b11qr.state" --bio "$T/b11qr.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/null.bytes" --no-units --seed 5 \
+    --episodes 1 --steps 2000 --island 1 --no-birth-floor \
+    --state "$T/b11qr.state" --bio "$T/b11qr.bio" >/dev/null 2>&1
+Q11R=$(awk -F'\t' '$1=="a" && $2==7{print $3}' "$T/b11qr.bio")
+[ "$Q11A" = "null" ] && [ "$Q11" -eq 1 ] && [ "$Q11R" = "tri" ]
+gate "B11 a long first episode cannot overrun blind comity (null vs red $Q11R)" $? 0
+
+"$N" "$T/p3.bytes" "$T/null.bytes" --reset --no-units --seed 5 \
+    --episodes 6 --steps 600 --island 0 \
+    --state "$T/b11d.state" --bio "$T/b11d.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/null.bytes" --no-units --seed 5 \
+    --episodes 2 --steps 600 --island 1 \
+    --state "$T/b11d.state" --bio "$T/b11d.bio" >/dev/null 2>&1
+cmp -s "$T/b11.bio" "$T/b11d.bio" && cmp -s "$T/b11.state" "$T/b11d.state"
+gate "B11 null verdict and actor count survive restart (split voyage identical)" $? 0
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -496,7 +568,7 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move navigation and restart state v12" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v13" $rc 0
 "$S" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 \
     --island 0 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>"$T/si.err"
 rc=$?
@@ -504,6 +576,15 @@ rc=$?
     --island 1 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>>"$T/si.err" || rc=$?
 [ -s "$T/si.err" ] && rc=98
 gate "S ASan/UBSan silent through island travel and local revocation" $rc 0
+"$S" "$T/p3.bytes" "$T/null.bytes" --reset --no-units --seed 5 \
+    --episodes 6 --steps 600 --island 0 \
+    --state "$T/sn.state" --bio "$T/sn.bio" >/dev/null 2>"$T/sn.err"
+rc=$?
+"$S" "$T/p3.bytes" "$T/null.bytes" --no-units --seed 5 \
+    --episodes 1 --steps 2000 --island 1 \
+    --state "$T/sn.state" --bio "$T/sn.bio" >/dev/null 2>>"$T/sn.err" || rc=$?
+[ -s "$T/sn.err" ] && rc=98
+gate "S ASan/UBSan silent through byte-bounded comity and null action" $rc 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi

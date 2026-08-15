@@ -42,7 +42,7 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    12u
+#define STATE_VER    13u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -216,7 +216,8 @@ static int unit_prefix_alive(const uint8_t *b, uint32_t len) {
     return 0;
 }
 
-static uint64_t episode_no;   /* forward: defined with state below */
+static uint64_t episode_no;   /* forwards: defined with state below */
+static uint64_t steps_total;
 
 static void unit_birth(uint32_t a, uint32_t b, uint64_t support) {
     uint8_t buf[2 * UNIT_MAX_LEN]; uint8_t t1[1], t2[1];
@@ -386,8 +387,9 @@ static void tri_add(uint32_t ctx, uint8_t b) {
 static int actor_current = 0;
 static int actor_lock = -1;        /* CLI: -1 earned, 0..3 locked */
 static int move_nav_enabled = 1;   /* body 9: search the observable wake */
-static uint64_t ep_actor[4] = {0, 0, 0, 0};
-static const char *actor_name[4] = {"uni", "bi", "tri", "mv"};
+#define ACTOR_NULL 4
+static uint64_t ep_actor[5] = {0, 0, 0, 0, 0};
+static const char *actor_name[5] = {"uni", "bi", "tri", "mv", "null"};
 static uint64_t move_nav_steps = 0, move_nav_unit_anchors = 0;
 
 /* body 10: the island court. Global models travel; records are local.
@@ -407,7 +409,12 @@ static uint64_t isl_mvp_bytes[MAX_ISLANDS];
 static double   isl_mvp_ref_bits[MAX_ISLANDS][3];
 static uint64_t isl_mvp_ref_bytes[MAX_ISLANDS];
 static int island_court_enabled = 1;
+/* body 11: fixed uniform null is a local hand, never a global seat. A
+   travelled byte hand must earn ACTOR_GAIN over its eight-bit floor, and an
+   episode cannot carry blind comity beyond ACTOR_MIN_BYTES. */
+static int birth_floor_enabled = 1;
 static uint64_t revocations = 0;
+static uint64_t null_refusals = 0;
 
 #define ACTOR_MIN_BYTES 1000
 #define ACTOR_GAIN      0.1
@@ -459,48 +466,142 @@ static void actor_elect(void) {
     }
 }
 
-static int island_court(int isl) {
+static int island_court(int isl, uint64_t episode_steps) {
     /* the island's verdict on the globally elected seat, for this
        episode only; a revocation is a biography event, not a seat
        change -- the mandate travels on, the island refuses the hand */
     int seated = actor_current;
-    if (!island_court_enabled || actor_lock >= 0 || seated == 0)
+    if (!island_court_enabled || actor_lock >= 0)
         return seated;
-    if (isl_lived[isl] < ACTOR_MIN_BYTES) return seated;
+
+    /* The body-10 red arm remains an exact switch: without the birth floor,
+       the old court waits for a complete local record and treats global uni
+       as the newborn hand. */
+    if (!birth_floor_enabled) {
+        if (seated == 0 || isl_lived[isl] < ACTOR_MIN_BYTES) return seated;
+        double lu = isl_bits[isl][0] / (double)isl_lived[isl];
+        double lseat;
+        int fails;
+        if (seated == 3) {
+            if (isl_mvp_bytes[isl] < ACTOR_MIN_BYTES ||
+                isl_mvp_ref_bytes[isl] != isl_mvp_bytes[isl])
+                return seated;
+            lseat = isl_mvp_bits[isl] / (double)isl_mvp_bytes[isl];
+            double br = isl_mvp_ref_bits[isl][0] /
+                        (double)isl_mvp_ref_bytes[isl];
+            for (int c = 1; c <= 2; ++c) {
+                double r = isl_mvp_ref_bits[isl][c] /
+                           (double)isl_mvp_ref_bytes[isl];
+                if (r < br) br = r;
+            }
+            fails = br - lseat < ACTOR_KEEP;
+        } else {
+            lseat = isl_bits[isl][seated] / (double)isl_lived[isl];
+            fails = lu - lseat < ACTOR_KEEP;
+        }
+        if (!fails) return seated;
+        int ch = 0;
+        for (int c = 1; c <= 2; ++c) {
+            if (c == seated) continue;
+            double lc = isl_bits[isl][c] / (double)isl_lived[isl];
+            if (lu - lc < ACTOR_GAIN) continue;
+            if (ch == 0 ||
+                lc < isl_bits[isl][ch] / (double)isl_lived[isl])
+                ch = c;
+        }
+        revocations++;
+        char line[160];
+        snprintf(line, sizeof line, "r\t%llu\t%d\t%s\t%s\t%.6f\t%.6f\n",
+                 (unsigned long long)episode_no, isl, actor_name[seated],
+                 actor_name[ch], lu, lseat);
+        bio_append(line);
+        return ch;
+    }
+
+    /* Body 11: fixed uniform ignorance is an island birthright, not a global
+       seat. It matters only when a model has actually travelled: the first
+       island and every one-island life keep their byte-identical old body. */
+    if (steps_total == isl_lived[isl]) return seated;
+
+    uint64_t lived = isl_lived[isl];
+    if (lived < ACTOR_MIN_BYTES &&
+        episode_steps <= ACTOR_MIN_BYTES - lived)
+        return seated;                    /* bounded blind comity */
+    if (lived == 0) {
+        /* An indivisible episode would cross the byte budget before the
+           island had one receipt to judge. The safe causal hand is null for
+           that whole episode; no future byte is borrowed for the verdict. */
+        revocations++;
+        null_refusals++;
+        char line[128];
+        snprintf(line, sizeof line, "q\t%llu\t%d\t%s\tnull\t0\n",
+                 (unsigned long long)episode_no, isl, actor_name[seated]);
+        bio_append(line);
+        return ACTOR_NULL;
+    }
+
     double lu = isl_bits[isl][0] / (double)isl_lived[isl];
     double lseat;
     int fails;
+    int seat_unpriced = 0;
     if (seated == 3) {
-        if (isl_mvp_bytes[isl] < ACTOR_MIN_BYTES ||
-            isl_mvp_ref_bytes[isl] != isl_mvp_bytes[isl])
-            return seated;
-        lseat = isl_mvp_bits[isl] / (double)isl_mvp_bytes[isl];
-        double br = isl_mvp_ref_bits[isl][0] /
-                    (double)isl_mvp_ref_bytes[isl];
-        for (int c = 1; c <= 2; ++c) {
-            double r = isl_mvp_ref_bits[isl][c] /
-                       (double)isl_mvp_ref_bytes[isl];
-            if (r < br) br = r;
+        uint64_t played = isl_mvp_bytes[isl];
+        if (played < ACTOR_MIN_BYTES &&
+            episode_steps <= ACTOR_MIN_BYTES - played)
+            return seated;                /* bounded move-hand comity */
+        if (played == 0) {
+            fails = 1;
+            seat_unpriced = 1;
+            lseat = 0.0;                   /* never emitted as a score */
+        } else {
+            lseat = isl_mvp_bits[isl] / (double)played;
+            double br = isl_mvp_ref_bits[isl][0] /
+                        (double)isl_mvp_ref_bytes[isl];
+            for (int c = 1; c <= 2; ++c) {
+                double r = isl_mvp_ref_bits[isl][c] /
+                           (double)isl_mvp_ref_bytes[isl];
+                if (r < br) br = r;
+            }
+            fails = br - lseat < ACTOR_KEEP;
         }
-        fails = br - lseat < ACTOR_KEEP;
+    } else if (seated == 0) {
+        lseat = lu;
+        fails = 0;
     } else {
         lseat = isl_bits[isl][seated] / (double)isl_lived[isl];
         fails = lu - lseat < ACTOR_KEEP;
     }
-    if (!fails) return seated;
-    int ch = 0;
-    for (int c = 1; c <= 2; ++c) {
-        if (c == seated) continue;
-        double lc = isl_bits[isl][c] / (double)isl_lived[isl];
-        if (lu - lc < ACTOR_GAIN) continue;
-        if (ch == 0 || lc < isl_bits[isl][ch] / (double)isl_lived[isl])
-            ch = c;
+
+    int ch = seated;
+    if (fails) {
+        ch = 0;
+        for (int c = 1; c <= 2; ++c) {
+            if (c == seated) continue;
+            double lc = isl_bits[isl][c] / (double)isl_lived[isl];
+            if (lu - lc < ACTOR_GAIN) continue;
+            if (ch == 0 ||
+                lc < isl_bits[isl][ch] / (double)isl_lived[isl])
+                ch = c;
+        }
     }
+
+    double lhand = ch == 3 ? lseat
+                 : isl_bits[isl][ch] / (double)isl_lived[isl];
+    if (8.0 - lhand < ACTOR_GAIN) ch = ACTOR_NULL;
+    if (ch == seated) return seated;
+
     revocations++;
-    char line[160];
-    snprintf(line, sizeof line, "r\t%llu\t%d\t%s\t%s\t%.6f\t%.6f\n",
-             (unsigned long long)episode_no, isl, actor_name[seated],
-             actor_name[ch], lu, lseat);
+    if (ch == ACTOR_NULL) null_refusals++;
+    char line[176];
+    if (seat_unpriced)
+        snprintf(line, sizeof line, "q\t%llu\t%d\t%s\t%s\t0\n",
+                 (unsigned long long)episode_no, isl, actor_name[seated],
+                 actor_name[ch]);
+    else
+        snprintf(line, sizeof line,
+                 "r\t%llu\t%d\t%s\t%s\t%.6f\t%.6f\t8.000000\n",
+                 (unsigned long long)episode_no, isl, actor_name[seated],
+                 actor_name[ch], lu, lseat);
     bio_append(line);
     return ch;
 }
@@ -825,7 +926,7 @@ static void state_save(const char *path) {
         fwrite(mvp_ref_bits, sizeof mvp_ref_bits[0], 3, f) != 3 ||
         fwrite(&mvp_ref_bytes, sizeof mvp_ref_bytes, 1, f) != 1 ||
         fwrite(&actor_current, sizeof actor_current, 1, f) != 1 ||
-        fwrite(ep_actor, sizeof ep_actor[0], 4, f) != 4 ||
+        fwrite(ep_actor, sizeof ep_actor[0], 5, f) != 5 ||
         fwrite(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
         fwrite(&trilm_bits, sizeof trilm_bits, 1, f) != 1 ||
         fwrite(&trilm_bytes, sizeof trilm_bytes, 1, f) != 1 ||
@@ -976,7 +1077,7 @@ static int state_load(const char *path) {
         fread(mvp_ref_bits, sizeof mvp_ref_bits[0], 3, f) != 3 ||
         fread(&mvp_ref_bytes, sizeof mvp_ref_bytes, 1, f) != 1 ||
         fread(&actor_current, sizeof actor_current, 1, f) != 1 ||
-        fread(ep_actor, sizeof ep_actor[0], 4, f) != 4 ||
+        fread(ep_actor, sizeof ep_actor[0], 5, f) != 5 ||
         fread(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
         fread(&trilm_bits, sizeof trilm_bits, 1, f) != 1 ||
         fread(&trilm_bytes, sizeof trilm_bytes, 1, f) != 1 ||
@@ -1062,7 +1163,7 @@ static int state_load(const char *path) {
         if (move_count[m] != 0 || mv_out[m] != 0)
             state_refuse(path, "dead move carries statistics");
     uint64_t actor_eps = 0;
-    for (int a = 0; a < 4; ++a)
+    for (int a = 0; a < 5; ++a)
         checked_add(&actor_eps, ep_actor[a], path,
                     "actor episode overflow");
     if (actor_eps != episode_no)
@@ -1261,9 +1362,9 @@ static double run_episode(int isl_id, uint64_t steps) {
     char line[256];
     episode_no++;
     actor_elect();
-    int acting = island_court(isl_id);
+    int acting = island_court(isl_id, steps);
     int probation = 0;
-    if (actor_lock < 0 && units_enabled && acting != 3 &&
+    if (actor_lock < 0 && units_enabled && acting >= 0 && acting <= 2 &&
         episode_no % 8 == 7 &&
         atomic_bytes_lived >= ACTOR_MIN_BYTES && mvlm_bytes &&
         atomic_bits_lived / (double)atomic_bytes_lived -
@@ -1381,10 +1482,12 @@ static double run_episode(int isl_id, uint64_t steps) {
         double p_uni[ACTIONS], p_bi[ACTIONS], p_tri[ACTIONS];
         build_dists(isl, pos, p_uni, p_bi, p_tri);
         const double *p_act = acting == 2 ? p_tri
-                            : acting == 1 ? p_bi : p_uni;
-        int action = sample(p_act);
+                            : acting == 1 ? p_bi
+                            : acting == 0 ? p_uni : NULL;
+        int action = acting == ACTOR_NULL
+                   ? (int)(rng_next() >> 56) : sample(p_act);
         int truth = isl->bytes[pos];
-        double loss = -log2(p_act[truth]);
+        double loss = acting == ACTOR_NULL ? 8.0 : -log2(p_act[truth]);
         snprintf(line, sizeof line,
                  "%llu\t%llu\t%d\t%llu\t%016llx\t%d\t%d\t%.6f\t%016llx\t"
                  "atomic\t1\t%s\n",
@@ -1480,6 +1583,8 @@ int main(int argc, char **argv) {
             move_nav_enabled = 0;
         else if (!strcmp(argv[i], "--no-island-court"))
             island_court_enabled = 0;
+        else if (!strcmp(argv[i], "--no-birth-floor"))
+            birth_floor_enabled = 0;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -1510,6 +1615,7 @@ int main(int argc, char **argv) {
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
+                        "[--no-birth-floor] "
                         "[--actor-lock uni|bi|tri|mv]\n");
         exit(1);
     }
@@ -1627,15 +1733,20 @@ int main(int argc, char **argv) {
         printf("mv navigation: %llu searched decisions, %llu unit anchors\n",
                (unsigned long long)move_nav_steps,
                (unsigned long long)move_nav_unit_anchors);
-    printf("actor episodes: uni %llu, bi %llu, tri %llu, mv %llu%s\n",
+    printf("actor episodes: uni %llu, bi %llu, tri %llu, mv %llu, "
+           "null %llu%s\n",
            (unsigned long long)ep_actor[0],
            (unsigned long long)ep_actor[1],
            (unsigned long long)ep_actor[2],
            (unsigned long long)ep_actor[3],
+           (unsigned long long)ep_actor[4],
            actor_lock >= 0 ? " (locked)" : "");
     if (revocations)
         printf("island court: %llu local revocations this run\n",
                (unsigned long long)revocations);
+    if (null_refusals)
+        printf("island birth floor: %llu null refusals this run\n",
+               (unsigned long long)null_refusals);
     if (atomic_bytes_lived > tl_aby)
         printf("this-life model atomic-uni bits/byte %.6f\n",
                (atomic_bits_lived - tl_ab) /
