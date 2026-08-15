@@ -20,6 +20,10 @@ technical source of truth for the living line.
 - The move actor can search its last 16 already-observed bytes for an exact
   semi-Markov route and run one model-only move ahead. Search never reads the
   target span, and its resulting policy is still priced by the external world.
+- Mandates are global, verdicts are local. Every island keeps its own record
+  of every witness; a travelling seat that cannot keep a KEEP lead over the
+  island's own newborn record is refused on that island only, while the home
+  mandate and kin transfer stay untouched.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - State is restart-safe and published atomically. Resume is refused if the
@@ -37,10 +41,11 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 68-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 79-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
-twin, a random-order navigation null, and failure-closed state and biography
-checks. A passing build ends with `ALL GATES PASS`.
+twin, a random-order navigation null, island-local revocation arms, and
+failure-closed state and biography checks. A passing build ends with
+`ALL GATES PASS`.
 
 ## Start a life
 
@@ -90,6 +95,8 @@ Useful experimental flags:
 - `--no-units` disables the earned-vocabulary tissue.
 - `--no-mv-nav` disables route search and restores the unanchored move player;
   this is the matched red control for the first earned move mandate.
+- `--no-island-court` disables the local revocation valve; this is the matched
+  red control for island-local authority.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.

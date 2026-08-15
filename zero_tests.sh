@@ -317,15 +317,17 @@ gate "A8 forced move control never enters the persisted mandate record" $? 0
 # island decays the uni-tri lead into the hysteresis band [KEEP, GAIN).
 # The probation at episode 7 must not erase tri's incumbency: episode 8
 # is elected on a lead that still satisfies KEEP, so the seat stays tri.
+# The island court is disabled on this world to isolate the probation
+# law; the local verdict is body 10's own gated organ below.
 awk 'BEGIN{s=99; for(i=0;i<25000;i++){s=(s*1103515245+12345)%2147483648; n=7+int(s/65536)%2; for(j=0;j<n;j++)printf "a"; printf "b"}}' > "$T/skew.bytes"
-"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
-"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 4 --steps 600 --island 1 --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --no-island-court --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 4 --steps 600 --island 1 --no-island-court --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
 S7=$(awk -F'\t' '$1=="a" && $2==7{print $3}' "$T/a9.bio")
 S8=$(awk -F'\t' '$1=="a" && $2==8{print $3}' "$T/a9.bio")
 [ "$S7" = "mvp" ] && [ "$S8" = "tri" ]
 gate "A9 probation does not depose the sitting incumbent (ep7=$S7, ep8=$S8)" $? 0
-"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --state "$T/a9b.state" --bio "$T/a9b.bio" >/dev/null 2>&1
-"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 3 --steps 600 --island 1 --state "$T/a9b.state" --bio "$T/a9b.bio" > "$T/a9b.out" 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --no-island-court --state "$T/a9b.state" --bio "$T/a9b.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 3 --steps 600 --island 1 --no-island-court --state "$T/a9b.state" --bio "$T/a9b.bio" > "$T/a9b.out" 2>&1
 AU9=$(awk '/^model atomic-uni /{print $NF}' "$T/a9b.out")
 TR9=$(awk '/^model byte-tri /{print $NF}' "$T/a9b.out")
 LEAD9=$(awk -v u="$AU9" -v t="$TR9" 'BEGIN{printf "%.6f", u-t}')
@@ -411,6 +413,50 @@ NNMV=$(awk -F'\t' '$1=="a" && $3=="mv"{n++} END{print n+0}' "$T/nnull.bio")
 [ "$NNMVP" -eq 0 ] && [ "$NNMV" -eq 0 ]
 gate "B9 random-order null grants search no probation or mandate" $? 0
 
+# --- B10: the island court ----------------------------------------------
+# Global models travel; records are local. A globally seated actor must
+# still satisfy the island it acts on: after ACTOR_MIN_BYTES of local
+# evidence, a seat whose local lead over the local newborn record falls
+# under KEEP is refused for that island only. Home mandate and kin
+# transfer stay untouched; a single-island life must be bit-identical.
+awk 'BEGIN{s=555; for(i=0;i<30000;i++){s=(s*1103515245+12345)%2147483648; r=int(s/65536)%100; if(r<87)printf "a"; else {s=(s*1103515245+12345)%2147483648; printf "%c", 98+int(s/65536)%10}}}' > "$T/alien.bytes"
+awk 'BEGIN{for(i=0;i<700;i++) printf "cacbab"}' > "$T/kin.bytes"
+"$N" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 --island 0 --state "$T/b10.state" --bio "$T/b10.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 8 --steps 600 --island 1 --state "$T/b10.state" --bio "$T/b10.bio" > "$T/b10.out" 2>&1
+RV=$(grep -c '^r	' "$T/b10.bio")
+A9S=$(awk -F'\t' '$1=="a" && $2==9{print $3}' "$T/b10.bio")
+[ "$RV" -gt 0 ] && [ "$A9S" = "uni" ]
+gate "B10 an alien island revokes the travelling seat ($RV revocations, ep9=$A9S)" $? 0
+grep '^r	' "$T/b10.bio" | head -1 | awk -F'\t' '{exit !($4 == "tri" && $5 == "uni" && $6+0 < $7+0)}'
+gate "B10 the revocation is numeric: the local newborn record beats the seat" $? 0
+"$N" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 --island 0 --no-island-court --state "$T/b10n.state" --bio "$T/b10n.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 8 --steps 600 --island 1 --no-island-court --state "$T/b10n.state" --bio "$T/b10n.bio" > "$T/b10n.out" 2>&1
+RVN=$(grep -c '^r	' "$T/b10n.bio")
+CB=$(awk -F': ' '/^bits per raw byte/{print $2}' "$T/b10.out")
+NB=$(awk -F': ' '/^bits per raw byte/{print $2}' "$T/b10n.out")
+[ "$RVN" -eq 0 ] && awk -v c="$CB" -v n="$NB" 'BEGIN{exit !(c < n)}'
+gate "B10 the red arm burns: court $CB < no-court $NB on the alien stay" $? 0
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 2 --steps 600 --island 0 --state "$T/b10.state" --bio "$T/b10.bio" >/dev/null 2>&1
+HR=$(awk -F'\t' '$1=="a" && $2==16{print $3}' "$T/b10.bio")
+[ "$HR" = "tri" ]
+gate "B10 revocation is local: the mandate still acts at home (ep16=$HR)" $? 0
+"$N" "$T/p3.bytes" "$T/kin.bytes" --reset --seed 5 --episodes 6 --steps 600 --island 0 --state "$T/b10k.state" --bio "$T/b10k.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/kin.bytes" --seed 5 --episodes 8 --steps 600 --island 1 --state "$T/b10k.state" --bio "$T/b10k.bio" >/dev/null 2>&1
+RVK=$(grep -c '^r	' "$T/b10k.bio")
+[ "$RVK" -eq 0 ]
+gate "B10 kin transfer is not punished (0 revocations on the rotated island)" $? 0
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 8 --steps 600 --state "$T/b10z.state" --bio "$T/b10z.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 8 --steps 600 --no-island-court --state "$T/b10zn.state" --bio "$T/b10zn.bio" >/dev/null 2>&1
+cmp -s "$T/b10z.bio" "$T/b10zn.bio" && cmp -s "$T/b10z.state" "$T/b10zn.state"
+gate "B10 zero intervention where no second island exists (bit-identical)" $? 0
+"$N" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 --island 0 --state "$T/b10s.state" --bio "$T/b10s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 4 --steps 600 --island 1 --state "$T/b10s.state" --bio "$T/b10s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 4 --steps 600 --island 1 --state "$T/b10s.state" --bio "$T/b10s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 --island 0 --state "$T/b10d.state" --bio "$T/b10d.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 8 --steps 600 --island 1 --state "$T/b10d.state" --bio "$T/b10d.bio" >/dev/null 2>&1
+cmp -s "$T/b10s.bio" "$T/b10d.bio" && cmp -s "$T/b10s.state" "$T/b10d.state"
+gate "B10 local records and revocations survive restart (split voyage identical)" $? 0
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -429,7 +475,14 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move navigation and restart state v11" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v12" $rc 0
+"$S" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 \
+    --island 0 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>"$T/si.err"
+rc=$?
+"$S" "$T/p3.bytes" "$T/alien.bytes" --seed 5 --episodes 8 --steps 600 \
+    --island 1 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>>"$T/si.err" || rc=$?
+[ -s "$T/si.err" ] && rc=98
+gate "S ASan/UBSan silent through island travel and local revocation" $rc 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi

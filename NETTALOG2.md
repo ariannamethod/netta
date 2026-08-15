@@ -655,3 +655,59 @@ retention bar; the repair closes both wrongs with the same variable, but
 only the byte face carries a measured red world. The route anchor and the
 one-ply rollout also still share a single flag, so the attractor question
 cannot yet be isolated by the machine.
+
+## The tenth body: the island court
+
+The ninth-body handoff named the open wound: search and mandate evidence
+were global, so a seat earned on one island could act on another long
+after any local justification had vanished. The seventh body had already
+measured the class of harm in shadow -- foreign frequencies are worse
+than ignorance -- but nothing in the constitution could refuse the hand.
+
+The tenth body is a court, not a model. No world model gains an island
+dimension. Every island now keeps its own prequential record of the
+three byte witnesses on the bytes it lived, plus the move player's local
+played and matched-reference evidence. The seat is still elected on the
+whole biography, and the elected seat is never rewritten -- the repair
+that opened this turn is the load-bearing wall here. What the island owns
+is the verdict on the hand: once it has lived a thousand bytes, a seated
+actor whose local lead over the island's own newborn record falls under
+the 0.05 retention lead is refused for this island and this episode. The
+best locally eligible byte witness acts instead, the refusal is a
+biography event carrying its numbers, and the mandate travels on intact.
+No local evidence, no local verdict: authority moves on comity until the
+island can judge. A locally refused move seat keeps the right to reapply
+through the probation door, which now opens on the acting hand rather
+than the global seat.
+
+The court's arrival immediately collided with the repair gate of this
+same turn: on the A9 two-phase world the island court honestly refused
+tri's hand at episode 8 by the skew island's local record, which is
+lawful under this body but is not the question that gate asks. The A9
+world now runs with the valve disabled so each law is measured alone;
+the collision itself -- seat kept, hand refused, both visible in the
+biography -- is exactly the separation the repair was for.
+
+Measured on a period-3 home and a skew-census iid island. The traveller
+carries tri authority earned at home; the alien island prices its first
+1200 lived bytes and refuses: local newborn 2.134932 bits per raw byte
+against the seat's local 2.759167 -- the fifth-body self-deception law,
+now enforceable locally. Over the eight-episode stay the life with the
+court runs at 2.070787 bits per raw byte; with the valve disabled the
+same seed pays 2.366611 while the seat burns unrefused. Back home the
+mandate is untouched and tri acts again. On a rotated period-3 kin island
+-- the same cyclic map in a different phase -- the traveller thrives and
+the court never speaks: transfer is not punished. A single-island life is
+bit-identical with the court present or disabled; a voyage split across
+restart is bit-identical to the direct voyage. State advances to version
+12 for the per-island evidence plane. Seventy-nine machine verdicts,
+ALL GATES PASS, ASan/UBSan through travel and revocation.
+
+What is not proved: the local verdict has one threshold where the global
+election has two, so a lead oscillating around the retention bar can flap
+the acting hand between episodes; local hysteresis is future law if a
+real world exhibits the flap. The local floor is the newborn witness, not
+a locally newborn organism: a world where every travelled model, uni
+included, is worse than uniform ignorance would still seat the least bad
+traveller. Search remains global, and the probation schedule still opens
+on a lifetime shadow gain measured across all islands.

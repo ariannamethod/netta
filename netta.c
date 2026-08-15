@@ -42,7 +42,7 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    11u
+#define STATE_VER    12u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -390,6 +390,25 @@ static uint64_t ep_actor[4] = {0, 0, 0, 0};
 static const char *actor_name[4] = {"uni", "bi", "tri", "mv"};
 static uint64_t move_nav_steps = 0, move_nav_unit_anchors = 0;
 
+/* body 10: the island court. Global models travel; records are local.
+   Every island keeps its own prequential record of every witness on the
+   bytes it lived, and the move player's local played/ref evidence. A
+   seat elected on the whole biography must still satisfy the island it
+   is about to act on: once the island has lived ACTOR_MIN_BYTES, a
+   seated actor whose local lead over the local newborn record falls
+   under ACTOR_KEEP is revoked here only -- the episode is acted by the
+   best locally eligible byte witness, and the global seat is untouched.
+   No local evidence, no local verdict: authority travels on comity
+   until the island can judge. */
+static double   isl_bits[MAX_ISLANDS][3];
+static uint64_t isl_lived[MAX_ISLANDS];
+static double   isl_mvp_bits[MAX_ISLANDS];
+static uint64_t isl_mvp_bytes[MAX_ISLANDS];
+static double   isl_mvp_ref_bits[MAX_ISLANDS][3];
+static uint64_t isl_mvp_ref_bytes[MAX_ISLANDS];
+static int island_court_enabled = 1;
+static uint64_t revocations = 0;
+
 #define ACTOR_MIN_BYTES 1000
 #define ACTOR_GAIN      0.1
 #define ACTOR_KEEP      0.05
@@ -438,6 +457,52 @@ static void actor_elect(void) {
     } else {
         actor_current = byte_seat;
     }
+}
+
+static int island_court(int isl) {
+    /* the island's verdict on the globally elected seat, for this
+       episode only; a revocation is a biography event, not a seat
+       change -- the mandate travels on, the island refuses the hand */
+    int seated = actor_current;
+    if (!island_court_enabled || actor_lock >= 0 || seated == 0)
+        return seated;
+    if (isl_lived[isl] < ACTOR_MIN_BYTES) return seated;
+    double lu = isl_bits[isl][0] / (double)isl_lived[isl];
+    double lseat;
+    int fails;
+    if (seated == 3) {
+        if (isl_mvp_bytes[isl] < ACTOR_MIN_BYTES ||
+            isl_mvp_ref_bytes[isl] != isl_mvp_bytes[isl])
+            return seated;
+        lseat = isl_mvp_bits[isl] / (double)isl_mvp_bytes[isl];
+        double br = isl_mvp_ref_bits[isl][0] /
+                    (double)isl_mvp_ref_bytes[isl];
+        for (int c = 1; c <= 2; ++c) {
+            double r = isl_mvp_ref_bits[isl][c] /
+                       (double)isl_mvp_ref_bytes[isl];
+            if (r < br) br = r;
+        }
+        fails = br - lseat < ACTOR_KEEP;
+    } else {
+        lseat = isl_bits[isl][seated] / (double)isl_lived[isl];
+        fails = lu - lseat < ACTOR_KEEP;
+    }
+    if (!fails) return seated;
+    int ch = 0;
+    for (int c = 1; c <= 2; ++c) {
+        if (c == seated) continue;
+        double lc = isl_bits[isl][c] / (double)isl_lived[isl];
+        if (lu - lc < ACTOR_GAIN) continue;
+        if (ch == 0 || lc < isl_bits[isl][ch] / (double)isl_lived[isl])
+            ch = c;
+    }
+    revocations++;
+    char line[160];
+    snprintf(line, sizeof line, "r\t%llu\t%d\t%s\t%s\t%.6f\t%.6f\n",
+             (unsigned long long)episode_no, isl, actor_name[seated],
+             actor_name[ch], lu, lseat);
+    bio_append(line);
+    return ch;
 }
 
 static uint32_t truth_move(Island *isl, uint64_t pos, uint64_t room) {
@@ -765,7 +830,13 @@ static void state_save(const char *path) {
         }
     for (int i = 0; i < island_count; ++i) {
         if (fwrite(&islands[i].digest, sizeof(uint64_t), 1, f) != 1 ||
-            fwrite(&islands[i].len, sizeof(uint64_t), 1, f) != 1) {
+            fwrite(&islands[i].len, sizeof(uint64_t), 1, f) != 1 ||
+            fwrite(&isl_lived[i], sizeof isl_lived[0], 1, f) != 1 ||
+            fwrite(isl_bits[i], sizeof(double), 3, f) != 3 ||
+            fwrite(&isl_mvp_bits[i], sizeof(double), 1, f) != 1 ||
+            fwrite(&isl_mvp_bytes[i], sizeof(uint64_t), 1, f) != 1 ||
+            fwrite(isl_mvp_ref_bits[i], sizeof(double), 3, f) != 3 ||
+            fwrite(&isl_mvp_ref_bytes[i], sizeof(uint64_t), 1, f) != 1) {
             fprintf(stderr, "netta: state write failed\n"); exit(1);
         }
     }
@@ -934,7 +1005,13 @@ static int state_load(const char *path) {
     for (int i = 0; i < island_count; ++i) {
         uint64_t d, l;
         if (fread(&d, sizeof d, 1, f) != 1 ||
-            fread(&l, sizeof l, 1, f) != 1) {
+            fread(&l, sizeof l, 1, f) != 1 ||
+            fread(&isl_lived[i], sizeof isl_lived[0], 1, f) != 1 ||
+            fread(isl_bits[i], sizeof(double), 3, f) != 3 ||
+            fread(&isl_mvp_bits[i], sizeof(double), 1, f) != 1 ||
+            fread(&isl_mvp_bytes[i], sizeof(uint64_t), 1, f) != 1 ||
+            fread(isl_mvp_ref_bits[i], sizeof(double), 3, f) != 3 ||
+            fread(&isl_mvp_ref_bytes[i], sizeof(uint64_t), 1, f) != 1) {
             fprintf(stderr, "netta: %s truncated; refusing\n", path);
             exit(1);
         }
@@ -977,6 +1054,25 @@ static int state_load(const char *path) {
                     "actor episode overflow");
     if (actor_eps != episode_no)
         state_refuse(path, "actor episodes disagree");
+    uint64_t isl_lived_sum = 0, isl_mv_sum = 0;
+    for (int i = 0; i < island_count; ++i) {
+        checked_add(&isl_lived_sum, isl_lived[i], path,
+                    "island lived overflow");
+        checked_add(&isl_mv_sum, isl_mvp_bytes[i], path,
+                    "island move overflow");
+        if (isl_mvp_ref_bytes[i] != isl_mvp_bytes[i] ||
+            isl_mvp_bytes[i] > isl_lived[i])
+            state_refuse(path, "island move evidence disagrees");
+        for (int c = 0; c < 3; ++c)
+            if (!isfinite(isl_bits[i][c]) || isl_bits[i][c] < 0.0 ||
+                !isfinite(isl_mvp_ref_bits[i][c]) ||
+                isl_mvp_ref_bits[i][c] < 0.0)
+                state_refuse(path, "non-finite island record");
+        if (!isfinite(isl_mvp_bits[i]) || isl_mvp_bits[i] < 0.0)
+            state_refuse(path, "non-finite island record");
+    }
+    if (isl_lived_sum != steps_total || isl_mv_sum != mvp_bytes)
+        state_refuse(path, "island records disagree with the life");
     if (!isfinite(unitlm_bits) || unitlm_bits < 0.0 ||
         !isfinite(atomic_bits_lived) || atomic_bits_lived < 0.0 ||
         !isfinite(bilm_bits) || bilm_bits < 0.0 ||
@@ -1091,6 +1187,10 @@ static void absorb_truth(int isl_id, Island *isl, uint64_t pos,
     bilm_bytes++;
     trilm_bits += -log2(p_tri[truth]);
     trilm_bytes++;
+    isl_bits[isl_id][0] += -log2(p_uni[truth]);
+    isl_bits[isl_id][1] += -log2(p_bi[truth]);
+    isl_bits[isl_id][2] += -log2(p_tri[truth]);
+    isl_lived[isl_id]++;
     counts[truth]++;
     counts_total++;
     steps_total++;
@@ -1128,9 +1228,9 @@ static double run_episode(int isl_id, uint64_t steps) {
     char line[256];
     episode_no++;
     actor_elect();
-    int acting = actor_current;
+    int acting = island_court(isl_id);
     int probation = 0;
-    if (actor_lock < 0 && units_enabled && actor_current != 3 &&
+    if (actor_lock < 0 && units_enabled && acting != 3 &&
         episode_no % 8 == 7 &&
         atomic_bytes_lived >= ACTOR_MIN_BYTES && mvlm_bytes &&
         atomic_bits_lived / (double)atomic_bytes_lived -
@@ -1212,6 +1312,8 @@ static double run_episode(int isl_id, uint64_t steps) {
             } else {
                 mvp_bits += nll;
                 mvp_bytes += advance;
+                isl_mvp_bits[isl_id] += nll;
+                isl_mvp_bytes[isl_id] += advance;
             }
             player_prev = (int64_t)m;
             for (uint32_t j = 0; j < advance; ++j) {
@@ -1226,6 +1328,10 @@ static double run_episode(int isl_id, uint64_t steps) {
                     mvp_ref_bits[1] += -log2(p_bi[truth]);
                     mvp_ref_bits[2] += -log2(p_tri[truth]);
                     mvp_ref_bytes++;
+                    isl_mvp_ref_bits[isl_id][0] += -log2(p_uni[truth]);
+                    isl_mvp_ref_bits[isl_id][1] += -log2(p_bi[truth]);
+                    isl_mvp_ref_bits[isl_id][2] += -log2(p_tri[truth]);
+                    isl_mvp_ref_bytes[isl_id]++;
                 }
                 absorb_truth(isl_id, isl, pos + j, p_uni, p_bi, p_tri);
             }
@@ -1339,6 +1445,8 @@ int main(int argc, char **argv) {
             units_enabled = 0;
         else if (!strcmp(argv[i], "--no-mv-nav"))
             move_nav_enabled = 0;
+        else if (!strcmp(argv[i], "--no-island-court"))
+            island_court_enabled = 0;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -1368,7 +1476,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
-                        "[--no-units] [--no-mv-nav] "
+                        "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--actor-lock uni|bi|tri|mv]\n");
         exit(1);
     }
@@ -1492,6 +1600,9 @@ int main(int argc, char **argv) {
            (unsigned long long)ep_actor[2],
            (unsigned long long)ep_actor[3],
            actor_lock >= 0 ? " (locked)" : "");
+    if (revocations)
+        printf("island court: %llu local revocations this run\n",
+               (unsigned long long)revocations);
     if (atomic_bytes_lived > tl_aby)
         printf("this-life model atomic-uni bits/byte %.6f\n",
                (atomic_bits_lived - tl_ab) /
