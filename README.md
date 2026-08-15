@@ -32,9 +32,15 @@ technical source of truth for the living line.
   lead, and blind comity cannot be overrun by one oversized episode.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
+- An island's identity is its content, never its seat in today's command
+  line. The life keeps an append-only registry of every island it has met
+  (capacity 1024): arrivals are loud biography events, islands absent from
+  today's convoy keep their memory, and a changed file is by construction a
+  different island.
 - State is restart-safe and published atomically. Resume is refused if the
-  ordered islands, state invariants, or external hash-chained biography do
-  not match.
+  state invariants or the external hash-chained biography do not match;
+  islands resolve by digest and length, so the convoy's order never decides
+  a life's identity.
 
 This is a foundation, not a finished language model. The present arenas are
 mostly controlled synthetic worlds. There is no neural core, prompt mode,
@@ -47,12 +53,13 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 101-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 108-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
-door, unit death, tombstone silence and resurrection arms, and failure-closed
-state and biography checks. A passing build ends with `ALL GATES PASS`.
+door, unit death, tombstone silence and resurrection arms, the island
+registry with convoy-order invariance, and failure-closed state and
+biography checks. A passing build ends with `ALL GATES PASS`.
 
 ## Start a life
 
@@ -66,8 +73,9 @@ state and biography checks. A passing build ends with `ALL GATES PASS`.
   --bio netta0.bio.tsv
 ```
 
-`--reset` begins a new biography. Without `--reset`, Netta resumes and
-requires the same ordered list of island files:
+`--reset` begins a new biography. Without `--reset`, Netta resumes: islands
+are recognised by content, in any order, and an unknown island simply joins
+the life as an arrival:
 
 ```sh
 ./netta netta.txt \
