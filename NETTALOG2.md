@@ -1010,3 +1010,48 @@ within a comparison, and the forced-control quarantine covers the actor
 lock, but nothing machine-checks law continuity across resume. Whether
 the law belongs in the state, and which flags are law rather than
 instrument, is a body-sized question left for a future hand.
+
+## The fourteenth body: the island registry
+
+A life used to be defined by its convoy: the state carried the islands
+of the command line in command-line order, resume refused any other
+count or order, and thirty-two was the ceiling of a whole biography.
+Identity by seat number was a birth-era simplification, named a
+temporary measure by the maintainer, and it blocked the road to any
+life that meets worlds it was not born with.
+
+The fourteenth body inverts the identity law. An island's identity is
+its content -- digest and length -- and never its seat in today's
+convoy. The state now carries the registry: the append-only journal of
+every island this life has ever met, in order of first acquaintance,
+with all per-island records keyed by registry id. Today's command line
+is resolved against that journal; a known content answers to its old
+name wherever it sits, and an unknown content is an arrival -- a loud
+biography event carrying the id, digest, and length, never a refusal
+and never silent. Islands absent from today's convoy keep their
+records untouched. The biography now speaks registry ids, so a receipt
+means the same island in every convoy of the life. The registry holds
+1024 identities; the convoy still carries at most 32 at once.
+
+Measured: a life resumed with its convoy reversed and its indices
+remapped is bit-identical in biography and state to the direct life,
+so the convoy order is invisible to the organism. A new island joins a
+living life as an arrival event at its true episode. A detour that
+sails without an absent island and returns leaves the state
+byte-identical: absence does not erode memory. The same content listed
+twice is one identity with one arrival. A forged duplicate identity in
+the registry tail is refused on load, as is a version-15 state. All
+one hundred one inherited verdicts pass unchanged -- for a fresh life
+whose convoy never changes, registry ids coincide with the old seat
+numbers and every published number stands. One hundred eight gates,
+ALL GATES PASS, ASan/UBSan through the registry and a reversed convoy.
+
+What is not proved: the 1024 ceiling is declared, not exercised -- no
+arena has met a thousand islands, and the registry scan is linear in
+acquaintances. A mutated island file is, by construction, a different
+island; the old per-seat digest refusal is gone, and the tripwire
+against silent file corruption is now the loud arrival itself. The
+registry remembers where she has been; nothing in it yet chooses where
+she goes -- the atlas, an earned travel policy, is deliberately a
+separate future organ, and the law of the life across resume remains
+the open question named in the audit above.

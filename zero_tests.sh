@@ -48,7 +48,7 @@ gate "Z1 UTF-8 island measured in raw bytes" $? 0
 W="$T/w.bytes"; cat NETTALOG2.md > "$W"
 "$N" "$W" --reset --seed 42 --episodes 1 --steps 64 --state "$T/a1.state" --bio "$T/a1.bio" >/dev/null 2>&1
 gate "Z2 newborn life runs" $? 0
-FIRST=$(grep -v '^a	' "$T/a1.bio" | head -1 | awk -F'\t' '{print $8}')
+FIRST=$(grep -v '^[ai]	' "$T/a1.bio" | head -1 | awk -F'\t' '{print $8}')
 [ "$FIRST" = "8.000000" ]
 gate "Z2 newborn first step exactly 8 bits" $? 0
 NON8=$(awk -F'\t' 'NF>=11 && $8!="8.000000"{n++} END{print n+0}' "$T/a1.bio")
@@ -731,6 +731,43 @@ tail -n "+$((B13RBASE+1))" "$T/b13rg.bio" | grep '^v' > "$T/b13rg.v"
 cmp -s "$T/b13r.v" "$T/b13rg.v"
 gate "B13 resurrection restores frozen evidence to living authority exactly" $? 0
 
+# --- B14: the island registry --------------------------------------------
+# An island's identity is its content, never its seat in today's convoy.
+# The life keeps an append-only registry of every island it has met:
+# arrivals are biography events, absent islands keep their memory, and
+# the same content is always the same identity.
+"$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 2 --steps 600 --island 0 --state "$T/b14a.state" --bio "$T/b14a.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 2 --steps 600 --island 1 --state "$T/b14a.state" --bio "$T/b14a.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 2 --steps 600 --island 0 --state "$T/b14b.state" --bio "$T/b14b.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" "$T/p3.bytes" --seed 5 --episodes 2 --steps 600 --island 0 --state "$T/b14b.state" --bio "$T/b14b.bio" >/dev/null 2>&1
+cmp -s "$T/b14a.bio" "$T/b14b.bio" && cmp -s "$T/b14a.state" "$T/b14b.state"
+gate "B14 the convoy order is invisible to the life (reversed resume bit-identical)" $? 0
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 2 --steps 600 --state "$T/b14c.state" --bio "$T/b14c.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 1 --steps 600 --island 1 --state "$T/b14c.state" --bio "$T/b14c.bio" >/dev/null 2>&1
+rc=$?
+NARR=$(grep -c '^i	' "$T/b14c.bio")
+AEP=$(awk -F'\t' '$1=="i" && $3==1{print $2}' "$T/b14c.bio")
+[ "$rc" -eq 0 ] && [ "$NARR" -eq 2 ] && [ "$AEP" = "2" ]
+gate "B14 a new island joins a living life as an arrival event (episode $AEP)" $? 0
+cp "$T/b14a.state" "$T/b14d.ref"
+"$N" "$T/p3.bytes" --seed 5 --episodes 0 --steps 600 --state "$T/b14a.state" --bio "$T/b14a.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 0 --steps 600 --state "$T/b14a.state" --bio "$T/b14a.bio" >/dev/null 2>&1
+cmp -s "$T/b14a.state" "$T/b14d.ref"
+gate "B14 an absent island keeps its memory (state identical after the detour)" $? 0
+"$N" "$T/p3.bytes" "$T/p3.bytes" --reset --seed 5 --episodes 1 --steps 64 --island 1 --state "$T/b14e.state" --bio "$T/b14e.bio" >/dev/null 2>&1
+SAME=$(grep -c '^i	' "$T/b14e.bio")
+[ "$SAME" -eq 1 ]
+gate "B14 the same content is one identity, wherever it sits ($SAME arrival)" $? 0
+"$N" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 1 --steps 600 --island 0 --state "$T/b14f.state" --bio "$T/b14f.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 1 --steps 600 --island 1 --state "$T/b14f.state" --bio "$T/b14f.bio" >/dev/null 2>&1
+SZ14=$(wc -c < "$T/b14f.state" | tr -d ' ')
+dd if="$T/b14f.state" of="$T/b14f.state" bs=1 skip=$((SZ14-240)) seek=$((SZ14-120)) count=16 conv=notrunc 2>/dev/null
+"$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 1 --steps 600 --island 0 --state "$T/b14f.state" --bio "$T/b14f.bio" >/dev/null 2>&1
+gate "B14 a forged duplicate island identity is refused" $? 1
+printf '\x0f\x00\x00\x00' | dd of="$T/b14c.state" bs=1 seek=8 conv=notrunc 2>/dev/null
+"$N" "$T/p3.bytes" "$T/rep.bytes" --seed 5 --episodes 1 --steps 600 --state "$T/b14c.state" --bio "$T/b14c.bio" >/dev/null 2>&1
+gate "B14 a version-15 state cannot enter the registry" $? 1
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -749,7 +786,7 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move navigation and restart state v15" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v16" $rc 0
 "$S" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 \
     --island 0 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>"$T/si.err"
 rc=$?
@@ -778,6 +815,13 @@ rc=$?
     --state "$T/sn.state" --bio "$T/sn.bio" >/dev/null 2>>"$T/sn.err" || rc=$?
 [ -s "$T/sn.err" ] && rc=98
 gate "S ASan/UBSan silent through byte-bounded comity and null action" $rc 0
+"$S" "$T/p3.bytes" "$T/rep.bytes" --reset --seed 5 --episodes 2 --steps 600 \
+    --island 0 --state "$T/sr14.state" --bio "$T/sr14.bio" >/dev/null 2>"$T/sr14.err"
+rc=$?
+"$S" "$T/rep.bytes" "$T/p3.bytes" --seed 5 --episodes 2 --steps 600 \
+    --island 0 --state "$T/sr14.state" --bio "$T/sr14.bio" >/dev/null 2>>"$T/sr14.err" || rc=$?
+[ -s "$T/sr14.err" ] && rc=98
+gate "S ASan/UBSan silent through the registry and a reversed convoy" $rc 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi

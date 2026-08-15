@@ -39,10 +39,11 @@
 #include <unistd.h>
 
 #define CTX          16
-#define MAX_ISLANDS  32
+#define MAX_ISLANDS  32     /* islands present in one convoy */
+#define MAX_REGISTRY 1024   /* islands one life may ever meet */
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    15u
+#define STATE_VER    16u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -448,18 +449,46 @@ static uint64_t move_nav_steps = 0, move_nav_unit_anchors = 0;
    best locally eligible byte witness, and the global seat is untouched.
    No local evidence, no local verdict: authority travels on comity
    until the island can judge. */
-static double   isl_bits[MAX_ISLANDS][3];
-static uint64_t isl_lived[MAX_ISLANDS];
-static double   isl_mvp_bits[MAX_ISLANDS];
-static uint64_t isl_mvp_bytes[MAX_ISLANDS];
-static double   isl_mvp_ref_bits[MAX_ISLANDS][3];
-static uint64_t isl_mvp_ref_bytes[MAX_ISLANDS];
+static double   isl_bits[MAX_REGISTRY][3];
+static uint64_t isl_lived[MAX_REGISTRY];
+static double   isl_mvp_bits[MAX_REGISTRY];
+static uint64_t isl_mvp_bytes[MAX_REGISTRY];
+static double   isl_mvp_ref_bits[MAX_REGISTRY][3];
+static uint64_t isl_mvp_ref_bytes[MAX_REGISTRY];
 /* The probation door is jurisdiction too. These are the move shadow and
    its atomic witness on the exact same canonical moves, partitioned by
    island; a trial cannot travel on another island's promise. */
-static double   isl_mvlm_bits[MAX_ISLANDS];
-static double   isl_mvlm_ref_bits[MAX_ISLANDS];
-static uint64_t isl_mvlm_bytes[MAX_ISLANDS];
+static double   isl_mvlm_bits[MAX_REGISTRY];
+static double   isl_mvlm_ref_bits[MAX_REGISTRY];
+static uint64_t isl_mvlm_bytes[MAX_REGISTRY];
+
+/* body 14: the island registry. An island's identity is its content --
+   digest and length -- never its position in today's command line. The
+   registry is the append-only journal of every island this life has
+   met: records live under registry ids, an arrival is a biography
+   event, and an island absent from today's convoy keeps its memory. A
+   changed file is by construction a different island; arrivals are
+   loud, never silent. */
+static uint64_t reg_digest[MAX_REGISTRY];
+static uint64_t reg_len[MAX_REGISTRY];
+static int reg_count = 0;
+static int present_reg[MAX_ISLANDS];
+static int arrivals_pending[MAX_ISLANDS];
+static int arrivals_pending_n = 0;
+
+static int registry_resolve(uint64_t digest, uint64_t len) {
+    for (int r = 0; r < reg_count; ++r)
+        if (reg_digest[r] == digest && reg_len[r] == len) return r;
+    if (reg_count >= MAX_REGISTRY) {
+        fprintf(stderr, "netta: island registry full (max %d)\n",
+                MAX_REGISTRY);
+        exit(1);
+    }
+    reg_digest[reg_count] = digest;
+    reg_len[reg_count] = len;
+    arrivals_pending[arrivals_pending_n++] = reg_count;
+    return reg_count++;
+}
 static int island_court_enabled = 1;
 static int local_probation_enabled = 1;
 /* body 11: fixed uniform null is a local hand, never a global seat. A
@@ -1025,7 +1054,7 @@ static void state_save(const char *path) {
         exit(1);
     }
     uint32_t ver = STATE_VER;
-    uint32_t nisl = (uint32_t)island_count;
+    uint32_t nisl = (uint32_t)reg_count;
     uint32_t nunits = (uint32_t)unit_count;
     if (fwrite(STATE_MAGIC, 1, 8, f) != 8 ||
         fwrite(&ver, sizeof ver, 1, f) != 1 ||
@@ -1099,9 +1128,9 @@ static void state_save(const char *path) {
         if (tri[i].cnt && fwrite(&tri[i], sizeof(Pair), 1, f) != 1) {
             fprintf(stderr, "netta: state write failed\n"); exit(1);
         }
-    for (int i = 0; i < island_count; ++i) {
-        if (fwrite(&islands[i].digest, sizeof(uint64_t), 1, f) != 1 ||
-            fwrite(&islands[i].len, sizeof(uint64_t), 1, f) != 1 ||
+    for (int i = 0; i < reg_count; ++i) {
+        if (fwrite(&reg_digest[i], sizeof(uint64_t), 1, f) != 1 ||
+            fwrite(&reg_len[i], sizeof(uint64_t), 1, f) != 1 ||
             fwrite(&isl_lived[i], sizeof isl_lived[0], 1, f) != 1 ||
             fwrite(isl_bits[i], sizeof(double), 3, f) != 3 ||
             fwrite(&isl_mvp_bits[i], sizeof(double), 1, f) != 1 ||
@@ -1277,15 +1306,12 @@ static int state_load(const char *path) {
         }
         if (!inserted) state_refuse(path, "trigram table has no free slot");
     }
-    if (nisl != (uint32_t)island_count) {
-        fprintf(stderr, "netta: state carries %u islands, world has %d; "
-                        "refusing\n", nisl, island_count);
-        exit(1);
-    }
-    for (int i = 0; i < island_count; ++i) {
-        uint64_t d, l;
-        if (fread(&d, sizeof d, 1, f) != 1 ||
-            fread(&l, sizeof l, 1, f) != 1 ||
+    if (nisl > (uint32_t)MAX_REGISTRY)
+        state_refuse(path, "registry larger than the constitution");
+    reg_count = (int)nisl;
+    for (int i = 0; i < reg_count; ++i) {
+        if (fread(&reg_digest[i], sizeof(uint64_t), 1, f) != 1 ||
+            fread(&reg_len[i], sizeof(uint64_t), 1, f) != 1 ||
             fread(&isl_lived[i], sizeof isl_lived[0], 1, f) != 1 ||
             fread(isl_bits[i], sizeof(double), 3, f) != 3 ||
             fread(&isl_mvp_bits[i], sizeof(double), 1, f) != 1 ||
@@ -1298,9 +1324,10 @@ static int state_load(const char *path) {
             fprintf(stderr, "netta: %s truncated; refusing\n", path);
             exit(1);
         }
-        if (d != islands[i].digest || l != islands[i].len) {
-            fprintf(stderr, "netta: island %d does not match the life in "
-                            "%s; refusing\n", i, path);
+        for (int r = 0; r < i; ++r)
+            if (reg_digest[r] == reg_digest[i] && reg_len[r] == reg_len[i]) {
+            fprintf(stderr, "netta: %s carries a duplicate island identity; "
+                            "refusing\n", path);
             exit(1);
         }
     }
@@ -1344,7 +1371,7 @@ static int state_load(const char *path) {
     long double isl_mv_ref_sum[3] = {0.0L, 0.0L, 0.0L};
     long double isl_shadow_score_sum = 0.0L;
     long double isl_shadow_ref_sum = 0.0L;
-    for (int i = 0; i < island_count; ++i) {
+    for (int i = 0; i < reg_count; ++i) {
         checked_add(&isl_lived_sum, isl_lived[i], path,
                     "island lived overflow");
         checked_add(&isl_mv_sum, isl_mvp_bytes[i], path,
@@ -1526,6 +1553,7 @@ static void absorb_truth(int isl_id, Island *isl, uint64_t pos,
 
 static double run_episode(int isl_id, uint64_t steps) {
     Island *isl = &islands[isl_id];
+    int reg = present_reg[isl_id];   /* records live under the identity */
     if (steps == 0 || isl->len <= CTX ||
         steps > isl->len - CTX - 1) {
         fprintf(stderr, "netta: island %d too small for %llu steps\n",
@@ -1569,14 +1597,14 @@ static double run_episode(int isl_id, uint64_t steps) {
             bio_append(line);
         }
     actor_elect();
-    int acting = island_court(isl_id, steps);
+    int acting = island_court(reg, steps);
     int probation = 0;
     double door_move_bits = local_probation_enabled
-                          ? isl_mvlm_bits[isl_id] : mvlm_bits;
+                          ? isl_mvlm_bits[reg] : mvlm_bits;
     double door_ref_bits = local_probation_enabled
-                         ? isl_mvlm_ref_bits[isl_id] : mvlm_ref_bits;
+                         ? isl_mvlm_ref_bits[reg] : mvlm_ref_bits;
     uint64_t door_bytes = local_probation_enabled
-                        ? isl_mvlm_bytes[isl_id] : mvlm_bytes;
+                        ? isl_mvlm_bytes[reg] : mvlm_bytes;
     if (actor_lock < 0 && units_enabled && acting >= 0 && acting <= 2 &&
         episode_no % 8 == 7 && door_bytes >= ACTOR_MIN_BYTES &&
         door_ref_bits / (double)door_bytes -
@@ -1653,13 +1681,13 @@ static double run_episode(int isl_id, uint64_t steps) {
             if (move_nav_enabled)
                 snprintf(line, sizeof line,
                          "v\t%llu\t%d\t%llu\t%u\t%u\t%u\t%.6f\t%u\t%lld\n",
-                         (unsigned long long)episode_no, isl_id,
+                         (unsigned long long)episode_no, reg,
                          (unsigned long long)pos, m, L, advance, nll, target,
                          (long long)policy_prev);
             else
                 snprintf(line, sizeof line,
                          "v\t%llu\t%d\t%llu\t%u\t%u\t%u\t%.6f\t%u\n",
-                         (unsigned long long)episode_no, isl_id,
+                         (unsigned long long)episode_no, reg,
                          (unsigned long long)pos, m, L, advance, nll, target);
             bio_append(line);
             bits += nll;
@@ -1669,8 +1697,8 @@ static double run_episode(int isl_id, uint64_t steps) {
             } else {
                 mvp_bits += nll;
                 mvp_bytes += advance;
-                isl_mvp_bits[isl_id] += nll;
-                isl_mvp_bytes[isl_id] += advance;
+                isl_mvp_bits[reg] += nll;
+                isl_mvp_bytes[reg] += advance;
             }
             player_prev = (int64_t)m;
             for (uint32_t j = 0; j < advance; ++j) {
@@ -1685,12 +1713,12 @@ static double run_episode(int isl_id, uint64_t steps) {
                     mvp_ref_bits[1] += -log2(p_bi[truth]);
                     mvp_ref_bits[2] += -log2(p_tri[truth]);
                     mvp_ref_bytes++;
-                    isl_mvp_ref_bits[isl_id][0] += -log2(p_uni[truth]);
-                    isl_mvp_ref_bits[isl_id][1] += -log2(p_bi[truth]);
-                    isl_mvp_ref_bits[isl_id][2] += -log2(p_tri[truth]);
-                    isl_mvp_ref_bytes[isl_id]++;
+                    isl_mvp_ref_bits[reg][0] += -log2(p_uni[truth]);
+                    isl_mvp_ref_bits[reg][1] += -log2(p_bi[truth]);
+                    isl_mvp_ref_bits[reg][2] += -log2(p_tri[truth]);
+                    isl_mvp_ref_bytes[reg]++;
                 }
-                absorb_truth(isl_id, isl, pos + j, p_uni, p_bi, p_tri);
+                absorb_truth(reg, isl, pos + j, p_uni, p_bi, p_tri);
             }
             s += advance;
         }
@@ -1715,12 +1743,12 @@ static double run_episode(int isl_id, uint64_t steps) {
                  "%llu\t%llu\t%d\t%llu\t%016llx\t%d\t%d\t%.6f\t%016llx\t"
                  "atomic\t1\t%s\n",
                  (unsigned long long)episode_no, (unsigned long long)s,
-                 isl_id, (unsigned long long)pos,
+                 reg, (unsigned long long)pos,
                  (unsigned long long)ctx_digest, action, truth, loss,
                  (unsigned long long)rng_before,
                  actor_name[acting]);
         bio_append(line);
-        absorb_truth(isl_id, isl, pos, p_uni, p_bi, p_tri);
+        absorb_truth(reg, isl, pos, p_uni, p_bi, p_tri);
         bits += loss;
     }
     if (units_enabled) matcher_end_episode();
@@ -1885,7 +1913,24 @@ int main(int argc, char **argv) {
                 "to begin a new life\n", bio_path);
         exit(1);
     }
+    /* today's convoy is resolved against the life's registry; an
+       unknown identity is an arrival, never a refusal */
+    for (int i = 0; i < island_count; ++i)
+        present_reg[i] = registry_resolve(islands[i].digest,
+                                          islands[i].len);
     bio_open(bio_path, reset || !resumed);
+    for (int j = 0; j < arrivals_pending_n; ++j) {
+        int r = arrivals_pending[j];
+        char al[96];
+        snprintf(al, sizeof al, "i\t%llu\t%d\t%016llx\t%llu\n",
+                 (unsigned long long)episode_no, r,
+                 (unsigned long long)reg_digest[r],
+                 (unsigned long long)reg_len[r]);
+        bio_append(al);
+        printf("island arrival: registry %d digest %016llx len %llu\n",
+               r, (unsigned long long)reg_digest[r],
+               (unsigned long long)reg_len[r]);
+    }
     /* this-life baselines: the price of THIS stretch of life, not the
        cumulative one -- the transfer court reads these deltas */
     double  tl_ab = atomic_bits_lived, tl_bb = bilm_bits,
@@ -1951,13 +1996,14 @@ int main(int argc, char **argv) {
     if (units_enabled && mvlm_bytes)
         printf("model move-bi bits/byte %.6f\n",
                mvlm_bits / (double)mvlm_bytes);
-    if (units_enabled && isl_mvlm_bytes[isl_id])
+    if (units_enabled && isl_mvlm_bytes[present_reg[isl_id]])
         printf("island %d shadow move-bi %.6f, atomic ref %.6f over "
-               "%llu bytes\n", isl_id,
-               isl_mvlm_bits[isl_id] / (double)isl_mvlm_bytes[isl_id],
-               isl_mvlm_ref_bits[isl_id] /
-               (double)isl_mvlm_bytes[isl_id],
-               (unsigned long long)isl_mvlm_bytes[isl_id]);
+               "%llu bytes\n", present_reg[isl_id],
+               isl_mvlm_bits[present_reg[isl_id]] /
+               (double)isl_mvlm_bytes[present_reg[isl_id]],
+               isl_mvlm_ref_bits[present_reg[isl_id]] /
+               (double)isl_mvlm_bytes[present_reg[isl_id]],
+               (unsigned long long)isl_mvlm_bytes[present_reg[isl_id]]);
     if (trilm_bytes)
         printf("model byte-tri bits/byte %.6f\n",
                trilm_bits / (double)trilm_bytes);
