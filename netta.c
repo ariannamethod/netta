@@ -42,7 +42,7 @@
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    10u
+#define STATE_VER    11u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -1128,6 +1128,7 @@ static double run_episode(int isl_id, uint64_t steps) {
     char line[256];
     episode_no++;
     actor_elect();
+    int acting = actor_current;
     int probation = 0;
     if (actor_lock < 0 && units_enabled && actor_current != 3 &&
         episode_no % 8 == 7 &&
@@ -1135,16 +1136,18 @@ static double run_episode(int isl_id, uint64_t steps) {
         atomic_bits_lived / (double)atomic_bytes_lived -
         mvlm_bits / (double)mvlm_bytes >= ACTOR_GAIN) {
         /* the shadow record opens a rare, deterministic probation
-           episode; only the record played here can earn the seat */
-        actor_current = 3;
+           episode; only the record played here can earn the seat.
+           Probation borrows the body, never the seat: the elected
+           incumbent keeps its mandate through the trial. */
+        acting = 3;
         probation = 1;
     }
-    ep_actor[actor_current]++;
+    ep_actor[acting]++;
     snprintf(line, sizeof line, "a\t%llu\t%s\n",
              (unsigned long long)episode_no,
-             probation ? "mvp" : actor_name[actor_current]);
+             probation ? "mvp" : actor_name[acting]);
     bio_append(line);
-    if (actor_current == 3) {
+    if (acting == 3) {
         /* semi-Markov walk: the actor emits whole moves; the world
            advances by the matched prefix, never less than one byte, so
            a wrong long move is never cheaper than the same wrong bytes
@@ -1238,8 +1241,8 @@ static double run_episode(int isl_id, uint64_t steps) {
         uint64_t rng_before = rng_state;
         double p_uni[ACTIONS], p_bi[ACTIONS], p_tri[ACTIONS];
         build_dists(isl, pos, p_uni, p_bi, p_tri);
-        const double *p_act = actor_current == 2 ? p_tri
-                            : actor_current == 1 ? p_bi : p_uni;
+        const double *p_act = acting == 2 ? p_tri
+                            : acting == 1 ? p_bi : p_uni;
         int action = sample(p_act);
         int truth = isl->bytes[pos];
         double loss = -log2(p_act[truth]);
@@ -1250,7 +1253,7 @@ static double run_episode(int isl_id, uint64_t steps) {
                  isl_id, (unsigned long long)pos,
                  (unsigned long long)ctx_digest, action, truth, loss,
                  (unsigned long long)rng_before,
-                 actor_name[actor_current]);
+                 actor_name[acting]);
         bio_append(line);
         absorb_truth(isl_id, isl, pos, p_uni, p_bi, p_tri);
         bits += loss;

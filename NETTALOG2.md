@@ -606,3 +606,52 @@ real-text and adversarial-attractor lives have not qualified it. Search and
 mandate evidence remain global across islands, so the island-local revocation
 valve is now the next constitutional organ. Greedy truth segmentation, unit
 death, and capacity lives remain open behind it.
+
+## The ninth body audited, and a repair: probation borrows the body, never the seat
+
+The two commits of the previous turn were retaken independently. The
+sixty-eight gates reproduced without a changed byte; the searched-policy
+court was read line by line; three refusal probes -- an edited biography
+byte, a hard-linked island alias, and a version-9 header under a live
+magic -- all failed closed. A deliberate wrong-attractor world, one
+candidate with a deterministic continuation against one with ten equally
+lived continuations, opened probation in both arms and earned a seat in
+neither: searched play recorded 2.124276 bits per raw byte against a best
+matched witness of 1.283528, the unanchored arm 7.770698. The declared
+prediction that navigation would play worse than its own red arm on this
+world was refuted by the measurement and is preserved: the anchor's
+correct context outweighs the one-ply tilt. The ninth-body mandate was
+retaken at its own election boundary: the margin after the second
+probation was 0.329243, three times the appointment threshold. The seat
+was earned lawfully, and both commits stand.
+
+The audit then found an eighth-body debt at the foundation. Probation
+seated its trial by overwriting the elected actor, so the next election
+saw a false incumbent. Two constitutional wrongs flowed from that one
+variable: a mover coming out of probation was judged by the retention bar
+instead of the appointment bar, and the byte actor that lawfully held the
+seat before probation lost its incumbency and had to re-earn the place at
+the appointment bar. On a two-phase life -- four period-3 episodes, then
+a skewed-census island whose lead decays into the hysteresis band -- the
+machine exhibited the second wrong: at the episode-8 election the uni-tri
+lead was 0.074940, inside [0.05, 0.1), where the fifth-body hysteresis law
+keeps tri seated; the old code seated uni, permanently. No previously
+gated life had crossed the band, so no published number changes; the gate
+built for this world ran red on the old court before the repair landed.
+
+The repair is one separation: the episode's acting model is local, and
+probation sets only it. The elected seat survives the trial untouched.
+State advances to version 11 because a persisted seat can no longer mean
+a probation in flight. Three new verdicts pin the law: the incumbent
+survives an in-band probation, the band itself is measured inside
+[0.05, 0.1) by a split life, and a life split exactly at a probation
+boundary stays bit-identical.
+
+What is not proved: the first wrong -- a mover taking its first seat
+between the two bars through the probation door -- was not exhibited by
+any world found. Post-probation margins were bimodal in all four world
+families tried, either far above the appointment bar or far below the
+retention bar; the repair closes both wrongs with the same variable, but
+only the byte face carries a measured red world. The route anchor and the
+one-ply rollout also still share a single flag, so the attractor question
+cannot yet be isolated by the machine.

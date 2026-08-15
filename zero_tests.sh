@@ -312,6 +312,31 @@ gate "A8 played judge prices external truth: same emission, loss $HX vs $MX" $? 
 grep -q '^mv control record:' "$T/hit.out" && ! grep -q '^mv played record:' "$T/hit.out"
 gate "A8 forced move control never enters the persisted mandate record" $? 0
 
+# --- A9: probation borrows the body, never the seat ---------------------
+# Two-phase life: tri earns the seat on period-3, then a skewed-census
+# island decays the uni-tri lead into the hysteresis band [KEEP, GAIN).
+# The probation at episode 7 must not erase tri's incumbency: episode 8
+# is elected on a lead that still satisfies KEEP, so the seat stays tri.
+awk 'BEGIN{s=99; for(i=0;i<25000;i++){s=(s*1103515245+12345)%2147483648; n=7+int(s/65536)%2; for(j=0;j<n;j++)printf "a"; printf "b"}}' > "$T/skew.bytes"
+"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 4 --steps 600 --island 1 --state "$T/a9.state" --bio "$T/a9.bio" >/dev/null 2>&1
+S7=$(awk -F'\t' '$1=="a" && $2==7{print $3}' "$T/a9.bio")
+S8=$(awk -F'\t' '$1=="a" && $2==8{print $3}' "$T/a9.bio")
+[ "$S7" = "mvp" ] && [ "$S8" = "tri" ]
+gate "A9 probation does not depose the sitting incumbent (ep7=$S7, ep8=$S8)" $? 0
+"$N" "$T/p3.bytes" "$T/skew.bytes" --reset --seed 5 --episodes 4 --steps 600 --island 0 --state "$T/a9b.state" --bio "$T/a9b.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/skew.bytes" --seed 5 --episodes 3 --steps 600 --island 1 --state "$T/a9b.state" --bio "$T/a9b.bio" > "$T/a9b.out" 2>&1
+AU9=$(awk '/^model atomic-uni /{print $NF}' "$T/a9b.out")
+TR9=$(awk '/^model byte-tri /{print $NF}' "$T/a9b.out")
+LEAD9=$(awk -v u="$AU9" -v t="$TR9" 'BEGIN{printf "%.6f", u-t}')
+awk -v l="$LEAD9" 'BEGIN{exit !(l >= 0.05 && l < 0.1)}'
+gate "A9 the election lead sits in the hysteresis band ($LEAD9 in [0.05,0.1))" $? 0
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 7 --steps 600 --state "$T/a9s.state" --bio "$T/a9s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --episodes 1 --steps 600 --state "$T/a9s.state" --bio "$T/a9s.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 8 --steps 600 --state "$T/a9d.state" --bio "$T/a9d.bio" >/dev/null 2>&1
+cmp -s "$T/a9s.bio" "$T/a9d.bio" && cmp -s "$T/a9s.state" "$T/a9d.state"
+gate "A9 a life split at the probation boundary is bit-identical" $? 0
+
 # --- B9: navigation searches only the observable wake ------------------
 # The no-navigation B8 arm above is the red control: it preserves the
 # corrected refusal (mv 7.057066 vs matched tri 0.288818, no ordinary mv
@@ -404,7 +429,7 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move navigation and restart state v10" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v11" $rc 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi
