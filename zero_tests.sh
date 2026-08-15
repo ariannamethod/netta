@@ -67,6 +67,27 @@ cmp -s "$T/d.bio" "$T/s.bio" && cmp -s "$T/d.state" "$T/s.state"
 gate "Z2 split life equals direct life across restart" $? 0
 "$N" "$T/tiny.bytes" --reset --steps 64 --state "$T/t.state" --bio "$T/t.bio" >/dev/null 2>&1
 gate "Z2 island too small fails loud" $? 1
+"$N" NETTALOG2.md --reset --steps -1 --state "$T/neg.state" --bio "$T/neg.bio" >/dev/null 2>&1
+gate "Z2 negative step syntax is refused before address arithmetic" $? 1
+"$N" "$W" --reset --seed 42 --episodes 1 --steps 64 --state "$T/bc.state" --bio "$T/bc.bio" >/dev/null 2>&1
+mv "$T/bc.bio" "$T/bc.withheld"
+"$N" "$W" --episodes 1 --steps 64 --state "$T/bc.state" --bio "$T/bc.bio" >/dev/null 2>&1
+gate "Z2 a missing biography refuses resume (chain is externally verified)" $? 1
+"$N" "$W" --reset --seed 42 --episodes 1 --steps 64 --state "$T/orphan.state" --bio "$T/orphan.bio" >/dev/null 2>&1
+cp "$T/orphan.bio" "$T/orphan.before"
+mv "$T/orphan.state" "$T/orphan.withheld"
+"$N" "$W" --episodes 1 --steps 64 --state "$T/orphan.state" --bio "$T/orphan.bio" >/dev/null 2>&1
+rc=$?; cmp -s "$T/orphan.bio" "$T/orphan.before" || rc=98
+gate "Z2 an orphan biography is preserved and refuses implicit rebirth" $rc 1
+cp "$W" "$T/alias.bytes"
+cp "$T/alias.bytes" "$T/alias.before"
+"$N" "$T/alias.bytes" --reset --steps 64 --state "$T/alias.bytes" --bio "$T/alias.bio" >/dev/null 2>&1
+rc=$?; cmp -s "$T/alias.bytes" "$T/alias.before" || rc=98
+gate "Z2 an immutable island cannot alias writable state" $rc 1
+"$N" "$W" --reset --seed 42 --episodes 1 --steps 64 --state "$T/trail.state" --bio "$T/trail.bio" >/dev/null 2>&1
+printf 'x' >> "$T/trail.state"
+"$N" "$W" --episodes 1 --steps 64 --state "$T/trail.state" --bio "$T/trail.bio" >/dev/null 2>&1
+gate "Z2 state with trailing bytes is refused" $? 1
 
 # --- B2: earned units --------------------------------------------------
 i=0; : > "$T/rep.bytes"
@@ -198,20 +219,27 @@ done
 od -An -v -tu1 "$T/wB.bytes" | tr -s ' ' '\n' | grep -v '^$' | awk 'BEGIN{s=12345}{a[NR]=$1}END{n=NR; for(i=n;i>1;i--){s=(s*1103515245+12345)%2147483648; j=(s%i)+1; t=a[i];a[i]=a[j];a[j]=t} for(i=1;i<=n;i++)printf "%c", a[i]}' > "$T/wBs.bytes"
 tl() { grep "^this-life model $2 " "$1" | awk '{print $NF}'; }
 "$N" "$T/wA.bytes" "$T/wB.bytes" --reset --seed 11 --episodes 4 --steps 800 --island 0 --state "$T/tr.state" --bio "$T/tr.bio" >/dev/null 2>&1
-"$N" "$T/wA.bytes" "$T/wB.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/tr.state" --bio "$T/tr.bio" > "$T/trB.out" 2>&1
-"$N" "$T/wA.bytes" "$T/wB.bytes" --reset --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/nb.state" --bio "$T/nb.bio" > "$T/nbB.out" 2>&1
+"$N" "$T/wA.bytes" "$T/wB.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --start 16 --state "$T/tr.state" --bio "$T/tr.bio" > "$T/trB.out" 2>&1
+"$N" "$T/wA.bytes" "$T/wB.bytes" --reset --seed 12 --episodes 2 --steps 800 --island 1 --start 16 --state "$T/nb.state" --bio "$T/nb.bio" > "$T/nbB.out" 2>&1
 TRB=$(tl "$T/trB.out" byte-bi); NBB=$(tl "$T/nbB.out" byte-bi)
 TRT=$(tl "$T/trB.out" byte-tri); NBT=$(tl "$T/nbB.out" byte-tri)
 awk -v a="$TRB" -v b="$NBB" -v c="$TRT" -v d="$NBT" 'BEGIN{exit !(b-a >= 0.5 && d-c >= 0.5)}'
 gate "B7 kin experience transfers: bi $TRB vs $NBB, tri $TRT vs $NBT (gap>=0.5)" $? 0
+awk -F'\t' 'NF >= 11 && $3 == 1 {print $4}' "$T/tr.bio" > "$T/tr.pos"
+awk -F'\t' 'NF >= 11 && $3 == 1 {print $4}' "$T/nb.bio" > "$T/nb.pos"
+cmp -s "$T/tr.pos" "$T/nb.pos"
+gate "B7 traveller and newborn are judged at identical source positions" $? 0
 "$N" "$T/wA.bytes" "$T/wBs.bytes" --reset --seed 11 --episodes 4 --steps 800 --island 0 --state "$T/sh.state" --bio "$T/sh.bio" >/dev/null 2>&1
-"$N" "$T/wA.bytes" "$T/wBs.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/sh.state" --bio "$T/sh.bio" > "$T/shB.out" 2>&1
-"$N" "$T/wA.bytes" "$T/wBs.bytes" --reset --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/shn.state" --bio "$T/shn.bio" > "$T/shN.out" 2>&1
+"$N" "$T/wA.bytes" "$T/wBs.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --start 16 --state "$T/sh.state" --bio "$T/sh.bio" > "$T/shB.out" 2>&1
+"$N" "$T/wA.bytes" "$T/wBs.bytes" --reset --seed 12 --episodes 2 --steps 800 --island 1 --start 16 --state "$T/shn.state" --bio "$T/shn.bio" > "$T/shN.out" 2>&1
 SHB=$(tl "$T/shB.out" byte-bi); SHN=$(tl "$T/shN.out" byte-bi)
-awk -v a="$SHB" -v b="$SHN" 'BEGIN{d=b-a; if(d<0)d=-d; exit !(d < 0.1)}'
-gate "B7 shuffled world kills the transfer: $SHB vs $SHN (|gap|<0.1)" $? 0
+SHA=$(tl "$T/shB.out" atomic-uni); SHNA=$(tl "$T/shN.out" atomic-uni)
+EXCESS=$(awk -v at="$SHA" -v an="$SHNA" -v bt="$SHB" -v bn="$SHN" \
+  'BEGIN{printf "%.6f", (bn-bt)-(an-at)}')
+awk -v x="$EXCESS" 'BEGIN{exit !(x < 0.1)}'
+gate "B7 shuffle kills contextual excess beyond frequency: $EXCESS bit/byte (<0.1)" $? 0
 "$N" "$T/p3.bytes" "$T/wB.bytes" --reset --seed 11 --episodes 4 --steps 800 --island 0 --state "$T/dc.state" --bio "$T/dc.bio" >/dev/null 2>&1
-"$N" "$T/p3.bytes" "$T/wB.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --state "$T/dc.state" --bio "$T/dc.bio" > "$T/dcB.out" 2>&1
+"$N" "$T/p3.bytes" "$T/wB.bytes" --seed 12 --episodes 2 --steps 800 --island 1 --start 16 --state "$T/dc.state" --bio "$T/dc.bio" > "$T/dcB.out" 2>&1
 DCB=$(tl "$T/dcB.out" byte-bi)
 awk -v kin="$TRB" -v don="$DCB" 'BEGIN{exit !(don - kin >= 0.5)}'
 gate "B7 kinship is measurable: kin donor $TRB beats alien donor $DCB (gap>=0.5)" $? 0
@@ -234,10 +262,10 @@ VC=$(grep -c '^v	' "$T/p8.bio")
 [ "$VC" -gt 0 ]
 gate "B8 probation emits real moves ($VC move receipts)" $? 0
 MVREC=$(awk '/mv played record/{print $4}' "$T/p8.out")
-TRIREC=$(awk '/^model byte-tri /{print $NF}' "$T/p8.out")
-[ -n "$MVREC" ] && [ -n "$TRIREC" ]
-gate "B8 the verdict is numeric: mv played $MVREC vs sitting tri $TRIREC" $? 0
-awk -v m="$MVREC" -v t="$TRIREC" 'BEGIN{exit !(m > t)}'
+REFREC=$(awk '/^mv matched byte refs:/{gsub(",",""); r=$6; if($8<r)r=$8; if($10<r)r=$10; print r}' "$T/p8.out")
+[ -n "$MVREC" ] && [ -n "$REFREC" ]
+gate "B8 the verdict is numeric on matched bytes: mv $MVREC vs best byte $REFREC" $? 0
+awk -v m="$MVREC" -v t="$REFREC" 'BEGIN{exit !(m > t)}'
 SEAT=$(awk -v r="$?" 'BEGIN{print r}')
 MVSEAT=$(grep -c '^a	.*	mv$' "$T/p8.bio")
 if [ "$SEAT" = "0" ]; then [ "$MVSEAT" -eq 0 ]; else [ "$MVSEAT" -gt 0 ]; fi
@@ -250,6 +278,52 @@ gate "B8 zero intervention with four candidates and probation" $? 0
 "$N" "$T/p3.bytes" --episodes 12 --steps 600 --state "$T/p8s.state" --bio "$T/p8s.bio" >/dev/null 2>&1
 cmp -s "$T/p8.bio" "$T/p8s.bio" && cmp -s "$T/p8.state" "$T/p8s.state"
 gate "B8 probation and played record survive restart" $? 0
+
+# --- A8: checkpoint audit repairs --------------------------------------
+# Paired external-truth court for the played move record. The two organisms
+# live the same a-only biography; their unread second island is either a-only
+# or b-only. The first emitted move and its prior are identical, but truth is
+# not. A loss that remains equal is self-information, not judgment.
+i=0; : > "$T/aa.bytes"; : > "$T/bb.bytes"
+while [ $i -lt 500 ]; do
+  printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' >> "$T/aa.bytes"
+  printf 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' >> "$T/bb.bytes"
+  i=$((i+1))
+done
+"$N" "$T/aa.bytes" "$T/aa.bytes" --reset --seed 9 --episodes 4 --steps 3000 --island 0 --state "$T/hit.state" --bio "$T/hit.bio" >/dev/null 2>&1
+"$N" "$T/aa.bytes" "$T/bb.bytes" --reset --seed 9 --episodes 4 --steps 3000 --island 0 --state "$T/miss.state" --bio "$T/miss.bio" >/dev/null 2>&1
+HL=$(wc -l < "$T/hit.bio"); ML=$(wc -l < "$T/miss.bio")
+"$N" "$T/aa.bytes" "$T/aa.bytes" --actor-lock mv --episodes 1 --steps 128 --island 1 --state "$T/hit.state" --bio "$T/hit.bio" >"$T/hit.out" 2>&1
+"$N" "$T/aa.bytes" "$T/bb.bytes" --actor-lock mv --episodes 1 --steps 128 --island 1 --state "$T/miss.state" --bio "$T/miss.bio" >"$T/miss.out" 2>&1
+HIT=$(tail -n "+$((HL+1))" "$T/hit.bio" | awk -F'\t' '$1=="v"{print $5, $8, $9; exit}')
+MISS=$(tail -n "+$((ML+1))" "$T/miss.bio" | awk -F'\t' '$1=="v"{print $5, $8, $9; exit}')
+HM=$(echo "$HIT" | awk '{print $1}'); MM=$(echo "$MISS" | awk '{print $1}')
+HX=$(echo "$HIT" | awk '{print $2}'); MX=$(echo "$MISS" | awk '{print $2}')
+HT=$(echo "$HIT" | awk '{print $3}'); MT=$(echo "$MISS" | awk '{print $3}')
+[ -n "$HM" ] && [ "$HM" = "$MM" ] && [ "$HT" != "$MT" ] && [ "$HX" != "$MX" ]
+gate "A8 played judge prices external truth: same emission, loss $HX vs $MX" $? 0
+grep -q '^mv control record:' "$T/hit.out" && ! grep -q '^mv played record:' "$T/hit.out"
+gate "A8 forced move control never enters the persisted mandate record" $? 0
+
+# --- S: sanitizers are executable law, not a remembered side run --------
+cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
+   -fsanitize=address,undefined -fno-omit-frame-pointer \
+   netta.c -lm -o "$T/netta-san" >"$T/san-build.log" 2>&1
+rc=$?; [ -s "$T/san-build.log" ] && rc=98
+gate "S sanitizer build is strict and silent" $rc 0
+S="$T/netta-san"
+"$S" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 4000 \
+    --state "$T/sr.state" --bio "$T/sr.bio" >/dev/null 2>"$T/sr.err"
+rc=$?
+"$S" "$T/all.bytes" --reset --seed 7 --episodes 1 --steps 200 \
+    --state "$T/sb.state" --bio "$T/sb.bio" >/dev/null 2>"$T/sb.err" || rc=$?
+[ -s "$T/sr.err" ] && rc=98
+[ -s "$T/sb.err" ] && rc=98
+gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
+"$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
+    --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
+rc=$?; [ -s "$T/sm.err" ] && rc=98
+gate "S ASan/UBSan silent through move probation and restart state v9" $rc 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi

@@ -444,3 +444,105 @@ claimant. Somewhere on a world whose structure lives in whole moves
 rather than in two bytes of memory, a future mv will win it -- and
 when it does, the win will mean something, because this one was
 allowed to lose.
+
+## Checkpoint correction: the judge looks outward
+
+The eight-body checkpoint `c32843f` was taken into an independent tree and
+its fifty-one gates first reproduced without a changed byte. Three red
+probes then broke three claims at the foundation rather than at the model
+surface.
+
+First, the played move record was not a judgment of the world. It wrote
+`-log2 P(emitted move)`: the self-information of the move Netta sampled. In
+a paired counterfactual, two organisms with identical a-only biographies
+emitted the same byte under the same prior into two unread islands, one
+a-only and one b-only. The old court wrote the same `4.177085` bits in both
+worlds, although the move was truth in one and false in the other. A
+confident lie and a confident truth were literally the same evidence.
+
+The correction keeps emission causal -- the sampled move still determines
+how far the world advances -- but makes the external judge price the
+canonical truth move at the current byte address. Canonical here means the
+same greedy longest exact-form segmentation already used by the shadow
+move model; the actor cannot see that target before acting. The paired
+losses are now `0.816909` on the kin truth and `10.243174` on the alien
+truth. The first outward retake still contained a subtler teacher leak:
+the player conditioned its next emission on the truth matcher's previous
+move instead of its own previous emission. Removing that hand from the
+trajectory produces the final period-3 verdict below. The earlier
+`1.557730` played figure and the intermediate `2.053519` retake are invalid,
+while the preserved story of a losing claimant remains true.
+
+The event base of the election was broken too. Two early probation episodes
+reached the 1200-byte minimum, a losing record then stopped probation forever,
+and that frozen record was compared with lifetime byte models measured on
+other episodes. Probation is now rare but recurrent; every byte it lives also
+records uni, bi and tri counterfactual prices at that exact address. Move
+authority must beat the best byte witness on those matched bytes. On the
+24-episode period-3 life probation now opens three times and emits 1596 real
+moves. The causal player loses `7.057066` against a best matched byte record
+of `0.288818`. A search over five deliberately move-structured worlds, up to
+128 episodes each, found shadow move prices as low as `0.095302` while played
+prices remained `6.07` to `9.30`: recognition is not yet free-running life.
+The refusal branch and the right to reapply are proved; appointment is not.
+Forced `--actor-lock mv` lives now report a separate this-run control record
+which is never persisted as mandate evidence; a counterfactual cannot later
+present itself as earned biography. State advances to version 9 so neither
+self-priced evidence nor unmatched probation records can silently enter the
+corrected court.
+
+Second, the biography chain had not been connected to the biography file.
+State persisted a chain head and line count, but resume never recomputed
+either from disk: a missing biography was silently recreated under the old
+head and returned `rc=0`. Resume now streams and verifies the whole external
+biography before opening it for append. Missing, truncated, edited, or
+unterminated histories fail closed. The inverse orphan is guarded too: if
+state is missing while a biography exists, implicit rebirth refuses rather
+than truncating the surviving record; only explicit `--reset` may do that.
+State publication now writes a uniquely created sibling and renames only
+after a complete close, so an interrupted save does not first truncate the
+last valid snapshot. Loaded state also rejects
+trailing bytes, impossible actors or units, duplicate/foreign pair keys,
+non-finite records, and disagreement among byte, move, row, episode, and
+model totals.
+
+Third, numeric syntax was not an input boundary. `--steps -1` -- still
+advertised by the dead README -- became `UINT64_MAX`; the tape-length guard
+wrapped, and ASan caught a real heap-buffer-overflow beyond the island.
+All numeric flags are now parsed exactly and address arithmetic is ordered
+to make overflow impossible. State, biography, and islands must be distinct
+files, including hard-link or symlink aliases, so a requested output cannot
+rewrite source truth. The dead word-level README, model card, generation
+examples, calibration prose, and old probe harness have been removed from
+the living tree; README now describes only NETTA ZERO.
+
+The transfer court was retaken with one more matched variable: `--start 16`
+holds traveller and newborn at byte-identical source positions. Kin transfer
+survives: byte-bi `2.227203` travelled against `3.828710` newborn, and
+byte-tri `2.147926` against `3.921547` (advantages `1.601507` and `1.773621`
+bits per byte). Kin still beats the alien donor (`2.227203` against
+`3.950850`). But the old shuffled-null did not survive its own wording.
+On shuffled B the travelled/newborn atomic prices are
+`3.693113/4.147372`, while byte-bi is `5.608769/5.748157`: total bi transfer
+is `0.139388`, not the claimed `<0.1` null. The correct controlled question
+subtracts frequency transfer. Contextual excess is
+`(5.748157-5.608769) - (4.147372-3.693113) = -0.314871` bits per byte.
+Shuffling kills context beyond frequency; it cannot and should not erase the
+transfer of the byte census it preserves. The former null remains above as
+the dirty measurement that led to this correction.
+
+The amended law has sixty-two machine verdicts. The new verdicts pin
+finite address syntax, external biography continuity, source/output
+separation, exact state extent, matched inter-island positions, and the
+external-truth move judge; strict ASan/UBSan builds and representative lives
+are now executable gates rather than remembered side runs. The original
+fifty-one remain green under the corrected court, with superseded played
+numbers changed openly rather than forced back into place.
+
+What is not proved yet: the election gate has observed a move claimant lose
+and reapply, not win; closing the measured exposure gap likely needs search or
+a state organ rather than a kinder threshold. Global cumulative authority may
+carry a byte actor into an alien island long after its local mandate has
+vanished; greedy truth segmentation is a declared first court, not yet a
+marginal likelihood over all byte-equivalent move paths; units have a birth
+law but no death law. Those are open bodies, not implications of this repair.

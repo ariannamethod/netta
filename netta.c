@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L
+
 /*
  * NETTA ZERO
  *
@@ -31,12 +33,16 @@
 #include <string.h>
 #include <stdint.h>
 #include <math.h>
+#include <errno.h>
+#include <limits.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #define CTX          16
 #define MAX_ISLANDS  32
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    7u
+#define STATE_VER    9u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -89,7 +95,9 @@ static void island_load(const char *path) {
     }
     long sz = ftell(f);
     if (sz < 0) { fprintf(stderr, "netta: cannot size %s\n", path); exit(1); }
-    rewind(f);
+    if (fseek(f, 0, SEEK_SET) != 0) {
+        fprintf(stderr, "netta: cannot rewind %s\n", path); exit(1);
+    }
     Island *isl = &islands[island_count];
     isl->len = (uint64_t)sz;
     isl->bytes = (uint8_t *)malloc(isl->len ? isl->len : 1);
@@ -108,6 +116,40 @@ static void island_load(const char *path) {
 static FILE   *bio_file;
 static uint64_t bio_chain = FNV_SEED;
 static uint64_t bio_lines = 0;
+
+static void bio_verify(const char *path) {
+    FILE *f = fopen(path, "rb");
+    if (!f) {
+        fprintf(stderr, "netta: biography %s is missing; refusing resume\n",
+                path);
+        exit(1);
+    }
+    uint8_t buf[8192];
+    uint64_t chain = FNV_SEED, lines = 0;
+    size_t n;
+    int last = -1;
+    while ((n = fread(buf, 1, sizeof buf, f)) != 0) {
+        chain = fnv1a64(buf, (uint64_t)n, chain);
+        for (size_t i = 0; i < n; ++i)
+            if (buf[i] == '\n') lines++;
+        last = buf[n - 1];
+    }
+    if (ferror(f) || fclose(f) != 0) {
+        fprintf(stderr, "netta: cannot verify biography %s\n", path);
+        exit(1);
+    }
+    if (chain != bio_chain || lines != bio_lines ||
+        (bio_lines != 0 && last != '\n')) {
+        fprintf(stderr,
+                "netta: biography %s does not match state "
+                "(lines %llu/%llu, chain %016llx/%016llx); refusing\n",
+                path, (unsigned long long)lines,
+                (unsigned long long)bio_lines,
+                (unsigned long long)chain,
+                (unsigned long long)bio_chain);
+        exit(1);
+    }
+}
 
 static void bio_open(const char *path, int reset) {
     bio_file = fopen(path, reset ? "wb" : "ab");
@@ -278,6 +320,13 @@ static uint64_t mvlm_bytes = 0;
    for one byte of advance). The shadow record merely opens probation. */
 static double   mvp_bits = 0.0;
 static uint64_t mvp_bytes = 0;
+static double   mvp_ref_bits[3] = {0.0, 0.0, 0.0};
+static uint64_t mvp_ref_bytes = 0;
+/* Forced mv is a counterfactual control, never mandate evidence. These
+   this-run counters are deliberately absent from state. */
+static double   mvc_bits = 0.0;
+static uint64_t mvc_bytes = 0;
+static double   mvc_ref_bits[3] = {0.0, 0.0, 0.0};
 
 /* body 5: the right to act is earned. Candidates are the byte models
    only: atomic-uni (the newborn actor) and byte-bi. The right is
@@ -346,28 +395,63 @@ static const char *actor_name[4] = {"uni", "bi", "tri", "mv"};
 static void actor_elect(void) {
     if (actor_lock >= 0) { actor_current = actor_lock; return; }
     if (atomic_bytes_lived < ACTOR_MIN_BYTES) { actor_current = 0; return; }
-    double lv[4];
+    double lv[3];
     lv[0] = atomic_bits_lived / (double)atomic_bytes_lived;
     lv[1] = bilm_bytes ? bilm_bits / (double)bilm_bytes : 1e9;
     lv[2] = trilm_bytes ? trilm_bits / (double)trilm_bytes : 1e9;
-    lv[3] = (units_enabled && mvp_bytes >= ACTOR_MIN_BYTES)
-            ? mvp_bits / (double)mvp_bytes : 1e9;
-    /* mandate: a sitting non-newborn actor must keep a KEEP lead over
-       the newborn or vacate the seat */
-    if (actor_current != 0 && lv[0] - lv[actor_current] < ACTOR_KEEP)
-        actor_current = 0;
-    /* strongest eligible challenger (GAIN lead over the newborn) */
+
+    /* First determine the byte seat on its common lifetime record. If mv
+       is sitting, this is the byte successor that would take its place. */
+    int byte_seat = actor_current >= 0 && actor_current <= 2
+                  ? actor_current : 0;
+    if (byte_seat != 0 && lv[0] - lv[byte_seat] < ACTOR_KEEP)
+        byte_seat = 0;
     int ch = -1;
-    for (int c = 1; c <= 3; ++c) {
-        if (c == actor_current) continue;
+    for (int c = 1; c <= 2; ++c) {
+        if (c == byte_seat) continue;
         if (lv[0] - lv[c] < ACTOR_GAIN) continue;
         if (ch < 0 || lv[c] < lv[ch]) ch = c;
     }
     if (ch >= 0) {
-        if (actor_current == 0) actor_current = ch;
-        else if (lv[actor_current] - lv[ch] >= ACTOR_KEEP)
-            actor_current = ch;
+        if (byte_seat == 0 || lv[byte_seat] - lv[ch] >= ACTOR_KEEP)
+            byte_seat = ch;
     }
+
+    /* Move authority is judged only against byte witnesses recorded on the
+       exact same played bytes. Lifetime byte records and probation records
+       are different event bases and are not compared. */
+    if (units_enabled && mvp_bytes >= ACTOR_MIN_BYTES &&
+        mvp_ref_bytes == mvp_bytes) {
+        double mv = mvp_bits / (double)mvp_bytes;
+        double best_ref = mvp_ref_bits[0] / (double)mvp_ref_bytes;
+        for (int c = 1; c <= 2; ++c) {
+            double ref = mvp_ref_bits[c] / (double)mvp_ref_bytes;
+            if (ref < best_ref) best_ref = ref;
+        }
+        if (actor_current == 3) {
+            actor_current = best_ref - mv >= ACTOR_KEEP ? 3 : byte_seat;
+        } else {
+            actor_current = best_ref - mv >= ACTOR_GAIN ? 3 : byte_seat;
+        }
+    } else {
+        actor_current = byte_seat;
+    }
+}
+
+static uint32_t truth_move(Island *isl, uint64_t pos, uint64_t room) {
+    uint32_t best_len = 1;
+    int best_u = -1;
+    for (int u = 0; u < unit_count; ++u) {
+        uint32_t len = units[u].len;
+        if (len <= best_len || (uint64_t)len > room || pos > isl->len - len)
+            continue;
+        if (memcmp(isl->bytes + pos, units[u].bytes, len) == 0) {
+            best_len = len;
+            best_u = u;
+        }
+    }
+    return best_u >= 0 ? (uint32_t)(ACTIONS + best_u)
+                       : (uint32_t)isl->bytes[pos];
 }
 
 static void emit_move(uint32_t m, uint64_t pos, int isl) {
@@ -449,10 +533,36 @@ static uint64_t counts[ACTIONS];
 static uint64_t counts_total = 0;
 static uint64_t episode_no = 0;
 static uint64_t steps_total = 0;
+static int fixed_start_set = 0;
+static uint64_t fixed_start = 0;
+
+static void state_refuse(const char *path, const char *why) {
+    fprintf(stderr, "netta: %s is inconsistent (%s); refusing\n", path, why);
+    exit(1);
+}
+
+static void checked_add(uint64_t *sum, uint64_t value,
+                        const char *path, const char *what) {
+    if (UINT64_MAX - *sum < value) state_refuse(path, what);
+    *sum += value;
+}
 
 static void state_save(const char *path) {
-    FILE *f = fopen(path, "wb");
-    if (!f) { fprintf(stderr, "netta: cannot write %s\n", path); exit(1); }
+    size_t tmp_n = strlen(path) + 12;
+    char *tmp = (char *)malloc(tmp_n);
+    if (!tmp) { fprintf(stderr, "netta: oom\n"); exit(1); }
+    snprintf(tmp, tmp_n, "%s.tmp.XXXXXX", path);
+    int fd = mkstemp(tmp);
+    if (fd < 0) {
+        fprintf(stderr, "netta: cannot create state sibling for %s\n", path);
+        exit(1);
+    }
+    FILE *f = fdopen(fd, "wb");
+    if (!f) {
+        close(fd);
+        fprintf(stderr, "netta: cannot open state sibling for %s\n", path);
+        exit(1);
+    }
     uint32_t ver = STATE_VER;
     uint32_t nisl = (uint32_t)island_count;
     uint32_t nunits = (uint32_t)unit_count;
@@ -507,6 +617,8 @@ static void state_save(const char *path) {
         fwrite(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
         fwrite(&mvp_bits, sizeof mvp_bits, 1, f) != 1 ||
         fwrite(&mvp_bytes, sizeof mvp_bytes, 1, f) != 1 ||
+        fwrite(mvp_ref_bits, sizeof mvp_ref_bits[0], 3, f) != 3 ||
+        fwrite(&mvp_ref_bytes, sizeof mvp_ref_bytes, 1, f) != 1 ||
         fwrite(&actor_current, sizeof actor_current, 1, f) != 1 ||
         fwrite(ep_actor, sizeof ep_actor[0], 4, f) != 4 ||
         fwrite(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
@@ -533,11 +645,19 @@ static void state_save(const char *path) {
     if (fclose(f) != 0) {
         fprintf(stderr, "netta: state close failed\n"); exit(1);
     }
+    if (rename(tmp, path) != 0) {
+        fprintf(stderr, "netta: cannot publish state %s\n", path); exit(1);
+    }
+    free(tmp);
 }
 
 static int state_load(const char *path) {
     FILE *f = fopen(path, "rb");
-    if (!f) return 0;
+    if (!f) {
+        if (errno == ENOENT) return 0;
+        fprintf(stderr, "netta: cannot open state %s; refusing\n", path);
+        exit(1);
+    }
     char magic[8];
     uint32_t ver, nisl, nunits;
     if (fread(magic, 1, 8, f) != 8 || memcmp(magic, STATE_MAGIC, 8) != 0) {
@@ -572,12 +692,24 @@ static int state_load(const char *path) {
             exit(1);
         }
     unit_count = (int)nunits;
-    for (int u = 0; u < unit_count; ++u)
+    for (int u = 0; u < unit_count; ++u) {
         if (units[u].len == 0 || units[u].len > UNIT_MAX_LEN) {
             fprintf(stderr, "netta: %s carries a malformed unit; "
                             "refusing\n", path);
             exit(1);
         }
+        if (units[u].born_episode > episode_no ||
+            units[u].support_at_birth < BIRTH_SUPPORT)
+            state_refuse(path, "unit provenance");
+        for (uint32_t j = 0; j < units[u].len; ++j)
+            if (is_ws(units[u].bytes[j]))
+                state_refuse(path, "unit crosses a boundary");
+        for (int v = 0; v < u; ++v)
+            if (units[v].len == units[u].len &&
+                memcmp(units[v].bytes, units[u].bytes,
+                       units[u].len) == 0)
+                state_refuse(path, "duplicate unit identity");
+    }
     uint64_t npairs;
     if (fread(&npairs, sizeof npairs, 1, f) != 1 || npairs > PAIR_SLOTS) {
         fprintf(stderr, "netta: %s truncated; refusing\n", path);
@@ -589,12 +721,22 @@ static int state_load(const char *path) {
             fprintf(stderr, "netta: %s truncated; refusing\n", path);
             exit(1);
         }
+        uint32_t prev = (uint32_t)(e.key >> 32);
+        uint32_t cur = (uint32_t)e.key;
+        if (prev >= ACTIONS + nunits || cur >= ACTIONS + nunits)
+            state_refuse(path, "pair names a nonexistent move");
         uint64_t h = fnv1a64((const uint8_t *)&e.key, sizeof e.key,
                              FNV_SEED);
+        int inserted = 0;
         for (uint64_t probe = 0; probe < PAIR_SLOTS; ++probe) {
             Pair *p = &pairs[(h + probe) & (PAIR_SLOTS - 1)];
-            if (p->cnt == 0) { *p = e; pair_used++; break; }
+            if (p->cnt == 0) {
+                *p = e; pair_used++; inserted = 1; break;
+            }
+            if (p->key == e.key)
+                state_refuse(path, "duplicate pair key");
         }
+        if (!inserted) state_refuse(path, "pair table has no free slot");
     }
     if (fread(&macro_events, sizeof macro_events, 1, f) != 1 ||
         fread(&macro_bytes, sizeof macro_bytes, 1, f) != 1 ||
@@ -620,6 +762,8 @@ static int state_load(const char *path) {
         fread(&mvlm_bytes, sizeof mvlm_bytes, 1, f) != 1 ||
         fread(&mvp_bits, sizeof mvp_bits, 1, f) != 1 ||
         fread(&mvp_bytes, sizeof mvp_bytes, 1, f) != 1 ||
+        fread(mvp_ref_bits, sizeof mvp_ref_bits[0], 3, f) != 3 ||
+        fread(&mvp_ref_bytes, sizeof mvp_ref_bytes, 1, f) != 1 ||
         fread(&actor_current, sizeof actor_current, 1, f) != 1 ||
         fread(ep_actor, sizeof ep_actor[0], 4, f) != 4 ||
         fread(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
@@ -640,12 +784,20 @@ static int state_load(const char *path) {
             fprintf(stderr, "netta: %s truncated; refusing\n", path);
             exit(1);
         }
+        if (e.key > 0xffffffULL)
+            state_refuse(path, "trigram key is outside the byte world");
         uint64_t h = fnv1a64((const uint8_t *)&e.key, sizeof e.key,
                              FNV_SEED);
+        int inserted = 0;
         for (uint64_t probe = 0; probe < TRI_SLOTS; ++probe) {
             Pair *p = &tri[(h + probe) & (TRI_SLOTS - 1)];
-            if (p->cnt == 0) { *p = e; tri_used++; break; }
+            if (p->cnt == 0) {
+                *p = e; tri_used++; inserted = 1; break;
+            }
+            if (p->key == e.key)
+                state_refuse(path, "duplicate trigram key");
         }
+        if (!inserted) state_refuse(path, "trigram table has no free slot");
     }
     if (nisl != (uint32_t)island_count) {
         fprintf(stderr, "netta: state carries %u islands, world has %d; "
@@ -665,7 +817,80 @@ static int state_load(const char *path) {
             exit(1);
         }
     }
-    fclose(f);
+    int extra = fgetc(f);
+    if (extra != EOF || ferror(f))
+        state_refuse(path, "trailing or unreadable bytes");
+    if (fclose(f) != 0) state_refuse(path, "close failure");
+
+    if (actor_current < 0 || actor_current > 3)
+        state_refuse(path, "actor seat");
+    uint64_t sum = 0;
+    for (int b = 0; b < ACTIONS; ++b)
+        checked_add(&sum, counts[b], path, "atomic count overflow");
+    if (sum != counts_total || counts_total != steps_total ||
+        atomic_bytes_lived != steps_total || bilm_bytes != steps_total ||
+        trilm_bytes != steps_total)
+        state_refuse(path, "raw-byte totals disagree");
+    if (unitlm_bytes > steps_total || mvlm_bytes > unitlm_bytes ||
+        mvp_bytes > steps_total || mvp_ref_bytes != mvp_bytes ||
+        macro_bytes > steps_total ||
+        macro_events > moves_emitted)
+        state_refuse(path, "move totals exceed lived truth");
+    sum = 0;
+    for (int m = 0; m < ACTIONS + MAX_UNITS; ++m)
+        checked_add(&sum, move_count[m], path, "move count overflow");
+    if (sum != move_total || move_total != moves_emitted)
+        state_refuse(path, "move totals disagree");
+    for (int m = ACTIONS + unit_count; m < ACTIONS + MAX_UNITS; ++m)
+        if (move_count[m] != 0 || mv_out[m] != 0)
+            state_refuse(path, "dead move carries statistics");
+    uint64_t actor_eps = 0;
+    for (int a = 0; a < 4; ++a)
+        checked_add(&actor_eps, ep_actor[a], path,
+                    "actor episode overflow");
+    if (actor_eps != episode_no)
+        state_refuse(path, "actor episodes disagree");
+    if (!isfinite(unitlm_bits) || unitlm_bits < 0.0 ||
+        !isfinite(atomic_bits_lived) || atomic_bits_lived < 0.0 ||
+        !isfinite(bilm_bits) || bilm_bits < 0.0 ||
+        !isfinite(mvlm_bits) || mvlm_bits < 0.0 ||
+        !isfinite(mvp_bits) || mvp_bits < 0.0 ||
+        !isfinite(mvp_ref_bits[0]) || mvp_ref_bits[0] < 0.0 ||
+        !isfinite(mvp_ref_bits[1]) || mvp_ref_bits[1] < 0.0 ||
+        !isfinite(mvp_ref_bits[2]) || mvp_ref_bits[2] < 0.0 ||
+        !isfinite(trilm_bits) || trilm_bits < 0.0)
+        state_refuse(path, "non-finite model record");
+    for (int pv = 0; pv < ACTIONS; ++pv) {
+        uint64_t row = 0;
+        for (int b = 0; b < ACTIONS; ++b)
+            checked_add(&row, bi_count[pv][b], path,
+                        "bigram row overflow");
+        if (row != bi_row[pv]) state_refuse(path, "bigram row total");
+    }
+    uint64_t *pair_rows = (uint64_t *)calloc(ACTIONS + MAX_UNITS,
+                                              sizeof(uint64_t));
+    uint64_t *tri_rows = (uint64_t *)calloc(65536, sizeof(uint64_t));
+    if (!pair_rows || !tri_rows) { fprintf(stderr, "netta: oom\n"); exit(1); }
+    for (uint64_t i = 0; i < PAIR_SLOTS; ++i)
+        if (pairs[i].cnt) {
+            uint32_t prev = (uint32_t)(pairs[i].key >> 32);
+            checked_add(&pair_rows[prev], pairs[i].cnt, path,
+                        "pair row overflow");
+        }
+    for (int m = 0; m < ACTIONS + MAX_UNITS; ++m)
+        if (pair_rows[m] != mv_out[m])
+            state_refuse(path, "move-bigram row total");
+    for (uint64_t i = 0; i < TRI_SLOTS; ++i)
+        if (tri[i].cnt) {
+            uint32_t ctx = (uint32_t)(tri[i].key >> 8);
+            checked_add(&tri_rows[ctx], tri[i].cnt, path,
+                        "trigram row overflow");
+        }
+    for (uint32_t ctx = 0; ctx < 65536; ++ctx)
+        if (tri_rows[ctx] != tri_row[ctx])
+            state_refuse(path, "trigram row total");
+    free(pair_rows);
+    free(tri_rows);
     return 1;
 }
 
@@ -751,20 +976,34 @@ static void absorb_truth(int isl_id, Island *isl, uint64_t pos,
 
 static double run_episode(int isl_id, uint64_t steps) {
     Island *isl = &islands[isl_id];
-    if (isl->len < CTX + steps + 1) {
+    if (steps == 0 || isl->len <= CTX ||
+        steps > isl->len - CTX - 1) {
         fprintf(stderr, "netta: island %d too small for %llu steps\n",
                 isl_id, (unsigned long long)steps);
         exit(1);
     }
     uint64_t span = isl->len - CTX - steps;
-    uint64_t start = CTX + (rng_next() % (span ? span : 1));
+    uint64_t start;
+    if (fixed_start_set) {
+        if (fixed_start < CTX || fixed_start >= isl->len ||
+            steps > isl->len - fixed_start) {
+            fprintf(stderr,
+                    "netta: fixed start %llu cannot hold %llu steps on "
+                    "island %d\n", (unsigned long long)fixed_start,
+                    (unsigned long long)steps, isl_id);
+            exit(1);
+        }
+        start = fixed_start;
+    } else {
+        start = CTX + (rng_next() % (span ? span : 1));
+    }
     double bits = 0.0;
     char line[256];
     episode_no++;
     actor_elect();
     int probation = 0;
     if (actor_lock < 0 && units_enabled && actor_current != 3 &&
-        mvp_bytes < ACTOR_MIN_BYTES && episode_no % 8 == 7 &&
+        episode_no % 8 == 7 &&
         atomic_bytes_lived >= ACTOR_MIN_BYTES && mvlm_bytes &&
         atomic_bits_lived / (double)atomic_bytes_lived -
         mvlm_bits / (double)mvlm_bytes >= ACTOR_GAIN) {
@@ -784,35 +1023,39 @@ static double run_episode(int isl_id, uint64_t steps) {
            a wrong long move is never cheaper than the same wrong bytes
            (the price is paid in full, the advance shrinks). */
         uint64_t s = 0;
+        int64_t player_prev = -1; /* generation carries its own history */
         double p_uni[ACTIONS], p_bi[ACTIONS], p_tri[ACTIONS];
         while (s < steps) {
             uint64_t pos = start + s;
             int alive = ACTIONS + unit_count;
             double denom, psum = 0.0, r, acc;
+            double move_p[ACTIONS + MAX_UNITS];
             uint32_t m = 0;
-            if (prev_move >= 0)
-                denom = (double)mv_out[(uint32_t)prev_move] +
+            if (player_prev >= 0)
+                denom = (double)mv_out[(uint32_t)player_prev] +
                         (double)alive;
             else
                 denom = (double)move_total + (double)alive;
+            for (int c = 0; c < alive; ++c) {
+                uint64_t cnt = player_prev >= 0
+                    ? pair_get((uint32_t)player_prev, (uint32_t)c)
+                    : move_count[c];
+                move_p[c] = ((double)cnt + 1.0) / denom;
+                psum += move_p[c];
+            }
+            if (fabs(psum - 1.0) > 1e-6) {
+                fprintf(stderr, "netta: move policy is not a distribution "
+                                "(sum=%.9f)\n", psum);
+                exit(1);
+            }
             /* one rng draw per move; walk the cumulative mass */
             r = (double)(rng_next() >> 11) *
                 (1.0 / 9007199254740992.0);
             acc = 0.0;
             m = (uint32_t)(alive - 1);   /* float-tail fallback */
             for (int c = 0; c < alive; ++c) {
-                uint64_t cnt = prev_move >= 0
-                    ? pair_get((uint32_t)prev_move, (uint32_t)c)
-                    : move_count[c];
-                double pc = ((double)cnt + 1.0) / denom;
-                psum += pc;
-                acc += pc;
+                acc += move_p[c];
                 if (r < acc) { m = (uint32_t)c; break; }
-            }
-            if (psum > 1.0 + 1e-6) {
-                fprintf(stderr, "netta: move mass exceeds 1 "
-                                "(sum=%.9f)\n", psum);
-                exit(1);
             }
             uint8_t tmp[1];
             const uint8_t *mb = move_bytes(m, tmp);
@@ -824,20 +1067,39 @@ static double run_episode(int isl_id, uint64_t steps) {
                 matched++;
             uint32_t advance = matched ? matched : 1;
             if ((uint64_t)advance > room) advance = (uint32_t)room;
-            double cnt_m = prev_move >= 0
-                ? (double)pair_get((uint32_t)prev_move, m)
-                : (double)move_count[m];
-            double nll = -log2((cnt_m + 1.0) / denom);
+            /* The emitted move is causal, but the judge prices external
+               truth. Greedy truth_move is the already-declared canonical
+               segmentation; pricing the sampled move would reward a
+               confident lie identically on a matching and alien island. */
+            uint32_t target = truth_move(isl, pos, room);
+            double nll = -log2(move_p[target]);
             snprintf(line, sizeof line,
-                     "v\t%llu\t%d\t%llu\t%u\t%u\t%u\t%.6f\n",
+                     "v\t%llu\t%d\t%llu\t%u\t%u\t%u\t%.6f\t%u\n",
                      (unsigned long long)episode_no, isl_id,
-                     (unsigned long long)pos, m, L, advance, nll);
+                     (unsigned long long)pos, m, L, advance, nll, target);
             bio_append(line);
             bits += nll;
-            mvp_bits += nll;
-            mvp_bytes += advance;
+            if (actor_lock == 3) {
+                mvc_bits += nll;
+                mvc_bytes += advance;
+            } else {
+                mvp_bits += nll;
+                mvp_bytes += advance;
+            }
+            player_prev = (int64_t)m;
             for (uint32_t j = 0; j < advance; ++j) {
                 build_dists(isl, pos + j, p_uni, p_bi, p_tri);
+                int truth = isl->bytes[pos + j];
+                if (actor_lock == 3) {
+                    mvc_ref_bits[0] += -log2(p_uni[truth]);
+                    mvc_ref_bits[1] += -log2(p_bi[truth]);
+                    mvc_ref_bits[2] += -log2(p_tri[truth]);
+                } else {
+                    mvp_ref_bits[0] += -log2(p_uni[truth]);
+                    mvp_ref_bits[1] += -log2(p_bi[truth]);
+                    mvp_ref_bits[2] += -log2(p_tri[truth]);
+                    mvp_ref_bytes++;
+                }
                 absorb_truth(isl_id, isl, pos + j, p_uni, p_bi, p_tri);
             }
             s += advance;
@@ -875,6 +1137,50 @@ static double run_episode(int isl_id, uint64_t steps) {
 
 /* ---------------------------------------------------------------- main */
 
+static uint64_t parse_u64(const char *flag, const char *s) {
+    char *end = NULL;
+    unsigned long long value;
+    if (!s[0] || s[0] == '-') {
+        fprintf(stderr, "netta: %s takes a non-negative integer\n", flag);
+        exit(1);
+    }
+    errno = 0;
+    value = strtoull(s, &end, 10);
+    if (errno == ERANGE || !end || *end != '\0') {
+        fprintf(stderr, "netta: invalid integer for %s: %s\n", flag, s);
+        exit(1);
+    }
+    return (uint64_t)value;
+}
+
+static int parse_int(const char *flag, const char *s) {
+    char *end = NULL;
+    long value;
+    errno = 0;
+    value = strtol(s, &end, 10);
+    if (errno == ERANGE || !s[0] || !end || *end != '\0' ||
+        value < INT_MIN || value > INT_MAX) {
+        fprintf(stderr, "netta: invalid integer for %s: %s\n", flag, s);
+        exit(1);
+    }
+    return (int)value;
+}
+
+static int same_file(const char *a, const char *b) {
+    struct stat sa, sb;
+    if (strcmp(a, b) == 0) return 1;
+    if (stat(a, &sa) != 0 || stat(b, &sb) != 0) return 0;
+    return sa.st_dev == sb.st_dev && sa.st_ino == sb.st_ino;
+}
+
+static int file_exists(const char *path) {
+    struct stat s;
+    if (stat(path, &s) == 0) return 1;
+    if (errno == ENOENT) return 0;
+    fprintf(stderr, "netta: cannot inspect %s; refusing\n", path);
+    exit(1);
+}
+
 int main(int argc, char **argv) {
     const char *state_path = "netta0.state";
     const char *bio_path = "netta0.bio.tsv";
@@ -885,13 +1191,17 @@ int main(int argc, char **argv) {
 
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "--seed") && i + 1 < argc)
-            seed = strtoull(argv[++i], NULL, 10);
+            seed = parse_u64("--seed", argv[++i]);
         else if (!strcmp(argv[i], "--episodes") && i + 1 < argc)
-            episodes = strtoull(argv[++i], NULL, 10);
+            episodes = parse_u64("--episodes", argv[++i]);
         else if (!strcmp(argv[i], "--steps") && i + 1 < argc)
-            steps = strtoull(argv[++i], NULL, 10);
+            steps = parse_u64("--steps", argv[++i]);
         else if (!strcmp(argv[i], "--island") && i + 1 < argc)
-            isl_id = atoi(argv[++i]);
+            isl_id = parse_int("--island", argv[++i]);
+        else if (!strcmp(argv[i], "--start") && i + 1 < argc) {
+            fixed_start = parse_u64("--start", argv[++i]);
+            fixed_start_set = 1;
+        }
         else if (!strcmp(argv[i], "--state") && i + 1 < argc)
             state_path = argv[++i];
         else if (!strcmp(argv[i], "--bio") && i + 1 < argc)
@@ -908,7 +1218,7 @@ int main(int argc, char **argv) {
             else if (!strcmp(argv[i], "mv")) actor_lock = 3;
             else {
                 fprintf(stderr,
-                        "netta: --actor-lock takes uni|bi|tri\n");
+                        "netta: --actor-lock takes uni|bi|tri|mv\n");
                 exit(1);
             }
         }
@@ -928,7 +1238,8 @@ int main(int argc, char **argv) {
     if (paths_n == 0) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
-                        "[--state P] [--bio P] [--reset] [--no-units]\n");
+                        "[--start OFFSET] [--state P] [--bio P] [--reset] "
+                        "[--no-units] [--actor-lock uni|bi|tri|mv]\n");
         exit(1);
     }
     pairs = (Pair *)calloc(PAIR_SLOTS, sizeof(Pair));
@@ -936,6 +1247,18 @@ int main(int argc, char **argv) {
     tri = (Pair *)calloc(TRI_SLOTS, sizeof(Pair));
     if (!tri) { fprintf(stderr, "netta: oom\n"); exit(1); }
     for (int i = 0; i < paths_n; ++i) island_load(paths[i]);
+    if (same_file(state_path, bio_path)) {
+        fprintf(stderr, "netta: state and biography must be distinct\n");
+        exit(1);
+    }
+    for (int i = 0; i < paths_n; ++i) {
+        if (same_file(paths[i], state_path) || same_file(paths[i], bio_path)) {
+            fprintf(stderr,
+                    "netta: an immutable island cannot also be state or "
+                    "biography\n");
+            exit(1);
+        }
+    }
     for (int i = 0; i < island_count; ++i)
         printf("island %d: %s len=%llu digest=%016llx\n", i,
                islands[i].name, (unsigned long long)islands[i].len,
@@ -948,6 +1271,13 @@ int main(int argc, char **argv) {
     rng_state = seed;
     int resumed = 0;
     if (!reset) resumed = state_load(state_path);
+    if (resumed) bio_verify(bio_path);
+    if (!reset && !resumed && file_exists(bio_path)) {
+        fprintf(stderr,
+                "netta: biography %s exists without state; use --reset "
+                "to begin a new life\n", bio_path);
+        exit(1);
+    }
     bio_open(bio_path, reset || !resumed);
     /* this-life baselines: the price of THIS stretch of life, not the
        cumulative one -- the transfer court reads these deltas */
@@ -1007,6 +1337,21 @@ int main(int argc, char **argv) {
         printf("mv played record: %.6f bits/byte over %llu bytes\n",
                mvp_bits / (double)mvp_bytes,
                (unsigned long long)mvp_bytes);
+    if (mvp_ref_bytes)
+        printf("mv matched byte refs: uni %.6f, bi %.6f, tri %.6f over "
+               "%llu bytes\n",
+               mvp_ref_bits[0] / (double)mvp_ref_bytes,
+               mvp_ref_bits[1] / (double)mvp_ref_bytes,
+               mvp_ref_bits[2] / (double)mvp_ref_bytes,
+               (unsigned long long)mvp_ref_bytes);
+    if (mvc_bytes)
+        printf("mv control record: %.6f bits/byte over %llu bytes; "
+               "matched refs uni %.6f, bi %.6f, tri %.6f\n",
+               mvc_bits / (double)mvc_bytes,
+               (unsigned long long)mvc_bytes,
+               mvc_ref_bits[0] / (double)mvc_bytes,
+               mvc_ref_bits[1] / (double)mvc_bytes,
+               mvc_ref_bits[2] / (double)mvc_bytes);
     printf("actor episodes: uni %llu, bi %llu, tri %llu, mv %llu%s\n",
            (unsigned long long)ep_actor[0],
            (unsigned long long)ep_actor[1],
