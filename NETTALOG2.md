@@ -1477,3 +1477,39 @@ zero-intervention biography, jury restart identity, neural-law refusal, jury
 forgery, strict C11, and ASan/UBSan. The next plasticity question is no longer
 how to stop saturation. It is how a local rule can learn structure without
 claiming jurisdiction over every structured world.
+
+## The jury turn audited: the null holds, and the pattern names the next law
+
+All hundred and thirty-eight verdicts reproduced by the auditor's own
+hand on the merged trunk. The version-20 law tuple was attacked from
+both directions: a jury life resumed without its flag, an ordinary life
+resumed with the flag added, and a red-arm Hebb life resumed bare are
+each refused as "neural invocation law changed" -- the silent seam this
+log demonstrated one turn ago is closed for the neural laws. A byte
+poked deep in the persisted jury memory is refused as "jury memory
+disagrees with its witness". The published court table was reread
+against its own sealed gates: eight rows, eight FAILs, one lawful null.
+
+The genome pattern gives the next court its hypothesis, and it deserves
+to be stated as mechanism rather than mood. The aggressive rules (g5,
+g6) post the largest ordered-versus-shuffled margins, but the margin is
+bought where the sabotage gate catches it: their plasticity memorizes
+the lived order and therefore prices every other order worse -- not
+selectivity but fragility. The careful rule (g4) improves the ordered
+kin genuinely, 4.156614 against the incumbent's 4.421399, and still
+fails the sealed selectivity margin by two hundredths while leaking
+breadth on the alien. The weak rule (g7) pays plasticity's overhead
+without either gain. One timescale of Hebbian change must choose
+between rigidity and instance-overfit; the measured table is that
+dichotomy written eight ways. The hypothesis for a future sealed court:
+selective transfer needs two timescales -- fast weights that live and
+die with the instance, slow weights that accept only what repeats
+across contexts, and consolidation between them gated by repetition
+rather than surprise alone. No such court is opened here; the
+hypothesis is preregistered thinking, not a body.
+
+The sealed sources survive on disk and all three raw hashes match the
+arena's table by this hand too, so the raw layer of the seal now rests
+on two verifications of the same files; a fully independent
+re-derivation of the arena from those bytes follows in this turn's
+second hand.
