@@ -864,6 +864,60 @@ cmp -s "$T/b15r.state" "$T/b15s.state" && \
 cmp -s "$T/b15r.bio" "$T/b15s.bio"
 gate "B15 atlas choices survive restart and a reversed convoy" $? 0
 
+# --- B16: the neural core enters in shadow --------------------------------
+# The buried prototype's lineage, under the zero courts: no backprop, a
+# delta-rule readout, surprise-gated Hebbian dynamics, the prequential
+# surprise as modulator. A witness with a record and no power. The
+# grave's scars run as gates: exact newborn ignorance, no saturation,
+# no degenerate embeddings, no self-deception below the floor, and the
+# shadow's measured weakness stays on the record.
+"$N" "$T/p3.bytes" --reset --seed 42 --episodes 1 --steps 1 --state "$T/b16n.state" --bio "$T/b16n.bio" > "$T/b16n.out" 2>&1
+grep -q '^model core bits/byte 8\.000000$' "$T/b16n.out"
+gate "B16 the newborn core prices exact ignorance (8.000000 first)" $? 0
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 4000 --state "$T/b16r.state" --bio "$T/b16r.bio" > "$T/b16r.out" 2>&1
+CORE_R=$(awk '/^model core /{print $NF}' "$T/b16r.out")
+awk -v c="$CORE_R" 'BEGIN{exit !(c < 6.0)}'
+gate "B16 the core learns within one life ($CORE_R on repetition)" $? 0
+SATH=$(awk '/^core health:/{gsub(",",""); print $5}' "$T/b16r.out")
+DEGEN=$(awk '/^core health:/{print $(NF-2)}' "$T/b16r.out")
+awk -v s="$SATH" -v d="$DEGEN" 'BEGIN{exit !(s < 0.95 && d == 0)}'
+gate "B16 the grave's scars stay closed (|h| $SATH, $DEGEN degenerate)" $? 0
+i=0; : > "$T/ab16.bytes"
+while [ $i -lt 2000 ]; do printf 'ab' >> "$T/ab16.bytes"; i=$((i+1)); done
+"$N" "$T/ab16.bytes" --reset --seed 5 --episodes 1 --steps 2000 --state "$T/b16a.state" --bio "$T/b16a.bio" > "$T/b16a.out" 2>&1
+CORE_A=$(awk '/^model core /{print $NF}' "$T/b16a.out")
+BI_A=$(awk '/^model byte-bi /{print $NF}' "$T/b16a.out")
+awk -v c="$CORE_A" -v b="$BI_A" 'BEGIN{exit !(b - c >= 0.5)}'
+gate "B16 no cone, and a first win: core $CORE_A beats byte-bi $BI_A" $? 0
+awk 'BEGIN{for(i=0;i<3000;i++) printf "aabab"}' > "$T/p5.bytes"
+"$N" "$T/p5.bytes" --reset --seed 5 --episodes 4 --steps 2000 --state "$T/b16p.state" --bio "$T/b16p.bio" > "$T/b16p.out" 2>&1
+CORE_P=$(awk '/^model core /{print $NF}' "$T/b16p.out")
+TRI_P=$(awk '/^model byte-tri /{print $NF}' "$T/b16p.out")
+awk -v c="$CORE_P" -v t="$TRI_P" 'BEGIN{exit !(t - c >= 0.5)}'
+gate "B16 the core sees past the trigram floor: $CORE_P vs $TRI_P on period 5" $? 0
+awk 'BEGIN{for(i=0;i<3000;i++) printf "aababab"}' > "$T/p7.bytes"
+"$N" "$T/p7.bytes" --reset --seed 5 --episodes 4 --steps 2000 --state "$T/b16w.state" --bio "$T/b16w.bio" > "$T/b16w.out" 2>&1
+CORE_W=$(awk '/^model core /{print $NF}' "$T/b16w.out")
+TRI_W=$(awk '/^model byte-tri /{print $NF}' "$T/b16w.out")
+awk -v c="$CORE_W" -v t="$TRI_W" 'BEGIN{exit !(c - t >= 0.5)}'
+gate "B16 the shadow's weakness is on the record: $CORE_W vs $TRI_W on period 7" $? 0
+"$N" "$T/uhome.bytes" --reset --seed 7 --episodes 1 --steps 2000 --state "$T/b16u.state" --bio "$T/b16u.bio" > "$T/b16u.out" 2>&1
+CORE_U=$(awk '/^model core /{print $NF}' "$T/b16u.out")
+AT_U=$(awk '/^model atomic-uni /{print $NF}' "$T/b16u.out")
+awk -v c="$CORE_U" -v a="$AT_U" 'BEGIN{exit !(c >= 7.95 && c < a)}'
+gate "B16 honest ignorance under the floor law: core $CORE_U, atomic $AT_U" $? 0
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 2 --steps 1000 --state "$T/b16z.state" --bio "$T/b16z.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 2 --steps 1000 --no-core --state "$T/b16zn.state" --bio "$T/b16zn.bio" >/dev/null 2>&1
+cmp -s "$T/b16z.bio" "$T/b16zn.bio"
+gate "B16 the shadow casts no shadow on the game (bio identical core on/off)" $? 0
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 1000 --state "$T/b16s.state" --bio "$T/b16s.bio" >/dev/null 2>&1
+"$N" "$T/rep.bytes" --episodes 1 --steps 1000 --state "$T/b16s.state" --bio "$T/b16s.bio" >/dev/null 2>&1
+cmp -s "$T/b16z.bio" "$T/b16s.bio" && cmp -s "$T/b16z.state" "$T/b16s.state"
+gate "B16 core weights survive restart (split life identical)" $? 0
+printf '\x11\x00\x00\x00' | dd of="$T/b16s.state" bs=1 seek=8 conv=notrunc 2>/dev/null
+"$N" "$T/rep.bytes" --episodes 1 --steps 1000 --state "$T/b16s.state" --bio "$T/b16s.bio" >/dev/null 2>&1
+gate "B16 a version-17 state cannot enter the core court" $? 1
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -882,7 +936,7 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move navigation and restart state v17" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v18" $rc 0
 "$S" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 \
     --island 0 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>"$T/si.err"
 rc=$?
@@ -918,6 +972,13 @@ rc=$?
     --atlas --state "$T/sr14.state" --bio "$T/sr14.bio" >/dev/null 2>>"$T/sr14.err" || rc=$?
 [ -s "$T/sr14.err" ] && rc=98
 gate "S ASan/UBSan silent through the atlas and a reversed convoy" $rc 0
+"$S" "$T/p5.bytes" --reset --seed 5 --episodes 4 --steps 2000 \
+    --state "$T/sc16.state" --bio "$T/sc16.bio" >/dev/null 2>"$T/sc16.err"
+rc=$?
+"$S" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 4000 \
+    --state "$T/sc16b.state" --bio "$T/sc16b.bio" >/dev/null 2>>"$T/sc16.err" || rc=$?
+[ -s "$T/sc16.err" ] && rc=98
+gate "S ASan/UBSan silent through the learning core" $rc 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi

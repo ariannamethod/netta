@@ -30,6 +30,12 @@ technical source of truth for the living line.
   without losing its home mandate. Fixed uniform `null` is the island's
   eight-bit birth floor until a travelled byte hand earns a local 0.1-bit
   lead, and blind comity cannot be overrun by one oversized episode.
+- A neural core lives in shadow: the buried prototype's own lineage with no
+  backpropagation -- a recurrent state over innate byte embeddings, a
+  delta-rule readout born at exact ignorance, and surprise-gated Hebbian
+  dynamics modulated by the prequential surprise itself. It prices every
+  lived byte on the same ruler, holds no candidacy, writes no biography
+  line, and its measured weaknesses stay on the record beside its wins.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -51,8 +57,9 @@ technical source of truth for the living line.
   silently change a life's identity.
 
 This is a foundation, not a finished language model. The present arenas are
-mostly controlled synthetic worlds. There is no neural core, prompt mode,
-dreaming, glyph system, generalizing travel predictor, or unbounded life yet.
+mostly controlled synthetic worlds. The neural core is a shadow witness with
+no authority yet; there is no prompt mode, dreaming, glyph system,
+generalizing travel predictor, or unbounded life.
 
 ## Build and test
 
@@ -61,14 +68,15 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 116-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 127-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
 door, unit death, tombstone silence and resurrection arms, the island
 registry with fresh and resumed convoy-order invariance, an absent-identity
-forgery arm, Atlas exploration and earned-choice arms, and failure-closed
-state and biography checks. A passing build ends with `ALL GATES PASS`.
+forgery arm, Atlas exploration and earned-choice arms, the neural shadow
+core with its wins and its recorded weaknesses, and failure-closed state
+and biography checks. A passing build ends with `ALL GATES PASS`.
 
 ## Start a life
 
@@ -143,6 +151,8 @@ Useful experimental flags:
 - `--atlas` enables earned navigation among the identities present in this
   invocation. Manual `--island N` remains the matched helm and the fallback
   when fewer than two distinct shores can be chosen.
+- `--no-core` disables the neural shadow witness; this is the matched red
+  control proving the shadow casts no shadow on the game.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.
