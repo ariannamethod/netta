@@ -2548,6 +2548,9 @@ static int speak_seed_set = 0;
    smoothing is honest when an external byte may be unseen; sampling its
    pseudo-counts as if they had been lived is a different act. */
 static int speak_laplace = 0;
+static const char *ear_path = NULL;
+static const char *ear_context_path = NULL;
+static int life_control_named = 0;
 
 static uint64_t speak_next(uint64_t *s) {
     uint64_t z = (*s += 0x9e3779b97f4a7c15ULL);
@@ -2685,6 +2688,293 @@ static void speak(void) {
                 (unsigned long long)support_order[2]);
 }
 
+/* body 20: the island's ear. Every island can carry its own statistical
+   judge, grown from its immutable tape and nothing else: a foreign prior
+   cannot be smuggled through an object that is a pure function of the
+   sealed shore. The ear prices a spoken stream with the island's own
+   Laplace ladder -- pricing is where charging ignorance is honest -- and
+   takes an exact substring census against the tape, which is fully known.
+   A match is evidence of shared bytes, not by itself evidence of copying:
+   the instrument holds no office, wires into no election, opens no state
+   and writes nothing. */
+#define EAR_MAX (1u << 14)
+#define EAR_MATCH_MIN 16
+
+/* The candidate is the bounded side of the exact-match problem.  Its suffix
+   automaton has fewer than 2*n states and is scanned once by every shore.
+   This replaces the first ear's O(shore*candidate) DP: the public 16384-byte
+   ceiling must remain usable on a full real-text island, not merely correct
+   on a tiny test world.  Transition zero means absent, so stored ids are
+   shifted by one. */
+typedef struct {
+    size_t cap;
+    uint32_t states, last;
+    uint32_t *next, *len, *prefix, *best, *heard, *order, *count;
+    int32_t *link;
+} EarSam;
+
+#define EAR_SAM_NONE UINT32_MAX
+
+static uint32_t ear_sam_get(const EarSam *a, uint32_t state, uint8_t b) {
+    uint32_t v = a->next[(size_t)state * ACTIONS + b];
+    return v ? v - 1 : EAR_SAM_NONE;
+}
+
+static void ear_sam_set(EarSam *a, uint32_t state, uint8_t b,
+                        uint32_t target) {
+    a->next[(size_t)state * ACTIONS + b] = target + 1;
+}
+
+static void ear_sam_build(EarSam *a, const uint8_t *sp, size_t n) {
+    memset(a, 0, sizeof *a);
+    a->cap = n * 2;
+    a->next = (uint32_t *)calloc(a->cap * ACTIONS, sizeof *a->next);
+    a->len = (uint32_t *)calloc(a->cap, sizeof *a->len);
+    a->prefix = (uint32_t *)calloc(n, sizeof *a->prefix);
+    a->best = (uint32_t *)calloc(a->cap, sizeof *a->best);
+    a->heard = (uint32_t *)calloc(a->cap, sizeof *a->heard);
+    a->order = (uint32_t *)calloc(a->cap, sizeof *a->order);
+    a->count = (uint32_t *)calloc(n + 1, sizeof *a->count);
+    a->link = (int32_t *)malloc(a->cap * sizeof *a->link);
+    if (!a->next || !a->len || !a->prefix || !a->best || !a->heard ||
+            !a->order || !a->count || !a->link) {
+        fprintf(stderr, "netta: oom\n");
+        exit(1);
+    }
+    a->states = 1;
+    a->last = 0;
+    a->link[0] = -1;
+    for (size_t i = 0; i < n; ++i) {
+        uint8_t b = sp[i];
+        if (a->states >= a->cap) {
+            fprintf(stderr, "netta: ear automaton full\n");
+            exit(1);
+        }
+        uint32_t cur = a->states++;
+        a->len[cur] = a->len[a->last] + 1;
+        int32_t p = (int32_t)a->last;
+        while (p >= 0 && ear_sam_get(a, (uint32_t)p, b) == EAR_SAM_NONE) {
+            ear_sam_set(a, (uint32_t)p, b, cur);
+            p = a->link[p];
+        }
+        if (p < 0) {
+            a->link[cur] = 0;
+        } else {
+            uint32_t q = ear_sam_get(a, (uint32_t)p, b);
+            if (a->len[p] + 1 == a->len[q]) {
+                a->link[cur] = (int32_t)q;
+            } else {
+                if (a->states >= a->cap) {
+                    fprintf(stderr, "netta: ear automaton full\n");
+                    exit(1);
+                }
+                uint32_t clone = a->states++;
+                a->len[clone] = a->len[p] + 1;
+                a->link[clone] = a->link[q];
+                memcpy(&a->next[(size_t)clone * ACTIONS],
+                       &a->next[(size_t)q * ACTIONS],
+                       ACTIONS * sizeof *a->next);
+                while (p >= 0 && ear_sam_get(a, (uint32_t)p, b) == q) {
+                    ear_sam_set(a, (uint32_t)p, b, clone);
+                    p = a->link[p];
+                }
+                a->link[q] = (int32_t)clone;
+                a->link[cur] = (int32_t)clone;
+            }
+        }
+        a->last = cur;
+        a->prefix[i] = cur;
+    }
+
+    /* Counting sort by state length gives both suffix-link propagation
+       orders without comparison-dependent behaviour. */
+    for (uint32_t q = 0; q < a->states; ++q) a->count[a->len[q]]++;
+    for (size_t i = 1; i <= n; ++i) a->count[i] += a->count[i - 1];
+    for (uint32_t q = a->states; q-- > 0;)
+        a->order[--a->count[a->len[q]]] = q;
+}
+
+static void ear_sam_match(EarSam *a, const Island *isl,
+                          uint32_t maxend[EAR_MAX]) {
+    memset(a->best, 0, a->states * sizeof *a->best);
+    memset(a->heard, 0, a->states * sizeof *a->heard);
+    uint32_t v = 0, length = 0;
+    for (uint64_t i = 0; i < isl->len; ++i) {
+        uint8_t b = isl->bytes[i];
+        uint32_t to = ear_sam_get(a, v, b);
+        while (v && to == EAR_SAM_NONE) {
+            v = (uint32_t)a->link[v];
+            if (length > a->len[v]) length = a->len[v];
+            to = ear_sam_get(a, v, b);
+        }
+        if (to != EAR_SAM_NONE) {
+            v = to;
+            length++;
+        } else {
+            v = 0;
+            length = 0;
+        }
+        if (length > a->best[v]) a->best[v] = length;
+    }
+
+    /* Every substring represented by a state shares its candidate end
+       positions.  Propagate shore matches down suffix links, then carry the
+       best suffix forward to each saved candidate-prefix state. */
+    for (uint32_t oi = a->states; oi-- > 1;) {
+        uint32_t q = a->order[oi];
+        uint32_t p = (uint32_t)a->link[q];
+        uint32_t carry = a->best[q];
+        if (carry > a->len[p]) carry = a->len[p];
+        if (carry > a->best[p]) a->best[p] = carry;
+    }
+    for (uint32_t oi = 1; oi < a->states; ++oi) {
+        uint32_t q = a->order[oi];
+        uint32_t p = (uint32_t)a->link[q];
+        a->heard[q] = a->best[q] > a->heard[p] ?
+                      a->best[q] : a->heard[p];
+    }
+    for (uint32_t i = 0; i < a->len[a->last]; ++i)
+        maxend[i] = a->heard[a->prefix[i]];
+}
+
+static void ear_sam_free(EarSam *a) {
+    free(a->next); free(a->len); free(a->prefix); free(a->best);
+    free(a->heard); free(a->order); free(a->count); free(a->link);
+}
+
+static void ear_grow(const Island *isl) {
+    memset(counts, 0, sizeof counts);
+    counts_total = 0;
+    memset(bi_count, 0, sizeof bi_count);
+    memset(bi_row, 0, sizeof bi_row);
+    memset(tri, 0, TRI_SLOTS * sizeof(Pair));
+    memset(tri_row, 0, sizeof tri_row);
+    tri_used = 0;
+    for (uint64_t i = 0; i < isl->len; ++i) {
+        uint8_t b = isl->bytes[i];
+        counts[b]++;
+        counts_total++;
+        if (i >= 1) {
+            uint8_t p1 = isl->bytes[i - 1];
+            bi_count[p1][b]++;
+            bi_row[p1]++;
+            if (i >= 2)
+                tri_add(((uint32_t)isl->bytes[i - 2] << 8) | p1, b);
+        }
+    }
+}
+
+static void ear(void) {
+    FILE *f = fopen(ear_path, "rb");
+    if (!f) {
+        fprintf(stderr, "netta: cannot open %s\n", ear_path);
+        exit(1);
+    }
+    /* Read one byte past the public bound.  feof() is not set when fread
+       fills its request exactly, so using it as the boundary witness would
+       refuse EAR_MAX itself and conflate it with a truncated longer stream. */
+    static uint8_t sp[EAR_MAX + 1];
+    size_t n = fread(sp, 1, sizeof sp, f);
+    int read_failed = ferror(f);
+    int close_failed = fclose(f) != 0;
+    if (read_failed || close_failed) {
+        fprintf(stderr, "netta: cannot read %s\n", ear_path);
+        exit(1);
+    }
+    if (n > EAR_MAX) {
+        fprintf(stderr, "netta: the ear listens to at most %u bytes "
+                        "at a sitting\n", EAR_MAX);
+        exit(1);
+    }
+    if (n < 2) {
+        fprintf(stderr, "netta: the ear needs at least two bytes\n");
+        exit(1);
+    }
+
+    /* Body 21: the ear remembers the question.  A named context is a third
+       immutable input, never life state: only its final two bytes enter the
+       same trigram context the mouth carries.  Two bytes are required so no
+       hidden cold byte or state-grown default can enter the hearing. */
+    uint8_t cp2 = 0, cp1 = 0;
+    int contextual = 0;
+    if (ear_context_path) {
+        f = fopen(ear_context_path, "rb");
+        if (!f) {
+            fprintf(stderr, "netta: cannot open ear context %s\n",
+                    ear_context_path);
+            exit(1);
+        }
+        int c, have = 0;
+        while ((c = fgetc(f)) != EOF) {
+            cp2 = cp1;
+            cp1 = (uint8_t)c;
+            if (have < 2) have++;
+        }
+        read_failed = ferror(f);
+        close_failed = fclose(f) != 0;
+        if (read_failed || close_failed) {
+            fprintf(stderr, "netta: cannot read ear context %s\n",
+                    ear_context_path);
+            exit(1);
+        }
+        if (have < 2) {
+            fprintf(stderr,
+                    "netta: ear context needs at least two bytes\n");
+            exit(1);
+        }
+        contextual = 1;
+    }
+    static uint32_t maxend[EAR_MAX];
+    EarSam match;
+    ear_sam_build(&match, sp, n);
+    for (int k = 0; k < island_count; ++k) {
+        Island *isl = &islands[k];
+        ear_grow(isl);
+        double bits = 0.0;
+        uint8_t p2 = cp2, p1 = cp1;
+        for (size_t i = 0; i < n; ++i) {
+            uint8_t b = sp[i];
+            double p;
+            if (!contextual && i == 0)
+                p = ((double)counts[b] + 1.0) /
+                    ((double)counts_total + (double)ACTIONS);
+            else if (!contextual && i == 1)
+                p = ((double)bi_count[p1][b] + 1.0) /
+                    ((double)bi_row[p1] + (double)ACTIONS);
+            else {
+                uint32_t t = ((uint32_t)p2 << 8) | p1;
+                p = ((double)tri_get(t, b) + 1.0) /
+                    ((double)tri_row[t] + (double)ACTIONS);
+            }
+            bits += -log2(p);
+            p2 = p1;
+            p1 = b;
+        }
+        ear_sam_match(&match, isl, maxend);
+        uint64_t longest = 0, covered = 0;
+        size_t painted = 0;
+        for (size_t s = 0; s < n; ++s) {
+            if (maxend[s] > longest) longest = maxend[s];
+            if (maxend[s] >= EAR_MATCH_MIN) {
+                size_t le = s + 1 - maxend[s];
+                if (le < painted) le = painted;
+                covered += s + 1 - le;
+                painted = s + 1;
+            }
+        }
+        printf("ear %d: digest=%016llx context=", k,
+               (unsigned long long)isl->digest);
+        if (contextual) printf("%02x%02x", cp2, cp1);
+        else printf("cold");
+        printf(" bytes=%llu bits=%.6f "
+               "bits/byte=%.6f longest-match=%llu matched16=%.1f%%\n",
+               (unsigned long long)n,
+               bits, bits / (double)n, (unsigned long long)longest,
+               100.0 * (double)covered / (double)n);
+    }
+    ear_sam_free(&match);
+}
+
 int main(int argc, char **argv) {
     const char *state_path = "netta0.state";
     const char *bio_path = "netta0.bio.tsv";
@@ -2694,46 +2984,83 @@ int main(int argc, char **argv) {
     const char *paths[MAX_ISLANDS];
 
     for (int i = 1; i < argc; ++i) {
-        if (!strcmp(argv[i], "--seed") && i + 1 < argc)
+        if (!strcmp(argv[i], "--seed") && i + 1 < argc) {
+            life_control_named = 1;
             seed = parse_u64("--seed", argv[++i]);
-        else if (!strcmp(argv[i], "--episodes") && i + 1 < argc)
+        }
+        else if (!strcmp(argv[i], "--episodes") && i + 1 < argc) {
+            life_control_named = 1;
             episodes = parse_u64("--episodes", argv[++i]);
-        else if (!strcmp(argv[i], "--steps") && i + 1 < argc)
+        }
+        else if (!strcmp(argv[i], "--steps") && i + 1 < argc) {
+            life_control_named = 1;
             steps = parse_u64("--steps", argv[++i]);
-        else if (!strcmp(argv[i], "--island") && i + 1 < argc)
+        }
+        else if (!strcmp(argv[i], "--island") && i + 1 < argc) {
+            life_control_named = 1;
             isl_id = parse_int("--island", argv[++i]);
+        }
         else if (!strcmp(argv[i], "--start") && i + 1 < argc) {
+            life_control_named = 1;
             fixed_start = parse_u64("--start", argv[++i]);
             fixed_start_set = 1;
         }
-        else if (!strcmp(argv[i], "--state") && i + 1 < argc)
+        else if (!strcmp(argv[i], "--state") && i + 1 < argc) {
+            life_control_named = 1;
             state_path = argv[++i];
-        else if (!strcmp(argv[i], "--bio") && i + 1 < argc)
+        }
+        else if (!strcmp(argv[i], "--bio") && i + 1 < argc) {
+            life_control_named = 1;
             bio_path = argv[++i];
-        else if (!strcmp(argv[i], "--reset"))
+        }
+        else if (!strcmp(argv[i], "--reset")) {
+            life_control_named = 1;
             reset = 1;
-        else if (!strcmp(argv[i], "--atlas"))
+        }
+        else if (!strcmp(argv[i], "--atlas")) {
+            life_control_named = 1;
             atlas_enabled = 1;
-        else if (!strcmp(argv[i], "--no-units"))
+        }
+        else if (!strcmp(argv[i], "--no-units")) {
+            life_control_named = 1;
             units_enabled = 0;
-        else if (!strcmp(argv[i], "--no-mv-nav"))
+        }
+        else if (!strcmp(argv[i], "--no-mv-nav")) {
+            life_control_named = 1;
             move_nav_enabled = 0;
-        else if (!strcmp(argv[i], "--no-island-court"))
+        }
+        else if (!strcmp(argv[i], "--no-island-court")) {
+            life_control_named = 1;
             island_court_enabled = 0;
-        else if (!strcmp(argv[i], "--no-birth-floor"))
+        }
+        else if (!strcmp(argv[i], "--no-birth-floor")) {
+            life_control_named = 1;
             birth_floor_enabled = 0;
-        else if (!strcmp(argv[i], "--no-local-probation"))
+        }
+        else if (!strcmp(argv[i], "--no-local-probation")) {
+            life_control_named = 1;
             local_probation_enabled = 0;
-        else if (!strcmp(argv[i], "--no-unit-death"))
+        }
+        else if (!strcmp(argv[i], "--no-unit-death")) {
+            life_control_named = 1;
             unit_death_enabled = 0;
-        else if (!strcmp(argv[i], "--keep-dead-mass"))
+        }
+        else if (!strcmp(argv[i], "--keep-dead-mass")) {
+            life_control_named = 1;
             tombstone_silence_enabled = 0;
-        else if (!strcmp(argv[i], "--no-core"))
+        }
+        else if (!strcmp(argv[i], "--no-core")) {
+            life_control_named = 1;
             core_enabled = 0;
-        else if (!strcmp(argv[i], "--core-hebb-v1"))
+        }
+        else if (!strcmp(argv[i], "--core-hebb-v1")) {
+            life_control_named = 1;
             core_hebb_enabled = 1;
-        else if (!strcmp(argv[i], "--jury"))
+        }
+        else if (!strcmp(argv[i], "--jury")) {
+            life_control_named = 1;
             jury_enabled = 1;
+        }
         else if (!strcmp(argv[i], "--speak") && i + 1 < argc) {
             speak_requested = 1;
             speak_bytes = parse_u64("--speak", argv[++i]);
@@ -2746,7 +3073,12 @@ int main(int argc, char **argv) {
             prompt_path = argv[++i];
         else if (!strcmp(argv[i], "--speak-laplace"))
             speak_laplace = 1;
+        else if (!strcmp(argv[i], "--ear") && i + 1 < argc)
+            ear_path = argv[++i];
+        else if (!strcmp(argv[i], "--ear-context") && i + 1 < argc)
+            ear_context_path = argv[++i];
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
+            life_control_named = 1;
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
             else if (!strcmp(argv[i], "bi")) actor_lock = 1;
@@ -2765,6 +3097,23 @@ int main(int argc, char **argv) {
             paths[paths_n++] = argv[i];
     }
 
+    if (ear_context_path && !ear_path) {
+        fprintf(stderr, "netta: --ear-context requires --ear\n");
+        exit(1);
+    }
+    if (ear_path) {
+        if (speak_requested || speak_seed_set || prompt_path ||
+                speak_laplace || life_control_named) {
+            fprintf(stderr,
+                    "netta: the ear accepts only shores, --ear, and "
+                    "--ear-context\n");
+            exit(1);
+        }
+        if (paths_n == 0) {
+            fprintf(stderr, "netta: the ear needs a shore\n");
+            exit(1);
+        }
+    }
     if (actor_lock == 3 && !units_enabled) {
         fprintf(stderr,
                 "netta: --actor-lock mv requires units enabled\n");
@@ -2782,7 +3131,7 @@ int main(int argc, char **argv) {
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
                         "[--atlas] [--no-core] [--core-hebb-v1] [--jury] "
                         "[--speak N] [--speak-seed N] [--prompt-file P] "
-                        "[--speak-laplace] "
+                        "[--speak-laplace] [--ear P] [--ear-context P] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -2794,6 +3143,12 @@ int main(int argc, char **argv) {
     tri = (Pair *)calloc(TRI_SLOTS, sizeof(Pair));
     if (!tri) { fprintf(stderr, "netta: oom\n"); exit(1); }
     for (int i = 0; i < paths_n; ++i) island_load(paths[i]);
+    /* A hearing cannot inspect ambient life defaults.  Enter the ear before
+       any state/biography alias check or other life-only filesystem query. */
+    if (ear_path) {
+        ear();
+        return 0;
+    }
     if (same_file(state_path, bio_path)) {
         fprintf(stderr, "netta: state and biography must be distinct\n");
         exit(1);
@@ -2815,7 +3170,6 @@ int main(int argc, char **argv) {
         fprintf(stderr, "netta: no island %d\n", isl_id);
         exit(1);
     }
-
     rng_state = seed;
     int resumed = 0;
     core_init();   /* innate identity is regenerated, never loaded */

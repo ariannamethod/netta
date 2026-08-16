@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B19. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B21. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -1153,6 +1153,174 @@ gate "B19 the Laplace red mouth leaves the lived alphabet ($B19R/120 bytes)" $? 
 cmp -s "$T/b18.state" "$T/b18.state.ref" && cmp -s "$T/b18.bio" "$T/b18.bio.ref"
 gate "B19 repaired and red mouths are equally memory-silent" $? 0
 
+# --- B20: the island's ear ----------------------------------------------
+# Every island can carry its own statistical judge, grown from its
+# immutable tape and nothing else. The ear prices speech with the
+# island's own Laplace ladder, takes an exact substring census against
+# the fully known tape, opens no state, and writes nothing. Each shore
+# judges by its own book; destroying
+# the order of a true slice while keeping its census must raise the
+# price (red: the ear hears structure, not alphabet).
+i=0; : > "$T/x3.bytes"
+while [ $i -lt 700 ]; do printf 'xyzxzy' >> "$T/x3.bytes"; i=$((i+1)); done
+head -c 200 "$T/p3.bytes" > "$T/b20.slice"
+"$N" "$T/p3.bytes" "$T/x3.bytes" --ear "$T/b20.slice" > "$T/b20.out" 2>/dev/null
+gate "B20 the ear hears a convoy of shores" $? 0
+grep -q '^ear 0: .* longest-match=200 matched16=100.0%$' "$T/b20.out"
+gate "B20 a verbatim slice is caught exactly by the substring census" $? 0
+e0=$(sed -n 's/^ear 0: .*bits\/byte=\([0-9.]*\).*/\1/p' "$T/b20.out")
+e1=$(sed -n 's/^ear 1: .*bits\/byte=\([0-9.]*\).*/\1/p' "$T/b20.out")
+awk -v a="$e0" -v b="$e1" 'BEGIN{exit !(a+2.0 < b)}'
+gate "B20 each shore judges by its own book (home $e0, foreign $e1 bits/byte)" $? 0
+grep -q '^ear 1: .* longest-match=0 ' "$T/b20.out"
+gate "B20 a foreign stream matches nothing from a disjoint shore" $? 0
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" > "$T/b20.d1" 2>/dev/null
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" > "$T/b20.d2" 2>/dev/null
+cmp -s "$T/b20.d1" "$T/b20.d2"
+gate "B20 the ear is deterministic" $? 0
+fold -w1 < "$T/b20.slice" | LC_ALL=C sort | tr -d '\n' > "$T/b20.sorted"
+"$N" "$T/p3.bytes" --ear "$T/b20.sorted" > "$T/b20.sout" 2>/dev/null
+es=$(sed -n 's/^ear 0: .*bits\/byte=\([0-9.]*\).*/\1/p' "$T/b20.sout")
+awk -v a="$e0" -v b="$es" 'BEGIN{exit !(a + 1.0 < b)}'
+gate "B20 the ear hears order, not census (sorted twin $es over true $e0) (red)" $? 0
+mkdir "$T/b20dir"
+( cd "$T/b20dir" && "$N" "$T/p3.bytes" --ear "$T/b20.slice" >/dev/null 2>&1 )
+[ -z "$(ls -A "$T/b20dir")" ]
+gate "B20 the ear writes nothing" $? 0
+"$N" --ear "$T/b20.slice" >/dev/null 2>&1
+gate "B20 the ear needs a shore" $? 1
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" --speak 5 >/dev/null 2>&1
+gate "B20 the ear and the mouth are separate invocations" $? 1
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" --state "$T/p3.state" >/dev/null 2>&1
+gate "B20 the ear judges a shore, never a life (state refused)" $? 1
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" --reset >/dev/null 2>&1
+gate "B20 the ear judges a shore, never a life (reset refused)" $? 1
+
+# The public cap is inclusive, and a longer stream is refused rather than
+# silently truncated.  The old feof witness rejected the exact bound.
+dd if=/dev/zero of="$T/b20.cap" bs=16384 count=1 2>/dev/null
+"$N" "$T/p3.bytes" --ear "$T/b20.cap" > "$T/b20.cap.out" 2>/dev/null
+grep -q 'bytes=16384 ' "$T/b20.cap.out"
+gate "B20 the exact 16384-byte hearing bound is admitted" $? 0
+cp "$T/b20.cap" "$T/b20.over"
+printf x >> "$T/b20.over"
+"$N" "$T/p3.bytes" --ear "$T/b20.over" >/dev/null 2>&1
+gate "B20 a 16385-byte stream is refused, never truncated" $? 1
+
+# Exact substring includes both tape boundaries, the threshold itself, and
+# binary NUL.  Fifteen bytes remain below the declared match ruler.
+printf '0123456789abcdef' > "$T/b20.q16"
+printf 'X0123456789abcdefY' > "$T/b20.qstream"
+"$N" "$T/b20.q16" --ear "$T/b20.qstream" > "$T/b20.qout" 2>/dev/null
+grep -q 'longest-match=16 matched16=88.9%' "$T/b20.qout"
+gate "B20 exact matcher holds both tape boundaries at the 16-byte law" $? 0
+printf '\000abcdefghijklmn\000' > "$T/b20.qnul"
+"$N" "$T/b20.qnul" --ear "$T/b20.qnul" > "$T/b20.qnul.out" 2>/dev/null
+grep -q 'longest-match=16 matched16=100.0%' "$T/b20.qnul.out"
+gate "B20 exact matcher is byte-exact through NUL" $? 0
+printf '0123456789abcde' > "$T/b20.q15"
+"$N" "$T/b20.q15" --ear "$T/b20.q15" > "$T/b20.q15.out" 2>/dev/null
+grep -q 'longest-match=15 matched16=0.0%' "$T/b20.q15.out"
+gate "B20 fifteen matched bytes stay below the sealed match threshold" $? 0
+printf '0123456789abcdefX0123456789abcdef' > "$T/b20.qunion"
+"$N" "$T/b20.q16" --ear "$T/b20.qunion" > "$T/b20.qunion.out" 2>/dev/null
+grep -q 'longest-match=16 matched16=97.0%' "$T/b20.qunion.out"
+gate "B20 overlapping match intervals form an exact coverage union" $? 0
+
+# An ear invocation must not inspect the default life filenames in its cwd.
+# Two hardlinked ambient defaults used to abort before ear() was entered.
+mkdir "$T/b20ambient"
+printf x > "$T/b20ambient/netta0.state"
+ln "$T/b20ambient/netta0.state" "$T/b20ambient/netta0.bio.tsv"
+( cd "$T/b20ambient" && "$N" "$T/p3.bytes" --ear "$T/b20.slice" \
+    > "$T/b20.ambient" 2>/dev/null )
+cmp -s "$T/b20.d1" "$T/b20.ambient"
+gate "B20 ambient life defaults cannot enter the ear" $? 0
+
+# Every explicit life or mouth control is hostile in an ear invocation.
+# Refusal is about invocation, even when the named value equals its default.
+ear_refuses() {
+    if "$N" "$T/p3.bytes" --ear "$T/b20.slice" "$@" \
+        >/dev/null 2>&1; then
+        return 1
+    fi
+    return 0
+}
+rc=0
+for flag in --reset --atlas --no-units --no-mv-nav --no-island-court \
+    --no-birth-floor --no-local-probation --no-unit-death --keep-dead-mass \
+    --no-core --core-hebb-v1 --jury; do
+    ear_refuses "$flag" || rc=98
+done
+ear_refuses --seed 1 || rc=98
+ear_refuses --episodes 1 || rc=98
+ear_refuses --steps 64 || rc=98
+ear_refuses --island 0 || rc=98
+ear_refuses --start 0 || rc=98
+ear_refuses --state unused || rc=98
+ear_refuses --bio unused || rc=98
+ear_refuses --actor-lock uni || rc=98
+ear_refuses --speak-seed 1 || rc=98
+ear_refuses --prompt-file "$T/b20.slice" || rc=98
+ear_refuses --speak-laplace || rc=98
+gate "B20 the ear refuses the complete life-and-mouth control surface" $rc 0
+
+# Sorting is a world-local red arm, not a universal theorem.  On a shore
+# whose own order is two blocks, the block-sorted stream beats its alternating
+# census twin -- the opposite of the period-3 result above.
+: > "$T/b20.blocks"
+i=0; while [ $i -lt 100 ]; do printf a >> "$T/b20.blocks"; i=$((i+1)); done
+i=0; while [ $i -lt 100 ]; do printf b >> "$T/b20.blocks"; i=$((i+1)); done
+printf 'aaaabbbb' > "$T/b20.blocks.sorted"
+printf 'abababab' > "$T/b20.blocks.alt"
+"$N" "$T/b20.blocks" --ear "$T/b20.blocks.sorted" \
+    > "$T/b20.blocks.sout" 2>/dev/null
+"$N" "$T/b20.blocks" --ear "$T/b20.blocks.alt" \
+    > "$T/b20.blocks.aout" 2>/dev/null
+ebs=$(sed -n 's/^ear 0: .*bits\/byte=\([0-9.]*\).*/\1/p' \
+      "$T/b20.blocks.sout")
+eba=$(sed -n 's/^ear 0: .*bits\/byte=\([0-9.]*\).*/\1/p' \
+      "$T/b20.blocks.aout")
+awk -v a="$ebs" -v b="$eba" 'BEGIN{exit !(a < b)}'
+gate "B20 sorted speech can win on a sorted shore ($ebs < $eba) (red)" $? 0
+
+# --- B21: the ear remembers the question -------------------------------
+# Cold warmup is a named mode, not an invisible property of every hearing.
+# An explicit prompt contributes exactly its last two bytes, making every
+# candidate byte a trigram-priced continuation without granting authority.
+: > "$T/b21.shore"
+i=0; while [ $i -lt 100 ]; do printf a >> "$T/b21.shore"; i=$((i+1)); done
+printf 'zzbbbb' >> "$T/b21.shore"
+printf aa > "$T/b21.aa"
+printf bb > "$T/b21.bb"
+printf zz > "$T/b21.ctx"
+printf 'discarded-prefix-zz' > "$T/b21.ctxlong"
+"$N" "$T/b21.shore" --ear "$T/b21.aa" > "$T/b21.aa.cold" 2>/dev/null
+"$N" "$T/b21.shore" --ear "$T/b21.bb" > "$T/b21.bb.cold" 2>/dev/null
+"$N" "$T/b21.shore" --ear "$T/b21.aa" --ear-context "$T/b21.ctx" \
+    > "$T/b21.aa.hot" 2>/dev/null
+"$N" "$T/b21.shore" --ear "$T/b21.bb" --ear-context "$T/b21.ctx" \
+    > "$T/b21.bb.hot" 2>/dev/null
+ac=$(sed -n 's/^ear 0: .*bits\/byte=\([0-9.]*\).*/\1/p' "$T/b21.aa.cold")
+bc=$(sed -n 's/^ear 0: .*bits\/byte=\([0-9.]*\).*/\1/p' "$T/b21.bb.cold")
+ah=$(sed -n 's/^ear 0: .*bits\/byte=\([0-9.]*\).*/\1/p' "$T/b21.aa.hot")
+bh=$(sed -n 's/^ear 0: .*bits\/byte=\([0-9.]*\).*/\1/p' "$T/b21.bb.hot")
+awk -v ac="$ac" -v bc="$bc" -v ah="$ah" -v bh="$bh" \
+    'BEGIN{exit !(ac < bc && bh < ah)}'
+gate "B21 explicit context reverses the constructed cold ranking ($ac<$bc; $bh<$ah)" $? 0
+grep -q ' context=7a7a ' "$T/b21.aa.hot"
+gate "B21 the hearing names its two-byte context" $? 0
+"$N" "$T/b21.shore" --ear "$T/b21.aa" \
+    --ear-context "$T/b21.ctxlong" > "$T/b21.aa.long" 2>/dev/null
+cmp -s "$T/b21.aa.hot" "$T/b21.aa.long"
+gate "B21 only the last two prompt bytes enter the ear" $? 0
+"$N" "$T/b21.shore" --ear-context "$T/b21.ctx" >/dev/null 2>&1
+gate "B21 context without a candidate ear is refused" $? 1
+printf z > "$T/b21.shortctx"
+"$N" "$T/b21.shore" --ear "$T/b21.aa" \
+    --ear-context "$T/b21.shortctx" >/dev/null 2>&1
+gate "B21 an underspecified one-byte context is refused" $? 1
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -1225,6 +1393,14 @@ grep -v '^speak:' "$T/ss18.err" | grep -v '^speak support:' | \
     grep -v '^NETTA ZERO' > "$T/ss18.err2" || true
 [ -s "$T/ss18.err2" ] && rc=98
 gate "S ASan/UBSan silent through the speaking mouth" $rc 0
+"$S" "$T/p3.bytes" "$T/x3.bytes" --ear "$T/b20.slice" \
+    > /dev/null 2>"$T/ss20.err"
+rc=$?; [ -s "$T/ss20.err" ] && rc=98
+gate "S ASan/UBSan silent through the ear" $rc 0
+"$S" "$T/b21.shore" --ear "$T/b21.aa" \
+    --ear-context "$T/b21.ctx" > /dev/null 2>"$T/ss21.err"
+rc=$?; [ -s "$T/ss21.err" ] && rc=98
+gate "S ASan/UBSan silent through the context-bearing ear" $rc 0
 "$S" "$T/p5.bytes" --reset --jury --seed 5 --episodes 1 --steps 300 \
     --state "$T/sc17.state" --bio "$T/sc17.bio" >/dev/null 2>"$T/sc17.err"
 rc=$?

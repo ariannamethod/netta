@@ -1664,3 +1664,202 @@ boundaries, zero-byte life, zero-byte request, every-law read-only matrix,
 prompt horizon, interleaved RNG identity, mv fallback, speech-control
 quarantine, supported graph, causal fallback, Laplace red arm, strict C11,
 and ASan/UBSan join the inherited constitution.
+
+## The supported mouth audited
+
+The nineteenth-body turn was reproduced from zero before its diffs were
+read: all one hundred and sixty-three gates passed with a fresh binary, and
+the four tracked first-word streams re-spoke byte-identically under
+`--speak-laplace` from this side's independently lived 64000- and
+384000-byte states — the red arm preserves body 18's exact arithmetic in
+both hands' worlds.  The supported arm's published census reproduced to the
+byte: 197/200, 300/300 at tri depth, 294/300, 293/300.
+
+Five attacks were then pressed.  The bounded sampler's rejection threshold
+`(0 - bound) % bound` was recomputed by a second hand as `2^64 mod bound`
+through 128-bit arithmetic at every power of two and both neighbours, with
+no disagreement, no out-of-range draw in twenty thousand at each bound, and
+every residue reached at small bounds.  The row totals the sampler trusts
+are not trusted at all: the state loader recomputes bigram and trigram row
+sums and refuses a checkpoint whose books disagree, so a forged-but-loadable
+layout with desynchronized totals does not exist and the sampler's own
+disagree-exit stands third behind the witness and the load audit.  A
+fifty-thousand-byte speech on the period-3 life contained zero bigrams that
+the tape had not lived — the census was taken against the world, not against
+the speaker's claims.  A world whose final byte is lived but has no
+successor forced the full causal ladder in one utterance: support `uni 1,
+bi 1, tri 22` — one draw at the floor, one recovery through the bigram book,
+then home.  And a life on two shores with disjoint alphabets spoke six
+hundred of six hundred bytes in one shore's letters: the mouth is the
+life's, but speech lives in the basin of its opening, because the life
+never lived a single cross-shore transition for the tongue to walk.  That
+sentence now stands as the honest reading of "the life's mouth": `--island`
+chooses where to play, never where to speak.
+
+The challenge to find a world where the red arm is structurally better was
+answered with a preregistered ruler: on a world drawn uniformly over all
+256 byte values, ruler = how many distinct bytes each law can ever name,
+declared before either sample was drawn.  After a 512-step life whose
+window held 224 distinct values, supported backoff spoke exactly those 224
+and could not name the missing 32; the Laplace arm named all 256.  A world
+whose truth is wider than the life is precisely where spending ignorance is
+the only way to say the unseen.  Both laws keep their arms.
+
+Terminal safety stays a warning, not a frame: an escaping layer would make
+the instrument lie about its own bytes, and the reader owns `tr`.
+
+## Body 20: the island's ear
+
+A speaking court cannot exist until its judge exists, and the judge must be
+named and sealed before it hears any candidate.  The twentieth body builds
+the judge as a measurement instrument with no office: the island's ear.
+
+Every island can carry its own statistical judge, grown from its immutable
+tape and nothing else.  A foreign prior cannot be smuggled through an object
+that is a pure function of the sealed shore: the ear reads the whole tape
+once — every byte into the census, every adjacent pair into the bigram book,
+every triple into the trigram book — and prices a spoken stream with the
+island's own Laplace ladder, trigram context with unigram and bigram
+warmup.  Pricing is where charging ignorance is honest, so the judge keeps
+the smoothing law the mouth gave up.  And because the tape is immutable and
+fully known, the parrot is caught by substring, not by statistics: the ear
+reports the longest verbatim quotation and the fraction of the stream
+covered by quotations of sixteen bytes or more.
+
+The ruler is preregistered here, before the ear hears any candidate words:
+an utterance is judged by (1) bits per byte under the shore's own ladder —
+lower is closer to the shore's law; (2) the longest verbatim quote and the
+quoted-16 coverage — a stream that wins (1) by copying the tape is named a
+parrot by (2), exactly; (3) jurisdiction is local: a stream is judged by
+the shore it is offered to, and by nothing else.  No threshold, promotion,
+or authority is attached to any of these numbers.  The ear wires into no
+election, opens no state, writes no byte; `--ear` refuses a mouth in the
+same invocation, refuses `--reset`, `--state`, and `--bio` by name, and
+needs at least one shore.  State remains v20.
+
+On the constitution's own worlds the ear behaves as sealed: a verbatim
+200-byte slice of the period-3 tape prices at 0.46 bits per byte on its own
+shore with longest-quote 200 and full quoted coverage — a perfect parrot,
+perfectly named — while the same slice offered to a disjoint-alphabet shore
+prices at 8.02 bits per byte and quotes nothing.  A sorted twin of the true
+slice, same census, destroyed order, pays more than the true slice on the
+same shore: the ear hears structure, not alphabet.
+
+## The first hearing
+
+With the ruler sealed above, the Dracula shore's ear heard all eight
+recorded streams: the four Laplace-arm streams and their four
+supported-backoff twins.  Under the shore's own law the elected trigram's
+supported speech prices at 2.99 bits per byte — the best of the eight by a
+wide margin — with bi at 4.68 on the young life and 4.99 locked, while the
+locked unigram, printability's champion, prices at 7.48: within half a bit
+of raw ignorance.  Every Laplace stream is beaten by its supported twin
+except uni, where both sit at the noise floor.  The quotation census clears
+all hands: the longest verbatim quote in any stream is twelve bytes and no
+stream carries a single sixteen-byte quotation — the speech is generated,
+not copied.
+
+The hearing closes the ruler question the eighteenth body opened.  "Pricing
+champion is not speaking champion" was true of a Laplace mouth judged by
+printability; under an honest mouth and the shore's own sealed ear, the
+elected hand is the best speaker again, and the census hand that printability
+crowned is heard as near-noise.  Discipline transfers from pricing to speech
+once both the speaker and the judge stop spending ignorance.  No promotion
+follows: the ear is a measurement, the numbers stand recorded, and any
+speaking court over them remains future work with its own red worlds.
+
+One hundred and seventy-five gates now pass: the ear's convoy hearing,
+exact quotation census, per-shore jurisdiction, determinism, sorted-twin
+red, write-nothing law, four refusals by name, and ASan/UBSan through the
+ear join the constitution.
+
+## The ear audited: a match is not a confession
+
+The twentieth body and all one hundred and seventy-five inherited gates were
+first reproduced from a fresh binary at `6d9ee94`.  Three independent probes
+then broke the ear's stated constitution.  `--seed 99` returned success and
+was ignored, as did the rest of the untracked life-law surface.  A stream of
+exactly 16384 bytes was refused despite the inclusive public bound because a
+full `fread` had not yet set EOF.  And an otherwise valid hearing failed when
+the current directory happened to contain hardlinked default files named
+`netta0.state` and `netta0.bio.tsv`: life-only alias inspection ran before the
+supposedly state-free ear.
+
+All three are repaired without changing the state.  Ear mode now has one
+failure-closed invocation law: shores, `--ear`, and the later explicit ear
+context are its only inputs; every named life or mouth control is refused,
+even when its value equals the default.  The ear enters immediately after
+the immutable shores are loaded, before any state, biography, island-route,
+or ambient-default query.  A one-byte overread distinguishes the admitted
+16384th byte from a refused 16385th byte without truncation.  The descending
+substring recurrence was attacked independently at both tape boundaries,
+at lengths fifteen and sixteen, and through NUL; each exact verdict survived.
+
+The sorted red arm also received its missing jurisdiction.  Sorting a
+period-3 slice raises its price from 0.457849 to 8.000823 bits per byte, but
+on a block-sorted `a...ab...b` shore the sorted candidate costs 3.230624
+against 7.208411 for an alternating equal-census twin.  An ear hears order;
+it does not promise that one operation destroys order on every world.
+
+The deeper refusal was semantic.  The preregistered two-shore hearing below
+found seventeen consecutive spaces shared by a freely generated technical
+stream and its shore.  The DP was exact; the noun was not.  Substring proves
+shared bytes but cannot alone establish the causal act of quotation or name
+a parrot.  The live interface therefore reports `longest-match` and
+`matched16`.  Body 20's original names remain above as an auditable claim
+that failed.  No replacement threshold is chosen after seeing the spaces;
+a future copying court owes a preregistered complexity control.
+
+## Body 21: the ear remembers the question
+
+The cold ear's first byte is charged by the unigram book, its second by the
+bigram book, and only its third enters the trigram book.  That is a valid
+unprompted instrument, but it is not a neutral detail when the mouth was
+asked a question.  On the preregistered `a...azzbbbb` counterworld, cold `aa`
+beats `bb` at 1.836756 against 6.097363 bits per byte.  After the explicit
+context `zz`, the verdict reverses: `bb` costs 7.005625 and `aa` 8.002812.
+The warmup can change an ordering, so it must be carried or named.
+
+The twenty-first body adds `--ear-context P`.  The named file must contain at
+least two bytes; exactly its final two become the initial trigram context and
+their hexadecimal identity is printed in every verdict.  No life state is
+opened and no hidden most-lived context is borrowed.  Prefixes before the
+last two bytes are proved irrelevant bit-for-bit.  Without the flag, the
+body-20 cold ladder remains exact.  Both instruments are pure, read-only,
+and powerless; body 21 supplies experimental context, not a court.
+
+## The second and third hearings
+
+Before either result existed, `research/EAR_AUDIT_2026-08-16.md` registered
+the two shores, life and speech seeds, lengths, hands, laws, context, expected
+ordering, and failure meaning.  The published normalized Frankenstein and
+technical SHA-256 witnesses were rechecked.  Independent 384000-byte lives
+then spoke 300 bytes from locked uni, bi, and tri under supported and Laplace
+laws, prompt `The ` and speech seed 7.  The context-bearing local ear heard:
+
+| shore | supported tri | supported bi | supported uni | Laplace tri | Laplace bi | Laplace uni |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Frankenstein | 2.910738 | 4.992303 | 6.995211 | 8.002758 | 5.550433 | 7.163641 |
+| technical | 3.134352 | 5.268368 | 7.563339 | 7.827882 | 6.320897 | 7.617944 |
+
+Both preregistered price ladders pass, and every supported hand beats its
+matched Laplace twin.  The Dracula ordering is therefore no longer a
+one-shore accident: three real-text shores agree that supported tri is heard
+below bi below uni under their own books.  Three English byte worlds are not
+language in general, and the instrument promotes nobody.
+
+The preregistered no-match claim fails on technical tri: longest match
+seventeen, matched-16 coverage 5.7 percent, exactly seventeen spaces at
+speech offset 223 and shore offset 8956.  Frankenstein clears with longest
+match ten; all other new streams remain below sixteen.  The complete literal
+table lives in `research/ear_results/2026-08-16-cross-shore.tsv`.
+
+One hundred and ninety gates now pass.  The inclusive cap and loud
+overflow, binary substring boundaries, ambient-state independence, full
+ear law mask, opposed sorted-world reds, explicit-context reversal and
+suffix identity, refusal of underspecified context, and ASan/UBSan through
+the context-bearing ear join the inherited constitution.  The exact matcher
+is now linear in shore plus candidate length rather than their product; a
+full 16384-byte sitting against the 855114-byte Dracula shore completes at
+the public bound instead of performing roughly fourteen billion DP cells.
+State stays v20.
