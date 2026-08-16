@@ -86,17 +86,20 @@ technical source of truth for the living line.
   red where locked tri costs 7.005793 bits per byte yet replays all 300 bytes,
   while its twin price is 7.997098. The instrument writes nothing and has no
   threshold, court, candidacy, or authority.
-- Under `--court FILE`, body 24 seats the pattern court: it reads the sealed
-  triple — true-shore price, matched-16 coverage, structural-twin price —
-  and returns one verdict per shore from a four-word lattice frozen from
-  named calibration worlds before any candidate was read: `abstain` when
-  the shore's twin changed nothing, `replay` at matched-16 coverage of 50
-  or more, `order` at a structure gap of 0.5 bits per byte or more,
-  `stranger` otherwise. Verdicts are measurement patterns, never causal
-  accusations — an independently written period-3 cycle is judged replay
-  though no hand ever copied the shore — and a constant shore abstains over
-  a perfect match. It is a trigram court: a census-only stream reads as a
-  stranger. The court accepts only shores, `--court`, and an optional
+- Under `--court FILE`, body 24 seats the pattern court and body 25 makes its
+  warrant public. The four words and preregistered thresholds are unchanged:
+  `replay` at exact matched-16 coverage of one half, `order` at a structural
+  price gap of 0.5 bits per byte, `stranger` otherwise. Before any of those,
+  the court now says `abstain` unless its structural twin both changes the
+  shore and changes this candidate's measured price at the declared
+  one-microbit-per-byte resolution. Every deciding operand is printed:
+  true price P, twin price Q, exact `matched-bytes/bytes`, integer
+  `gap-micro`, and exact `changed/shore-bytes`. Thus a 50.0000% tie and a
+  49.9750% near-tie cannot display the same evidence while receiving
+  different verdicts, and a twin that moves two irrelevant shore bytes but
+  leaves P equal to Q abstains. Verdicts remain measurement patterns, never
+  causal accusations; the trigram court still names an equal-census stream
+  `stranger`. It accepts only shores, `--court`, and optional
   `--ear-context`; it wires into no election, grants no speech authority,
   opens no state, and writes nothing.
 - Experience can cross islands, while worlds, receipts, and counterfactual
@@ -264,9 +267,9 @@ Useful experimental flags:
   authority.
 - `--court P` seats the pattern court over the stream in P: one verdict per
   shore from the frozen lattice (`abstain` / `replay` / `order` /
-  `stranger`), with the measured triple printed beside it. Same 16384-byte
-  sitting law as the ear; accepts only shores and an optional
-  `--ear-context`; writes nothing and grants nothing.
+  `stranger`), with both prices and every exact integer decision operand
+  printed beside it. Same 16384-byte sitting law as the ear; accepts only
+  shores and an optional `--ear-context`; writes nothing and grants nothing.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.
@@ -286,6 +289,8 @@ Counts must be finite non-negative integers. Infinite-life syntax such as
 - `research/PLASTICITY_COURT.md` — sealed body-17 specification.
 - `research/MOUTH_AUDIT_2026-08-16.md` — independent mouth reconstruction,
   adversarial audit, and body-19 supported-backoff result.
+- `research/PATTERN_COURT_AUDIT_2026-08-16.md` — body-24 adversarial audit,
+  body-25 preregistration, and the public-warrant result.
 - `scripts/gutenberg_arena.py` — reproducible corpus preparation and
   arena runner.
 - `netta.txt` — an optional raw-byte example island, not model authority.

@@ -2057,3 +2057,55 @@ authority, writes nothing, opens no state, and refuses every life,
 mouth, ear, and twin control by name — a court invocation is shores,
 `--court`, and an optional explicit context, nothing else.  State
 remains v20.
+
+## Body 25: the court's public warrant
+
+The eleventh Sol audit began from Don's untouched `f38c5cf`: a fresh strict
+binary reproduced all 220 inherited gates before the diff was read.  The
+four-word court survived its fifteen-byte quilt, equal-census, and explicit
+context attacks, but failed two questions about its own jurisdiction.
+
+At the fifty-percent boundary, a candidate with exact coverage 1000/2000 was
+REPLAY and one with 1000/2001 was ORDER, yet both public lines rounded the
+operand to `matched16=50.0%`.  The private comparisons were correct and the
+public evidence was not: identical visible premises appeared to yield
+different judgments.  More deeply, a 4096-byte shore containing one `b`
+among 4095 `a` bytes grew a twin with two moved positions, but that twin and
+the true shore priced the heard 300 `a` bytes identically at 0.087545.  The
+hidden `changed != 0` door nevertheless let the court say REPLAY.  A null that
+moves irrelevant bytes has not earned structural jurisdiction over the
+coordinate being judged.
+
+Body 25 is a narrow first clause of the future earning law, not a grant of
+power.  The four words and body-24 thresholds remain frozen, while every
+deciding operand becomes public: P, twin price Q, exact
+`matched-bytes/candidate-bytes`, integer `gap-micro`, and exact
+`changed/shore-bytes`.  The court rounds the measured total gap once to its
+already promised six-decimal resolution and decides entirely on integers.
+It ABSTAINS if the twin changed no shore byte or if `gap-micro == 0`; otherwise
+it says REPLAY at `2 * matched-bytes >= candidate-bytes`, ORDER at
+`gap-micro >= 500000`, and STRANGER otherwise.  This adds no post-hoc moved
+fraction: the falsifier must simply move the coordinate it claims to test at
+the public ruler's resolution.
+
+The preregistered boundary worlds landed: 50.0000% (1000/2000) remains REPLAY,
+49.9750% (1000/2001) remains ORDER, and their exact public premises differ.
+The one-`b` shore reports `changed=2/4096`, `gap-micro=0`, and now abstains.
+The fifteen-byte quilt remains ORDER; the equal-census stream remains the
+trigram court's honestly named STRANGER; and explicit context `6362` still
+changes candidate `ab` from cold STRANGER to contextual ORDER while naming
+that jurisdiction.
+
+One prediction was paid for in public.  The old all-`z` stranger world also
+has P=Q=8.013738 and gap-micro zero despite 2822/4200 moved shore bytes, so
+the new law correctly changes it to ABSTAIN.  The preregistration remains in
+`research/PATTERN_COURT_AUDIT_2026-08-16.md` with the failed prediction and
+its correction; no threshold was bent to save an inherited label.
+
+Two hundred and twenty-five gates pass, including the five new warrant
+worlds and ASan/UBSan through the court.  The court still accepts only shores,
+`--court`, and optional explicit context; it opens no state, writes nothing,
+enters no election, and grants no authority.  State remains v20.  A complete
+law of earning remains external work: preregistration receipts, independent
+review, red-world scope, a named requested power, revocation, and a separately
+enacted activation body cannot be self-attested by this instrument.
