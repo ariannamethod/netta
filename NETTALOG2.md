@@ -1398,3 +1398,82 @@ is an instrument under an explicit flag, witnessed and restart-exact,
 with no candidacy and no authority beyond one sealed fitness table.
 The court is specification only until it survives independent review;
 building it before that review would be taking our own word for it.
+
+## The eighteenth turn refuses the first seal before it can become a result
+
+The independent review found that the first plasticity specification could
+not support its own verdict. Genome index changed the newborn reservoir, so
+genes were confounded with body lottery. Six gene classes were named without
+one actual range or one of the eight rows. Readout learning rate remained a
+gene inside a court trying to subtract readout maturity. `K-H` compared
+different target tapes and could be won by wounding the shuffled control.
+The proposed homeostat only discounted future potentiation and could not pull
+back an already saturated row. A mean over all hidden units could hide one
+dead subpopulation. The alien distance and restart laws were prose without a
+complete computation.
+
+No expert or jury existed yet. The first seal is therefore preserved by its
+SHA-256 and refused, not silently rewritten after evidence. Commit `3e57be3`
+reseals the exact court before implementation: every genome begins from the
+same bytes; the fixed delta readout is no longer a gene; all eight gene rows
+are literal; decay and per-row saturation rent act on every byte; health sees
+the maximum row and the near-saturation fraction; and the causal contrast is
+ordered Dracula against a same-age, same-census shuffled Dracula donor on the
+same target window. Absolute gates make damage to a control unable to masquerade
+as selectivity.
+
+The alien is now a measured byte world rather than a human genre label. A
+deterministic 233688-byte lattice clears the technical-English maximum by a
+strict min-versus-max rule: minimum census JS `0.707803` against floor
+`0.039475`, conditional JS `0.253721` against `0.068688`, and a
+`7.977560`-bit gap between census and conditional entropy. Its bytes and hash
+are regenerated before any expert runs.
+
+The repository cleanup had moved the Gutenberg runner under `scripts/` while
+leaving its source-root calculation and documented command behind. After that
+reproducibility fault was repaired, all three raw downloads were reverified
+from the hash-checked cache and the complete arena was re-derived. Its
+`transfer.tsv` and `verdicts.tsv` are byte-identical to the tracked records:
+the earlier four-pass/four-fail verdict now rests on a second hand from raw
+source, closing the open qualification in the seventeenth-turn audit.
+
+## Body 17: Hebb's physiology heals; its jurisdiction does not
+
+Eight complete shadow cores now run only under `--jury`. Genome zero and the
+ordinary frozen core price every tested byte identically. The jury consumes no
+life RNG, changes no biography or actor, persists its literal genes, weights,
+baselines, scores and health counters under one witness, and an uninterrupted
+life equals the same life split at an episode boundary. State v20 binds the
+neural law tuple `(core, Hebb-v1, jury)`: removing either plasticity flag at
+resume is refused by name instead of silently changing the organism.
+
+The first full invocation exposed an instrumentation error before publication:
+the recurrent clamp counter also charged the fixed delta readout, so even
+frozen genome zero appeared to hit the plasticity wall thousands of times.
+That invocation is retained by result hash as invalid. Only the counter's
+quarantine boundary was repaired; no update, score, gene, tape, seed, window,
+threshold or verdict rule moved. Two clean full courts from empty directories
+then produced byte-identical JSON and tables.
+
+All seven plastic genomes survive the forty-thousand-byte synthetic health
+court: zero near-saturated activations, zero recurrent clamp attempts, no
+control-relative hidden-row failure, and no p5-p8 price more than 0.1 bit per
+byte behind frozen. The positive-feedback disease of Hebb-v1 is cured in the
+tested family.
+
+No genome earns promotion. Frozen genome zero has `K=0.454029`. Genome 4 is
+the conservative near miss: ordered kin improves from `4.421399` to
+`4.156614`, its shuffled arm is not sabotaged, but `K=0.532586` misses the
+appointment threshold `0.554029` by `0.021443` and its alien records fail.
+Genomes 5 and 6 clear the kin selectivity margin but buy it with a worse
+shuffled arm and a broad prior on the alien lattice. Genome 7 shows why both
+alien laws exist: its alien difference passes, while both absolute alien
+prices expose damage.
+
+The verdict is a healthy Hebb null. Frozen recurrent dynamics remain default;
+Hebb-v1 remains its explicit red arm; none of the seven new rules enters the
+organism. One hundred thirty-eight gates pass, including causal twins,
+zero-intervention biography, jury restart identity, neural-law refusal, jury
+forgery, strict C11, and ASan/UBSan. The next plasticity question is no longer
+how to stop saturation. It is how a local rule can learn structure without
+claiming jurisdiction over every structured world.

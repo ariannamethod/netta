@@ -1,0 +1,9 @@
+genome	K	kin_ordered	kin_shuffled	A	alien_ordered	alien_shuffled	failed_gates	health_failures	eligible
+0	0.454029	4.421399	4.875428	-0.239011	7.619160	7.380197	kin_selectivity,kin_improves	-	FAIL
+1	0.215449	4.194416	4.431553	0.068921	8.009127	8.077773	kin_selectivity,breadth,alien_ordered,alien_shuffled	-	FAIL
+2	0.414400	4.623296	5.037696	0.198349	8.628030	8.837848	kin_selectivity,kin_improves,red_not_sabotaged,breadth,alien_ordered,alien_shuffled	-	FAIL
+3	-0.003899	5.110921	5.104953	-0.008430	9.001324	8.989911	kin_selectivity,kin_improves,red_not_sabotaged,breadth,alien_ordered,alien_shuffled	-	FAIL
+4	0.532586	4.156614	4.706346	0.063546	8.039890	8.103043	kin_selectivity,breadth,alien_ordered,alien_shuffled	-	FAIL
+5	1.016435	4.009453	5.024940	0.728842	8.084825	8.811456	red_not_sabotaged,breadth,alien_ordered,alien_shuffled	-	FAIL
+6	0.757334	4.254475	5.003636	0.678513	8.136986	8.812686	red_not_sabotaged,breadth,alien_ordered,alien_shuffled	-	FAIL
+7	0.359686	4.316168	4.671281	-0.145594	8.379462	8.234363	kin_selectivity,alien_ordered,alien_shuffled	-	FAIL

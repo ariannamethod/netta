@@ -39,6 +39,12 @@ technical source of truth for the living line.
   `--core-hebb-v1` red arm. The core prices every lived byte on the same
   ruler, holds no candidacy, writes no biography line, and its measured
   weaknesses stay on the record beside its wins.
+- Under explicit `--jury`, body 17 seats eight byte-identical shadow cores:
+  frozen genome zero and seven sealed local-plasticity rules with continuous
+  decay and per-row saturation rent. The instrument has no actor or biography
+  authority. Its first paired Dracula/shuffled-Dracula court cured Hebb-v1's
+  saturation physiology but promoted nobody: every plastic genome failed the
+  sealed cross-world selectivity law, so frozen remains default.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -53,9 +59,12 @@ technical source of truth for the living line.
   islands absent from today's convoy keep their memory, and a changed file is
   by construction a different island. Simultaneous arrivals are canonically
   ordered by that identity, never by their CLI seats or the selected route.
-- State v19 is restart-safe and published atomically. Innate neural
+- State v20 is restart-safe and published atomically. Innate neural
   embeddings are regenerated rather than loaded, and a neural-memory
-  witness refuses partial checkpoint forgery. Resume is refused if the
+  witness refuses partial checkpoint forgery. The persisted neural-law tuple
+  refuses a resume that silently adds or removes the core, Hebb-v1, or jury;
+  jury genes, memory, records, and health counters have their own witness.
+  Resume is refused if the
   state invariants or the external hash-chained biography do not match;
   every persisted island identity must agree with its external arrival
   receipt, so neither a forged absent record nor the convoy's order can
@@ -64,8 +73,9 @@ technical source of truth for the living line.
 This is a foundation, not a finished language model. The present arenas are
 mostly controlled synthetic worlds, followed by one sealed real-text
 Dracula/Frankenstein/technical/shuffled arc. Its four passes and four public
-failures are recorded in `research/GUTENBERG_RESULTS_2026-08-16.md`. The neural core is
-a shadow witness with no authority yet; there is no prompt mode, dreaming,
+failures are recorded in `research/GUTENBERG_RESULTS_2026-08-16.md`; the
+plasticity null is recorded in `research/PLASTICITY_RESULTS_2026-08-16.md`.
+The neural core is a shadow witness with no authority yet; there is no prompt mode, dreaming,
 glyph system, generalizing travel predictor, or unbounded life.
 
 ## Build and test
@@ -75,7 +85,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 131-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 138-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -83,7 +93,9 @@ door, unit death, tombstone silence and resurrection arms, the island
 registry with fresh and resumed convoy-order invariance, an absent-identity
 forgery arm, Atlas exploration and earned-choice arms, the neural shadow
 core with frozen-dynamics wins and its reproducible Hebb-v1 loss, a neural
-checkpoint-forgery arm, and failure-closed state and biography checks. A
+checkpoint-forgery arm, the eight-genome jury's causal identity, zero
+intervention, restart identity and forgery witness, the neural invocation-law
+refusals, and failure-closed state and biography checks. A
 passing build ends with `ALL GATES PASS`.
 
 ## Start a life

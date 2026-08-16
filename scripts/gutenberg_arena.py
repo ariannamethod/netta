@@ -203,7 +203,7 @@ def main() -> int:
         "histogram_equal": True,
     }
 
-    repo = Path(__file__).resolve().parent
+    repo = Path(__file__).resolve().parent.parent
     netta = work / "netta"
     run_checked(["cc", "-O2", "-std=c11", "-Wall", "-Wextra",
                  "-Wpedantic", str(repo / "netta.c"), "-lm", "-o", str(netta)],
@@ -378,4 +378,3 @@ if __name__ == "__main__":
     except Exception as error:
         print(f"gutenberg_arena: {error}", file=sys.stderr)
         raise SystemExit(1)
-

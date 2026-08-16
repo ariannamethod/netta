@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B15. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B17. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -935,7 +935,7 @@ cmp -s "$T/b16z.bio" "$T/b16s.bio" && cmp -s "$T/b16z.state" "$T/b16s.state"
 gate "B16 core weights survive restart (split life identical)" $? 0
 printf '\x12\x00\x00\x00' | dd of="$T/b16s.state" bs=1 seek=8 conv=notrunc 2>/dev/null
 "$N" "$T/rep.bytes" --episodes 1 --steps 1000 --state "$T/b16s.state" --bio "$T/b16s.bio" >/dev/null 2>&1
-gate "B16 a version-18 state cannot enter the witnessed core v19" $? 1
+gate "B16 a version-18 state cannot enter the witnessed core v20" $? 1
 
 i=0; : > "$T/a16.bytes"
 while [ $i -lt 1000 ]; do printf 'a' >> "$T/a16.bytes"; i=$((i+1)); done
@@ -952,6 +952,65 @@ printf '\x63' | dd of="$T/b16f.state" bs=1 seek="$OFF16" conv=notrunc 2>/dev/nul
 rc=$?
 [ "$rc" -eq 1 ] && grep -q 'core memory disagrees with its witness' "$T/b16f.out"
 gate "B16 a partial neural-memory forgery is refused by name" $? 0
+
+# --- B17: the plasticity court --------------------------------------------
+# Eight byte-identical shadow cores carry the resealed gene table. Genome
+# zero is the frozen incumbent itself; the instrument changes no biography,
+# survives a split life exactly, witnesses all its memory, and binds the
+# neural invocation law so Hebb or the jury cannot silently disappear.
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 200 --jury \
+    --state "$T/b17j.state" --bio "$T/b17j.bio" > "$T/b17j.out" 2>&1
+C17=$(awk '/^this-life model core /{print $NF}' "$T/b17j.out")
+J17=$(awk '/^this-life jury genome 0 /{print $6}' "$T/b17j.out")
+[ "$C17" = "$J17" ] && \
+    [ "$(grep -c '^this-life jury genome ' "$T/b17j.out")" -eq 8 ] && \
+    awk '/^this-life jury genome /{n++; if($12 != 0) bad=1} \
+         END{exit !(n == 8 && !bad)}' "$T/b17j.out"
+gate "B17 eight causal twins sit, and genome zero is the frozen core ($J17)" $? 0
+
+"$N" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 200 \
+    --state "$T/b17n.state" --bio "$T/b17n.bio" >/dev/null 2>&1
+cmp -s "$T/b17j.bio" "$T/b17n.bio"
+gate "B17 the jury changes no ordinary biography" $? 0
+
+"$N" "$T/p5.bytes" --reset --seed 5 --episodes 2 --steps 300 --jury \
+    --state "$T/b17f.state" --bio "$T/b17f.bio" > "$T/b17f.out" 2>&1
+"$N" "$T/p5.bytes" --reset --seed 5 --episodes 1 --steps 300 --jury \
+    --state "$T/b17s.state" --bio "$T/b17s.bio" >/dev/null 2>&1
+"$N" "$T/p5.bytes" --seed 5 --episodes 1 --steps 300 --jury \
+    --state "$T/b17s.state" --bio "$T/b17s.bio" > "$T/b17s.out" 2>&1
+grep '^jury genome ' "$T/b17f.out" > "$T/b17f.table"
+grep '^jury genome ' "$T/b17s.out" > "$T/b17s.table"
+cmp -s "$T/b17f.state" "$T/b17s.state" && \
+    cmp -s "$T/b17f.bio" "$T/b17s.bio" && \
+    cmp -s "$T/b17f.table" "$T/b17s.table"
+gate "B17 jury memory and final table are restart-exact" $? 0
+
+"$N" "$T/p5.bytes" --seed 5 --episodes 1 --steps 100 \
+    --state "$T/b17s.state" --bio "$T/b17s.bio" > "$T/b17law.out" 2>&1
+rc=$?
+[ "$rc" -eq 1 ] && grep -q 'neural invocation law changed' "$T/b17law.out"
+gate "B17 a resumed jury cannot silently leave the room" $? 0
+
+"$N" "$T/p5.bytes" --reset --core-hebb-v1 --seed 5 --episodes 1 \
+    --steps 100 --state "$T/b17h.state" --bio "$T/b17h.bio" >/dev/null 2>&1
+"$N" "$T/p5.bytes" --seed 5 --episodes 1 --steps 100 \
+    --state "$T/b17h.state" --bio "$T/b17h.bio" > "$T/b17hebb.out" 2>&1
+rc=$?
+[ "$rc" -eq 1 ] && grep -q 'neural invocation law changed' "$T/b17hebb.out"
+gate "B17 Hebb-v1 cannot silently become frozen across resume" $? 0
+
+cp "$T/b17j.state" "$T/b17w.state"
+SZ17=$(wc -c < "$T/b17w.state" | tr -d ' ')
+OFF17=$((SZ17 - 8))
+B17W=$(od -An -tu1 -j "$OFF17" -N 1 "$T/b17w.state" | tr -d ' ')
+if [ "$B17W" -eq 0 ]; then B17X='\x01'; else B17X='\x00'; fi
+printf "$B17X" | dd of="$T/b17w.state" bs=1 seek="$OFF17" conv=notrunc 2>/dev/null
+"$N" "$T/rep.bytes" --jury --seed 42 --episodes 1 --steps 100 \
+    --state "$T/b17w.state" --bio "$T/b17j.bio" > "$T/b17w.out" 2>&1
+rc=$?
+[ "$rc" -eq 1 ] && grep -q 'jury memory disagrees with its witness' "$T/b17w.out"
+gate "B17 a partial jury-memory forgery is refused by name" $? 0
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
@@ -971,7 +1030,7 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move navigation and restart state v19" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v20" $rc 0
 "$S" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 \
     --island 0 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>"$T/si.err"
 rc=$?
@@ -1014,6 +1073,13 @@ rc=$?
     --state "$T/sc16b.state" --bio "$T/sc16b.bio" >/dev/null 2>>"$T/sc16.err" || rc=$?
 [ -s "$T/sc16.err" ] && rc=98
 gate "S ASan/UBSan silent through the learning core" $rc 0
+"$S" "$T/p5.bytes" --reset --jury --seed 5 --episodes 1 --steps 300 \
+    --state "$T/sc17.state" --bio "$T/sc17.bio" >/dev/null 2>"$T/sc17.err"
+rc=$?
+"$S" "$T/p5.bytes" --jury --seed 5 --episodes 1 --steps 300 \
+    --state "$T/sc17.state" --bio "$T/sc17.bio" >/dev/null 2>>"$T/sc17.err" || rc=$?
+[ -s "$T/sc17.err" ] && rc=98
+gate "S ASan/UBSan silent through the plasticity jury and restart" $rc 0
 
 echo "----"
 if [ $FAIL -eq 0 ]; then echo "ALL GATES PASS"; exit 0; fi

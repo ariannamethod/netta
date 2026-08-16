@@ -43,7 +43,7 @@
 #define MAX_REGISTRY 1024   /* islands one life may ever meet */
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    19u
+#define STATE_VER    20u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -496,6 +496,50 @@ static int    core_enabled = 1;
 static int    core_hebb_enabled = 0; /* v1 quarantined behind its red arm */
 static uint64_t core_hebb_pos = 0, core_hebb_neg = 0;
 
+/* body 17: the plasticity jury. The eight rows are the complete court --
+   there is no mutation stream behind them. Every shadow is born from the
+   identical frozen reservoir and changes only its own recurrent memory. */
+#define JURY_GENOMES 8
+typedef struct {
+    float eta_in, eta_rec, gate, mod_clip, decay, target, homeostasis;
+} JuryGene;
+
+static const JuryGene jury_gene[JURY_GENOMES] = {
+    {0.0f,       0.0f,       0.5f, 1.00f, 0.0f,     1.00f, 0.0f},
+    {0.0003125f, 0.0003125f, 0.5f, 0.25f, 0.000001f, 0.35f,
+     0.000244140625f},
+    {0.0006250f, 0.0006250f, 0.5f, 0.25f, 0.000001f, 0.35f,
+     0.000244140625f},
+    {0.0012500f, 0.0012500f, 0.5f, 0.25f, 0.000001f, 0.35f,
+     0.000244140625f},
+    {0.0006250f, 0.0003125f, 0.5f, 0.25f, 0.000001f, 0.35f,
+     0.000244140625f},
+    {0.0003125f, 0.0006250f, 0.5f, 0.25f, 0.000001f, 0.35f,
+     0.000244140625f},
+    {0.0006250f, 0.0006250f, 1.0f, 0.25f, 0.000001f, 0.35f,
+     0.000244140625f},
+    {0.0006250f, 0.0006250f, 0.5f, 0.50f, 0.000001f, 0.25f,
+     0.000488281250f},
+};
+
+typedef struct {
+    float Wxh[CORE_HIDDEN][CORE_EMBED];
+    float Whh[CORE_HIDDEN][CORE_HIDDEN];
+    float Who[ACTIONS][CORE_HIDDEN];
+    float h[CORE_HIDDEN];          /* episode-local, never persisted */
+    double nll_ema;
+    double bits;
+    uint64_t bytes;
+    double row_abs_sum[CORE_HIDDEN];
+    uint64_t health_bytes;
+    uint64_t near_sat;
+    uint64_t clamp_hits;
+    uint64_t gates_pos, gates_neg;
+} JuryCore;
+
+static JuryCore jury_core[JURY_GENOMES];
+static int jury_enabled = 0;
+
 static float core_clampw(float w) {
     if (w > CORE_WCLAMP) return CORE_WCLAMP;
     if (w < -CORE_WCLAMP) return -CORE_WCLAMP;
@@ -526,6 +570,16 @@ static void core_init(void) {
             core_Whh[j][k] = 0.2f * core_rand(&s);
     memset(core_Who, 0, sizeof core_Who);  /* the newborn readout
                                               prices exact ignorance */
+}
+
+static void jury_init(void) {
+    memset(jury_core, 0, sizeof jury_core);
+    for (int g = 0; g < JURY_GENOMES; ++g) {
+        memcpy(jury_core[g].Wxh, core_Wxh, sizeof core_Wxh);
+        memcpy(jury_core[g].Whh, core_Whh, sizeof core_Whh);
+        memcpy(jury_core[g].Who, core_Who, sizeof core_Who);
+        jury_core[g].nll_ema = 8.0;
+    }
 }
 
 static void core_advance(uint8_t byte) {
@@ -635,6 +689,150 @@ static uint64_t core_state_witness(void) {
     h = fnv1a64((const uint8_t *)&core_bits, sizeof core_bits, h);
     h = fnv1a64((const uint8_t *)&core_bytes, sizeof core_bytes, h);
     return h;
+}
+
+static float jury_clampw(float value, uint64_t *hits) {
+    if (!isfinite(value)) {
+        fprintf(stderr, "netta: jury weight is not finite\n"); exit(1);
+    }
+    if (value > CORE_WCLAMP) {
+        if (hits) (*hits)++;
+        return CORE_WCLAMP;
+    }
+    if (value < -CORE_WCLAMP) {
+        if (hits) (*hits)++;
+        return -CORE_WCLAMP;
+    }
+    return value;
+}
+
+static void jury_advance_one(JuryCore *c, uint8_t byte) {
+    float hn[CORE_HIDDEN];
+    for (int j = 0; j < CORE_HIDDEN; ++j) {
+        float a = 0.0f;
+        for (int d = 0; d < CORE_EMBED; ++d)
+            a += c->Wxh[j][d] * core_E[byte][d];
+        for (int k = 0; k < CORE_HIDDEN; ++k)
+            a += c->Whh[j][k] * c->h[k];
+        hn[j] = tanhf(a);
+    }
+    memcpy(c->h, hn, sizeof hn);
+}
+
+static void jury_warm(const Island *isl, uint64_t start) {
+    for (int g = 0; g < JURY_GENOMES; ++g) {
+        JuryCore *c = &jury_core[g];
+        memset(c->h, 0, sizeof c->h);
+        for (uint64_t p = start - CTX; p < start; ++p)
+            jury_advance_one(c, isl->bytes[p]);
+    }
+}
+
+static void jury_absorb(uint8_t truth) {
+    for (int g = 0; g < JURY_GENOMES; ++g) {
+        JuryCore *c = &jury_core[g];
+        const JuryGene *gene = &jury_gene[g];
+        float logits[ACTIONS];
+        float mx = -1e30f;
+        for (int o = 0; o < ACTIONS; ++o) {
+            float a = 0.0f;
+            for (int j = 0; j < CORE_HIDDEN; ++j)
+                a += c->Who[o][j] * c->h[j];
+            logits[o] = a;
+            if (a > mx) mx = a;
+        }
+        double denom = 0.0;
+        for (int o = 0; o < ACTIONS; ++o)
+            denom += exp((double)logits[o] - mx);
+        double p_truth = exp((double)logits[truth] - mx) / denom;
+        double nll = -log2(p_truth);
+        if (!isfinite(nll)) {
+            fprintf(stderr, "netta: jury price is not finite\n"); exit(1);
+        }
+        c->bits += nll;
+        c->bytes++;
+
+        float h_old[CORE_HIDDEN];
+        memcpy(h_old, c->h, sizeof h_old);
+        for (int o = 0; o < ACTIONS; ++o) {
+            float p_o = (float)(exp((double)logits[o] - mx) / denom);
+            float err = (o == truth ? 1.0f : 0.0f) - p_o;
+            for (int j = 0; j < CORE_HIDDEN; ++j)
+                c->Who[o][j] = jury_clampw(
+                    c->Who[o][j] + CORE_LR_OUT * err * h_old[j],
+                    NULL); /* fixed readout is outside the recurrent trial */
+        }
+
+        jury_advance_one(c, truth);
+        c->health_bytes++;
+        for (int j = 0; j < CORE_HIDDEN; ++j) {
+            double ah = fabsf(c->h[j]);
+            c->row_abs_sum[j] += ah;
+            if (ah >= 0.98) c->near_sat++;
+        }
+
+        double surprise = c->nll_ema - nll;
+        int gate_open = fabs(surprise) > gene->gate;
+        float mod = (float)(surprise / 8.0);
+        if (mod > gene->mod_clip) mod = gene->mod_clip;
+        if (mod < -gene->mod_clip) mod = -gene->mod_clip;
+        if (gate_open) {
+            if (surprise > 0.0) c->gates_pos++;
+            else c->gates_neg++;
+        }
+        for (int j = 0; j < CORE_HIDDEN; ++j) {
+            float excess = fabsf(c->h[j]) - gene->target;
+            if (excess < 0.0f) excess = 0.0f;
+            float scale = 1.0f - gene->decay - gene->homeostasis * excess;
+            if (scale < 0.0f) scale = 0.0f;
+            for (int d = 0; d < CORE_EMBED; ++d) {
+                float add = gate_open ? gene->eta_in * mod * c->h[j] *
+                                        core_E[truth][d] : 0.0f;
+                c->Wxh[j][d] = jury_clampw(
+                    scale * c->Wxh[j][d] + add, &c->clamp_hits);
+            }
+            for (int k = 0; k < CORE_HIDDEN; ++k) {
+                float add = gate_open ? gene->eta_rec * mod * c->h[j] *
+                                        h_old[k] : 0.0f;
+                c->Whh[j][k] = jury_clampw(
+                    scale * c->Whh[j][k] + add, &c->clamp_hits);
+            }
+        }
+        c->nll_ema = 0.82 * c->nll_ema + 0.18 * nll;
+    }
+}
+
+static uint64_t jury_state_witness(void) {
+    uint64_t h = FNV_WITNESS_SEED;
+    h = fnv1a64((const uint8_t *)jury_gene, sizeof jury_gene, h);
+    for (int g = 0; g < JURY_GENOMES; ++g) {
+        JuryCore *c = &jury_core[g];
+        h = fnv1a64((const uint8_t *)c->Wxh, sizeof c->Wxh, h);
+        h = fnv1a64((const uint8_t *)c->Whh, sizeof c->Whh, h);
+        h = fnv1a64((const uint8_t *)c->Who, sizeof c->Who, h);
+        h = fnv1a64((const uint8_t *)&c->nll_ema, sizeof c->nll_ema, h);
+        h = fnv1a64((const uint8_t *)&c->bits, sizeof c->bits, h);
+        h = fnv1a64((const uint8_t *)&c->bytes, sizeof c->bytes, h);
+        h = fnv1a64((const uint8_t *)c->row_abs_sum,
+                    sizeof c->row_abs_sum, h);
+        h = fnv1a64((const uint8_t *)&c->health_bytes,
+                    sizeof c->health_bytes, h);
+        h = fnv1a64((const uint8_t *)&c->near_sat,
+                    sizeof c->near_sat, h);
+        h = fnv1a64((const uint8_t *)&c->clamp_hits,
+                    sizeof c->clamp_hits, h);
+        h = fnv1a64((const uint8_t *)&c->gates_pos,
+                    sizeof c->gates_pos, h);
+        h = fnv1a64((const uint8_t *)&c->gates_neg,
+                    sizeof c->gates_neg, h);
+    }
+    return h;
+}
+
+static uint32_t neural_law(void) {
+    return (core_enabled ? 1u : 0u) |
+           (core_hebb_enabled ? 2u : 0u) |
+           (jury_enabled ? 4u : 0u);
 }
 
 /* the seat: candidates 0 = atomic-uni (newborn), 1 = byte-bi,
@@ -1421,11 +1619,13 @@ static void state_save(const char *path) {
         exit(1);
     }
     uint32_t ver = STATE_VER;
+    uint32_t law = neural_law();
     uint32_t nisl = (uint32_t)reg_count;
     uint32_t nunits = (uint32_t)unit_count;
     uint64_t core_witness = core_state_witness();
     if (fwrite(STATE_MAGIC, 1, 8, f) != 8 ||
         fwrite(&ver, sizeof ver, 1, f) != 1 ||
+        fwrite(&law, sizeof law, 1, f) != 1 ||
         fwrite(&rng_state, sizeof rng_state, 1, f) != 1 ||
         fwrite(&episode_no, sizeof episode_no, 1, f) != 1 ||
         fwrite(&steps_total, sizeof steps_total, 1, f) != 1 ||
@@ -1522,6 +1722,38 @@ static void state_save(const char *path) {
             fprintf(stderr, "netta: state write failed\n"); exit(1);
         }
     }
+    if (jury_enabled) {
+        uint64_t witness = jury_state_witness();
+        if (fwrite(jury_gene, sizeof jury_gene[0], JURY_GENOMES, f)
+                != JURY_GENOMES) {
+            fprintf(stderr, "netta: state write failed\n"); exit(1);
+        }
+        for (int g = 0; g < JURY_GENOMES; ++g) {
+            JuryCore *c = &jury_core[g];
+            if (fwrite(c->Wxh, sizeof(float), CORE_HIDDEN * CORE_EMBED, f)
+                    != CORE_HIDDEN * CORE_EMBED ||
+                fwrite(c->Whh, sizeof(float),
+                       CORE_HIDDEN * CORE_HIDDEN, f)
+                    != CORE_HIDDEN * CORE_HIDDEN ||
+                fwrite(c->Who, sizeof(float), ACTIONS * CORE_HIDDEN, f)
+                    != ACTIONS * CORE_HIDDEN ||
+                fwrite(&c->nll_ema, sizeof c->nll_ema, 1, f) != 1 ||
+                fwrite(&c->bits, sizeof c->bits, 1, f) != 1 ||
+                fwrite(&c->bytes, sizeof c->bytes, 1, f) != 1 ||
+                fwrite(c->row_abs_sum, sizeof c->row_abs_sum[0],
+                       CORE_HIDDEN, f) != CORE_HIDDEN ||
+                fwrite(&c->health_bytes, sizeof c->health_bytes, 1, f) != 1 ||
+                fwrite(&c->near_sat, sizeof c->near_sat, 1, f) != 1 ||
+                fwrite(&c->clamp_hits, sizeof c->clamp_hits, 1, f) != 1 ||
+                fwrite(&c->gates_pos, sizeof c->gates_pos, 1, f) != 1 ||
+                fwrite(&c->gates_neg, sizeof c->gates_neg, 1, f) != 1) {
+                fprintf(stderr, "netta: state write failed\n"); exit(1);
+            }
+        }
+        if (fwrite(&witness, sizeof witness, 1, f) != 1) {
+            fprintf(stderr, "netta: state write failed\n"); exit(1);
+        }
+    }
     if (fclose(f) != 0) {
         fprintf(stderr, "netta: state close failed\n"); exit(1);
     }
@@ -1539,7 +1771,7 @@ static int state_load(const char *path) {
         exit(1);
     }
     char magic[8];
-    uint32_t ver, nisl, nunits;
+    uint32_t ver, law, nisl, nunits;
     uint64_t stored_core_witness;
     if (fread(magic, 1, 8, f) != 8 || memcmp(magic, STATE_MAGIC, 8) != 0) {
         fprintf(stderr,
@@ -1551,6 +1783,10 @@ static int state_load(const char *path) {
         fprintf(stderr, "netta: %s has unknown version; refusing\n", path);
         exit(1);
     }
+    if (fread(&law, sizeof law, 1, f) != 1)
+        state_refuse(path, "truncated neural invocation law");
+    if (law != neural_law())
+        state_refuse(path, "neural invocation law changed");
     if (fread(&rng_state, sizeof rng_state, 1, f) != 1 ||
         fread(&episode_no, sizeof episode_no, 1, f) != 1 ||
         fread(&steps_total, sizeof steps_total, 1, f) != 1 ||
@@ -1721,8 +1957,42 @@ static int state_load(const char *path) {
                 reg_len[r] == reg_len[i]) {
             fprintf(stderr, "netta: %s carries a duplicate island identity; "
                             "refusing\n", path);
-            exit(1);
+                exit(1);
+            }
+    }
+    if (jury_enabled) {
+        JuryGene stored_gene[JURY_GENOMES];
+        uint64_t stored_jury_witness;
+        if (fread(stored_gene, sizeof stored_gene[0], JURY_GENOMES, f)
+                != JURY_GENOMES)
+            state_refuse(path, "truncated jury genes");
+        if (memcmp(stored_gene, jury_gene, sizeof stored_gene) != 0)
+            state_refuse(path, "jury genes disagree with the sealed court");
+        for (int g = 0; g < JURY_GENOMES; ++g) {
+            JuryCore *c = &jury_core[g];
+            if (fread(c->Wxh, sizeof(float), CORE_HIDDEN * CORE_EMBED, f)
+                    != CORE_HIDDEN * CORE_EMBED ||
+                fread(c->Whh, sizeof(float), CORE_HIDDEN * CORE_HIDDEN, f)
+                    != CORE_HIDDEN * CORE_HIDDEN ||
+                fread(c->Who, sizeof(float), ACTIONS * CORE_HIDDEN, f)
+                    != ACTIONS * CORE_HIDDEN ||
+                fread(&c->nll_ema, sizeof c->nll_ema, 1, f) != 1 ||
+                fread(&c->bits, sizeof c->bits, 1, f) != 1 ||
+                fread(&c->bytes, sizeof c->bytes, 1, f) != 1 ||
+                fread(c->row_abs_sum, sizeof c->row_abs_sum[0],
+                      CORE_HIDDEN, f) != CORE_HIDDEN ||
+                fread(&c->health_bytes, sizeof c->health_bytes, 1, f) != 1 ||
+                fread(&c->near_sat, sizeof c->near_sat, 1, f) != 1 ||
+                fread(&c->clamp_hits, sizeof c->clamp_hits, 1, f) != 1 ||
+                fread(&c->gates_pos, sizeof c->gates_pos, 1, f) != 1 ||
+                fread(&c->gates_neg, sizeof c->gates_neg, 1, f) != 1)
+                state_refuse(path, "truncated jury memory");
         }
+        if (fread(&stored_jury_witness, sizeof stored_jury_witness, 1, f)
+                != 1)
+            state_refuse(path, "truncated jury witness");
+        if (stored_jury_witness != jury_state_witness())
+            state_refuse(path, "jury memory disagrees with its witness");
     }
     int extra = fgetc(f);
     if (extra != EOF || ferror(f))
@@ -1850,6 +2120,40 @@ static int state_load(const char *path) {
     }
     if (stored_core_witness != core_state_witness())
         state_refuse(path, "core memory disagrees with its witness");
+    if (jury_enabled) {
+        for (int g = 0; g < JURY_GENOMES; ++g) {
+            JuryCore *c = &jury_core[g];
+            if (!isfinite(c->bits) || c->bits < 0.0 ||
+                !isfinite(c->nll_ema) || c->nll_ema < 0.0 ||
+                c->nll_ema > 16.0 || c->bytes != steps_total ||
+                c->health_bytes != c->bytes ||
+                c->bytes > UINT64_MAX / CORE_HIDDEN ||
+                c->near_sat > c->bytes * CORE_HIDDEN)
+                state_refuse(path, "jury record");
+            if (c->gates_pos > c->bytes || c->gates_neg > c->bytes ||
+                c->gates_pos > c->bytes - c->gates_neg)
+                state_refuse(path, "jury gate record");
+            for (int j = 0; j < CORE_HIDDEN; ++j) {
+                if (!isfinite(c->row_abs_sum[j]) ||
+                    c->row_abs_sum[j] < 0.0 ||
+                    c->row_abs_sum[j] > (double)c->health_bytes + 1e-6)
+                    state_refuse(path, "jury health record");
+                for (int d = 0; d < CORE_EMBED; ++d)
+                    if (!isfinite(c->Wxh[j][d]) ||
+                        fabsf(c->Wxh[j][d]) > CORE_WCLAMP)
+                        state_refuse(path, "jury weight out of law");
+                for (int k = 0; k < CORE_HIDDEN; ++k)
+                    if (!isfinite(c->Whh[j][k]) ||
+                        fabsf(c->Whh[j][k]) > CORE_WCLAMP)
+                        state_refuse(path, "jury weight out of law");
+            }
+            for (int b = 0; b < ACTIONS; ++b)
+                for (int j = 0; j < CORE_HIDDEN; ++j)
+                    if (!isfinite(c->Who[b][j]) ||
+                        fabsf(c->Who[b][j]) > CORE_WCLAMP)
+                        state_refuse(path, "jury weight out of law");
+        }
+    }
     for (int pv = 0; pv < ACTIONS; ++pv) {
         uint64_t row = 0;
         for (int b = 0; b < ACTIONS; ++b)
@@ -1968,6 +2272,8 @@ static void absorb_truth(int isl_id, Island *isl, uint64_t pos,
     tri_add(tctx, (uint8_t)truth);
     if (core_enabled)
         core_absorb((uint8_t)truth);
+    if (jury_enabled)
+        jury_absorb((uint8_t)truth);
     if (units_enabled)
         matcher_feed((uint8_t)truth, pos, isl_id, atomic_nll);
 }
@@ -1997,6 +2303,7 @@ static double run_episode(int isl_id, uint64_t steps) {
         start = CTX + (rng_next() % (span ? span : 1));
     }
     if (core_enabled) core_warm(isl, start);
+    if (jury_enabled) jury_warm(isl, start);
     double bits = 0.0;
     char line[256];
     episode_no++;
@@ -2270,6 +2577,8 @@ int main(int argc, char **argv) {
             core_enabled = 0;
         else if (!strcmp(argv[i], "--core-hebb-v1"))
             core_hebb_enabled = 1;
+        else if (!strcmp(argv[i], "--jury"))
+            jury_enabled = 1;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -2299,7 +2608,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
-                        "[--atlas] [--no-core] [--core-hebb-v1] "
+                        "[--atlas] [--no-core] [--core-hebb-v1] [--jury] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -2335,6 +2644,7 @@ int main(int argc, char **argv) {
     rng_state = seed;
     int resumed = 0;
     core_init();   /* innate identity is regenerated, never loaded */
+    jury_init();   /* every genome begins on that exact same body */
     if (!reset) resumed = state_load(state_path);
     if (resumed) bio_verify(bio_path);
     if (!reset && !resumed && file_exists(bio_path)) {
@@ -2371,6 +2681,22 @@ int main(int argc, char **argv) {
     uint64_t tl_aby = atomic_bytes_lived, tl_bby = bilm_bytes,
              tl_tby = trilm_bytes, tl_uby = unitlm_bytes,
              tl_mby = mvlm_bytes, tl_cby = core_bytes;
+    double tl_jbits[JURY_GENOMES];
+    double tl_jrow[JURY_GENOMES][CORE_HIDDEN];
+    uint64_t tl_jbytes[JURY_GENOMES], tl_jhealth[JURY_GENOMES],
+             tl_jnear[JURY_GENOMES], tl_jclamps[JURY_GENOMES],
+             tl_jpos[JURY_GENOMES], tl_jneg[JURY_GENOMES];
+    for (int g = 0; g < JURY_GENOMES; ++g) {
+        JuryCore *c = &jury_core[g];
+        tl_jbits[g] = c->bits;
+        tl_jbytes[g] = c->bytes;
+        tl_jhealth[g] = c->health_bytes;
+        tl_jnear[g] = c->near_sat;
+        tl_jclamps[g] = c->clamp_hits;
+        tl_jpos[g] = c->gates_pos;
+        tl_jneg[g] = c->gates_neg;
+        memcpy(tl_jrow[g], c->row_abs_sum, sizeof tl_jrow[g]);
+    }
     printf("%s: episode %llu, %llu lived bytes, %d units\n",
            resumed ? "resumed" : "born",
            (unsigned long long)episode_no,
@@ -2461,6 +2787,25 @@ int main(int argc, char **argv) {
                (unsigned long long)core_hebb_neg,
                core_hebb_enabled ? "active" : "quarantined");
     }
+    if (jury_enabled)
+        for (int g = 0; g < JURY_GENOMES; ++g) {
+            JuryCore *c = &jury_core[g];
+            double row_max = 0.0;
+            for (int j = 0; j < CORE_HIDDEN; ++j) {
+                double mean = c->health_bytes ?
+                    c->row_abs_sum[j] / (double)c->health_bytes : 0.0;
+                if (mean > row_max) row_max = mean;
+            }
+            double near = c->health_bytes ?
+                (double)c->near_sat /
+                ((double)c->health_bytes * CORE_HIDDEN) : 0.0;
+            printf("jury genome %d bits/byte %.6f max-row-abs-h %.6f "
+                   "near-sat %.9f clamps %llu gates +%llu -%llu\n",
+                   g, c->bytes ? c->bits / (double)c->bytes : 0.0,
+                   row_max, near, (unsigned long long)c->clamp_hits,
+                   (unsigned long long)c->gates_pos,
+                   (unsigned long long)c->gates_neg);
+        }
     if (mvp_bytes)
         printf("mv played record: %.6f bits/byte over %llu bytes\n",
                mvp_bits / (double)mvp_bytes,
@@ -2514,6 +2859,30 @@ int main(int argc, char **argv) {
     if (core_enabled && core_bytes > tl_cby)
         printf("this-life model core bits/byte %.6f\n",
                (core_bits - tl_cb) / (double)(core_bytes - tl_cby));
+    if (jury_enabled)
+        for (int g = 0; g < JURY_GENOMES; ++g) {
+            JuryCore *c = &jury_core[g];
+            uint64_t lived = c->health_bytes - tl_jhealth[g];
+            double row_max = 0.0;
+            for (int j = 0; j < CORE_HIDDEN; ++j) {
+                double mean = lived ?
+                    (c->row_abs_sum[j] - tl_jrow[g][j]) /
+                    (double)lived : 0.0;
+                if (mean > row_max) row_max = mean;
+            }
+            uint64_t priced = c->bytes - tl_jbytes[g];
+            double near = lived ?
+                (double)(c->near_sat - tl_jnear[g]) /
+                ((double)lived * CORE_HIDDEN) : 0.0;
+            printf("this-life jury genome %d bits/byte %.6f "
+                   "max-row-abs-h %.6f near-sat %.9f clamps %llu "
+                   "gates +%llu -%llu\n",
+                   g, priced ? (c->bits - tl_jbits[g]) / (double)priced : 0.0,
+                   row_max, near,
+                   (unsigned long long)(c->clamp_hits - tl_jclamps[g]),
+                   (unsigned long long)(c->gates_pos - tl_jpos[g]),
+                   (unsigned long long)(c->gates_neg - tl_jneg[g]));
+        }
     if (units_enabled && unitlm_bytes > tl_uby)
         printf("this-life model unit-uni bits/byte %.6f\n",
                (unitlm_bits - tl_ub) / (double)(unitlm_bytes - tl_uby));
