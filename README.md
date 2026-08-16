@@ -62,9 +62,11 @@ technical source of truth for the living line.
   silently change a life's identity.
 
 This is a foundation, not a finished language model. The present arenas are
-mostly controlled synthetic worlds. The neural core is a shadow witness with
-no authority yet; there is no prompt mode, dreaming, glyph system,
-generalizing travel predictor, or unbounded life.
+mostly controlled synthetic worlds, followed by one sealed real-text
+Dracula/Frankenstein/technical/shuffled arc. Its four passes and four public
+failures are recorded in `GUTENBERG_RESULTS_2026-08-16.md`. The neural core is
+a shadow witness with no authority yet; there is no prompt mode, dreaming,
+glyph system, generalizing travel predictor, or unbounded life.
 
 ## Build and test
 
@@ -176,6 +178,8 @@ Counts must be finite non-negative integers. Infinite-life syntax such as
 - `zero_tests.sh` — executable research law.
 - `GUTENBERG_ARENA.md` — sealed first-real-text preregistration.
 - `gutenberg_arena.py` — reproducible corpus preparation and arena runner.
+- `GUTENBERG_RESULTS_2026-08-16.md` — first sealed real-text verdict.
+- `gutenberg_results/` — exact per-window scores and binary verdicts.
 - `netta.txt` — an optional raw-byte example island, not model authority.
 - `netta0.state` — restart state (generated, not source truth).
 - `netta0.bio.tsv` — append-only external biography (generated).
