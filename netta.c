@@ -2548,6 +2548,8 @@ static int speak_seed_set = 0;
    smoothing is honest when an external byte may be unseen; sampling its
    pseudo-counts as if they had been lived is a different act. */
 static int speak_laplace = 0;
+static const char *ear_path = NULL;
+static int state_named = 0, bio_named = 0;
 
 static uint64_t speak_next(uint64_t *s) {
     uint64_t z = (*s += 0x9e3779b97f4a7c15ULL);
@@ -2685,6 +2687,114 @@ static void speak(void) {
                 (unsigned long long)support_order[2]);
 }
 
+/* body 20: the island's ear. Every island can carry its own statistical
+   judge, grown from its immutable tape and nothing else: a foreign prior
+   cannot be smuggled through an object that is a pure function of the
+   sealed shore. The ear prices a spoken stream with the island's own
+   Laplace ladder -- pricing is where charging ignorance is honest -- and
+   takes an exact quotation census against the tape, which is fully
+   known, so a parrot is caught by substring, not by statistics. It is a
+   measurement instrument: it holds no office, wires into no election,
+   opens no state and writes nothing. */
+#define EAR_MAX (1u << 14)
+#define EAR_QUOTE_MIN 16
+
+static void ear_grow(const Island *isl) {
+    memset(counts, 0, sizeof counts);
+    counts_total = 0;
+    memset(bi_count, 0, sizeof bi_count);
+    memset(bi_row, 0, sizeof bi_row);
+    memset(tri, 0, TRI_SLOTS * sizeof(Pair));
+    memset(tri_row, 0, sizeof tri_row);
+    tri_used = 0;
+    for (uint64_t i = 0; i < isl->len; ++i) {
+        uint8_t b = isl->bytes[i];
+        counts[b]++;
+        counts_total++;
+        if (i >= 1) {
+            uint8_t p1 = isl->bytes[i - 1];
+            bi_count[p1][b]++;
+            bi_row[p1]++;
+            if (i >= 2)
+                tri_add(((uint32_t)isl->bytes[i - 2] << 8) | p1, b);
+        }
+    }
+}
+
+static void ear(void) {
+    FILE *f = fopen(ear_path, "rb");
+    if (!f) {
+        fprintf(stderr, "netta: cannot open %s\n", ear_path);
+        exit(1);
+    }
+    static uint8_t sp[EAR_MAX];
+    size_t n = fread(sp, 1, sizeof sp, f);
+    if (!feof(f)) {
+        fprintf(stderr, "netta: the ear listens to at most %u bytes "
+                        "at a sitting\n", EAR_MAX);
+        exit(1);
+    }
+    fclose(f);
+    if (n < 2) {
+        fprintf(stderr, "netta: the ear needs at least two bytes\n");
+        exit(1);
+    }
+    static uint32_t maxend[EAR_MAX], dp[EAR_MAX];
+    for (int k = 0; k < island_count; ++k) {
+        Island *isl = &islands[k];
+        ear_grow(isl);
+        double bits = 0.0;
+        uint8_t p2 = 0, p1 = 0;
+        for (size_t i = 0; i < n; ++i) {
+            uint8_t b = sp[i];
+            double p;
+            if (i == 0)
+                p = ((double)counts[b] + 1.0) /
+                    ((double)counts_total + (double)ACTIONS);
+            else if (i == 1)
+                p = ((double)bi_count[p1][b] + 1.0) /
+                    ((double)bi_row[p1] + (double)ACTIONS);
+            else {
+                uint32_t t = ((uint32_t)p2 << 8) | p1;
+                p = ((double)tri_get(t, b) + 1.0) /
+                    ((double)tri_row[t] + (double)ACTIONS);
+            }
+            bits += -log2(p);
+            p2 = p1;
+            p1 = b;
+        }
+        memset(maxend, 0, n * sizeof maxend[0]);
+        memset(dp, 0, n * sizeof dp[0]);
+        for (uint64_t t = 0; t < isl->len; ++t) {
+            uint8_t tb = isl->bytes[t];
+            for (size_t s = n; s-- > 0;) {
+                if (sp[s] == tb) {
+                    dp[s] = s ? dp[s - 1] + 1 : 1;
+                    if (dp[s] > maxend[s]) maxend[s] = dp[s];
+                } else {
+                    dp[s] = 0;
+                }
+            }
+        }
+        uint64_t longest = 0, covered = 0;
+        size_t painted = 0;
+        for (size_t s = 0; s < n; ++s) {
+            if (maxend[s] > longest) longest = maxend[s];
+            if (maxend[s] >= EAR_QUOTE_MIN) {
+                size_t le = s + 1 - maxend[s];
+                if (le < painted) le = painted;
+                covered += s + 1 - le;
+                painted = s + 1;
+            }
+        }
+        printf("ear %d: digest=%016llx bytes=%llu bits=%.6f "
+               "bits/byte=%.6f longest-quote=%llu quoted16=%.1f%%\n",
+               k, (unsigned long long)isl->digest, (unsigned long long)n,
+               bits, bits / (double)n, (unsigned long long)longest,
+               100.0 * (double)covered / (double)n);
+    }
+}
+
 int main(int argc, char **argv) {
     const char *state_path = "netta0.state";
     const char *bio_path = "netta0.bio.tsv";
@@ -2706,10 +2816,14 @@ int main(int argc, char **argv) {
             fixed_start = parse_u64("--start", argv[++i]);
             fixed_start_set = 1;
         }
-        else if (!strcmp(argv[i], "--state") && i + 1 < argc)
+        else if (!strcmp(argv[i], "--state") && i + 1 < argc) {
             state_path = argv[++i];
-        else if (!strcmp(argv[i], "--bio") && i + 1 < argc)
+            state_named = 1;
+        }
+        else if (!strcmp(argv[i], "--bio") && i + 1 < argc) {
             bio_path = argv[++i];
+            bio_named = 1;
+        }
         else if (!strcmp(argv[i], "--reset"))
             reset = 1;
         else if (!strcmp(argv[i], "--atlas"))
@@ -2746,6 +2860,8 @@ int main(int argc, char **argv) {
             prompt_path = argv[++i];
         else if (!strcmp(argv[i], "--speak-laplace"))
             speak_laplace = 1;
+        else if (!strcmp(argv[i], "--ear") && i + 1 < argc)
+            ear_path = argv[++i];
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -2774,6 +2890,23 @@ int main(int argc, char **argv) {
         fprintf(stderr, "netta: speech flags require --speak\n");
         exit(1);
     }
+    if (ear_path) {
+        if (speak_requested) {
+            fprintf(stderr,
+                    "netta: the ear and the mouth are separate "
+                    "invocations\n");
+            exit(1);
+        }
+        if (reset || state_named || bio_named) {
+            fprintf(stderr,
+                    "netta: the ear judges a shore, never a life\n");
+            exit(1);
+        }
+        if (paths_n == 0) {
+            fprintf(stderr, "netta: the ear needs a shore\n");
+            exit(1);
+        }
+    }
     if (speak_requested) fprintf(stderr, "NETTA ZERO\n");
     else printf("NETTA ZERO\n");
     if (paths_n == 0 && !speak_requested) {
@@ -2782,7 +2915,7 @@ int main(int argc, char **argv) {
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
                         "[--atlas] [--no-core] [--core-hebb-v1] [--jury] "
                         "[--speak N] [--speak-seed N] [--prompt-file P] "
-                        "[--speak-laplace] "
+                        "[--speak-laplace] [--ear P] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -2814,6 +2947,10 @@ int main(int argc, char **argv) {
     if (paths_n && (isl_id < 0 || isl_id >= island_count)) {
         fprintf(stderr, "netta: no island %d\n", isl_id);
         exit(1);
+    }
+    if (ear_path) {
+        ear();
+        return 0;
     }
 
     rng_state = seed;

@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B19. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B20. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -1153,6 +1153,49 @@ gate "B19 the Laplace red mouth leaves the lived alphabet ($B19R/120 bytes)" $? 
 cmp -s "$T/b18.state" "$T/b18.state.ref" && cmp -s "$T/b18.bio" "$T/b18.bio.ref"
 gate "B19 repaired and red mouths are equally memory-silent" $? 0
 
+# --- B20: the island's ear ----------------------------------------------
+# Every island can carry its own statistical judge, grown from its
+# immutable tape and nothing else. The ear prices speech with the
+# island's own Laplace ladder, takes an exact quotation census against
+# the fully known tape, opens no state, and writes nothing. Each shore
+# judges by its own book; a parrot is caught by substring; destroying
+# the order of a true slice while keeping its census must raise the
+# price (red: the ear hears structure, not alphabet).
+i=0; : > "$T/x3.bytes"
+while [ $i -lt 700 ]; do printf 'xyzxzy' >> "$T/x3.bytes"; i=$((i+1)); done
+head -c 200 "$T/p3.bytes" > "$T/b20.slice"
+"$N" "$T/p3.bytes" "$T/x3.bytes" --ear "$T/b20.slice" > "$T/b20.out" 2>/dev/null
+gate "B20 the ear hears a convoy of shores" $? 0
+grep -q '^ear 0: .* longest-quote=200 quoted16=100.0%$' "$T/b20.out"
+gate "B20 a verbatim slice is caught exactly by the quotation census" $? 0
+e0=$(sed -n 's/^ear 0: .*bits\/byte=\([0-9.]*\).*/\1/p' "$T/b20.out")
+e1=$(sed -n 's/^ear 1: .*bits\/byte=\([0-9.]*\).*/\1/p' "$T/b20.out")
+awk -v a="$e0" -v b="$e1" 'BEGIN{exit !(a+2.0 < b)}'
+gate "B20 each shore judges by its own book (home $e0, foreign $e1 bits/byte)" $? 0
+grep -q '^ear 1: .* longest-quote=0 ' "$T/b20.out"
+gate "B20 a foreign stream quotes nothing from a shore it never touched" $? 0
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" > "$T/b20.d1" 2>/dev/null
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" > "$T/b20.d2" 2>/dev/null
+cmp -s "$T/b20.d1" "$T/b20.d2"
+gate "B20 the ear is deterministic" $? 0
+fold -w1 < "$T/b20.slice" | LC_ALL=C sort | tr -d '\n' > "$T/b20.sorted"
+"$N" "$T/p3.bytes" --ear "$T/b20.sorted" > "$T/b20.sout" 2>/dev/null
+es=$(sed -n 's/^ear 0: .*bits\/byte=\([0-9.]*\).*/\1/p' "$T/b20.sout")
+awk -v a="$e0" -v b="$es" 'BEGIN{exit !(a + 1.0 < b)}'
+gate "B20 the ear hears order, not census (sorted twin $es over true $e0) (red)" $? 0
+mkdir "$T/b20dir"
+( cd "$T/b20dir" && "$N" "$T/p3.bytes" --ear "$T/b20.slice" >/dev/null 2>&1 )
+[ -z "$(ls -A "$T/b20dir")" ]
+gate "B20 the ear writes nothing" $? 0
+"$N" --ear "$T/b20.slice" >/dev/null 2>&1
+gate "B20 the ear needs a shore" $? 1
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" --speak 5 >/dev/null 2>&1
+gate "B20 the ear and the mouth are separate invocations" $? 1
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" --state "$T/p3.state" >/dev/null 2>&1
+gate "B20 the ear judges a shore, never a life (state refused)" $? 1
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" --reset >/dev/null 2>&1
+gate "B20 the ear judges a shore, never a life (reset refused)" $? 1
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -1225,6 +1268,10 @@ grep -v '^speak:' "$T/ss18.err" | grep -v '^speak support:' | \
     grep -v '^NETTA ZERO' > "$T/ss18.err2" || true
 [ -s "$T/ss18.err2" ] && rc=98
 gate "S ASan/UBSan silent through the speaking mouth" $rc 0
+"$S" "$T/p3.bytes" "$T/x3.bytes" --ear "$T/b20.slice" \
+    > /dev/null 2>"$T/ss20.err"
+rc=$?; [ -s "$T/ss20.err" ] && rc=98
+gate "S ASan/UBSan silent through the ear" $rc 0
 "$S" "$T/p5.bytes" --reset --jury --seed 5 --episodes 1 --steps 300 \
     --state "$T/sc17.state" --bio "$T/sc17.bio" >/dev/null 2>"$T/sc17.err"
 rc=$?

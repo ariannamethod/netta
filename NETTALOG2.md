@@ -1664,3 +1664,111 @@ boundaries, zero-byte life, zero-byte request, every-law read-only matrix,
 prompt horizon, interleaved RNG identity, mv fallback, speech-control
 quarantine, supported graph, causal fallback, Laplace red arm, strict C11,
 and ASan/UBSan join the inherited constitution.
+
+## The supported mouth audited
+
+The nineteenth-body turn was reproduced from zero before its diffs were
+read: all one hundred and sixty-three gates passed with a fresh binary, and
+the four tracked first-word streams re-spoke byte-identically under
+`--speak-laplace` from this side's independently lived 64000- and
+384000-byte states — the red arm preserves body 18's exact arithmetic in
+both hands' worlds.  The supported arm's published census reproduced to the
+byte: 197/200, 300/300 at tri depth, 294/300, 293/300.
+
+Five attacks were then pressed.  The bounded sampler's rejection threshold
+`(0 - bound) % bound` was recomputed by a second hand as `2^64 mod bound`
+through 128-bit arithmetic at every power of two and both neighbours, with
+no disagreement, no out-of-range draw in twenty thousand at each bound, and
+every residue reached at small bounds.  The row totals the sampler trusts
+are not trusted at all: the state loader recomputes bigram and trigram row
+sums and refuses a checkpoint whose books disagree, so a forged-but-loadable
+layout with desynchronized totals does not exist and the sampler's own
+disagree-exit stands third behind the witness and the load audit.  A
+fifty-thousand-byte speech on the period-3 life contained zero bigrams that
+the tape had not lived — the census was taken against the world, not against
+the speaker's claims.  A world whose final byte is lived but has no
+successor forced the full causal ladder in one utterance: support `uni 1,
+bi 1, tri 22` — one draw at the floor, one recovery through the bigram book,
+then home.  And a life on two shores with disjoint alphabets spoke six
+hundred of six hundred bytes in one shore's letters: the mouth is the
+life's, but speech lives in the basin of its opening, because the life
+never lived a single cross-shore transition for the tongue to walk.  That
+sentence now stands as the honest reading of "the life's mouth": `--island`
+chooses where to play, never where to speak.
+
+The challenge to find a world where the red arm is structurally better was
+answered with a preregistered ruler: on a world drawn uniformly over all
+256 byte values, ruler = how many distinct bytes each law can ever name,
+declared before either sample was drawn.  After a 512-step life whose
+window held 224 distinct values, supported backoff spoke exactly those 224
+and could not name the missing 32; the Laplace arm named all 256.  A world
+whose truth is wider than the life is precisely where spending ignorance is
+the only way to say the unseen.  Both laws keep their arms.
+
+Terminal safety stays a warning, not a frame: an escaping layer would make
+the instrument lie about its own bytes, and the reader owns `tr`.
+
+## Body 20: the island's ear
+
+A speaking court cannot exist until its judge exists, and the judge must be
+named and sealed before it hears any candidate.  The twentieth body builds
+the judge as a measurement instrument with no office: the island's ear.
+
+Every island can carry its own statistical judge, grown from its immutable
+tape and nothing else.  A foreign prior cannot be smuggled through an object
+that is a pure function of the sealed shore: the ear reads the whole tape
+once — every byte into the census, every adjacent pair into the bigram book,
+every triple into the trigram book — and prices a spoken stream with the
+island's own Laplace ladder, trigram context with unigram and bigram
+warmup.  Pricing is where charging ignorance is honest, so the judge keeps
+the smoothing law the mouth gave up.  And because the tape is immutable and
+fully known, the parrot is caught by substring, not by statistics: the ear
+reports the longest verbatim quotation and the fraction of the stream
+covered by quotations of sixteen bytes or more.
+
+The ruler is preregistered here, before the ear hears any candidate words:
+an utterance is judged by (1) bits per byte under the shore's own ladder —
+lower is closer to the shore's law; (2) the longest verbatim quote and the
+quoted-16 coverage — a stream that wins (1) by copying the tape is named a
+parrot by (2), exactly; (3) jurisdiction is local: a stream is judged by
+the shore it is offered to, and by nothing else.  No threshold, promotion,
+or authority is attached to any of these numbers.  The ear wires into no
+election, opens no state, writes no byte; `--ear` refuses a mouth in the
+same invocation, refuses `--reset`, `--state`, and `--bio` by name, and
+needs at least one shore.  State remains v20.
+
+On the constitution's own worlds the ear behaves as sealed: a verbatim
+200-byte slice of the period-3 tape prices at 0.46 bits per byte on its own
+shore with longest-quote 200 and full quoted coverage — a perfect parrot,
+perfectly named — while the same slice offered to a disjoint-alphabet shore
+prices at 8.02 bits per byte and quotes nothing.  A sorted twin of the true
+slice, same census, destroyed order, pays more than the true slice on the
+same shore: the ear hears structure, not alphabet.
+
+## The first hearing
+
+With the ruler sealed above, the Dracula shore's ear heard all eight
+recorded streams: the four Laplace-arm streams and their four
+supported-backoff twins.  Under the shore's own law the elected trigram's
+supported speech prices at 2.99 bits per byte — the best of the eight by a
+wide margin — with bi at 4.68 on the young life and 4.99 locked, while the
+locked unigram, printability's champion, prices at 7.48: within half a bit
+of raw ignorance.  Every Laplace stream is beaten by its supported twin
+except uni, where both sit at the noise floor.  The quotation census clears
+all hands: the longest verbatim quote in any stream is twelve bytes and no
+stream carries a single sixteen-byte quotation — the speech is generated,
+not copied.
+
+The hearing closes the ruler question the eighteenth body opened.  "Pricing
+champion is not speaking champion" was true of a Laplace mouth judged by
+printability; under an honest mouth and the shore's own sealed ear, the
+elected hand is the best speaker again, and the census hand that printability
+crowned is heard as near-noise.  Discipline transfers from pricing to speech
+once both the speaker and the judge stop spending ignorance.  No promotion
+follows: the ear is a measurement, the numbers stand recorded, and any
+speaking court over them remains future work with its own red worlds.
+
+One hundred and seventy-five gates now pass: the ear's convoy hearing,
+exact quotation census, per-shore jurisdiction, determinism, sorted-twin
+red, write-nothing law, four refusals by name, and ASan/UBSan through the
+ear join the constitution.
