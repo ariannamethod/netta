@@ -1377,3 +1377,24 @@ transported structure. Selectivity law must subtract that confound,
 and the court specification now does. The full re-derivation from raw
 sources awaits the network word; until then the raw-hash layer of the
 seal rests on one hand and is named as such.
+
+## The plasticity court is sealed before its first expert breathes
+
+`PLASTICITY_COURT.md` specifies body 17 and is sealed before any expert
+run, in the same discipline that sealed the Gutenberg arena. Eight
+genomes on complete shadow copies of the core's mutable memory, the
+frozen incumbent sitting as genome zero inside the same life; genes
+restricted to what each shadow record can evaluate, with a homeostatic
+anti-runaway gene class that Hebb-v1 lacked; fitness as selectivity --
+median kin gain minus median shuffle gain, with a breadth veto against
+out-broadening the incumbent on the alien arm and a health veto that
+prices saturation as death; promotion only at the constitution's own
+0.1 appointment margin over the frozen incumbent's selectivity, a
+defeated law preserved as a red arm, and a published null if no genome
+wins. The alien control must be measured before it is named: candidate
+tapes qualify only past the technical donor's recorded distances on
+both census and bigram rulers, with real internal structure. The jury
+is an instrument under an explicit flag, witnessed and restart-exact,
+with no candidacy and no authority beyond one sealed fitness table.
+The court is specification only until it survives independent review;
+building it before that review would be taking our own word for it.
