@@ -3113,11 +3113,19 @@ static const char COURT_LAW[] =
     "stranger otherwise";
 static uint64_t court_law_digest;
 
+/* body 27: a receipt leaf is not a sitting. The candidate-bearing header
+   and every complete warrant line enter one ordered docket; the declared
+   shore count and close make deletion, duplication, reorder, and splice
+   visible to an independent hand. */
+static uint64_t court_docket_record(uint64_t h, const char *record) {
+    static const uint8_t nl = '\n';
+    h = fnv1a64((const uint8_t *)record, (uint64_t)strlen(record), h);
+    return fnv1a64(&nl, 1, h);
+}
+
 static void court(void) {
     court_law_digest = fnv1a64((const uint8_t *)COURT_LAW,
                                (uint64_t)strlen(COURT_LAW), FNV_SEED);
-    printf("court law: %s law-digest=%016llx\n", COURT_LAW,
-           (unsigned long long)court_law_digest);
     FILE *f = fopen(court_path, "rb");
     if (!f) {
         fprintf(stderr, "netta: cannot open %s\n", court_path);
@@ -3147,6 +3155,27 @@ static void court(void) {
                       &cp2, &cp1);
         contextual = 1;
     }
+    char ctx[8];
+    if (contextual)
+        snprintf(ctx, sizeof ctx, "%02x%02x", cp2, cp1);
+    else
+        snprintf(ctx, sizeof ctx, "cold");
+    uint64_t candidate_digest = fnv1a64(sp, (uint64_t)n, FNV_SEED);
+    printf("court law: %s law-digest=%016llx\n", COURT_LAW,
+           (unsigned long long)court_law_digest);
+    char sitting[256];
+    int hn = snprintf(sitting, sizeof sitting,
+                      "court sitting: candidate-digest=%016llx bytes=%llu "
+                      "context=%s shores=%d law-digest=%016llx",
+                      (unsigned long long)candidate_digest,
+                      (unsigned long long)n, ctx, island_count,
+                      (unsigned long long)court_law_digest);
+    if (hn < 0 || (size_t)hn >= sizeof sitting) {
+        fprintf(stderr, "netta: warrant sitting overflow\n");
+        exit(1);
+    }
+    printf("%s\n", sitting);
+    uint64_t docket = court_docket_record(FNV_SEED, sitting);
     static uint32_t maxend[EAR_MAX];
     EarSam match;
     ear_sam_build(&match, sp, n);
@@ -3183,11 +3212,7 @@ static void court(void) {
            with the law-digest it was judged under, so a transcribed
            warrant can be refused by an external hand on any changed
            operand, verdict, or silently amended law. */
-        char line[512], ctx[8];
-        if (contextual)
-            snprintf(ctx, sizeof ctx, "%02x%02x", cp2, cp1);
-        else
-            snprintf(ctx, sizeof ctx, "cold");
+        char line[512];
         int ln = snprintf(line, sizeof line,
                "court %d: digest=%016llx context=%s bytes=%llu "
                "P=%.6f Q=%.6f matched16=%.4f%% "
@@ -3211,9 +3236,18 @@ static void court(void) {
         }
         uint64_t receipt = fnv1a64((const uint8_t *)sealed,
                                    (uint64_t)sn, FNV_SEED);
-        printf("%s receipt=%016llx\n", line,
-               (unsigned long long)receipt);
+        char warrant[640];
+        int wn = snprintf(warrant, sizeof warrant, "%s receipt=%016llx",
+                          line, (unsigned long long)receipt);
+        if (wn < 0 || (size_t)wn >= sizeof warrant) {
+            fprintf(stderr, "netta: warrant receipt overflow\n");
+            exit(1);
+        }
+        printf("%s\n", warrant);
+        docket = court_docket_record(docket, warrant);
     }
+    printf("court close: verdicts=%d docket=%016llx\n", island_count,
+           (unsigned long long)docket);
     ear_sam_free(&match);
 }
 
