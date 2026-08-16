@@ -2109,3 +2109,64 @@ enters no election, and grants no authority.  State remains v20.  A complete
 law of earning remains external work: preregistration receipts, independent
 review, red-world scope, a named requested power, revocation, and a separately
 enacted activation body cannot be self-attested by this instrument.
+
+## The public warrant audited
+
+The eleventh Sol turn was reproduced from zero: 225 gates with a fresh
+binary before its diffs were read.  An independent hand then reparsed
+every court line of eleven hearings — all nine calibration worlds plus
+the all-`z` and equal-census witnesses — and recomputed every verdict
+using only the printed operands: eleven agreements, zero divergence.
+The integer law bites exactly where it is written: a candidate with
+matched bytes 200 of 400 is REPLAY at the tie and 200 of 401 is ORDER
+one byte below it; a NUL-bearing candidate keeps its exact fraction; a
+cold `ab` at gap-micro 265747 is STRANGER while the same two bytes
+under an explicit `cb` context reach gap-micro 1951844 and ORDER — the
+warrant names the jurisdiction that moved the verdict.  The two
+abstention witnesses stay distinct in the operands themselves: the
+all-`z` stream abstains at gap-micro 0 with 1226 moved shore bytes,
+while the equal-census stream is a STRANGER at gap-micro -3052.  A
+32-shore convoy leaks nothing — line seventeen is byte-identical alone
+and in company — verdicts repeat bit for bit, sanitizers are silent
+through the full convoy, and the mask refuses ear, mouth, twin, and
+every life control.
+
+## Body 26: the warrant's receipt
+
+The court publishes its operands; the twenty-sixth body makes that
+publication independently checkable.  This is the second clause of the
+earning law, preregistered in this turn's checklist before a line of
+it was built: a verdict is citable only through a receipt that an
+external hand can recompute, and every warrant names the law it was
+judged under.
+
+Each court invocation now opens with the law itself: the canonical
+one-line text of the lattice and its frozen thresholds, followed by
+its FNV-1a-64 law-digest.  Every verdict line carries a receipt: the
+FNV-1a-64 of that line's canonical operand text joined with the
+law-digest.  A silently amended threshold changes the canonical text,
+therefore the law-digest, therefore every receipt: no verdict can
+pretend continuity with a law it was not judged under.  The external
+hand is `scripts/warrant_check.c` — an independent implementation
+that parses a court transcript, re-derives every verdict from the
+printed operands alone, recomputes every receipt, and refuses the
+transcript on any divergence, naming the line.
+
+The receipt authenticates the tuple; it does not replace it, and it
+grants nothing.  Its honest limit is also named here: FNV is a
+witness, not a signature — it catches transcription, tampering, and
+law drift, not an adversary who rebuilds the hash from source.  A
+sealed receipt against that adversary needs a key and a key holder,
+and those are historical and social facts no organism can self-attest
+from inside its own file.  Activation authority remains a later body.
+
+One honest note on defense in depth: on a receipt-valid transcript the
+external hand's verdict re-derivation can never fire alone, because the
+receipt already binds the verdict word into the hash.  The re-derivation
+exists for the organism that seals its own error consistently, and it
+did real work in this audit's first act, where eleven verdicts were
+recomputed from operands before any receipt existed.  Two hundred and
+thirty-four gates now pass: the external hand's strict build, a
+five-hearing acceptance, the one-law rule, and five red arms — tampered
+operand, tampered verdict, tampered receipt, amended law, and a verdict
+without a law — join the constitution.

@@ -101,7 +101,16 @@ technical source of truth for the living line.
   causal accusations; the trigram court still names an equal-census stream
   `stranger`. It accepts only shores, `--court`, and optional
   `--ear-context`; it wires into no election, grants no speech authority,
-  opens no state, and writes nothing.
+  opens no state, and writes nothing. Body 26 seals the warrant: every
+  sitting opens by printing the canonical law text with its FNV-1a-64
+  law-digest, and every verdict line carries a receipt over its own
+  operands joined with that digest. `scripts/warrant_check.c` is the
+  independent external hand: it re-derives every verdict from the printed
+  operands alone and recomputes every receipt, refusing a transcript by
+  line on any changed operand, verdict, receipt, or silently amended law.
+  The receipt authenticates the tuple, never replaces it, and grants
+  nothing; FNV is a witness, not a signature, and activation authority
+  remains a later body.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -149,7 +158,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 220-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 234-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation

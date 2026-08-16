@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B25. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B26. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -1474,28 +1474,28 @@ gate "B23 the preregistered twin coordinate exposes that replay ($b23t<$b23tx)" 
 # accusations: the independently written cycle below replays a shore
 # no hand ever copied. The court holds no office and writes nothing.
 "$N" "$T/p3.bytes" --court "$T/b20.slice" > "$T/b24.a" 2>/dev/null
-grep -q 'verdict=replay$' "$T/b24.a"
+grep -q 'verdict=replay receipt=' "$T/b24.a"
 gate "B24 a literal slice is judged replay" $? 0
 i=0; : > "$T/b24.ind"
 while [ $i -lt 20 ]; do printf 'cacbab' >> "$T/b24.ind"; i=$((i+1)); done
 "$N" "$T/p3.bytes" --court "$T/b24.ind" > "$T/b24.b" 2>/dev/null
-grep -q 'verdict=replay$' "$T/b24.b"
+grep -q 'verdict=replay receipt=' "$T/b24.b"
 gate "B24 an independently written cycle is judged replay (pattern, not cause)" $? 0
 i=0; : > "$T/b24.ord"
 while [ $i -lt 25 ]; do printf 'abcacbabcacz' >> "$T/b24.ord"; i=$((i+1)); done
 "$N" "$T/p3.bytes" --court "$T/b24.ord" > "$T/b24.g" 2>/dev/null
-grep -q 'verdict=order$' "$T/b24.g"
+grep -q 'verdict=order receipt=' "$T/b24.g"
 gate "B24 short lived runs with a foreign heartbeat are judged order" $? 0
 i=0; : > "$T/b24.zzz"
 while [ $i -lt 300 ]; do printf 'z' >> "$T/b24.zzz"; i=$((i+1)); done
 "$N" "$T/p3.bytes" --court "$T/b24.zzz" > "$T/b24.d" 2>/dev/null
-grep -q 'P=8.013738 Q=8.013738 .*gap-micro=0 .*verdict=abstain$' "$T/b24.d"
+grep -q 'P=8.013738 Q=8.013738 .*gap-micro=0 .*verdict=abstain receipt=' "$T/b24.d"
 gate "B25 a foreign stream invisible to the structural null now abstains" $? 0
 i=0; : > "$T/b24.const"
 while [ $i -lt 4096 ]; do printf 'a' >> "$T/b24.const"; i=$((i+1)); done
 head -c 300 "$T/b24.const" > "$T/b24.cs"
 "$N" "$T/b24.const" --court "$T/b24.cs" > "$T/b24.e" 2>/dev/null
-grep -q 'matched16=100.0000% .*verdict=abstain$' "$T/b24.e"
+grep -q 'matched16=100.0000% .*verdict=abstain receipt=' "$T/b24.e"
 gate "B24 a shore whose twin cannot move abstains over a perfect match" $? 0
 head -c 168 "$T/p3.bytes" > "$T/b24.hi"
 i=0; while [ $i -lt 60 ]; do printf 'x' >> "$T/b24.hi"; i=$((i+1)); done
@@ -1503,7 +1503,7 @@ head -c 84 "$T/p3.bytes" > "$T/b24.lo"
 i=0; while [ $i -lt 144 ]; do printf 'x' >> "$T/b24.lo"; i=$((i+1)); done
 "$N" "$T/p3.bytes" --court "$T/b24.hi" > "$T/b24.h" 2>/dev/null
 "$N" "$T/p3.bytes" --court "$T/b24.lo" > "$T/b24.i" 2>/dev/null
-grep -q 'verdict=replay$' "$T/b24.h" && grep -q 'verdict=order$' "$T/b24.i"
+grep -q 'verdict=replay receipt=' "$T/b24.h" && grep -q 'verdict=order receipt=' "$T/b24.i"
 gate "B24 the match threshold bites: a straddle pair flips the verdict (red)" $? 0
 "$N" "$T/p3.bytes" --court "$T/b24.zzz" --ear-context "$T/b18.p1" \
     > "$T/b24.ctx" 2>/dev/null
@@ -1536,9 +1536,9 @@ cp "$T/b25.tie" "$T/b25.below"
 printf 'x' >> "$T/b25.below"
 "$N" "$T/p3.bytes" --court "$T/b25.tie" > "$T/b25.tie.out" 2>/dev/null
 "$N" "$T/p3.bytes" --court "$T/b25.below" > "$T/b25.below.out" 2>/dev/null
-grep -q 'matched16=50.0000% matched-bytes=1000/2000 .*verdict=replay$' \
+grep -q 'matched16=50.0000% matched-bytes=1000/2000 .*verdict=replay receipt=' \
     "$T/b25.tie.out" && \
-grep -q 'matched16=49.9750% matched-bytes=1000/2001 .*verdict=order$' \
+grep -q 'matched16=49.9750% matched-bytes=1000/2001 .*verdict=order receipt=' \
     "$T/b25.below.out"
 gate "B25 the public exact fraction reconstructs both sides of the 50% law" $? 0
 
@@ -1548,7 +1548,7 @@ printf 'b' >> "$T/b25.near"
 i=0; while [ $i -lt 2047 ]; do printf 'a' >> "$T/b25.near"; i=$((i+1)); done
 head -c 300 "$T/b24.const" > "$T/b25.aaa"
 "$N" "$T/b25.near" --court "$T/b25.aaa" > "$T/b25.near.out" 2>/dev/null
-grep -q 'P=0.087545 Q=0.087545 .*G=0.000000 gap-micro=0 changed=2/4096 verdict=abstain$' \
+grep -q 'P=0.087545 Q=0.087545 .*G=0.000000 gap-micro=0 changed=2/4096 verdict=abstain receipt=' \
     "$T/b25.near.out"
 gate "B25 moved bytes without a moved measurement do not confer jurisdiction" $? 0
 
@@ -1560,7 +1560,7 @@ i=0; while [ $i -lt 100 ]; do
     i=$((i+1))
 done
 "$N" "$T/p3.bytes" --court "$T/b25.quilt" > "$T/b25.quilt.out" 2>/dev/null
-grep -q 'matched16=0.0000% matched-bytes=0/1600 .*verdict=order$' \
+grep -q 'matched16=0.0000% matched-bytes=0/1600 .*verdict=order receipt=' \
     "$T/b25.quilt.out"
 gate "B25 a quilt of sub-threshold literals remains structural order" $? 0
 
@@ -1569,7 +1569,7 @@ i=0; while [ $i -lt 100 ]; do printf 'a' >> "$T/b25.census"; i=$((i+1)); done
 i=0; while [ $i -lt 100 ]; do printf 'b' >> "$T/b25.census"; i=$((i+1)); done
 i=0; while [ $i -lt 100 ]; do printf 'c' >> "$T/b25.census"; i=$((i+1)); done
 "$N" "$T/p3.bytes" --court "$T/b25.census" > "$T/b25.census.out" 2>/dev/null
-grep -q 'verdict=stranger$' "$T/b25.census.out"
+grep -q 'verdict=stranger receipt=' "$T/b25.census.out"
 gate "B25 the trigram court still names its equal-census blind spot" $? 0
 
 printf 'ab' > "$T/b25.ab"
@@ -1577,9 +1577,59 @@ printf 'cb' > "$T/b25.cb"
 "$N" "$T/p3.bytes" --court "$T/b25.ab" > "$T/b25.cold" 2>/dev/null
 "$N" "$T/p3.bytes" --court "$T/b25.ab" --ear-context "$T/b25.cb" \
     > "$T/b25.hot" 2>/dev/null
-grep -q 'context=cold .*verdict=stranger$' "$T/b25.cold" && \
-grep -q 'context=6362 .*verdict=order$' "$T/b25.hot"
+grep -q 'context=cold .*verdict=stranger receipt=' "$T/b25.cold" && \
+grep -q 'context=6362 .*verdict=order receipt=' "$T/b25.hot"
 gate "B25 context may change a verdict only while naming its jurisdiction" $? 0
+
+# --- B26: the warrant's receipt -----------------------------------------
+# A verdict is citable only through a receipt an external hand can
+# recompute, and every warrant names the law it was judged under. The
+# external hand re-derives every verdict from printed operands alone
+# and recomputes every receipt against the named law-digest; a changed
+# operand, verdict, receipt, or silently amended law text refuses the
+# transcript by line. The receipt authenticates the tuple; it grants
+# nothing.
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic scripts/warrant_check.c \
+    -o "$T/wcheck" 2>"$T/wcheck-build.log"
+rc=$?; [ -s "$T/wcheck-build.log" ] && rc=98
+gate "B26 the warrant's external hand builds strict and silent" $rc 0
+{ "$N" "$T/p3.bytes" --court "$T/b20.slice"
+  "$N" "$T/p3.bytes" --court "$T/b24.ord"
+  "$N" "$T/p3.bytes" --court "$T/b24.zzz"
+  "$N" "$T/b24.const" --court "$T/b24.cs"
+  "$N" "$T/p3.bytes" --court "$T/b24.lo"
+} > "$T/b26.transcript" 2>/dev/null
+"$T/wcheck" < "$T/b26.transcript" > "$T/b26.accept"
+rc=$?; grep -q '^warrant accepted: 5 verdicts under law ' "$T/b26.accept" || rc=98
+gate "B26 five hearings are accepted by the external hand" $rc 0
+grep -q '^court law: pattern-court law v2: ' "$T/b26.transcript"
+gate "B26 every sitting opens by naming its law and law-digest" $? 0
+"$N" "$T/p3.bytes" --court "$T/b20.slice" 2>/dev/null | grep '^court law:' \
+    > "$T/b26.law1"
+"$N" "$T/p3.bytes" --court "$T/b24.zzz" 2>/dev/null | grep '^court law:' \
+    > "$T/b26.law2"
+cmp -s "$T/b26.law1" "$T/b26.law2"
+gate "B26 the law-digest is one law for every hearing" $? 0
+sed 's/gap-micro=0 /gap-micro=1 /' "$T/b26.transcript" > "$T/b26.t1"
+"$T/wcheck" < "$T/b26.t1" > "$T/b26.r1"
+rc=$?
+[ "$rc" -eq 1 ] && grep -q 'receipt does not match its operands' "$T/b26.r1"
+gate "B26 a tampered operand is refused by name (red)" $? 0
+sed 's/verdict=order/verdict=replay/' "$T/b26.transcript" > "$T/b26.t2"
+"$T/wcheck" < "$T/b26.t2" >/dev/null 2>&1
+gate "B26 a tampered verdict is refused (red)" $? 1
+sed 's/receipt=\(............\)..../receipt=\1beef/' "$T/b26.transcript" \
+    > "$T/b26.t3"
+"$T/wcheck" < "$T/b26.t3" >/dev/null 2>&1
+gate "B26 a tampered receipt is refused (red)" $? 1
+sed 's/order if gap-micro>=500000/order if gap-micro>=500001/' \
+    "$T/b26.transcript" > "$T/b26.t4"
+"$T/wcheck" < "$T/b26.t4" > "$T/b26.r4"
+rc=$?
+[ "$rc" -eq 1 ] && grep -q 'law text does not match its digest' "$T/b26.r4"
+gate "B26 a silently amended law is refused by its own digest (red)" $? 0
+grep -v '^court law:' "$T/b26.transcript" | "$T/wcheck" >/dev/null 2>&1
+gate "B26 a verdict without a law is refused (red)" $? 1
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
