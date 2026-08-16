@@ -1169,3 +1169,59 @@ into a cone where the background cosine reached 1.0 and a composite
 rose while the organism fell; beautiful mechanisms repeatedly lost to
 strong dumb controls; a saturated signal was a dead signal. Each scar
 becomes an executable gate where the neural tissue now enters.
+
+## The sixteenth body: the neural core enters in shadow
+
+Training was always her second name, and the maintainer set the order:
+the architecture is not complete without its core, and the core does
+not wait for the real-text runs, because the constitution's entry
+protocol makes early arrival free. It enters the way the unit shadow
+and the oracles entered: a witness with a record and no power.
+
+The lineage is the grave's own, reimplemented under the zero courts,
+never copied: no backpropagation anywhere. A recurrent hidden state of
+thirty-two over innate byte embeddings of twenty-four, the buried
+prototype's dimensions kept as inheritance. Three local laws learn on
+every lived byte, strictly after the receipt. The delta rule moves the
+readout alone, error times hidden activity. Surprise-gated Hebbian
+plasticity moves the dynamics: the prequential surprise against a
+floating prophecy baseline -- the grave's 0.82/0.18 blend -- opens the
+gate only past half a bit, potentiates co-activation that beat the
+prophecy and depresses what fell short, under decay and a hard clamp.
+The baseline itself is the third law, a fast quote over slow memory.
+The readout is born at zero, so the newborn's first price is exactly
+8.000000 bits: ignorance is the honest starting capital. The hidden
+state is episode-local, rebuilt from the sixteen observable wake bytes
+without pricing or learning; only weights, the baseline, and the record
+persist, so a split life stays bit-identical. The core consumes no
+draw from the life's rng: every inherited number stands untouched, and
+the biography is byte-identical with the core present or disabled --
+the shadow casts no shadow on the game.
+
+The first record is honest in both directions. On the alternating
+world the core prices 0.266429 bits per byte where the byte bigram
+carries 0.908803 on the same cumulative bytes: the first time any
+witness outran the counter ladder, and the anti-cone proof in the same
+number. On period five, structurally past the trigram's two-byte
+memory, the core sees the phase: 0.274086 against tri's 0.859384. On
+period six it wins twice more (0.974325 and 1.024118 against 1.227).
+And on period seven it fails badly, 7.338107 against tri's 0.845067,
+and on period eight likewise -- the shadow's measured weakness is a
+gate now, so any future hand that heals it must flip a red assertion
+consciously. On the structureless world the core converges to
+8.002525 while the trained unigram pays 8.126462 for its learned
+confidence: the fifth-body law holds for neural tissue unmodified. On
+repetition it learns within one life to 4.067613, still behind the
+counters -- the shadow has the right to be weak where exact memory is
+the whole game. Mean hidden activation stays at 0.6237 and zero
+embeddings are degenerate: the grave's scars stay closed, as gates.
+
+What is not proved: the plasticity constants -- rates, decay, the
+half-bit gate, the clamp -- are declared first-version discipline, not
+earned quantities. The Hebbian law's own contribution is not yet
+isolated from the delta readout by a matched arm. The core has no
+candidacy, no probation path of its own, no island-local record, and
+no seat in the Atlas; those are courts it must still enter through
+doors that already exist. The suite pays real wall-clock for the
+shadow on every lived byte, and the periods seven and eight stand as
+open wounds by design.

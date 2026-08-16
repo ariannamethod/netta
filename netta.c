@@ -43,7 +43,7 @@
 #define MAX_REGISTRY 1024   /* islands one life may ever meet */
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    17u
+#define STATE_VER    18u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -460,6 +460,156 @@ static void tri_add(uint32_t ctx, uint8_t b) {
         if (p->key == key) { p->cnt++; tri_row[ctx]++; return; }
     }
     fprintf(stderr, "netta: trigram table full\n"); exit(1);
+}
+
+/* body 16: the neural core enters in shadow. NETTA's own lineage, read
+   from the buried prototype: no backpropagation. A recurrent state over
+   innate byte embeddings, a delta-rule readout, and surprise-gated
+   Hebbian plasticity on the dynamics, modulated by the prequential
+   surprise itself -- the prophecy debt. The core prices every lived
+   truth byte on the same ruler, learns strictly after the receipt,
+   holds no candidacy, and writes no biography line: a witness with a
+   record and no power. The grave's scars are law here: weights are
+   clamped and finite, the hidden state is watched for saturation, and
+   the innate embeddings cannot be degenerate by construction. */
+#define CORE_EMBED   24
+#define CORE_HIDDEN  32
+#define CORE_INIT_SEED 0x4e455454414e4e31ULL
+#define CORE_LR_OUT  0.05f
+#define CORE_LR_IN   0.01f
+#define CORE_DECAY   0.9995f
+#define CORE_CLIP    1.0
+#define CORE_GATE    0.5
+#define CORE_WCLAMP  4.0f
+static float  core_E[ACTIONS][CORE_EMBED];
+static float  core_Wxh[CORE_HIDDEN][CORE_EMBED];
+static float  core_Whh[CORE_HIDDEN][CORE_HIDDEN];
+static float  core_Who[ACTIONS][CORE_HIDDEN];
+static float  core_h[CORE_HIDDEN];   /* episode-local, never persisted */
+static double core_bits = 0.0;
+static uint64_t core_bytes = 0;
+static double core_nll_ema = 8.0;    /* the prophecy baseline */
+static double core_sat_sum = 0.0;
+static uint64_t core_sat_n = 0;
+static int    core_enabled = 1;
+
+static float core_clampw(float w) {
+    if (w > CORE_WCLAMP) return CORE_WCLAMP;
+    if (w < -CORE_WCLAMP) return -CORE_WCLAMP;
+    return w;
+}
+
+static float core_rand(uint64_t *s) {
+    uint64_t z = (*s += 0x9e3779b97f4a7c15ULL);
+    z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9ULL;
+    z = (z ^ (z >> 27)) * 0x94d049bb133111ebULL;
+    z ^= z >> 31;
+    return (float)(z >> 40) / 8388608.0f - 1.0f;
+}
+
+static void core_init(void) {
+    /* the innate identity of every byte comes from a dedicated
+       deterministic stream; the life's rng is never consumed, so no
+       inherited gate number moves */
+    uint64_t s = CORE_INIT_SEED;
+    for (int b = 0; b < ACTIONS; ++b)
+        for (int d = 0; d < CORE_EMBED; ++d)
+            core_E[b][d] = 0.5f * core_rand(&s);
+    for (int j = 0; j < CORE_HIDDEN; ++j)
+        for (int d = 0; d < CORE_EMBED; ++d)
+            core_Wxh[j][d] = 0.3f * core_rand(&s);
+    for (int j = 0; j < CORE_HIDDEN; ++j)
+        for (int k = 0; k < CORE_HIDDEN; ++k)
+            core_Whh[j][k] = 0.2f * core_rand(&s);
+    memset(core_Who, 0, sizeof core_Who);  /* the newborn readout
+                                              prices exact ignorance */
+}
+
+static void core_advance(uint8_t byte) {
+    float hn[CORE_HIDDEN];
+    for (int j = 0; j < CORE_HIDDEN; ++j) {
+        float a = 0.0f;
+        for (int d = 0; d < CORE_EMBED; ++d)
+            a += core_Wxh[j][d] * core_E[byte][d];
+        for (int k = 0; k < CORE_HIDDEN; ++k)
+            a += core_Whh[j][k] * core_h[k];
+        hn[j] = tanhf(a);
+    }
+    memcpy(core_h, hn, sizeof hn);
+}
+
+static void core_warm(const Island *isl, uint64_t start) {
+    /* the observable wake builds the state; nothing is priced or
+       learned twice */
+    memset(core_h, 0, sizeof core_h);
+    for (uint64_t p = start - CTX; p < start; ++p)
+        core_advance(isl->bytes[p]);
+}
+
+static void core_absorb(uint8_t truth) {
+    /* prophecy first: the truth byte is priced from the current state */
+    float logits[ACTIONS];
+    float mx = -1e30f;
+    for (int o = 0; o < ACTIONS; ++o) {
+        float a = 0.0f;
+        for (int j = 0; j < CORE_HIDDEN; ++j)
+            a += core_Who[o][j] * core_h[j];
+        logits[o] = a;
+        if (a > mx) mx = a;
+    }
+    double denom = 0.0;
+    for (int o = 0; o < ACTIONS; ++o)
+        denom += exp((double)logits[o] - mx);
+    double p_truth = exp((double)logits[truth] - mx) / denom;
+    double nll = -log2(p_truth);
+    if (!isfinite(nll)) {
+        fprintf(stderr, "netta: core price is not finite\n"); exit(1);
+    }
+    core_bits += nll;
+    core_bytes++;
+
+    /* first law of the grave: the delta rule on the readout alone */
+    float h_old[CORE_HIDDEN];
+    memcpy(h_old, core_h, sizeof h_old);
+    for (int o = 0; o < ACTIONS; ++o) {
+        float p_o = (float)(exp((double)logits[o] - mx) / denom);
+        float err = (o == truth ? 1.0f : 0.0f) - p_o;
+        for (int j = 0; j < CORE_HIDDEN; ++j)
+            core_Who[o][j] =
+                core_clampw(core_Who[o][j] +
+                            CORE_LR_OUT * err * h_old[j]);
+    }
+
+    /* destiny arrives, the state moves on */
+    core_advance(truth);
+    double sat = 0.0;
+    for (int j = 0; j < CORE_HIDDEN; ++j) sat += fabsf(core_h[j]);
+    core_sat_sum += sat / (double)CORE_HIDDEN;
+    core_sat_n++;
+
+    /* second law: surprise-gated Hebbian plasticity on the dynamics.
+       Better than the prophecy baseline potentiates the lived
+       co-activation, worse depresses it; small surprises move nothing. */
+    double surprise = core_nll_ema - nll;
+    if (fabs(surprise) > CORE_GATE) {
+        float mod = (float)(surprise / 8.0);
+        if (mod > (float)CORE_CLIP) mod = (float)CORE_CLIP;
+        if (mod < -(float)CORE_CLIP) mod = -(float)CORE_CLIP;
+        for (int j = 0; j < CORE_HIDDEN; ++j) {
+            for (int d = 0; d < CORE_EMBED; ++d)
+                core_Wxh[j][d] =
+                    core_clampw(CORE_DECAY * core_Wxh[j][d] +
+                                CORE_LR_IN * mod * core_h[j] *
+                                core_E[truth][d]);
+            for (int k = 0; k < CORE_HIDDEN; ++k)
+                core_Whh[j][k] =
+                    core_clampw(CORE_DECAY * core_Whh[j][k] +
+                                CORE_LR_IN * mod * core_h[j] * h_old[k]);
+        }
+    }
+
+    /* third law: the prophecy baseline floats, fast quote slow memory */
+    core_nll_ema = 0.82 * core_nll_ema + 0.18 * nll;
 }
 
 /* the seat: candidates 0 = atomic-uni (newborn), 1 = byte-bi,
@@ -1308,6 +1458,17 @@ static void state_save(const char *path) {
         fwrite(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
         fwrite(&trilm_bits, sizeof trilm_bits, 1, f) != 1 ||
         fwrite(&trilm_bytes, sizeof trilm_bytes, 1, f) != 1 ||
+        fwrite(core_E, sizeof(float), ACTIONS * CORE_EMBED, f)
+            != ACTIONS * CORE_EMBED ||
+        fwrite(core_Wxh, sizeof(float), CORE_HIDDEN * CORE_EMBED, f)
+            != CORE_HIDDEN * CORE_EMBED ||
+        fwrite(core_Whh, sizeof(float), CORE_HIDDEN * CORE_HIDDEN, f)
+            != CORE_HIDDEN * CORE_HIDDEN ||
+        fwrite(core_Who, sizeof(float), ACTIONS * CORE_HIDDEN, f)
+            != ACTIONS * CORE_HIDDEN ||
+        fwrite(&core_nll_ema, sizeof core_nll_ema, 1, f) != 1 ||
+        fwrite(&core_bits, sizeof core_bits, 1, f) != 1 ||
+        fwrite(&core_bytes, sizeof core_bytes, 1, f) != 1 ||
         fwrite(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: state write failed\n"); exit(1);
     }
@@ -1469,6 +1630,17 @@ static int state_load(const char *path) {
         fread(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
         fread(&trilm_bits, sizeof trilm_bits, 1, f) != 1 ||
         fread(&trilm_bytes, sizeof trilm_bytes, 1, f) != 1 ||
+        fread(core_E, sizeof(float), ACTIONS * CORE_EMBED, f)
+            != ACTIONS * CORE_EMBED ||
+        fread(core_Wxh, sizeof(float), CORE_HIDDEN * CORE_EMBED, f)
+            != CORE_HIDDEN * CORE_EMBED ||
+        fread(core_Whh, sizeof(float), CORE_HIDDEN * CORE_HIDDEN, f)
+            != CORE_HIDDEN * CORE_HIDDEN ||
+        fread(core_Who, sizeof(float), ACTIONS * CORE_HIDDEN, f)
+            != ACTIONS * CORE_HIDDEN ||
+        fread(&core_nll_ema, sizeof core_nll_ema, 1, f) != 1 ||
+        fread(&core_bits, sizeof core_bits, 1, f) != 1 ||
+        fread(&core_bytes, sizeof core_bytes, 1, f) != 1 ||
         fread(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: %s truncated; refusing\n", path);
         exit(1);
@@ -1627,6 +1799,30 @@ static int state_load(const char *path) {
         !isfinite(mvp_ref_bits[2]) || mvp_ref_bits[2] < 0.0 ||
         !isfinite(trilm_bits) || trilm_bits < 0.0)
         state_refuse(path, "non-finite model record");
+    if (!isfinite(core_bits) || core_bits < 0.0 ||
+        core_bytes > steps_total ||
+        !isfinite(core_nll_ema) || core_nll_ema < 0.0 ||
+        core_nll_ema > 16.0)
+        state_refuse(path, "core record");
+    for (int j = 0; j < CORE_HIDDEN; ++j) {
+        for (int d = 0; d < CORE_EMBED; ++d)
+            if (!isfinite(core_Wxh[j][d]) ||
+                fabsf(core_Wxh[j][d]) > CORE_WCLAMP)
+                state_refuse(path, "core weight out of law");
+        for (int k = 0; k < CORE_HIDDEN; ++k)
+            if (!isfinite(core_Whh[j][k]) ||
+                fabsf(core_Whh[j][k]) > CORE_WCLAMP)
+                state_refuse(path, "core weight out of law");
+    }
+    for (int b = 0; b < ACTIONS; ++b) {
+        for (int d = 0; d < CORE_EMBED; ++d)
+            if (!isfinite(core_E[b][d]))
+                state_refuse(path, "core weight out of law");
+        for (int j = 0; j < CORE_HIDDEN; ++j)
+            if (!isfinite(core_Who[b][j]) ||
+                fabsf(core_Who[b][j]) > CORE_WCLAMP)
+                state_refuse(path, "core weight out of law");
+    }
     for (int pv = 0; pv < ACTIONS; ++pv) {
         uint64_t row = 0;
         for (int b = 0; b < ACTIONS; ++b)
@@ -1743,6 +1939,8 @@ static void absorb_truth(int isl_id, Island *isl, uint64_t pos,
     bi_count[pv][truth]++;
     bi_row[pv]++;
     tri_add(tctx, (uint8_t)truth);
+    if (core_enabled)
+        core_absorb((uint8_t)truth);
     if (units_enabled)
         matcher_feed((uint8_t)truth, pos, isl_id, atomic_nll);
 }
@@ -1771,6 +1969,7 @@ static double run_episode(int isl_id, uint64_t steps) {
     } else {
         start = CTX + (rng_next() % (span ? span : 1));
     }
+    if (core_enabled) core_warm(isl, start);
     double bits = 0.0;
     char line[256];
     episode_no++;
@@ -2040,6 +2239,8 @@ int main(int argc, char **argv) {
             unit_death_enabled = 0;
         else if (!strcmp(argv[i], "--keep-dead-mass"))
             tombstone_silence_enabled = 0;
+        else if (!strcmp(argv[i], "--no-core"))
+            core_enabled = 0;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -2069,7 +2270,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
-                        "[--atlas] "
+                        "[--atlas] [--no-core] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -2104,6 +2305,7 @@ int main(int argc, char **argv) {
 
     rng_state = seed;
     int resumed = 0;
+    core_init();   /* innate identity; overwritten by a resumed state */
     if (!reset) resumed = state_load(state_path);
     if (resumed) bio_verify(bio_path);
     if (!reset && !resumed && file_exists(bio_path)) {
@@ -2135,10 +2337,11 @@ int main(int argc, char **argv) {
     /* this-life baselines: the price of THIS stretch of life, not the
        cumulative one -- the transfer court reads these deltas */
     double  tl_ab = atomic_bits_lived, tl_bb = bilm_bits,
-            tl_tb = trilm_bits, tl_ub = unitlm_bits, tl_mb = mvlm_bits;
+            tl_tb = trilm_bits, tl_ub = unitlm_bits, tl_mb = mvlm_bits,
+            tl_cb = core_bits;
     uint64_t tl_aby = atomic_bytes_lived, tl_bby = bilm_bytes,
              tl_tby = trilm_bytes, tl_uby = unitlm_bytes,
-             tl_mby = mvlm_bytes;
+             tl_mby = mvlm_bytes, tl_cby = core_bytes;
     printf("%s: episode %llu, %llu lived bytes, %d units\n",
            resumed ? "resumed" : "born",
            (unsigned long long)episode_no,
@@ -2211,6 +2414,20 @@ int main(int argc, char **argv) {
     if (trilm_bytes)
         printf("model byte-tri bits/byte %.6f\n",
                trilm_bits / (double)trilm_bytes);
+    if (core_enabled && core_bytes) {
+        int degen = 0;
+        for (int b = 0; b < ACTIONS; ++b) {
+            float nrm = 0.0f;
+            for (int d = 0; d < CORE_EMBED; ++d)
+                nrm += core_E[b][d] * core_E[b][d];
+            if (nrm < 1e-6f) degen++;
+        }
+        printf("model core bits/byte %.6f\n",
+               core_bits / (double)core_bytes);
+        printf("core health: mean |h| %.4f, %d degenerate embeddings\n",
+               core_sat_n ? core_sat_sum / (double)core_sat_n : 0.0,
+               degen);
+    }
     if (mvp_bytes)
         printf("mv played record: %.6f bits/byte over %llu bytes\n",
                mvp_bits / (double)mvp_bytes,
@@ -2261,6 +2478,9 @@ int main(int argc, char **argv) {
     if (trilm_bytes > tl_tby)
         printf("this-life model byte-tri bits/byte %.6f\n",
                (trilm_bits - tl_tb) / (double)(trilm_bytes - tl_tby));
+    if (core_enabled && core_bytes > tl_cby)
+        printf("this-life model core bits/byte %.6f\n",
+               (core_bits - tl_cb) / (double)(core_bytes - tl_cby));
     if (units_enabled && unitlm_bytes > tl_uby)
         printf("this-life model unit-uni bits/byte %.6f\n",
                (unitlm_bits - tl_ub) / (double)(unitlm_bytes - tl_uby));
