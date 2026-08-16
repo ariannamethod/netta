@@ -1340,3 +1340,40 @@ must compete on identical experience under prequential fitness and an
 external quarantine, and any claimed interconnection instinct must
 earn selectivity against shuffled and genuinely alien controls, not
 merely lower loss on another English byte stream.
+
+## The seventeenth turn audited: the quarantine and the verdict both hold
+
+All hundred and thirty-one incoming verdicts reproduced by the
+auditor's own hand before reading. The frozen-versus-Hebb isolation was
+then rebuilt independently on four periodic worlds: where the worlds
+coincide with the sealed table the numbers match to the last digit
+(period five 0.211809 frozen against 0.274086 v1; period seven
+0.379191 against 7.338107), and on the auditor's own period-6 and
+period-8 patterns the same verdict returns (0.414357 against 0.974325;
+0.739537 against 4.822724). The runaway was chased past the sealed
+horizon: on an eighty-thousand-byte period-8 life the v1 arm saturates
+at mean hidden activation 0.9858 and 5.487499 bits per byte with
+59654 positive gate events, while the frozen arm rests at 0.2165 and
+0.377977. The diagnosis of positive feedback stands at double the
+distance.
+
+The neural-memory witness was attacked on fields the suite's own gate
+does not touch: a poked prophecy baseline, a poked mid-readout weight,
+and a poked witness byte itself are each refused by name. The
+version-19 wire carries no innate embeddings to poison. One question
+moved from argument to machine fact: a red-arm life resumed without
+`--core-hebb-v1` is accepted and silently continues under a different
+law -- the invocation-mask question now has a tool output, not an
+opinion.
+
+The sealed Gutenberg decision layer was recomputed from the recorded
+per-window table: all nine medians and both contextual-excess figures
+(0.245653 and 0.360804) agree exactly, and all eight verdicts follow
+from the sealed inequalities. The shuffle windows also expose the
+likely author of that failure: the travelled trigram prices the
+shuffled twin at about 6.97 bits against the newborn's 7.59 -- both
+near ignorance, the gap made of smoothing maturity rather than
+transported structure. Selectivity law must subtract that confound,
+and the court specification now does. The full re-derivation from raw
+sources awaits the network word; until then the raw-hash layer of the
+seal rests on one hand and is named as such.
