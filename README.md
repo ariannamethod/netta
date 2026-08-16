@@ -45,6 +45,13 @@ technical source of truth for the living line.
   authority. Its first paired Dracula/shuffled-Dracula court cured Hebb-v1's
   saturation physiology but promoted nobody: every plastic genome failed the
   sealed cross-world selectivity law, so frozen remains default.
+- Under `--speak N`, the mouth is a read-only instrument: the elected seat
+  samples N bytes from the lived distributions, warmed by an optional
+  `--prompt-file`, drawing from a dedicated stream. It prices nothing,
+  learns nothing, appends nothing, and saves nothing; a newborn and a
+  stranger island are refused. Speech is measured as its own discipline:
+  the pricing champion is not the speaking champion, because sampling
+  rolls the smoothing dice that pricing rarely meets.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -75,8 +82,9 @@ mostly controlled synthetic worlds, followed by one sealed real-text
 Dracula/Frankenstein/technical/shuffled arc. Its four passes and four public
 failures are recorded in `research/GUTENBERG_RESULTS_2026-08-16.md`; the
 plasticity null is recorded in `research/PLASTICITY_RESULTS_2026-08-16.md`.
-The neural core is a shadow witness with no authority yet; there is no prompt mode, dreaming,
-glyph system, generalizing travel predictor, or unbounded life.
+The neural core is a shadow witness with no authority yet; there is no dreaming,
+glyph system, generalizing travel predictor, or unbounded life. Her first
+recorded words live in `research/FIRST_WORDS_2026-08-16.md`.
 
 ## Build and test
 
@@ -85,7 +93,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 138-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 146-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -95,7 +103,8 @@ forgery arm, Atlas exploration and earned-choice arms, the neural shadow
 core with frozen-dynamics wins and its reproducible Hebb-v1 loss, a neural
 checkpoint-forgery arm, the eight-genome jury's causal identity, zero
 intervention, restart identity and forgery witness, the neural invocation-law
-refusals, and failure-closed state and biography checks. A
+refusals, the read-only mouth with its spoken-pattern and refusal arms,
+and failure-closed state and biography checks. A
 passing build ends with `ALL GATES PASS`.
 
 ## Start a life
@@ -176,6 +185,9 @@ Useful experimental flags:
 - `--core-hebb-v1` reenables the first surprise-gated recurrent plasticity
   law as a losing red arm. It is quarantined by default; the flag must be
   repeated on every resumed invocation that intends to reproduce that arm.
+- `--speak N` opens the read-only mouth on a resumed life; `--speak-seed N`
+  picks its dedicated stream and `--prompt-file P` warms the context. With
+  `--actor-lock` the chosen hand speaks instead of the elected seat.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.

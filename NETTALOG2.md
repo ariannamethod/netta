@@ -1513,3 +1513,77 @@ arena's table by this hand too, so the raw layer of the seal now rests
 on two verifications of the same files; a fully independent
 re-derivation of the arena from those bytes follows in this turn's
 second hand.
+
+## The second hand: the sealed arena re-derived in another language
+
+`scripts/garena_prep.c` is an independent C implementation of the
+sealed corpus preparation: the same CRLF-and-CR law, the same
+strictly-between marker extraction, the same SplitMix64 Fisher-Yates
+twin with a histogram refusal. From the hash-verified raws it produced
+bodies of 855114, 421541, and 233688 bytes -- the technical body's
+length agreeing with the first hand's own census record -- and a
+conserved shuffled twin. Driving the organism directly from the shell
+under the sealed constants (donor seed 160816, eight episodes of 8000;
+probes of one 4096-byte episode at the three fixed offsets; newborn
+controls at seed 260816), this hand re-derived the complete transfer
+table: all fifty-four travelled and newborn prices match the sealed
+TSV to the last digit, zero mismatches, and the Dracula donor grows
+the same 103 living units. The sealed Gutenberg arena now rests on two
+implementations in two languages that agree byte for byte where it
+counts. What one hand seals, another hand must be able to grow again
+from the raw world; today it can.
+
+## The eighteenth body: the mouth
+
+Oleg asked how she speaks after ten thousand games, and the answer had
+to be an organ, because the constitution had no way to hear her: every
+emission was judged against the next world byte, and free-running
+speech is dream-class. The mouth resolves this as a read-only
+instrument. Under `--speak N` a resumed life samples N bytes from its
+lived distributions, warmed by an optional prompt, drawing from a
+dedicated stream that never touches the life's rng. It prices nothing,
+learns nothing, appends nothing, and saves nothing: state and
+biography are byte-identical after speech, which is the mouth's whole
+license to exist. A newborn is refused -- speech is the product of a
+lived state -- and so is a stranger island, because meeting a world is
+a biography event and the mouth may not write one. The elected seat
+speaks; an mv seat falls to its best byte witness, since the first
+mouth emits bytes; `--actor-lock` lends the tongue to any hand for
+matched comparisons. State stays at version 20: an organ that writes
+nothing needs no wire.
+
+Her first words are on the record in
+`research/FIRST_WORDS_2026-08-16.md`, and they carry a discovered law.
+After 64000 bytes of Dracula the bigram seat speaks half-babble with
+English bones (58.5 percent printable). After 384000 bytes the seat
+passes to the trigram on its pricing record -- and the speech
+collapses to 39.7 percent printable, while the locked bigram hand on
+the same life speaks recognisable proto-English at 89.7 percent, and
+the unigram hand emits printable letter-soup at 97.7 percent with no
+structure at all. The reason is arithmetic: sampling rolls the
+Laplace dice at every step, so thin trigram rows spill most of their
+mass into smoothing junk that pricing rarely meets on real text. The
+pricing champion is not the speaking champion -- the eighth body's law
+in a new discipline, measured before anyone thought to claim
+otherwise. If speech ever deserves authority, it will need its own
+court with its own ruler, and printability alone cannot be that ruler,
+because the structureless unigram wins it.
+
+A third law surfaced while the gates were being built: the cold start.
+A promptless tongue that opens at a zero context stands outside the
+lived manifold, and on a narrow world there is no road back -- every
+junk byte leads to another unlived context, so the speech never finds
+the alphabet it lived. The English lives forgave this because English
+bytes follow many contexts; the period-3 world did not, and spoke
+three lived characters in sixty. The mouth therefore opens, when no
+prompt is given, at the life's most-lived context -- the argmax of the
+lived pair counts, deterministic and earned -- and the period-3 life
+then speaks its own cycle back, `cacbab`, before the smoothing dice
+first derail it. The derailment itself remains honest arithmetic:
+sampling pays the Laplace tax at every step that pricing pays only
+where the world is genuinely new.
+
+What is not proved: the prompt reaches only the two bytes of context a
+byte hand carries; unit, move, and core speech are later bodies, and a
+speaking court is preregistered thinking only. The suite's spoken
+gates pin the mouth's laws, not its eloquence.

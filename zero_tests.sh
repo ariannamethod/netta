@@ -1012,6 +1012,37 @@ rc=$?
 [ "$rc" -eq 1 ] && grep -q 'jury memory disagrees with its witness' "$T/b17w.out"
 gate "B17 a partial jury-memory forgery is refused by name" $? 0
 
+# --- B18: the mouth ------------------------------------------------------
+# Speech is a read-only instrument: the mouth prices nothing, learns
+# nothing, appends nothing, saves nothing, and draws from its own
+# stream. The elected seat speaks; a newborn and a stranger island are
+# refused. On a lived period-3 state the dense trigram rows speak the
+# lived pattern back.
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 6 --steps 600 --state "$T/b18.state" --bio "$T/b18.bio" >/dev/null 2>&1
+cp "$T/b18.state" "$T/b18.state.ref"; cp "$T/b18.bio" "$T/b18.bio.ref"
+"$N" --speak 60 --speak-seed 7 --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.words" 2>/dev/null
+rc=$?
+cmp -s "$T/b18.state" "$T/b18.state.ref" && cmp -s "$T/b18.bio" "$T/b18.bio.ref" && [ "$rc" -eq 0 ]
+gate "B18 the mouth writes no memory (state and biography untouched)" $? 0
+"$N" --speak 60 --speak-seed 7 --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.words2" 2>/dev/null
+cmp -s "$T/b18.words" "$T/b18.words2"
+gate "B18 the same seed speaks the same words" $? 0
+"$N" --speak 60 --speak-seed 8 --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.words3" 2>/dev/null
+cmp -s "$T/b18.words" "$T/b18.words3"
+gate "B18 a different seed speaks differently (red: not tautological)" $? 1
+printf 'ab' > "$T/b18.p1"; printf 'bc' > "$T/b18.p2"
+"$N" --speak 60 --speak-seed 7 --prompt-file "$T/b18.p1" --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.wp1" 2>/dev/null
+"$N" --speak 60 --speak-seed 7 --prompt-file "$T/b18.p2" --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.wp2" 2>/dev/null
+cmp -s "$T/b18.wp1" "$T/b18.wp2"
+gate "B18 the prompt reaches the tongue (different prompts differ)" $? 1
+"$N" --speak 60 --speak-seed 9 --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.words9" 2>/dev/null
+grep -q '^cacbab' "$T/b18.words9"
+gate "B18 an unprompted mouth opens on the lived pattern (cacbab spoken)" $? 0
+"$N" --speak 60 --state "$T/b18v.state" --bio "$T/b18v.bio" >/dev/null 2>&1
+gate "B18 a newborn has nothing to say (no lived state refused)" $? 1
+"$N" "$T/rep.bytes" --speak 60 --state "$T/b18.state" --bio "$T/b18.bio" >/dev/null 2>&1
+gate "B18 the mouth cannot meet new islands" $? 1
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -1073,6 +1104,14 @@ rc=$?
     --state "$T/sc16b.state" --bio "$T/sc16b.bio" >/dev/null 2>>"$T/sc16.err" || rc=$?
 [ -s "$T/sc16.err" ] && rc=98
 gate "S ASan/UBSan silent through the learning core" $rc 0
+"$S" "$T/p3.bytes" --reset --seed 5 --episodes 6 --steps 600 \
+    --state "$T/ss18.state" --bio "$T/ss18.bio" >/dev/null 2>"$T/ss18.err"
+rc=$?
+"$S" --speak 200 --speak-seed 7 --prompt-file "$T/b18.p1" \
+    --state "$T/ss18.state" --bio "$T/ss18.bio" >/dev/null 2>>"$T/ss18.err" || rc=$?
+grep -v '^speak:' "$T/ss18.err" | grep -v '^NETTA ZERO' > "$T/ss18.err2" || true
+[ -s "$T/ss18.err2" ] && rc=98
+gate "S ASan/UBSan silent through the speaking mouth" $rc 0
 "$S" "$T/p5.bytes" --reset --jury --seed 5 --episodes 1 --steps 300 \
     --state "$T/sc17.state" --bio "$T/sc17.bio" >/dev/null 2>"$T/sc17.err"
 rc=$?
