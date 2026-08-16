@@ -1225,3 +1225,118 @@ no seat in the Atlas; those are courts it must still enter through
 doors that already exist. The suite pays real wall-clock for the
 shadow on every lived byte, and the periods seven and eight stand as
 open wounds by design.
+
+## The sixteenth turn audited: Hebb pays its first debt
+
+All one hundred twenty-seven incoming gates reproduced before the
+neural tissue was read. Its causal order then survived inspection:
+the current hidden state prices the byte, the truth moves the readout,
+the truth advances the recurrent state, and only then may recurrent
+plasticity affect a future prediction. The wake reads sixteen already
+observed bytes without charging or learning, the core consumes no game
+RNG, and the biography remains identical with the shadow disabled.
+
+The missing matched arm changed the verdict. Recurrent weights were
+frozen while the identical zero-born delta readout, embeddings, source
+positions, and truths remained live. On four 2000-byte episodes, the
+frozen and Hebb-v1 core prices were respectively:
+
+| world | frozen core | Hebb-v1 core | byte-tri |
+| --- | ---: | ---: | ---: |
+| period 5 | 0.211809 | 0.274086 | 0.859384 |
+| period 6 | 0.334798 | 3.133655 | 1.131458 |
+| period 7 | 0.379191 | 7.338107 | 0.845067 |
+| period 8 | 0.493587 | 2.921194 | 1.056921 |
+
+The rule did not merely fail to help: it lost every matched world and
+collapsed catastrophically on periods six through eight. On a
+forty-thousand-byte period-eight life, Hebb-v1 reached mean absolute
+hidden activation `0.9840` and priced `3.066149`, while the frozen
+reservoir stayed at `0.2115` activation and priced `0.277564`. Positive
+surprise gates outnumbered negative ones `34732` to `5076` in the live
+arm. This is the grave's old positive-feedback scar under a new name,
+not an unfortunate constant chosen one notch away from success.
+
+The repair is constitutional rather than cosmetic. Frozen recurrent
+dynamics are now the default core; `--core-hebb-v1` preserves the
+failed plasticity as an explicit red arm, counts its proposed positive
+and negative gates, and reproduces the period-seven loss as executable
+law. No rate was tuned after the verdict. A future Hebbian body must
+return through the buried design that actually earned trust: multiple
+shadow plasticity experts receive identical experience, prequential
+progress against a frozen readout decides fitness, and an external
+court quarantines genes before any winning rule touches the organism.
+
+A second falsifier found that the supposedly innate embedding table
+was persisted in v18. Replacing its checkpoint bytes with zeros
+resumed successfully and reported all 256 embeddings degenerate: the
+claim “nondegenerate by construction” had been true only at birth.
+State v19 removes the embedding table from the wire and regenerates it
+from its dedicated fixed seed on every invocation. The mutable neural
+weights, baseline, bit debt, and byte count are bound by an FNV witness;
+a one-byte edit to the otherwise admissible neural record is refused by
+name. As with the island registry, a coherent rewrite of the data and
+its witness remains fabrication of a whole life, not a partial-forgery
+surface claimed to be solved.
+
+Four new verdicts cover period six, period eight, the quarantined
+period-seven red arm, and partial neural-memory forgery. One hundred
+thirty-one gates pass, strict C11 and ASan/UBSan included. The core is
+still a witness without authority. Before any replacement Hebb rule or
+new organ, `GUTENBERG_ARENA.md` seals the promised Dracula,
+Frankenstein, shuffled, and technical-alien arena: six witnesses will
+now write the job description from real text, and every failed
+prediction will remain public.
+
+## First Gutenberg blood: four yes, four no
+
+The preregistration was committed as `c866701` before the first model
+run. The three raw Gutenberg downloads matched their sealed sizes and
+SHA-256 hashes; normalization produced 855114 Dracula bytes, 421541
+Frankenstein bytes, and 233688 technical-apparatus bytes. The
+SplitMix64/Fisher-Yates Frankenstein twin conserved all 256 byte counts.
+Three fixed 4096-byte windows then priced all six witnesses from
+untouched donor-state copies against newborn controls.
+
+Kin transfer passed at every depth and every window. The median gains
+in bits per raw byte were `0.248274` atomic, `1.743025` byte-bi, and
+`2.686820` byte-tri; unit-uni gained `0.559914`, move-bi `1.721940`,
+and the frozen-reservoir core `1.968741`. Context carried more than
+frequency, and two-byte context carried more than one-byte context.
+
+The two controls overturned the convenient interpretation. Technical
+English transferred `0.118680 / 1.532517 / 2.238602` on the counter
+ladder and `1.780461` on the core. Its contextual excess over atomic
+was positive, not negative: a human genre label did not make a
+statistically alien byte world. On the shuffled twin the same gains
+were `0.254909 / 0.500562 / 0.615713`; contextual excess remained
+`0.245653` for bi and `0.360804` for tri, above the sealed `0.1`
+ceiling. The permutation killed prose order but atomic subtraction did
+not remove all reusable conditional prior in finite context rows. The
+core's shuffled gain of `1.012479` makes the neural lesson explicit:
+raw transfer is not selective transfer.
+
+Vocabulary rent cut exactly where the young vocabulary allowed. Of
+103 living Dracula units, 102 exact forms also occurred in
+Frankenstein. All survived the crossing. The sole absent form, unit 58
+`--`, died at episode 12 with rent age 24157, but did not resurrect in
+the sealed 16000-byte return. The death law passed; the return
+prediction failed. More importantly, the learned alphabet exposed
+itself as mostly shared short orthography rather than content-specific
+lexical identity.
+
+The court emitted no refusal in either eight-by-800 voyage. Kin
+non-refusal passed and technical refusal failed. The travelling
+byte-bigram hand remained predictive on both English islands; a court
+that judges local receipts had no honest reason to enact the human
+category “alien.” This is a failed prediction, not a broken court.
+
+The public ledger is four passes and four failures. Exact windows live
+in `gutenberg_results/2026-08-16-transfer.tsv`; the literal decision
+record and full interpretation live beside it and in
+`GUTENBERG_RESULTS_2026-08-16.md`. No corpus or threshold moved after
+the verdict. The blood writes the future Hebbian job: shadow experts
+must compete on identical experience under prequential fitness and an
+external quarantine, and any claimed interconnection instinct must
+earn selectivity against shuffled and genuinely alien controls, not
+merely lower loss on another English byte stream.

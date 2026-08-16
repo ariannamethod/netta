@@ -43,7 +43,7 @@
 #define MAX_REGISTRY 1024   /* islands one life may ever meet */
 #define ACTIONS      256
 #define STATE_MAGIC  "NETTAZR0"
-#define STATE_VER    18u
+#define STATE_VER    19u
 
 #define MAX_UNITS      4096
 #define UNIT_MAX_LEN   16
@@ -464,14 +464,15 @@ static void tri_add(uint32_t ctx, uint8_t b) {
 
 /* body 16: the neural core enters in shadow. NETTA's own lineage, read
    from the buried prototype: no backpropagation. A recurrent state over
-   innate byte embeddings, a delta-rule readout, and surprise-gated
-   Hebbian plasticity on the dynamics, modulated by the prequential
-   surprise itself -- the prophecy debt. The core prices every lived
+   innate byte embeddings and a delta-rule readout prices every lived
    truth byte on the same ruler, learns strictly after the receipt,
    holds no candidacy, and writes no biography line: a witness with a
-   record and no power. The grave's scars are law here: weights are
-   clamped and finite, the hidden state is watched for saturation, and
-   the innate embeddings cannot be degenerate by construction. */
+   record and no power. The first surprise-gated Hebbian rule remains as
+   the explicit --core-hebb-v1 red arm, but is quarantined by default
+   after losing matched period-5 through period-8 controls. The grave's
+   scars are law here: weights are clamped and finite, the hidden state
+   is watched for saturation, and innate embeddings are regenerated from
+   a fixed seed rather than trusted to writable state. */
 #define CORE_EMBED   24
 #define CORE_HIDDEN  32
 #define CORE_INIT_SEED 0x4e455454414e4e31ULL
@@ -492,6 +493,8 @@ static double core_nll_ema = 8.0;    /* the prophecy baseline */
 static double core_sat_sum = 0.0;
 static uint64_t core_sat_n = 0;
 static int    core_enabled = 1;
+static int    core_hebb_enabled = 0; /* v1 quarantined behind its red arm */
+static uint64_t core_hebb_pos = 0, core_hebb_neg = 0;
 
 static float core_clampw(float w) {
     if (w > CORE_WCLAMP) return CORE_WCLAMP;
@@ -587,29 +590,51 @@ static void core_absorb(uint8_t truth) {
     core_sat_sum += sat / (double)CORE_HIDDEN;
     core_sat_n++;
 
-    /* second law: surprise-gated Hebbian plasticity on the dynamics.
-       Better than the prophecy baseline potentiates the lived
-       co-activation, worse depresses it; small surprises move nothing. */
+    /* The quarantined second law: surprise-gated Hebbian plasticity on
+       the dynamics. Better than the prophecy baseline potentiates the
+       lived co-activation, worse depresses it; small surprises move
+       nothing. We always count its proposed gates, but mutate only on
+       the explicit red arm. */
     double surprise = core_nll_ema - nll;
     if (fabs(surprise) > CORE_GATE) {
+        if (surprise > 0.0) core_hebb_pos++;
+        else core_hebb_neg++;
         float mod = (float)(surprise / 8.0);
         if (mod > (float)CORE_CLIP) mod = (float)CORE_CLIP;
         if (mod < -(float)CORE_CLIP) mod = -(float)CORE_CLIP;
-        for (int j = 0; j < CORE_HIDDEN; ++j) {
-            for (int d = 0; d < CORE_EMBED; ++d)
-                core_Wxh[j][d] =
-                    core_clampw(CORE_DECAY * core_Wxh[j][d] +
-                                CORE_LR_IN * mod * core_h[j] *
-                                core_E[truth][d]);
-            for (int k = 0; k < CORE_HIDDEN; ++k)
-                core_Whh[j][k] =
-                    core_clampw(CORE_DECAY * core_Whh[j][k] +
-                                CORE_LR_IN * mod * core_h[j] * h_old[k]);
-        }
+        if (core_hebb_enabled)
+            for (int j = 0; j < CORE_HIDDEN; ++j) {
+                for (int d = 0; d < CORE_EMBED; ++d)
+                    core_Wxh[j][d] =
+                        core_clampw(CORE_DECAY * core_Wxh[j][d] +
+                                    CORE_LR_IN * mod * core_h[j] *
+                                    core_E[truth][d]);
+                for (int k = 0; k < CORE_HIDDEN; ++k)
+                    core_Whh[j][k] =
+                        core_clampw(CORE_DECAY * core_Whh[j][k] +
+                                    CORE_LR_IN * mod * core_h[j] * h_old[k]);
+            }
     }
 
     /* third law: the prophecy baseline floats, fast quote slow memory */
     core_nll_ema = 0.82 * core_nll_ema + 0.18 * nll;
+}
+
+static uint64_t core_state_witness(void) {
+    /* Neural memory has no count conservation equation. Bind every mutable
+       byte and its prequential record into one partial-forgery witness;
+       coherent reconstruction of the witness is whole-life fabrication,
+       the same boundary named by the registry audit. Innate embeddings are
+       excluded because they no longer live on the wire at all. */
+    uint64_t h = FNV_WITNESS_SEED;
+    h = fnv1a64((const uint8_t *)core_Wxh, sizeof core_Wxh, h);
+    h = fnv1a64((const uint8_t *)core_Whh, sizeof core_Whh, h);
+    h = fnv1a64((const uint8_t *)core_Who, sizeof core_Who, h);
+    h = fnv1a64((const uint8_t *)&core_nll_ema,
+                sizeof core_nll_ema, h);
+    h = fnv1a64((const uint8_t *)&core_bits, sizeof core_bits, h);
+    h = fnv1a64((const uint8_t *)&core_bytes, sizeof core_bytes, h);
+    return h;
 }
 
 /* the seat: candidates 0 = atomic-uni (newborn), 1 = byte-bi,
@@ -1398,6 +1423,7 @@ static void state_save(const char *path) {
     uint32_t ver = STATE_VER;
     uint32_t nisl = (uint32_t)reg_count;
     uint32_t nunits = (uint32_t)unit_count;
+    uint64_t core_witness = core_state_witness();
     if (fwrite(STATE_MAGIC, 1, 8, f) != 8 ||
         fwrite(&ver, sizeof ver, 1, f) != 1 ||
         fwrite(&rng_state, sizeof rng_state, 1, f) != 1 ||
@@ -1458,8 +1484,6 @@ static void state_save(const char *path) {
         fwrite(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
         fwrite(&trilm_bits, sizeof trilm_bits, 1, f) != 1 ||
         fwrite(&trilm_bytes, sizeof trilm_bytes, 1, f) != 1 ||
-        fwrite(core_E, sizeof(float), ACTIONS * CORE_EMBED, f)
-            != ACTIONS * CORE_EMBED ||
         fwrite(core_Wxh, sizeof(float), CORE_HIDDEN * CORE_EMBED, f)
             != CORE_HIDDEN * CORE_EMBED ||
         fwrite(core_Whh, sizeof(float), CORE_HIDDEN * CORE_HIDDEN, f)
@@ -1469,6 +1493,7 @@ static void state_save(const char *path) {
         fwrite(&core_nll_ema, sizeof core_nll_ema, 1, f) != 1 ||
         fwrite(&core_bits, sizeof core_bits, 1, f) != 1 ||
         fwrite(&core_bytes, sizeof core_bytes, 1, f) != 1 ||
+        fwrite(&core_witness, sizeof core_witness, 1, f) != 1 ||
         fwrite(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: state write failed\n"); exit(1);
     }
@@ -1515,6 +1540,7 @@ static int state_load(const char *path) {
     }
     char magic[8];
     uint32_t ver, nisl, nunits;
+    uint64_t stored_core_witness;
     if (fread(magic, 1, 8, f) != 8 || memcmp(magic, STATE_MAGIC, 8) != 0) {
         fprintf(stderr,
                 "netta: %s is not NETTA ZERO state; refusing to touch it\n",
@@ -1630,8 +1656,6 @@ static int state_load(const char *path) {
         fread(tri_row, sizeof tri_row[0], 65536, f) != 65536 ||
         fread(&trilm_bits, sizeof trilm_bits, 1, f) != 1 ||
         fread(&trilm_bytes, sizeof trilm_bytes, 1, f) != 1 ||
-        fread(core_E, sizeof(float), ACTIONS * CORE_EMBED, f)
-            != ACTIONS * CORE_EMBED ||
         fread(core_Wxh, sizeof(float), CORE_HIDDEN * CORE_EMBED, f)
             != CORE_HIDDEN * CORE_EMBED ||
         fread(core_Whh, sizeof(float), CORE_HIDDEN * CORE_HIDDEN, f)
@@ -1641,6 +1665,7 @@ static int state_load(const char *path) {
         fread(&core_nll_ema, sizeof core_nll_ema, 1, f) != 1 ||
         fread(&core_bits, sizeof core_bits, 1, f) != 1 ||
         fread(&core_bytes, sizeof core_bytes, 1, f) != 1 ||
+        fread(&stored_core_witness, sizeof stored_core_witness, 1, f) != 1 ||
         fread(&nisl, sizeof nisl, 1, f) != 1) {
         fprintf(stderr, "netta: %s truncated; refusing\n", path);
         exit(1);
@@ -1823,6 +1848,8 @@ static int state_load(const char *path) {
                 fabsf(core_Who[b][j]) > CORE_WCLAMP)
                 state_refuse(path, "core weight out of law");
     }
+    if (stored_core_witness != core_state_witness())
+        state_refuse(path, "core memory disagrees with its witness");
     for (int pv = 0; pv < ACTIONS; ++pv) {
         uint64_t row = 0;
         for (int b = 0; b < ACTIONS; ++b)
@@ -2241,6 +2268,8 @@ int main(int argc, char **argv) {
             tombstone_silence_enabled = 0;
         else if (!strcmp(argv[i], "--no-core"))
             core_enabled = 0;
+        else if (!strcmp(argv[i], "--core-hebb-v1"))
+            core_hebb_enabled = 1;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -2270,7 +2299,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
-                        "[--atlas] [--no-core] "
+                        "[--atlas] [--no-core] [--core-hebb-v1] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -2305,7 +2334,7 @@ int main(int argc, char **argv) {
 
     rng_state = seed;
     int resumed = 0;
-    core_init();   /* innate identity; overwritten by a resumed state */
+    core_init();   /* innate identity is regenerated, never loaded */
     if (!reset) resumed = state_load(state_path);
     if (resumed) bio_verify(bio_path);
     if (!reset && !resumed && file_exists(bio_path)) {
@@ -2427,6 +2456,10 @@ int main(int argc, char **argv) {
         printf("core health: mean |h| %.4f, %d degenerate embeddings\n",
                core_sat_n ? core_sat_sum / (double)core_sat_n : 0.0,
                degen);
+        printf("core plasticity: v1 gates +%llu -%llu (%s)\n",
+               (unsigned long long)core_hebb_pos,
+               (unsigned long long)core_hebb_neg,
+               core_hebb_enabled ? "active" : "quarantined");
     }
     if (mvp_bytes)
         printf("mv played record: %.6f bits/byte over %llu bytes\n",

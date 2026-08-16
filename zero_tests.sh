@@ -865,12 +865,12 @@ cmp -s "$T/b15r.bio" "$T/b15s.bio"
 gate "B15 atlas choices survive restart and a reversed convoy" $? 0
 
 # --- B16: the neural core enters in shadow --------------------------------
-# The buried prototype's lineage, under the zero courts: no backprop, a
-# delta-rule readout, surprise-gated Hebbian dynamics, the prequential
-# surprise as modulator. A witness with a record and no power. The
-# grave's scars run as gates: exact newborn ignorance, no saturation,
-# no degenerate embeddings, no self-deception below the floor, and the
-# shadow's measured weakness stays on the record.
+# The buried prototype's lineage, under the zero courts: no backprop and a
+# delta-rule readout. Its first surprise-gated Hebbian dynamics lost the
+# matched frozen-reservoir arm and is quarantined behind --core-hebb-v1.
+# A witness with a record and no power. The grave's scars run as gates:
+# exact newborn ignorance, no saturation, no degenerate embeddings, no
+# self-deception below the floor, and losing plasticity stays reproducible.
 "$N" "$T/p3.bytes" --reset --seed 42 --episodes 1 --steps 1 --state "$T/b16n.state" --bio "$T/b16n.bio" > "$T/b16n.out" 2>&1
 grep -q '^model core bits/byte 8\.000000$' "$T/b16n.out"
 gate "B16 the newborn core prices exact ignorance (8.000000 first)" $? 0
@@ -895,12 +895,31 @@ CORE_P=$(awk '/^model core /{print $NF}' "$T/b16p.out")
 TRI_P=$(awk '/^model byte-tri /{print $NF}' "$T/b16p.out")
 awk -v c="$CORE_P" -v t="$TRI_P" 'BEGIN{exit !(t - c >= 0.5)}'
 gate "B16 the core sees past the trigram floor: $CORE_P vs $TRI_P on period 5" $? 0
+awk 'BEGIN{for(i=0;i<3000;i++) printf "aababa"}' > "$T/p6.bytes"
+"$N" "$T/p6.bytes" --reset --seed 5 --episodes 4 --steps 2000 --state "$T/b16p6.state" --bio "$T/b16p6.bio" > "$T/b16p6.out" 2>&1
+CORE_P6=$(awk '/^model core /{print $NF}' "$T/b16p6.out")
+TRI_P6=$(awk '/^model byte-tri /{print $NF}' "$T/b16p6.out")
+awk -v c="$CORE_P6" -v t="$TRI_P6" 'BEGIN{exit !(t - c >= 0.5)}'
+gate "B16 frozen dynamics carry period 6: $CORE_P6 vs $TRI_P6" $? 0
 awk 'BEGIN{for(i=0;i<3000;i++) printf "aababab"}' > "$T/p7.bytes"
 "$N" "$T/p7.bytes" --reset --seed 5 --episodes 4 --steps 2000 --state "$T/b16w.state" --bio "$T/b16w.bio" > "$T/b16w.out" 2>&1
 CORE_W=$(awk '/^model core /{print $NF}' "$T/b16w.out")
 TRI_W=$(awk '/^model byte-tri /{print $NF}' "$T/b16w.out")
-awk -v c="$CORE_W" -v t="$TRI_W" 'BEGIN{exit !(c - t >= 0.5)}'
-gate "B16 the shadow's weakness is on the record: $CORE_W vs $TRI_W on period 7" $? 0
+awk -v c="$CORE_W" -v t="$TRI_W" 'BEGIN{exit !(t - c >= 0.4)}'
+gate "B16 frozen dynamics carry period 7: $CORE_W vs $TRI_W" $? 0
+"$N" "$T/p7.bytes" --reset --seed 5 --episodes 4 --steps 2000 \
+    --core-hebb-v1 --state "$T/b16wh.state" --bio "$T/b16wh.bio" > "$T/b16wh.out" 2>&1
+CORE_WH=$(awk '/^model core /{print $NF}' "$T/b16wh.out")
+TRI_WH=$(awk '/^model byte-tri /{print $NF}' "$T/b16wh.out")
+awk -v c="$CORE_WH" -v t="$TRI_WH" 'BEGIN{exit !(c - t >= 5.0)}' && \
+grep -q '^core plasticity: v1 gates .* (active)$' "$T/b16wh.out"
+gate "B16 quarantined Hebb-v1 reproduces its period-7 loss: $CORE_WH vs $TRI_WH" $? 0
+awk 'BEGIN{for(i=0;i<3000;i++) printf "aabababa"}' > "$T/p8.bytes"
+"$N" "$T/p8.bytes" --reset --seed 5 --episodes 4 --steps 2000 --state "$T/b16p8.state" --bio "$T/b16p8.bio" > "$T/b16p8.out" 2>&1
+CORE_P8=$(awk '/^model core /{print $NF}' "$T/b16p8.out")
+TRI_P8=$(awk '/^model byte-tri /{print $NF}' "$T/b16p8.out")
+awk -v c="$CORE_P8" -v t="$TRI_P8" 'BEGIN{exit !(t - c >= 0.5)}'
+gate "B16 frozen dynamics carry period 8: $CORE_P8 vs $TRI_P8" $? 0
 "$N" "$T/uhome.bytes" --reset --seed 7 --episodes 1 --steps 2000 --state "$T/b16u.state" --bio "$T/b16u.bio" > "$T/b16u.out" 2>&1
 CORE_U=$(awk '/^model core /{print $NF}' "$T/b16u.out")
 AT_U=$(awk '/^model atomic-uni /{print $NF}' "$T/b16u.out")
@@ -914,9 +933,25 @@ gate "B16 the shadow casts no shadow on the game (bio identical core on/off)" $?
 "$N" "$T/rep.bytes" --episodes 1 --steps 1000 --state "$T/b16s.state" --bio "$T/b16s.bio" >/dev/null 2>&1
 cmp -s "$T/b16z.bio" "$T/b16s.bio" && cmp -s "$T/b16z.state" "$T/b16s.state"
 gate "B16 core weights survive restart (split life identical)" $? 0
-printf '\x11\x00\x00\x00' | dd of="$T/b16s.state" bs=1 seek=8 conv=notrunc 2>/dev/null
+printf '\x12\x00\x00\x00' | dd of="$T/b16s.state" bs=1 seek=8 conv=notrunc 2>/dev/null
 "$N" "$T/rep.bytes" --episodes 1 --steps 1000 --state "$T/b16s.state" --bio "$T/b16s.bio" >/dev/null 2>&1
-gate "B16 a version-17 state cannot enter the core court" $? 1
+gate "B16 a version-18 state cannot enter the witnessed core v19" $? 1
+
+i=0; : > "$T/a16.bytes"
+while [ $i -lt 1000 ]; do printf 'a' >> "$T/a16.bytes"; i=$((i+1)); done
+"$N" "$T/a16.bytes" --reset --no-units --seed 5 --episodes 1 --steps 100 \
+    --state "$T/b16f.state" --bio "$T/b16f.bio" >/dev/null 2>&1
+# This one-island, one-trigram fixture leaves 164 bytes after core_bytes.
+# Change the recorded 100 bytes to 99 without violating its loose bound;
+# only the neural memory witness can name the partial forgery.
+SZ16=$(wc -c < "$T/b16f.state" | tr -d ' ')
+OFF16=$((SZ16 - 172))
+printf '\x63' | dd of="$T/b16f.state" bs=1 seek="$OFF16" conv=notrunc 2>/dev/null
+"$N" "$T/a16.bytes" --no-units --seed 5 --episodes 1 --steps 100 \
+    --state "$T/b16f.state" --bio "$T/b16f.bio" >"$T/b16f.out" 2>&1
+rc=$?
+[ "$rc" -eq 1 ] && grep -q 'core memory disagrees with its witness' "$T/b16f.out"
+gate "B16 a partial neural-memory forgery is refused by name" $? 0
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
@@ -936,7 +971,7 @@ gate "S ASan/UBSan silent on repeated and full-binary worlds" $rc 0
 "$S" "$T/p3.bytes" --reset --seed 5 --episodes 24 --steps 600 \
     --state "$T/sm.state" --bio "$T/sm.bio" >/dev/null 2>"$T/sm.err"
 rc=$?; [ -s "$T/sm.err" ] && rc=98
-gate "S ASan/UBSan silent through move navigation and restart state v18" $rc 0
+gate "S ASan/UBSan silent through move navigation and restart state v19" $rc 0
 "$S" "$T/p3.bytes" "$T/alien.bytes" --reset --seed 5 --episodes 6 --steps 600 \
     --island 0 --state "$T/si.state" --bio "$T/si.bio" >/dev/null 2>"$T/si.err"
 rc=$?
