@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B22. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B23. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -1344,6 +1344,127 @@ gate "B22 a two-byte question still reaches the tongue (red)" $? 0
 cmp -s "$T/b18.state" "$T/b18.state.ref" && cmp -s "$T/b18.bio" "$T/b18.bio.ref"
 gate "B22 refused questions leave no fingerprints on memory" $? 0
 
+# The mouth and contextual ear now share one question reader.  Regular files
+# are stable tail snapshots; non-regular inputs are questions sealed by EOF.
+# Every complete source with the same final two bytes must therefore agree.
+"$N" --speak 80 --speak-seed 7 --prompt-file "$T/b22.q2" \
+    --state "$T/b18.state" --bio "$T/b18.bio" \
+    > "$T/b22.regular" 2>/dev/null
+printf 'discarded-prefix-ab' > "$T/b22.long"
+"$N" --speak 80 --speak-seed 7 --prompt-file "$T/b22.long" \
+    --state "$T/b18.state" --bio "$T/b18.bio" \
+    > "$T/b22.long.out" 2>/dev/null
+mkfifo "$T/b22.fifo"
+( printf 'fifo-prefix-ab' > "$T/b22.fifo" ) & b22wp=$!
+"$N" --speak 80 --speak-seed 7 --prompt-file "$T/b22.fifo" \
+    --state "$T/b18.state" --bio "$T/b18.bio" \
+    > "$T/b22.fifo.out" 2>/dev/null
+wait "$b22wp"
+printf 'stdin-prefix-ab' | "$N" --speak 80 --speak-seed 7 \
+    --prompt-file /dev/stdin --state "$T/b18.state" --bio "$T/b18.bio" \
+    > "$T/b22.stdin.out" 2>/dev/null
+dd if=/dev/zero of="$T/b22.huge" bs=1048576 count=8 2>/dev/null
+printf 'ab' >> "$T/b22.huge"
+"$N" --speak 80 --speak-seed 7 --prompt-file "$T/b22.huge" \
+    --state "$T/b18.state" --bio "$T/b18.bio" \
+    > "$T/b22.huge.out" 2>/dev/null
+cmp -s "$T/b22.regular" "$T/b22.long.out" && \
+    cmp -s "$T/b22.regular" "$T/b22.fifo.out" && \
+    cmp -s "$T/b22.regular" "$T/b22.stdin.out" && \
+    cmp -s "$T/b22.regular" "$T/b22.huge.out"
+gate "B22 regular, long, FIFO, stdin, and 8MiB questions share one tail law" $? 0
+
+mkfifo "$T/b22.shortfifo"
+( printf a > "$T/b22.shortfifo" ) & b22sp=$!
+"$N" --speak 8 --prompt-file "$T/b22.shortfifo" \
+    --state "$T/b18.state" --bio "$T/b18.bio" \
+    >/dev/null 2>"$T/b22.shortfifo.err"
+rc=$?; wait "$b22sp"
+[ "$rc" -eq 1 ] && \
+    grep -q 'a prompt needs at least two bytes' "$T/b22.shortfifo.err"
+gate "B22 EOF seals a short streaming question before refusal" $? 0
+
+mkfifo "$T/b22.earfifo"
+( printf 'ear-prefix-zz' > "$T/b22.earfifo" ) & b22ep=$!
+"$N" "$T/b21.shore" --ear "$T/b21.aa" \
+    --ear-context "$T/b22.earfifo" > "$T/b22.earfifo.out" 2>/dev/null
+wait "$b22ep"
+cmp -s "$T/b21.aa.hot" "$T/b22.earfifo.out"
+gate "B22 the same streaming question law reaches the ear" $? 0
+
+# --- B23: every shore's structural twin -------------------------------
+# The explicit twin is the already-sealed Gutenberg permutation grown in
+# memory for each shore.  The independent arena hand must produce the same
+# bytes, digest, and ear price.
+"$T/garena-prep" shuffle "$T/p3.bytes" "$T/b23.p3.twin" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --ear "$T/b20.slice" --ear-twin \
+    > "$T/b23.inline" 2>/dev/null
+"$N" "$T/b23.p3.twin" --ear "$T/b20.slice" \
+    > "$T/b23.external" 2>/dev/null
+itd=$(sed -n 's/.* twin-digest=\([0-9a-f]*\) .*/\1/p' "$T/b23.inline")
+etd=$(sed -n 's/^ear 0: digest=\([0-9a-f]*\) .*/\1/p' "$T/b23.external")
+itp=$(sed -n 's/.* twin-bits\/byte=\([0-9.]*\)$/\1/p' "$T/b23.inline")
+etp=$(sed -n 's/.* bits\/byte=\([0-9.]*\) .*/\1/p' "$T/b23.external")
+[ -n "$itd" ] && [ "$itd" = "$etd" ] && [ "$itp" = "$etp" ]
+gate "B23 the in-memory twin agrees with the independent sealed hand" $? 0
+
+b23true=$(sed -n 's/.* bits\/byte=\([0-9.]*\) longest.*/\1/p' "$T/b23.inline")
+grep -q 'longest-match=200 matched16=100.0%' "$T/b23.inline" && \
+    awk -v a="$b23true" -v b="$itp" 'BEGIN{exit !(a < b)}'
+gate "B23 a literal passage is named and dearer to the structural twin ($b23true<$itp)" $? 0
+
+: > "$T/b23.constant"
+i=0; while [ $i -lt 4096 ]; do printf a >> "$T/b23.constant"; i=$((i+1)); done
+printf 'aaaaaaaaaaaaaaaaaaaaaaaa' > "$T/b23.a24"
+"$N" "$T/b23.constant" --ear "$T/b23.a24" --ear-twin \
+    > "$T/b23.constant.out" 2>/dev/null
+b23ct=$(sed -n 's/.* bits\/byte=\([0-9.]*\) longest.*/\1/p' "$T/b23.constant.out")
+b23cx=$(sed -n 's/.* twin-bits\/byte=\([0-9.]*\)$/\1/p' "$T/b23.constant.out")
+grep -q ' twin-changed=0/4096 ' "$T/b23.constant.out" && \
+    [ "$b23ct" = "$b23cx" ]
+gate "B23 a degenerate twin says it changed nothing ($b23ct=$b23cx)" $? 0
+
+"$N" "$T/p3.bytes" --ear-twin >/dev/null 2>&1
+gate "B23 a structural twin exists only inside an explicit ear" $? 1
+mkdir "$T/b23dir"
+( cd "$T/b23dir" && "$N" "$T/p3.bytes" --ear "$T/b20.slice" \
+    --ear-twin >/dev/null 2>&1 )
+[ -z "$(ls -A "$T/b23dir")" ]
+gate "B23 the structural twin is grown in memory and writes nothing" $? 0
+
+# The uniform replay red is generated from a named SplitMix64 stream.  It
+# demonstrates why price, exact-match coverage, and twin price must remain a
+# triple: a cheap trigram mouth can simply walk a memorised random tape.
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic scripts/uniform_shore.c \
+    -o "$T/uniform-shore" 2>"$T/b23.uniform.build"
+rc=$?; [ -s "$T/b23.uniform.build" ] && rc=98
+"$T/uniform-shore" 4096 0x534f4c554e49464f > "$T/b23.uniform"
+b23vec=$(od -An -tx1 -N16 "$T/b23.uniform" | tr -d ' \n')
+[ "$b23vec" = "14a06a602648d491483f08d4faee0afe" ] || rc=98
+gate "B23 the uniform red shore has an exact portable generator" $rc 0
+dd if="$T/b23.uniform" of="$T/b23.prompt" bs=1 skip=14 count=2 2>/dev/null
+"$N" "$T/b23.uniform" --reset --seed 7 --episodes 1 --steps 302 \
+    --start 16 --state "$T/b23.state" --bio "$T/b23.bio" >/dev/null 2>&1
+for hand in uni bi tri; do
+    "$N" --speak 300 --speak-seed 7 --actor-lock "$hand" \
+        --prompt-file "$T/b23.prompt" --state "$T/b23.state" \
+        --bio "$T/b23.bio" > "$T/b23.$hand" 2>"$T/b23.$hand.err"
+    "$N" "$T/b23.uniform" --ear "$T/b23.$hand" \
+        --ear-context "$T/b23.prompt" --ear-twin \
+        > "$T/b23.$hand.ear" 2>/dev/null
+done
+b23u=$(sed -n 's/.* bits\/byte=\([0-9.]*\) longest.*/\1/p' "$T/b23.uni.ear")
+b23b=$(sed -n 's/.* bits\/byte=\([0-9.]*\) longest.*/\1/p' "$T/b23.bi.ear")
+b23t=$(sed -n 's/.* bits\/byte=\([0-9.]*\) longest.*/\1/p' "$T/b23.tri.ear")
+b23tx=$(sed -n 's/.* twin-bits\/byte=\([0-9.]*\)$/\1/p' "$T/b23.tri.ear")
+awk -v u="$b23u" -v b="$b23b" -v t="$b23t" \
+    'BEGIN{exit !(t < b && b < u)}' && \
+    grep -q 'longest-match=300 matched16=100.0%' "$T/b23.tri.ear" && \
+    grep -q 'speak support: uni 0, bi 0, tri 300' "$T/b23.tri.err"
+gate "B23 low trigram price can be a 300-byte literal replay ($b23t<$b23b<$b23u)" $? 0
+awk -v t="$b23t" -v x="$b23tx" 'BEGIN{exit !(t < x)}'
+gate "B23 the preregistered twin coordinate exposes that replay ($b23t<$b23tx)" $? 0
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -1424,6 +1545,10 @@ gate "S ASan/UBSan silent through the ear" $rc 0
     --ear-context "$T/b21.ctx" > /dev/null 2>"$T/ss21.err"
 rc=$?; [ -s "$T/ss21.err" ] && rc=98
 gate "S ASan/UBSan silent through the context-bearing ear" $rc 0
+"$S" "$T/p3.bytes" --ear "$T/b20.slice" --ear-twin \
+    > /dev/null 2>"$T/ss23.err"
+rc=$?; [ -s "$T/ss23.err" ] && rc=98
+gate "S ASan/UBSan silent through the structural-twin ear" $rc 0
 "$S" "$T/p5.bytes" --reset --jury --seed 5 --episodes 1 --steps 300 \
     --state "$T/sc17.state" --bio "$T/sc17.bio" >/dev/null 2>"$T/sc17.err"
 rc=$?

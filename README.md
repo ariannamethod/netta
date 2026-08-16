@@ -51,7 +51,9 @@ technical source of truth for the living line.
   optional `--prompt-file` warms the last two byte-context positions — a
   question is at least two bytes everywhere, exactly as the ear's context,
   or it is absent and the opening is named cold — and a
-  dedicated stream isolates speech from the life's RNG. It prices nothing,
+  dedicated stream isolates speech from the life's RNG. Mouth and ear use
+  one question reader: a regular file is a stable snapshot of its final two
+  bytes, while a FIFO or `/dev/stdin` is sealed by EOF. It prices nothing,
   learns nothing, appends nothing, and saves nothing; a zero-byte life and a
   stranger island are refused. `--speak-laplace` preserves the first mouth's
   smoothing law as a reproducible red arm: honest ignorance belongs in the
@@ -75,6 +77,15 @@ technical source of truth for the living line.
   context bytes are printed in every result. The cold body-20 instrument
   remains the default. Three preregistered real-text hearings now agree on
   the local supported ordering tri below bi below uni, but appoint no hand.
+- Under explicit `--ear-twin`, body 23 grows the already-sealed Gutenberg
+  shuffle independently for every shore and prints the candidate's price on
+  that structural twin beside the true-shore verdict. The permutation seed,
+  twin digest, and number of changed positions are public; an all-one-byte
+  shore therefore reports zero change and equal prices. Exact-match coverage
+  remains against the true shore. The three coordinates expose a uniform
+  red where locked tri costs 7.005793 bits per byte yet replays all 300 bytes,
+  while its twin price is 7.997098. The instrument writes nothing and has no
+  threshold, court, candidacy, or authority.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -108,9 +119,11 @@ plasticity null is recorded in `research/PLASTICITY_RESULTS_2026-08-16.md`.
 The neural core is a shadow witness with no authority yet; there is no dreaming,
 glyph system, generalizing travel predictor, unbounded life, or speaking
 court. The mouth is an operator-invoked instrument, not an autonomous right,
-and both ear modes are sealed measurements with no threshold, promotion, or
+and all ear modes are sealed measurements with no threshold, promotion, or
 authority attached to their numbers. The ear audit and cross-shore record
-live in `research/EAR_AUDIT_2026-08-16.md`.
+live in `research/EAR_AUDIT_2026-08-16.md`; the question-reader repair and
+structural-twin preregistration/results live in
+`research/STRUCTURAL_TWIN_AUDIT_2026-08-16.md`.
 Her first recorded words live in `research/FIRST_WORDS_2026-08-16.md`.
 
 ## Build and test
@@ -120,7 +133,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 194-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 206-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -135,7 +148,9 @@ mouth with hostile invocation and RNG-isolation arms, supported generative
 backoff and its preserved Laplace red mouth, the island's ear with its exact
 substring census, inclusive length boundary, complete invocation law,
 per-shore jurisdiction, two opposed sorted-world arms, and explicit-context
-warmup reversal,
+warmup reversal, one question law across regular files and EOF-sealed streams,
+an independently reproduced structural twin, its degenerate no-change arm,
+and a deterministic uniform-replay red,
 and failure-closed state and biography checks. A
 passing build ends with `ALL GATES PASS`.
 
