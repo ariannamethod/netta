@@ -3090,19 +3090,18 @@ static void ear(void) {
     ear_sam_free(&match);
 }
 
-/* body 24: the pattern court. It reads the sealed triple -- true-shore
-   price, matched-16 coverage, structural-twin price -- and returns one
-   verdict from a four-word lattice frozen from named calibration worlds
-   before any candidate was read. The verdicts are measurement patterns,
-   never causal accusations: an independently generated hand can replay
-   a shore it never saw. ABSTAIN when the twin changed nothing, REPLAY
-   when coverage reaches its threshold, ORDER when the structure gap
-   reaches its threshold, STRANGER otherwise. This is a trigram court: a
-   census-only stream prices near ignorance at trigram depth and is
-   honestly read as a stranger. The court holds no office: no election,
-   no speech authority, no state, no writes. */
-#define COURT_MATCH_T 50.0
-#define COURT_ORDER_T 0.5
+/* body 25: the pattern court's public warrant. Body 24 froze the
+   four-word lattice from named calibration worlds before any candidate
+   was read. This body leaves those words and thresholds untouched, but
+   makes every deciding operand public and makes the structural null earn
+   jurisdiction in the case actually heard. The court decides on integers:
+   exact matched bytes and a once-rounded gap in microbits per byte.
+   ABSTAIN when the twin changed nothing or moved the heard coordinate by
+   less than the public resolution, REPLAY at exact half coverage, ORDER
+   at 0.5 bits/byte, STRANGER otherwise. Verdicts remain measurement
+   patterns, never causal accusations, and the court still holds no office:
+   no election, no speech authority, no state, no writes. */
+#define COURT_ORDER_MICRO 500000LL
 
 static void court(void) {
     FILE *f = fopen(court_path, "rb");
@@ -3156,19 +3155,27 @@ static void court(void) {
         ear_make_twin(isl, &twin, &changed);
         double twin_bits = ear_price(&twin, sp, n, contextual, cp2, cp1);
         free(twin.bytes);
+        double p = bits / (double)n;
+        double q = twin_bits / (double)n;
         double m = 100.0 * (double)covered / (double)n;
-        double g = (twin_bits - bits) / (double)n;
-        const char *verdict = changed == 0        ? "abstain"
-                            : m >= COURT_MATCH_T  ? "replay"
-                            : g >= COURT_ORDER_T  ? "order"
-                                                  : "stranger";
+        int64_t gap_micro = (int64_t)llround(
+            1000000.0 * (twin_bits - bits) / (double)n);
+        double g = (double)gap_micro / 1000000.0;
+        const char *verdict = changed == 0 || gap_micro == 0 ? "abstain"
+                            : 2 * covered >= n                ? "replay"
+                            : gap_micro >= COURT_ORDER_MICRO  ? "order"
+                                                              : "stranger";
         printf("court %d: digest=%016llx context=", k,
                (unsigned long long)isl->digest);
         if (contextual) printf("%02x%02x", cp2, cp1);
         else printf("cold");
-        printf(" bytes=%llu P=%.6f matched16=%.1f%% G=%.6f "
-               "verdict=%s\n",
-               (unsigned long long)n, bits / (double)n, m, g, verdict);
+        printf(" bytes=%llu P=%.6f Q=%.6f matched16=%.4f%% "
+               "matched-bytes=%llu/%llu G=%.6f gap-micro=%lld "
+               "changed=%llu/%llu verdict=%s\n",
+               (unsigned long long)n, p, q, m,
+               (unsigned long long)covered, (unsigned long long)n, g,
+               (long long)gap_micro, (unsigned long long)changed,
+               (unsigned long long)isl->len, verdict);
     }
     ear_sam_free(&match);
 }

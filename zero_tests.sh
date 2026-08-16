@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B24. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B25. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -1489,13 +1489,13 @@ gate "B24 short lived runs with a foreign heartbeat are judged order" $? 0
 i=0; : > "$T/b24.zzz"
 while [ $i -lt 300 ]; do printf 'z' >> "$T/b24.zzz"; i=$((i+1)); done
 "$N" "$T/p3.bytes" --court "$T/b24.zzz" > "$T/b24.d" 2>/dev/null
-grep -q 'verdict=stranger$' "$T/b24.d"
-gate "B24 a foreign stream is judged stranger" $? 0
+grep -q 'P=8.013738 Q=8.013738 .*gap-micro=0 .*verdict=abstain$' "$T/b24.d"
+gate "B25 a foreign stream invisible to the structural null now abstains" $? 0
 i=0; : > "$T/b24.const"
 while [ $i -lt 4096 ]; do printf 'a' >> "$T/b24.const"; i=$((i+1)); done
 head -c 300 "$T/b24.const" > "$T/b24.cs"
 "$N" "$T/b24.const" --court "$T/b24.cs" > "$T/b24.e" 2>/dev/null
-grep -q 'matched16=100.0% .*verdict=abstain$' "$T/b24.e"
+grep -q 'matched16=100.0000% .*verdict=abstain$' "$T/b24.e"
 gate "B24 a shore whose twin cannot move abstains over a perfect match" $? 0
 head -c 168 "$T/p3.bytes" > "$T/b24.hi"
 i=0; while [ $i -lt 60 ]; do printf 'x' >> "$T/b24.hi"; i=$((i+1)); done
@@ -1524,6 +1524,62 @@ mkdir "$T/b24dir"
     >/dev/null 2>&1 )
 [ -z "$(ls -A "$T/b24dir")" ]
 gate "B24 the court writes nothing" $? 0
+
+# --- B25: the court earns a public warrant -----------------------------
+# Every deciding operand is printed. Exact integer match coverage fixes the
+# rounded-threshold contradiction; a structural null must move the measured
+# candidate coordinate at the declared one-microbit/byte resolution before
+# the court may render a non-abstaining verdict.
+head -c 1000 "$T/p3.bytes" > "$T/b25.tie"
+i=0; while [ $i -lt 1000 ]; do printf 'x' >> "$T/b25.tie"; i=$((i+1)); done
+cp "$T/b25.tie" "$T/b25.below"
+printf 'x' >> "$T/b25.below"
+"$N" "$T/p3.bytes" --court "$T/b25.tie" > "$T/b25.tie.out" 2>/dev/null
+"$N" "$T/p3.bytes" --court "$T/b25.below" > "$T/b25.below.out" 2>/dev/null
+grep -q 'matched16=50.0000% matched-bytes=1000/2000 .*verdict=replay$' \
+    "$T/b25.tie.out" && \
+grep -q 'matched16=49.9750% matched-bytes=1000/2001 .*verdict=order$' \
+    "$T/b25.below.out"
+gate "B25 the public exact fraction reconstructs both sides of the 50% law" $? 0
+
+: > "$T/b25.near"
+i=0; while [ $i -lt 2048 ]; do printf 'a' >> "$T/b25.near"; i=$((i+1)); done
+printf 'b' >> "$T/b25.near"
+i=0; while [ $i -lt 2047 ]; do printf 'a' >> "$T/b25.near"; i=$((i+1)); done
+head -c 300 "$T/b24.const" > "$T/b25.aaa"
+"$N" "$T/b25.near" --court "$T/b25.aaa" > "$T/b25.near.out" 2>/dev/null
+grep -q 'P=0.087545 Q=0.087545 .*G=0.000000 gap-micro=0 changed=2/4096 verdict=abstain$' \
+    "$T/b25.near.out"
+gate "B25 moved bytes without a moved measurement do not confer jurisdiction" $? 0
+
+head -c 15 "$T/p3.bytes" > "$T/b25.fragment"
+: > "$T/b25.quilt"
+i=0; while [ $i -lt 100 ]; do
+    cat "$T/b25.fragment" >> "$T/b25.quilt"
+    printf 'x' >> "$T/b25.quilt"
+    i=$((i+1))
+done
+"$N" "$T/p3.bytes" --court "$T/b25.quilt" > "$T/b25.quilt.out" 2>/dev/null
+grep -q 'matched16=0.0000% matched-bytes=0/1600 .*verdict=order$' \
+    "$T/b25.quilt.out"
+gate "B25 a quilt of sub-threshold literals remains structural order" $? 0
+
+: > "$T/b25.census"
+i=0; while [ $i -lt 100 ]; do printf 'a' >> "$T/b25.census"; i=$((i+1)); done
+i=0; while [ $i -lt 100 ]; do printf 'b' >> "$T/b25.census"; i=$((i+1)); done
+i=0; while [ $i -lt 100 ]; do printf 'c' >> "$T/b25.census"; i=$((i+1)); done
+"$N" "$T/p3.bytes" --court "$T/b25.census" > "$T/b25.census.out" 2>/dev/null
+grep -q 'verdict=stranger$' "$T/b25.census.out"
+gate "B25 the trigram court still names its equal-census blind spot" $? 0
+
+printf 'ab' > "$T/b25.ab"
+printf 'cb' > "$T/b25.cb"
+"$N" "$T/p3.bytes" --court "$T/b25.ab" > "$T/b25.cold" 2>/dev/null
+"$N" "$T/p3.bytes" --court "$T/b25.ab" --ear-context "$T/b25.cb" \
+    > "$T/b25.hot" 2>/dev/null
+grep -q 'context=cold .*verdict=stranger$' "$T/b25.cold" && \
+grep -q 'context=6362 .*verdict=order$' "$T/b25.hot"
+gate "B25 context may change a verdict only while naming its jurisdiction" $? 0
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
