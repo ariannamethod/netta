@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B17. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B19. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -1012,14 +1012,54 @@ rc=$?
 [ "$rc" -eq 1 ] && grep -q 'jury memory disagrees with its witness' "$T/b17w.out"
 gate "B17 a partial jury-memory forgery is refused by name" $? 0
 
+# --- A18: the arena's second hand ----------------------------------------
+# The C corpus-preparation hand must agree with the sealed Python hand at
+# adversarial boundaries, not only on the three friendly source files.  The
+# fixed shuffle vector independently pins SplitMix64 state stepping, modulo
+# draw, and the descending Fisher-Yates order.
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic scripts/garena_prep.c \
+    -o "$T/garena-prep" 2>"$T/garena-build.log"
+rc=$?; [ -s "$T/garena-build.log" ] && rc=98
+gate "A18 the arena's second hand builds strict and silent" $rc 0
+printf 'head\r*** START OF THE PROJECT GUTENBERG EBOOK x\r\none\r\ntwo\r*** END OF THE PROJECT GUTENBERG EBOOK x' > "$T/g-valid.raw"
+printf 'one\ntwo\n' > "$T/g-valid.want"
+"$T/garena-prep" normalize "$T/g-valid.raw" "$T/g-valid.body" >/dev/null 2>&1
+rc=$?; cmp -s "$T/g-valid.body" "$T/g-valid.want" || rc=98
+gate "A18 CR-at-EOF, CRLF, and an END without newline match the sealed hand" $rc 0
+printf 'prefix *** START OF THE PROJECT GUTENBERG EBOOK x\nbody\n*** END OF THE PROJECT GUTENBERG EBOOK x\n' > "$T/g-mid.raw"
+"$T/garena-prep" normalize "$T/g-mid.raw" "$T/g-mid.body" >/dev/null 2>&1
+gate "A18 a START marker in the middle of a line is refused" $? 1
+printf '%s\n' '*** START OF THE PROJECT GUTENBERG EBOOK x' body \
+    '*** END OF THE PROJECT GUTENBERG EBOOK x' tail \
+    '*** END OF THE PROJECT GUTENBERG EBOOK y' > "$T/g-double-end.raw"
+"$T/garena-prep" normalize "$T/g-double-end.raw" "$T/g-double-end.body" >/dev/null 2>&1
+gate "A18 a second END seal is refused instead of silently ignored" $? 1
+: > "$T/g-empty.body"
+"$T/garena-prep" shuffle "$T/g-empty.body" "$T/g-empty.twin" >/dev/null 2>&1
+rc=$?; [ ! -s "$T/g-empty.twin" ] || rc=98
+gate "A18 an empty shuffle is defined and cannot underflow" $rc 0
+i=0; : > "$T/g-vector.body"; : > "$T/g-vector.want"
+while [ $i -lt 16 ]; do printf "\\x$(printf %02x $i)" >> "$T/g-vector.body"; i=$((i+1)); done
+for h in 09 02 00 0c 08 03 0d 01 05 04 06 0f 07 0e 0b 0a; do
+    printf "\\x$h" >> "$T/g-vector.want"
+done
+"$T/garena-prep" shuffle "$T/g-vector.body" "$T/g-vector.twin" >/dev/null 2>&1
+rc=$?; cmp -s "$T/g-vector.twin" "$T/g-vector.want" || rc=98
+gate "A18 the shuffle stream, modulo draw, and swap order match the sealed vector" $rc 0
+
 # --- B18: the mouth ------------------------------------------------------
 # Speech is a read-only instrument: the mouth prices nothing, learns
 # nothing, appends nothing, saves nothing, and draws from its own
 # stream. The elected seat speaks; a newborn and a stranger island are
-# refused. On a lived period-3 state the dense trigram rows speak the
-# lived pattern back.
+# refused. Hostile flag combinations may succeed or refuse, but none may
+# acquire a write path. Only the last two prompt bytes reach a byte hand.
 "$N" "$T/p3.bytes" --reset --seed 5 --episodes 6 --steps 600 --state "$T/b18.state" --bio "$T/b18.bio" >/dev/null 2>&1
 cp "$T/b18.state" "$T/b18.state.ref"; cp "$T/b18.bio" "$T/b18.bio.ref"
+"$N" --speak 0 --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.zero" 2>/dev/null
+rc=$?
+[ ! -s "$T/b18.zero" ] && cmp -s "$T/b18.state" "$T/b18.state.ref" && \
+    cmp -s "$T/b18.bio" "$T/b18.bio.ref" || rc=98
+gate "B18 zero requested bytes is still a read-only mouth invocation" $rc 0
 "$N" --speak 60 --speak-seed 7 --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.words" 2>/dev/null
 rc=$?
 cmp -s "$T/b18.state" "$T/b18.state.ref" && cmp -s "$T/b18.bio" "$T/b18.bio.ref" && [ "$rc" -eq 0 ]
@@ -1027,21 +1067,91 @@ gate "B18 the mouth writes no memory (state and biography untouched)" $? 0
 "$N" --speak 60 --speak-seed 7 --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.words2" 2>/dev/null
 cmp -s "$T/b18.words" "$T/b18.words2"
 gate "B18 the same seed speaks the same words" $? 0
-"$N" --speak 60 --speak-seed 8 --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.words3" 2>/dev/null
-cmp -s "$T/b18.words" "$T/b18.words3"
+"$N" "$W" --reset --seed 8 --episodes 1 --steps 600 --state "$T/b18b.state" --bio "$T/b18b.bio" >/dev/null 2>&1
+"$N" --speak 60 --speak-seed 7 --state "$T/b18b.state" --bio "$T/b18b.bio" > "$T/b18b.words7" 2>/dev/null
+"$N" --speak 60 --speak-seed 8 --state "$T/b18b.state" --bio "$T/b18b.bio" > "$T/b18b.words8" 2>/dev/null
+cmp -s "$T/b18b.words7" "$T/b18b.words8"
 gate "B18 a different seed speaks differently (red: not tautological)" $? 1
 printf 'ab' > "$T/b18.p1"; printf 'bc' > "$T/b18.p2"
 "$N" --speak 60 --speak-seed 7 --prompt-file "$T/b18.p1" --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.wp1" 2>/dev/null
 "$N" --speak 60 --speak-seed 7 --prompt-file "$T/b18.p2" --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.wp2" 2>/dev/null
 cmp -s "$T/b18.wp1" "$T/b18.wp2"
 gate "B18 the prompt reaches the tongue (different prompts differ)" $? 1
+printf 'older-prefix-ab' > "$T/b18.ps1"; printf 'other-history-ab' > "$T/b18.ps2"
+"$N" --speak 60 --speak-seed 7 --prompt-file "$T/b18.ps1" --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.ws1" 2>/dev/null
+"$N" --speak 60 --speak-seed 7 --prompt-file "$T/b18.ps2" --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.ws2" 2>/dev/null
+cmp -s "$T/b18.ws1" "$T/b18.ws2"
+gate "B18 byte speech sees exactly the last two prompt bytes" $? 0
 "$N" --speak 60 --speak-seed 9 --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b18.words9" 2>/dev/null
 grep -q '^cacbab' "$T/b18.words9"
-gate "B18 an unprompted mouth opens on the lived pattern (cacbab spoken)" $? 0
+gate "B18 an unprompted mouth opens on the most-lived context" $? 0
 "$N" --speak 60 --state "$T/b18v.state" --bio "$T/b18v.bio" >/dev/null 2>&1
 gate "B18 a newborn has nothing to say (no lived state refused)" $? 1
+"$N" "$T/p3.bytes" --reset --episodes 0 --state "$T/b18e.state" --bio "$T/b18e.bio" >/dev/null 2>&1
+cp "$T/b18e.state" "$T/b18e.state.ref"; cp "$T/b18e.bio" "$T/b18e.bio.ref"
+"$N" --speak 1 --state "$T/b18e.state" --bio "$T/b18e.bio" >/dev/null 2>&1
+rc=$?; cmp -s "$T/b18e.state" "$T/b18e.state.ref" || rc=98
+cmp -s "$T/b18e.bio" "$T/b18e.bio.ref" || rc=98
+gate "B18 a persisted zero-byte life still has nothing to say" $rc 1
 "$N" "$T/rep.bytes" --speak 60 --state "$T/b18.state" --bio "$T/b18.bio" >/dev/null 2>&1
 gate "B18 the mouth cannot meet new islands" $? 1
+
+B18H=0
+for flag in --reset --atlas --no-units --no-mv-nav --no-island-court \
+    --no-birth-floor --no-local-probation --no-unit-death --keep-dead-mass \
+    --no-core --core-hebb-v1 --jury; do
+    cp "$T/b18.state.ref" "$T/b18h.state"
+    cp "$T/b18.bio.ref" "$T/b18h.bio"
+    "$N" --speak 8 "$flag" --state "$T/b18h.state" \
+        --bio "$T/b18h.bio" >/dev/null 2>&1 || true
+    cmp -s "$T/b18h.state" "$T/b18.state.ref" || B18H=98
+    cmp -s "$T/b18h.bio" "$T/b18.bio.ref" || B18H=98
+done
+gate "B18 reset, atlas, and every law flag leave state and biography untouched" $B18H 0
+
+for arm in b18d b18i; do
+    cp "$T/b18.state.ref" "$T/$arm.state"
+    cp "$T/b18.bio.ref" "$T/$arm.bio"
+done
+"$N" "$T/p3.bytes" --episodes 1 --steps 600 \
+    --state "$T/b18d.state" --bio "$T/b18d.bio" >/dev/null 2>&1
+"$N" --speak 80 --speak-seed 17 \
+    --state "$T/b18i.state" --bio "$T/b18i.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --episodes 1 --steps 600 \
+    --state "$T/b18i.state" --bio "$T/b18i.bio" >/dev/null 2>&1
+cmp -s "$T/b18d.state" "$T/b18i.state" && cmp -s "$T/b18d.bio" "$T/b18i.bio"
+gate "B18 interleaved speech consumes none of the life's rng stream" $? 0
+
+"$N" --speak 24 --actor-lock mv --state "$T/b18.state" \
+    --bio "$T/b18.bio" >/dev/null 2>"$T/b18mv.err"
+rc=$?; grep -Eq 'hand (uni|bi|tri),' "$T/b18mv.err" || rc=98
+gate "B18 an mv seat falls back to a named byte witness" $rc 0
+"$N" --speak-seed 7 --state "$T/b18.state" --bio "$T/b18.bio" >/dev/null 2>&1
+gate "B18 speech-only controls cannot be silently ignored by ordinary life" $? 1
+
+# --- B19: supported generative backoff ----------------------------------
+# Laplace pseudo-counts are honest prices for externally supplied unseen
+# truth; emitting those pseudo-counts as if they had been lived made 113 of
+# 120 period-3 bytes leave the alphabet. The default mouth now samples only
+# observed continuations at its deepest available context and backs off when
+# a row is empty. The old law remains an explicit reproducible red arm.
+"$N" --speak 600 --speak-seed 9 --state "$T/b18.state" \
+    --bio "$T/b18.bio" > "$T/b19.words" 2>/dev/null
+LC_ALL=C tr -d 'abc' < "$T/b19.words" > "$T/b19.outside"
+[ ! -s "$T/b19.outside" ] && grep -q '^cacbabcacbab' "$T/b19.words"
+gate "B19 supported backoff stays inside the lived transition graph" $? 0
+printf 'zz' > "$T/b19.unseen"
+"$N" --speak 24 --speak-seed 9 --prompt-file "$T/b19.unseen" \
+    --state "$T/b18.state" --bio "$T/b18.bio" >/dev/null 2>"$T/b19.backoff"
+grep -Eq 'speak support: uni [1-9][0-9]*,' "$T/b19.backoff"
+gate "B19 an unseen prompt backs off to witnessed lower-order support" $? 0
+"$N" --speak 120 --speak-seed 9 --speak-laplace \
+    --state "$T/b18.state" --bio "$T/b18.bio" > "$T/b19.red" 2>/dev/null
+B19R=$(LC_ALL=C tr -d 'abc' < "$T/b19.red" | wc -c | tr -d ' ')
+[ "$B19R" -gt 0 ]
+gate "B19 the Laplace red mouth leaves the lived alphabet ($B19R/120 bytes)" $? 0
+cmp -s "$T/b18.state" "$T/b18.state.ref" && cmp -s "$T/b18.bio" "$T/b18.bio.ref"
+gate "B19 repaired and red mouths are equally memory-silent" $? 0
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
@@ -1109,7 +1219,10 @@ gate "S ASan/UBSan silent through the learning core" $rc 0
 rc=$?
 "$S" --speak 200 --speak-seed 7 --prompt-file "$T/b18.p1" \
     --state "$T/ss18.state" --bio "$T/ss18.bio" >/dev/null 2>>"$T/ss18.err" || rc=$?
-grep -v '^speak:' "$T/ss18.err" | grep -v '^NETTA ZERO' > "$T/ss18.err2" || true
+"$S" --speak 200 --speak-seed 7 --speak-laplace \
+    --state "$T/ss18.state" --bio "$T/ss18.bio" >/dev/null 2>>"$T/ss18.err" || rc=$?
+grep -v '^speak:' "$T/ss18.err" | grep -v '^speak support:' | \
+    grep -v '^NETTA ZERO' > "$T/ss18.err2" || true
 [ -s "$T/ss18.err2" ] && rc=98
 gate "S ASan/UBSan silent through the speaking mouth" $rc 0
 "$S" "$T/p5.bytes" --reset --jury --seed 5 --episodes 1 --steps 300 \

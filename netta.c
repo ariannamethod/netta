@@ -2542,12 +2542,74 @@ static int file_exists(const char *path) {
 static uint64_t speak_bytes = 0;
 static uint64_t speak_seed = 1;
 static const char *prompt_path = NULL;
+static int speak_requested = 0;
+static int speak_seed_set = 0;
+/* Body 19 keeps the eighteenth body's law as an explicit red arm.  Laplace
+   smoothing is honest when an external byte may be unseen; sampling its
+   pseudo-counts as if they had been lived is a different act. */
+static int speak_laplace = 0;
 
 static uint64_t speak_next(uint64_t *s) {
     uint64_t z = (*s += 0x9e3779b97f4a7c15ULL);
     z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9ULL;
     z = (z ^ (z >> 27)) * 0x94d049bb133111ebULL;
     return z ^ (z >> 31);
+}
+
+static uint64_t speak_bounded(uint64_t *s, uint64_t bound) {
+    uint64_t threshold = (uint64_t)(0 - bound) % bound;
+    for (;;) {
+        uint64_t r = speak_next(s);
+        if (r >= threshold) return r % bound;
+    }
+}
+
+static int speak_supported(int hand, uint8_t p2, uint8_t p1,
+                           uint64_t *s, int *used) {
+    uint32_t tctx = ((uint32_t)p2 << 8) | p1;
+    uint64_t total;
+
+    /* Supported backoff is generative physiology, not a speech verdict.
+       A hand emits only a continuation it actually lived at its deepest
+       available context; an empty row backs off instead of inventing 256
+       equally weighted memories. Integer draws make that support guarantee
+       exact even when cumulative floating-point probabilities round down. */
+    if (hand == 2 && tri_row[tctx]) {
+        *used = 2;
+        total = tri_row[tctx];
+    } else if (hand >= 1 && bi_row[p1]) {
+        *used = 1;
+        total = bi_row[p1];
+    } else {
+        *used = 0;
+        total = counts_total;
+    }
+
+    uint64_t draw = speak_bounded(s, total);
+    for (int b = 0; b < ACTIONS; ++b) {
+        uint64_t n = *used == 2 ? tri_get(tctx, (uint8_t)b)
+                   : *used == 1 ? bi_count[p1][b] : counts[b];
+        if (draw < n) return b;
+        draw -= n;
+    }
+    fprintf(stderr, "netta: spoken support totals disagree\n");
+    exit(1);
+}
+
+static void speak_laplace_distribution(int hand, uint8_t p2, uint8_t p1,
+                                       double p_act[ACTIONS]) {
+    if (hand == 1) {
+        double d2 = (double)bi_row[p1] + (double)ACTIONS;
+        for (int b = 0; b < ACTIONS; ++b)
+            p_act[b] = ((double)bi_count[p1][b] + 1.0) / d2;
+    } else if (hand == 2) {
+        uint32_t tctx = ((uint32_t)p2 << 8) | p1;
+        double d3 = (double)tri_row[tctx] + (double)ACTIONS;
+        for (int b = 0; b < ACTIONS; ++b)
+            p_act[b] = ((double)tri_get(tctx, (uint8_t)b) + 1.0) / d3;
+    } else {
+        policy(p_act);
+    }
 }
 
 static void speak(void) {
@@ -2586,32 +2648,29 @@ static void speak(void) {
         if (lb < lu) { hand = 1; lu = lb; }
         if (lt < lu) hand = 2;
     }
-    fprintf(stderr, "speak: %llu bytes, hand %s, seed %llu\n",
+    fprintf(stderr, "speak: %llu bytes, hand %s, seed %llu, law %s\n",
             (unsigned long long)speak_bytes, actor_name[hand],
-            (unsigned long long)speak_seed);
+            (unsigned long long)speak_seed,
+            speak_laplace ? "laplace-red" : "supported-backoff");
     uint64_t s = speak_seed;
+    uint64_t support_order[3] = {0, 0, 0};
     for (uint64_t i = 0; i < speak_bytes; ++i) {
-        double p_uni[ACTIONS], p_act[ACTIONS];
-        policy(p_uni);
-        if (hand == 1) {
-            double d2 = (double)bi_row[p1] + (double)ACTIONS;
-            for (int b = 0; b < ACTIONS; ++b)
-                p_act[b] = ((double)bi_count[p1][b] + 1.0) / d2;
-        } else if (hand == 2) {
-            uint32_t tctx = ((uint32_t)p2 << 8) | p1;
-            double d3 = (double)tri_row[tctx] + (double)ACTIONS;
-            for (int b = 0; b < ACTIONS; ++b)
-                p_act[b] = ((double)tri_get(tctx, (uint8_t)b) + 1.0) / d3;
+        int b;
+        if (!speak_laplace) {
+            int used;
+            b = speak_supported(hand, p2, p1, &s, &used);
+            support_order[used]++;
         } else {
-            memcpy(p_act, p_uni, sizeof p_act);
-        }
-        double r = (double)(speak_next(&s) >> 11) *
-                   (1.0 / 9007199254740992.0);
-        double acc = 0.0;
-        int b = ACTIONS - 1;
-        for (int c = 0; c < ACTIONS; ++c) {
-            acc += p_act[c];
-            if (r < acc) { b = c; break; }
+            double p_act[ACTIONS];
+            speak_laplace_distribution(hand, p2, p1, p_act);
+            double r = (double)(speak_next(&s) >> 11) *
+                       (1.0 / 9007199254740992.0);
+            double acc = 0.0;
+            b = ACTIONS - 1;
+            for (int c = 0; c < ACTIONS; ++c) {
+                acc += p_act[c];
+                if (r < acc) { b = c; break; }
+            }
         }
         putchar(b);
         p2 = p1; p1 = (uint8_t)b;
@@ -2619,6 +2678,11 @@ static void speak(void) {
     if (fflush(stdout) != 0) {
         fprintf(stderr, "netta: speak flush failed\n"); exit(1);
     }
+    if (!speak_laplace)
+        fprintf(stderr, "speak support: uni %llu, bi %llu, tri %llu\n",
+                (unsigned long long)support_order[0],
+                (unsigned long long)support_order[1],
+                (unsigned long long)support_order[2]);
 }
 
 int main(int argc, char **argv) {
@@ -2670,12 +2734,18 @@ int main(int argc, char **argv) {
             core_hebb_enabled = 1;
         else if (!strcmp(argv[i], "--jury"))
             jury_enabled = 1;
-        else if (!strcmp(argv[i], "--speak") && i + 1 < argc)
+        else if (!strcmp(argv[i], "--speak") && i + 1 < argc) {
+            speak_requested = 1;
             speak_bytes = parse_u64("--speak", argv[++i]);
-        else if (!strcmp(argv[i], "--speak-seed") && i + 1 < argc)
+        }
+        else if (!strcmp(argv[i], "--speak-seed") && i + 1 < argc) {
+            speak_seed_set = 1;
             speak_seed = parse_u64("--speak-seed", argv[++i]);
+        }
         else if (!strcmp(argv[i], "--prompt-file") && i + 1 < argc)
             prompt_path = argv[++i];
+        else if (!strcmp(argv[i], "--speak-laplace"))
+            speak_laplace = 1;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -2700,14 +2770,19 @@ int main(int argc, char **argv) {
                 "netta: --actor-lock mv requires units enabled\n");
         exit(1);
     }
-    if (speak_bytes) fprintf(stderr, "NETTA ZERO\n");
+    if (!speak_requested && (speak_seed_set || prompt_path || speak_laplace)) {
+        fprintf(stderr, "netta: speech flags require --speak\n");
+        exit(1);
+    }
+    if (speak_requested) fprintf(stderr, "NETTA ZERO\n");
     else printf("NETTA ZERO\n");
-    if (paths_n == 0 && !speak_bytes) {
+    if (paths_n == 0 && !speak_requested) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
                         "[--atlas] [--no-core] [--core-hebb-v1] [--jury] "
                         "[--speak N] [--speak-seed N] [--prompt-file P] "
+                        "[--speak-laplace] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -2732,7 +2807,7 @@ int main(int argc, char **argv) {
         }
     }
     for (int i = 0; i < island_count; ++i)
-        fprintf(speak_bytes ? stderr : stdout,
+        fprintf(speak_requested ? stderr : stdout,
                 "island %d: %s len=%llu digest=%016llx\n", i,
                 islands[i].name, (unsigned long long)islands[i].len,
                 (unsigned long long)islands[i].digest);
@@ -2756,9 +2831,13 @@ int main(int argc, char **argv) {
     /* today's convoy is resolved against the life's registry; an
        unknown identity is an arrival, never a refusal */
     registry_resolve_convoy();
-    if (speak_bytes) {
+    if (speak_requested) {
         if (!resumed) {
             fprintf(stderr, "netta: the mouth needs a lived state\n");
+            exit(1);
+        }
+        if (!atomic_bytes_lived || !counts_total) {
+            fprintf(stderr, "netta: the mouth needs lived bytes\n");
             exit(1);
         }
         if (arrivals_pending_n) {

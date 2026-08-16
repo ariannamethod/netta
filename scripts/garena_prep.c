@@ -83,9 +83,9 @@ static int do_normalize(const char *in, const char *out) {
         if (len >= slen && memcmp(unix_b + line, START_MARK, slen) == 0) {
             if (!starts) start_from = next;
             starts++;
-        } else if (starts && !ends &&
-                   len >= elen && memcmp(unix_b + line, END_MARK, elen) == 0) {
-            end_from = line;
+        } else if (starts && len >= elen &&
+                   memcmp(unix_b + line, END_MARK, elen) == 0) {
+            if (!ends) end_from = line;
             ends++;
         }
         line = next;
@@ -122,8 +122,9 @@ static int do_shuffle(const char *in, const char *out) {
     for (size_t i = 0; i < n; ++i) hist[body[i]]++;
 
     sm_state = SHUFFLE_SEED;
-    for (size_t i = n - 1; i >= 1; --i) {
-        uint64_t j = sm_next() % (uint64_t)(i + 1);
+    for (size_t span = n; span > 1; --span) {
+        size_t i = span - 1;
+        uint64_t j = sm_next() % (uint64_t)span;
         uint8_t t = body[i]; body[i] = body[j]; body[j] = t;
     }
     for (size_t i = 0; i < n; ++i) twin_hist[body[i]]++;

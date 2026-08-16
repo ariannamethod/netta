@@ -1587,3 +1587,80 @@ What is not proved: the prompt reaches only the two bytes of context a
 byte hand carries; unit, move, and core speech are later bodies, and a
 speaking court is preregistered thinking only. The suite's spoken
 gates pin the mouth's laws, not its eloquence.
+
+## The mouth turn audited: memory holds; hidden boundaries do not
+
+All hundred and forty-six incoming gates passed before the implementation
+was read.  The second hand of the Gutenberg arena then met raw boundaries
+the three books did not contain.  Its CR/CRLF normalization, prefix-only
+markers, marker-at-EOF behaviour, and SplitMix64 shuffle agree with the
+canonical Python hand.  One real disagreement remained: after seeing its
+first END marker the C hand stopped counting, so a raw source with two END
+lines was accepted where the sealed hand refused it.  The descending shuffle
+also formed `n - 1` for an empty body and underflowed before its loop could
+refuse or accept anything.  The hand now counts every following END while
+retaining the first boundary, and the shuffle walks positive spans.  A fixed
+sixteen-byte result, `0902000c08030d010504060f070e0b0a`, pins the generator
+step, modulo draw, and swap order rather than trusting the three matched
+outputs again.
+
+The mouth's central license survived hostile use.  Reset, Atlas, every law
+flag, and both successful and refused calls leave state and biography
+byte-identical.  A direct continuation equals a continuation with speech
+interleaved, locating the tongue outside the life's RNG stream.  Prompts that
+differ everywhere except their last two bytes produce identical byte-hand
+speech, and an mv seat names the byte witness it borrows.  Three edges were
+nevertheless constitutionally wrong: `--speak 0` was mistaken for no mouth
+mode at all; a checkpoint published after zero episodes was "resumed" enough
+to speak despite having lived no byte; and speech-only flags without
+`--speak` were silently ignored by an ordinary life.  The mouth now has an
+explicit request bit, requires a nonempty lived record, and refuses orphaned
+speech controls.  None writes a byte, so state remains v20.
+
+The first-word measurements were rebuilt rather than accepted from their
+lossy dotted transcript.  The pinned Dracula raw is 890348 bytes with
+SHA-256 `96cd16eacdbfebae8fdda5591f66e0cc8ee76be18e0cd1aca02bc00615782d28`;
+the repaired second hand produces the published 855114-byte body with
+SHA-256 `a7786a4c81df95265b33d8c24dbbcaee80ab531d7d266a9782d52301718ce7c7`.
+Seed 160816, 8000-byte episodes, prompt `The `, and speech seed 7 reproduce
+all four tracked byte streams exactly.  Their ruler is now stated precisely:
+ASCII `0x20..0x7e` plus LF is called displayable.  It gives 117/200 = 58.5
+percent for the 64000-byte bi life and, after 384000 bytes, 119/300 = 39.7
+percent for elected tri, 269/300 = 89.7 for locked bi, and 293/300 = 97.7
+for locked uni.
+
+## Body 19: ignorance keeps its price and loses the microphone
+
+The eighteenth body's failure names a disciplinary boundary, not a bad
+trigram.  Laplace smoothing is an honest prequential price because the next
+external byte may be one the life has never seen.  Free generation is a
+different act.  Sampling the 256 smoothing pseudo-counts says that an
+unobserved continuation was lived, then often lands in another unobserved
+context whose next choice is uniform again.  On the fixed period-3 life this
+law emitted 113 of 120 bytes outside the three-byte alphabet.  The mouth was
+not paying a tax; it was spending ignorance as memory.
+
+The nineteenth body separates the laws.  By default a byte hand samples only
+observed continuations at its deepest supported context.  An empty trigram
+row backs off to the witnessed bigram row; an empty bigram row backs off to
+the lived unigram.  The diagnostic reports how many emitted bytes borrowed
+each depth.  Body 18's exact arithmetic remains behind `--speak-laplace` as a
+named red mouth, so the finding is permanently reproducible rather than
+edited out of history.
+
+The red twin is decisive on the narrow world: supported backoff emits zero
+foreign bytes in six hundred and stays on the exact `cacbab` cycle.  On the
+independently regrown real-text lives, the 64000-byte bi mouth uses bi support
+for 200/200 bytes and moves from 58.5 to 98.5 percent displayable; the
+384000-byte elected tri uses tri support for 300/300 and moves from 39.7 to
+100.0 percent.  Locked bi moves 89.7 to 98.0; uni remains 97.7.  These are
+physiology measurements, not an eloquence court: the structureless unigram
+still defeats printability as a candidate ruler.  No hand earns speech
+authority, no free-running output enters memory, and no dream is promoted.
+The mouth is a healthier instrument and nothing more.
+
+One hundred and sixty-three gates now pass: the second hand's hostile
+boundaries, zero-byte life, zero-byte request, every-law read-only matrix,
+prompt horizon, interleaved RNG identity, mv fallback, speech-control
+quarantine, supported graph, causal fallback, Laplace red arm, strict C11,
+and ASan/UBSan join the inherited constitution.
