@@ -2530,6 +2530,97 @@ static int file_exists(const char *path) {
     exit(1);
 }
 
+/* body 18: the mouth. Speech is a read-only instrument: the mouth
+   prices nothing, learns nothing, appends nothing, saves nothing, and
+   draws from its own dedicated stream -- the life cannot tell that it
+   spoke. The elected seat speaks; an mv seat falls to its best byte
+   witness, because the first mouth emits bytes. A newborn has nothing
+   to say: speech is the product of a lived state, so the mouth demands
+   a resumed life and refuses to meet new islands. The prompt warms the
+   two bytes of context a byte hand can carry; deeper prompt use
+   arrives only with unit and core speech, in a later body. */
+static uint64_t speak_bytes = 0;
+static uint64_t speak_seed = 1;
+static const char *prompt_path = NULL;
+
+static uint64_t speak_next(uint64_t *s) {
+    uint64_t z = (*s += 0x9e3779b97f4a7c15ULL);
+    z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9ULL;
+    z = (z ^ (z >> 27)) * 0x94d049bb133111ebULL;
+    return z ^ (z >> 31);
+}
+
+static void speak(void) {
+    /* an unprompted mouth opens at the life's most-lived context; a
+       cold zero context on a narrow world would wander outside the
+       lived manifold with no road back */
+    uint8_t p2 = 0, p1 = 0;
+    uint64_t best = 0;
+    for (int pv = 0; pv < ACTIONS; ++pv)
+        for (int b = 0; b < ACTIONS; ++b)
+            if (bi_count[pv][b] > best) {
+                best = bi_count[pv][b];
+                p2 = (uint8_t)pv;
+                p1 = (uint8_t)b;
+            }
+    if (prompt_path) {
+        FILE *f = fopen(prompt_path, "rb");
+        if (!f) {
+            fprintf(stderr, "netta: cannot open prompt %s\n", prompt_path);
+            exit(1);
+        }
+        int c;
+        while ((c = fgetc(f)) != EOF) { p2 = p1; p1 = (uint8_t)c; }
+        if (ferror(f) || fclose(f) != 0) {
+            fprintf(stderr, "netta: cannot read prompt %s\n", prompt_path);
+            exit(1);
+        }
+    }
+    actor_elect();
+    int hand = actor_current;
+    if (hand == 3) {
+        double lu = atomic_bits_lived / (double)atomic_bytes_lived;
+        double lb = bilm_bytes ? bilm_bits / (double)bilm_bytes : 1e9;
+        double lt = trilm_bytes ? trilm_bits / (double)trilm_bytes : 1e9;
+        hand = 0;
+        if (lb < lu) { hand = 1; lu = lb; }
+        if (lt < lu) hand = 2;
+    }
+    fprintf(stderr, "speak: %llu bytes, hand %s, seed %llu\n",
+            (unsigned long long)speak_bytes, actor_name[hand],
+            (unsigned long long)speak_seed);
+    uint64_t s = speak_seed;
+    for (uint64_t i = 0; i < speak_bytes; ++i) {
+        double p_uni[ACTIONS], p_act[ACTIONS];
+        policy(p_uni);
+        if (hand == 1) {
+            double d2 = (double)bi_row[p1] + (double)ACTIONS;
+            for (int b = 0; b < ACTIONS; ++b)
+                p_act[b] = ((double)bi_count[p1][b] + 1.0) / d2;
+        } else if (hand == 2) {
+            uint32_t tctx = ((uint32_t)p2 << 8) | p1;
+            double d3 = (double)tri_row[tctx] + (double)ACTIONS;
+            for (int b = 0; b < ACTIONS; ++b)
+                p_act[b] = ((double)tri_get(tctx, (uint8_t)b) + 1.0) / d3;
+        } else {
+            memcpy(p_act, p_uni, sizeof p_act);
+        }
+        double r = (double)(speak_next(&s) >> 11) *
+                   (1.0 / 9007199254740992.0);
+        double acc = 0.0;
+        int b = ACTIONS - 1;
+        for (int c = 0; c < ACTIONS; ++c) {
+            acc += p_act[c];
+            if (r < acc) { b = c; break; }
+        }
+        putchar(b);
+        p2 = p1; p1 = (uint8_t)b;
+    }
+    if (fflush(stdout) != 0) {
+        fprintf(stderr, "netta: speak flush failed\n"); exit(1);
+    }
+}
+
 int main(int argc, char **argv) {
     const char *state_path = "netta0.state";
     const char *bio_path = "netta0.bio.tsv";
@@ -2579,6 +2670,12 @@ int main(int argc, char **argv) {
             core_hebb_enabled = 1;
         else if (!strcmp(argv[i], "--jury"))
             jury_enabled = 1;
+        else if (!strcmp(argv[i], "--speak") && i + 1 < argc)
+            speak_bytes = parse_u64("--speak", argv[++i]);
+        else if (!strcmp(argv[i], "--speak-seed") && i + 1 < argc)
+            speak_seed = parse_u64("--speak-seed", argv[++i]);
+        else if (!strcmp(argv[i], "--prompt-file") && i + 1 < argc)
+            prompt_path = argv[++i];
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
@@ -2603,12 +2700,14 @@ int main(int argc, char **argv) {
                 "netta: --actor-lock mv requires units enabled\n");
         exit(1);
     }
-    printf("NETTA ZERO\n");
-    if (paths_n == 0) {
+    if (speak_bytes) fprintf(stderr, "NETTA ZERO\n");
+    else printf("NETTA ZERO\n");
+    if (paths_n == 0 && !speak_bytes) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
                         "[--atlas] [--no-core] [--core-hebb-v1] [--jury] "
+                        "[--speak N] [--speak-seed N] [--prompt-file P] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -2633,10 +2732,11 @@ int main(int argc, char **argv) {
         }
     }
     for (int i = 0; i < island_count; ++i)
-        printf("island %d: %s len=%llu digest=%016llx\n", i,
-               islands[i].name, (unsigned long long)islands[i].len,
-               (unsigned long long)islands[i].digest);
-    if (isl_id < 0 || isl_id >= island_count) {
+        fprintf(speak_bytes ? stderr : stdout,
+                "island %d: %s len=%llu digest=%016llx\n", i,
+                islands[i].name, (unsigned long long)islands[i].len,
+                (unsigned long long)islands[i].digest);
+    if (paths_n && (isl_id < 0 || isl_id >= island_count)) {
         fprintf(stderr, "netta: no island %d\n", isl_id);
         exit(1);
     }
@@ -2656,6 +2756,18 @@ int main(int argc, char **argv) {
     /* today's convoy is resolved against the life's registry; an
        unknown identity is an arrival, never a refusal */
     registry_resolve_convoy();
+    if (speak_bytes) {
+        if (!resumed) {
+            fprintf(stderr, "netta: the mouth needs a lived state\n");
+            exit(1);
+        }
+        if (arrivals_pending_n) {
+            fprintf(stderr, "netta: the mouth cannot meet new islands\n");
+            exit(1);
+        }
+        speak();
+        return 0;
+    }
     bio_open(bio_path, reset || !resumed);
     for (int j = 0; j < arrivals_pending_n; ++j) {
         int r = arrivals_pending[j];
