@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B27. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B28. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -1778,6 +1778,75 @@ rc=$?; [ -s "$T/wcheck-san-build.log" ] && rc=98
 [ ! -s "$T/wcheck-san.err" ] || rc=98
 gate "B27 the strict external hand is sanitizer-silent on honest and crafted input" $rc 0
 
+# --- B28: the citation --------------------------------------------------
+# The first time a court's word touches the life -- as memory, never as
+# power. A life cites only a single complete sitting it can itself
+# re-derive under its own law; any failure refuses by name and leaves
+# no trace in the biography; nothing reads the citation back into
+# behaviour, which the twin proves to bit-identical prices.
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 2 --steps 600 \
+    --state "$T/b28.state" --bio "$T/b28.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" --court "$T/b24.hi" > "$T/b28.docket" 2>/dev/null
+cp "$T/b28.state" "$T/b28t.state"; cp "$T/b28.bio" "$T/b28t.bio"
+"$N" --cite "$T/b28.docket" --state "$T/b28.state" --bio "$T/b28.bio" \
+    > "$T/b28.out" 2>/dev/null
+rc=$?
+grep -q '^cited: docket ' "$T/b28.out" || rc=98
+W28=$(grep -c "^w	" "$T/b28.bio")
+[ "$W28" = "1" ] || rc=98
+gate "B28 a verified sitting becomes one biography line" $rc 0
+"$N" --cite "$T/b28.docket" --state "$T/b28.state" --bio "$T/b28.bio" \
+    >/dev/null 2>&1
+rc=$?
+W28=$(grep -c "^w	" "$T/b28.bio")
+[ "$rc" -eq 0 ] && [ "$W28" = "2" ]
+gate "B28 a repeated citation is a second event, not a silence" $? 0
+"$N" "$T/p3.bytes" --episodes 1 --steps 600 --state "$T/b28.state" \
+    --bio "$T/b28.bio" > "$T/b28.cont" 2>&1
+gate "B28 a cited life resumes and plays" $? 0
+"$N" "$T/p3.bytes" --episodes 1 --steps 600 --state "$T/b28t.state" \
+    --bio "$T/b28t.bio" > "$T/b28.twin" 2>&1
+CA=$(awk '/^bits per raw byte:/{print $NF}' "$T/b28.cont")
+CB=$(awk '/^bits per raw byte:/{print $NF}' "$T/b28.twin")
+[ -n "$CA" ] && [ "$CA" = "$CB" ]
+gate "B28 the citation is powerless: twin prices are bit-identical ($CA)" $? 0
+cp "$T/b28t.bio" "$T/b28f.bio.ref"
+sed 's/docket=\(............\)..../docket=\1beef/' "$T/b28.docket" \
+    > "$T/b28.forged"
+"$N" --cite "$T/b28.forged" --state "$T/b28t.state" \
+    --bio "$T/b28t.bio" >/dev/null 2>"$T/b28.err"
+rc=$?
+[ "$rc" -eq 1 ] && grep -q 'docket close does not match its fold' "$T/b28.err" \
+    && cmp -s "$T/b28t.bio" "$T/b28f.bio.ref"
+gate "B28 a forged docket is refused by name and leaves no trace" $? 0
+grep -v '^court close:' "$T/b28.docket" > "$T/b28.trunc"
+"$N" --cite "$T/b28.trunc" --state "$T/b28t.state" \
+    --bio "$T/b28t.bio" >/dev/null 2>&1
+gate "B28 a truncated docket is refused" $? 1
+sed 's/gap-micro>=500000/gap-micro>=500001/' "$T/b28.docket" \
+    > "$T/b28.foreign"
+"$N" --cite "$T/b28.foreign" --state "$T/b28t.state" \
+    --bio "$T/b28t.bio" >/dev/null 2>"$T/b28.ferr"
+rc=$?
+[ "$rc" -eq 1 ] && grep -q "not this life's law" "$T/b28.ferr"
+gate "B28 a foreign law cannot be cited by this life" $? 0
+cat "$T/b28.docket" "$T/b28.docket" > "$T/b28.two"
+"$N" --cite "$T/b28.two" --state "$T/b28t.state" \
+    --bio "$T/b28t.bio" >/dev/null 2>&1
+gate "B28 the citation takes one sitting at a time" $? 1
+"$N" --cite "$T/b28.docket" --state "$T/b28v.state" \
+    --bio "$T/b28v.bio" >/dev/null 2>&1
+gate "B28 a newborn cannot remember what was said about it" $? 1
+"$N" --cite "$T/b28.docket" --state "$T/b28t.state" \
+    --bio "$T/b28t.bio" --speak 5 >/dev/null 2>&1
+gate "B28 the citation and the mouth are separate invocations" $? 1
+"$N" "$T/p3.bytes" --cite "$T/b28.docket" --state "$T/b28t.state" \
+    --bio "$T/b28t.bio" >/dev/null 2>&1
+gate "B28 the citation is between the life and the record" $? 1
+"$N" --cite "$T/b28.docket" --state "$T/b28t.state" \
+    --bio "$T/b28t.bio" --episodes 3 >/dev/null 2>&1
+gate "B28 the citation refuses play controls by name" $? 1
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -1865,6 +1934,11 @@ gate "S ASan/UBSan silent through the structural-twin ear" $rc 0
 "$S" "$T/p3.bytes" --court "$T/b20.slice" > /dev/null 2>"$T/ss24.err"
 rc=$?; [ -s "$T/ss24.err" ] && rc=98
 gate "S ASan/UBSan silent through the pattern court" $rc 0
+cp "$T/b28.state" "$T/ss28.state"; cp "$T/b28.bio" "$T/ss28.bio"
+"$S" --cite "$T/b28.docket" --state "$T/ss28.state" \
+    --bio "$T/ss28.bio" > /dev/null 2>"$T/ss28.err"
+rc=$?; [ -s "$T/ss28.err" ] && rc=98
+gate "S ASan/UBSan silent through the citation" $rc 0
 "$S" "$T/p5.bytes" --reset --jury --seed 5 --episodes 1 --steps 300 \
     --state "$T/sc17.state" --bio "$T/sc17.bio" >/dev/null 2>"$T/sc17.err"
 rc=$?

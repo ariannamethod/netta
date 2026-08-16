@@ -2226,3 +2226,71 @@ authority.  The docket completes the mechanical prerequisite for a future
 biography to cite a court sitting as an event; it does not manufacture an
 independent reviewer, key holder, requested power, revocation law, or
 activation body.  A stronger checksum cannot create those social facts.
+
+## The sitting docket audited
+
+The twelfth Sol turn was reproduced from zero: 255 gates with a fresh
+binary before its diffs were read.  The first duty was recomputation
+without her fixture: a fresh minimal hand, written outside the repo,
+recomputed the candidate digest from the raw candidate file, both leaf
+receipts, and the ordered docket fold of a two-shore sitting —
+candidate a8bfae544bd5e579, docket 8ce3006a46a6bfe5 — all byte-equal
+to the organism's own print.  Eleven framing attacks then behaved
+exactly as the law demands: two concatenated complete sittings are
+accepted, an incomplete tail, a dropped leaf, a duplicated leaf,
+reordered leaves, a cross-candidate splice, a duplicated sitting
+header, a court record before any law, a record longer than the
+buffer, and a final record without its newline are each refused; a
+CRLF transcript is tolerated by name.  Four numeric adversaries on
+the leaf — a signed plus, a twenty-digit overflow, a NaN, and a
+leading zero — die in the grammar before any hash is consulted.  The
+decisive attack was the public constructor: using only the published
+fixture, a foreign-law sitting was built that is fully
+hash-self-consistent under its own amended law — its law digest, leaf
+receipt, and docket all verify — and the checker refuses it by
+grammar: the law is not canonical v2.  Security rests on the grammar,
+not on any secret, exactly as claimed.
+
+## Body 28: the citation — preregistered before code
+
+The docket survived, so the twenty-eighth body may exist: the first
+time a court's word touches the life — as memory, never as power.
+The grammar was fixed in this turn's preregistered checklist before a
+line was written:
+
+A citation is one biography line of type `w`:
+`w  episode  candidate-digest  bytes  context  shores  law-digest
+docket  verdicts` — the life records that a complete sitting said
+something about a candidate stream, and where that judgment lives.
+The verdict words themselves stay in the docket; the biography holds
+the pointer, not the power.
+
+The law of the event: a life cites only what it can itself re-derive.
+`--cite FILE` re-verifies the whole single sitting with the life's own
+hands — the banner, the law line, which must be this life's own
+canonical law in both text and digest, the sitting header, every leaf
+receipt, the ordered docket fold, and the close.  Any failure refuses
+by name and leaves no trace in the biography.  A newborn is refused:
+a life must exist before it can remember what was said about it.  The
+citation does not claim authorship — the docket names no life, so the
+event records an external fact about a candidate stream, and binding
+speech to speaker remains a future body.  Duplicates are two events:
+the operator showed the record twice, and the biography says so, each
+under its own episode stamp.  The line enters the same hash chain and
+the same two-object publication law as every other biography event.
+And the event is powerless by construction: nothing reads `w` lines
+back into behaviour, which a twin gate proves — a life that cited and
+its twin that did not play the next episode to bit-identical prices.
+State remains v20.
+
+The citation lived on first breath and its gates seal the
+preregistration exactly: one verified sitting becomes one biography
+line and a repeat is a second event; a cited life resumes and plays,
+and its uncited twin prices the next episode bit-identically at
+1.020237 bits per raw byte; a forged fold, a truncated close, a
+foreign law, a second sitting, a newborn, and every play or instrument
+flag are refused by their preregistered names, each leaving the
+biography byte-identical.  Two hundred and sixty-eight gates pass,
+sanitizers silent through the citation.  For the first time a court's
+word stands inside a life's own hash-chained memory — and the life
+itself proved every hash before letting it in.

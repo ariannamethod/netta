@@ -2553,6 +2553,10 @@ static const char *ear_context_path = NULL;
 static int ear_twin_requested = 0;
 static const char *court_path = NULL;
 static int life_control_named = 0;
+/* body 28: flags that configure play or instruments; --state and --bio
+   stay outside this bit because a citation needs its life's files. */
+static int instrument_only_named = 0;
+static const char *cite_path = NULL;
 
 /* Body 22's repair: a question has one byte law even though mouth and ear
    retain different public verbs.  For a regular file only the final two
@@ -3251,6 +3255,147 @@ static void court(void) {
     ear_sam_free(&match);
 }
 
+/* body 28: the citation. A life cites only what it can itself
+   re-derive: the whole single sitting is re-verified with the life's
+   own hands -- the banner, its own canonical law in text and digest,
+   the sitting header, every leaf receipt in order, the docket fold,
+   and the close. Any failure refuses by name and leaves no trace in
+   the biography. The resulting line is a pointer to the judgment,
+   never a power: nothing reads it back into behaviour. */
+static void cite_verify(uint64_t *cand, uint64_t *cbytes,
+                        char ctx_out[8], int *shores,
+                        uint64_t *docket_out) {
+    court_law_digest = fnv1a64((const uint8_t *)COURT_LAW,
+                               (uint64_t)strlen(COURT_LAW), FNV_SEED);
+    FILE *f = fopen(cite_path, "rb");
+    if (!f) {
+        fprintf(stderr, "netta: cannot open %s\n", cite_path);
+        exit(1);
+    }
+    char line[1024], law_hex[17] = {0};
+    char cand_hex[17] = {0}, ctx[8] = {0};
+    int stage = 0, leaf = 0, ns = 0;
+    uint64_t docket = 0, nb = 0;
+    while (fgets(line, sizeof line, f)) {
+        size_t len = strlen(line);
+        if (!len || line[len - 1] != '\n') {
+            fprintf(stderr, "netta: the docket record is unsealed\n");
+            exit(1);
+        }
+        line[--len] = 0;
+        if (len && line[len - 1] == '\r') line[--len] = 0;
+        if (stage == 0) {
+            if (strcmp(line, "NETTA ZERO")) {
+                fprintf(stderr,
+                        "netta: the docket does not open as NETTA ZERO\n");
+                exit(1);
+            }
+            stage = 1;
+        } else if (stage == 1) {
+            char expect[512];
+            snprintf(expect, sizeof expect,
+                     "court law: %s law-digest=%016llx", COURT_LAW,
+                     (unsigned long long)court_law_digest);
+            if (strcmp(line, expect)) {
+                fprintf(stderr,
+                        "netta: the docket's law is not this life's "
+                        "law\n");
+                exit(1);
+            }
+            snprintf(law_hex, sizeof law_hex, "%016llx",
+                     (unsigned long long)court_law_digest);
+            stage = 2;
+        } else if (stage == 2) {
+            unsigned long long nbll = 0;
+            int nsl = 0, used = 0;
+            char nlaw[17] = {0};
+            if (sscanf(line,
+                    "court sitting: candidate-digest=%16[0-9a-f] "
+                    "bytes=%llu context=%7s shores=%d "
+                    "law-digest=%16[0-9a-f]%n",
+                    cand_hex, &nbll, ctx, &nsl, nlaw, &used) != 5 ||
+                    line[used] || strcmp(nlaw, law_hex) ||
+                    nsl < 1 || nsl > MAX_ISLANDS) {
+                fprintf(stderr,
+                        "netta: the docket sitting is malformed\n");
+                exit(1);
+            }
+            nb = nbll;
+            ns = nsl;
+            docket = court_docket_record(FNV_SEED, line);
+            stage = 3;
+        } else if (stage == 3 && !strncmp(line, "court close: ", 13)) {
+            if (leaf != ns) {
+                fprintf(stderr,
+                        "netta: the docket closed before its "
+                        "verdicts\n");
+                exit(1);
+            }
+            char expect[128];
+            snprintf(expect, sizeof expect,
+                     "court close: verdicts=%d docket=%016llx", ns,
+                     (unsigned long long)docket);
+            if (strcmp(line, expect)) {
+                fprintf(stderr,
+                        "netta: the docket close does not match its "
+                        "fold\n");
+                exit(1);
+            }
+            stage = 4;
+        } else if (stage == 3) {
+            char prefix[32];
+            snprintf(prefix, sizeof prefix, "court %d: ", leaf);
+            if (strncmp(line, prefix, strlen(prefix))) {
+                fprintf(stderr,
+                        "netta: the docket leaves are out of order\n");
+                exit(1);
+            }
+            char *rp = strstr(line, " receipt=");
+            if (!rp || strlen(rp + 9) != 16) {
+                fprintf(stderr,
+                        "netta: a docket leaf has no receipt\n");
+                exit(1);
+            }
+            char sealed[1200];
+            int sn = snprintf(sealed, sizeof sealed,
+                              "%.*s law-digest=%s", (int)(rp - line),
+                              line, law_hex);
+            if (sn < 0 || (size_t)sn >= sizeof sealed) {
+                fprintf(stderr, "netta: a docket leaf overflows\n");
+                exit(1);
+            }
+            char hex[17];
+            snprintf(hex, sizeof hex, "%016llx",
+                     (unsigned long long)fnv1a64((const uint8_t *)sealed,
+                                                 (uint64_t)sn, FNV_SEED));
+            if (strcmp(hex, rp + 9)) {
+                fprintf(stderr,
+                        "netta: a docket leaf fails its receipt\n");
+                exit(1);
+            }
+            docket = court_docket_record(docket, line);
+            leaf++;
+        } else {
+            fprintf(stderr,
+                    "netta: the citation takes one sitting at a time\n");
+            exit(1);
+        }
+    }
+    if (ferror(f) || fclose(f) != 0) {
+        fprintf(stderr, "netta: cannot read %s\n", cite_path);
+        exit(1);
+    }
+    if (stage != 4) {
+        fprintf(stderr, "netta: the docket is incomplete\n");
+        exit(1);
+    }
+    *cand = strtoull(cand_hex, NULL, 16);
+    *cbytes = nb;
+    memcpy(ctx_out, ctx, strlen(ctx) + 1);
+    *shores = ns;
+    *docket_out = docket;
+}
+
 int main(int argc, char **argv) {
     const char *state_path = "netta0.state";
     const char *bio_path = "netta0.bio.tsv";
@@ -3262,22 +3407,27 @@ int main(int argc, char **argv) {
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "--seed") && i + 1 < argc) {
             life_control_named = 1;
+            instrument_only_named = 1;
             seed = parse_u64("--seed", argv[++i]);
         }
         else if (!strcmp(argv[i], "--episodes") && i + 1 < argc) {
             life_control_named = 1;
+            instrument_only_named = 1;
             episodes = parse_u64("--episodes", argv[++i]);
         }
         else if (!strcmp(argv[i], "--steps") && i + 1 < argc) {
             life_control_named = 1;
+            instrument_only_named = 1;
             steps = parse_u64("--steps", argv[++i]);
         }
         else if (!strcmp(argv[i], "--island") && i + 1 < argc) {
             life_control_named = 1;
+            instrument_only_named = 1;
             isl_id = parse_int("--island", argv[++i]);
         }
         else if (!strcmp(argv[i], "--start") && i + 1 < argc) {
             life_control_named = 1;
+            instrument_only_named = 1;
             fixed_start = parse_u64("--start", argv[++i]);
             fixed_start_set = 1;
         }
@@ -3291,50 +3441,62 @@ int main(int argc, char **argv) {
         }
         else if (!strcmp(argv[i], "--reset")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             reset = 1;
         }
         else if (!strcmp(argv[i], "--atlas")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             atlas_enabled = 1;
         }
         else if (!strcmp(argv[i], "--no-units")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             units_enabled = 0;
         }
         else if (!strcmp(argv[i], "--no-mv-nav")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             move_nav_enabled = 0;
         }
         else if (!strcmp(argv[i], "--no-island-court")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             island_court_enabled = 0;
         }
         else if (!strcmp(argv[i], "--no-birth-floor")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             birth_floor_enabled = 0;
         }
         else if (!strcmp(argv[i], "--no-local-probation")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             local_probation_enabled = 0;
         }
         else if (!strcmp(argv[i], "--no-unit-death")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             unit_death_enabled = 0;
         }
         else if (!strcmp(argv[i], "--keep-dead-mass")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             tombstone_silence_enabled = 0;
         }
         else if (!strcmp(argv[i], "--no-core")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             core_enabled = 0;
         }
         else if (!strcmp(argv[i], "--core-hebb-v1")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             core_hebb_enabled = 1;
         }
         else if (!strcmp(argv[i], "--jury")) {
             life_control_named = 1;
+            instrument_only_named = 1;
             jury_enabled = 1;
         }
         else if (!strcmp(argv[i], "--speak") && i + 1 < argc) {
@@ -3357,8 +3519,11 @@ int main(int argc, char **argv) {
             ear_twin_requested = 1;
         else if (!strcmp(argv[i], "--court") && i + 1 < argc)
             court_path = argv[++i];
+        else if (!strcmp(argv[i], "--cite") && i + 1 < argc)
+            cite_path = argv[++i];
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             life_control_named = 1;
+            instrument_only_named = 1;
             ++i;
             if (!strcmp(argv[i], "uni")) actor_lock = 0;
             else if (!strcmp(argv[i], "bi")) actor_lock = 1;
@@ -3399,6 +3564,28 @@ int main(int argc, char **argv) {
             exit(1);
         }
     }
+    if (cite_path) {
+        if (speak_requested || speak_seed_set || prompt_path ||
+                speak_laplace || ear_path || ear_context_path ||
+                ear_twin_requested || court_path) {
+            fprintf(stderr,
+                    "netta: the citation and the instruments are "
+                    "separate invocations\n");
+            exit(1);
+        }
+        if (paths_n) {
+            fprintf(stderr,
+                    "netta: the citation is between the life and the "
+                    "record\n");
+            exit(1);
+        }
+        if (instrument_only_named) {
+            fprintf(stderr,
+                    "netta: the citation accepts only --cite, --state, "
+                    "and --bio\n");
+            exit(1);
+        }
+    }
     if (ear_path) {
         if (speak_requested || speak_seed_set || prompt_path ||
                 speak_laplace || life_control_named) {
@@ -3423,14 +3610,14 @@ int main(int argc, char **argv) {
     }
     if (speak_requested) fprintf(stderr, "NETTA ZERO\n");
     else printf("NETTA ZERO\n");
-    if (paths_n == 0 && !speak_requested) {
+    if (paths_n == 0 && !speak_requested && !cite_path) {
         fprintf(stderr, "usage: netta <island.bytes>... [--seed N] "
                         "[--episodes N] [--steps N] [--island N] "
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
                         "[--atlas] [--no-core] [--core-hebb-v1] [--jury] "
                         "[--speak N] [--speak-seed N] [--prompt-file P] "
                         "[--speak-laplace] [--ear P] [--ear-context P] "
-                        "[--ear-twin] [--court P] "
+                        "[--ear-twin] [--court P] [--cite P] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -3504,7 +3691,41 @@ int main(int argc, char **argv) {
         speak();
         return 0;
     }
+    uint64_t cite_cand = 0, cite_bytes = 0, cite_docket = 0;
+    char cite_ctx[8] = {0};
+    int cite_shores = 0;
+    if (cite_path) {
+        if (!resumed) {
+            fprintf(stderr, "netta: the citation needs a lived state\n");
+            exit(1);
+        }
+        /* verified before the biography is opened: a refused docket
+           leaves no trace */
+        cite_verify(&cite_cand, &cite_bytes, cite_ctx, &cite_shores,
+                    &cite_docket);
+    }
     bio_open(bio_path, reset || !resumed);
+    if (cite_path) {
+        char cl[192];
+        snprintf(cl, sizeof cl,
+                 "w\t%llu\t%016llx\t%llu\t%s\t%d\t%016llx\t%016llx\t%d\n",
+                 (unsigned long long)episode_no,
+                 (unsigned long long)cite_cand,
+                 (unsigned long long)cite_bytes, cite_ctx, cite_shores,
+                 (unsigned long long)court_law_digest,
+                 (unsigned long long)cite_docket, cite_shores);
+        bio_append(cl);
+        if (fflush(bio_file) != 0 || fclose(bio_file) != 0) {
+            fprintf(stderr, "netta: biography close failed\n");
+            exit(1);
+        }
+        state_save(state_path);
+        printf("cited: docket %016llx, %d verdicts on candidate "
+               "%016llx\n",
+               (unsigned long long)cite_docket, cite_shores,
+               (unsigned long long)cite_cand);
+        return 0;
+    }
     for (int j = 0; j < arrivals_pending_n; ++j) {
         int r = arrivals_pending[j];
         char al[96];
