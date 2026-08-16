@@ -3103,7 +3103,21 @@ static void ear(void) {
    no election, no speech authority, no state, no writes. */
 #define COURT_ORDER_MICRO 500000LL
 
+/* body 26: every warrant names the law it was judged under. The
+   canonical one-line text is hashed into a law-digest; amending a
+   threshold changes the text, the digest, and thereby every receipt,
+   so no verdict can pretend continuity with a law it never faced. */
+static const char COURT_LAW[] =
+    "pattern-court law v2: abstain if changed=0 or gap-micro=0; "
+    "replay if 2*matched-bytes>=bytes; order if gap-micro>=500000; "
+    "stranger otherwise";
+static uint64_t court_law_digest;
+
 static void court(void) {
+    court_law_digest = fnv1a64((const uint8_t *)COURT_LAW,
+                               (uint64_t)strlen(COURT_LAW), FNV_SEED);
+    printf("court law: %s law-digest=%016llx\n", COURT_LAW,
+           (unsigned long long)court_law_digest);
     FILE *f = fopen(court_path, "rb");
     if (!f) {
         fprintf(stderr, "netta: cannot open %s\n", court_path);
@@ -3165,17 +3179,40 @@ static void court(void) {
                             : 2 * covered >= n                ? "replay"
                             : gap_micro >= COURT_ORDER_MICRO  ? "order"
                                                               : "stranger";
-        printf("court %d: digest=%016llx context=", k,
-               (unsigned long long)isl->digest);
-        if (contextual) printf("%02x%02x", cp2, cp1);
-        else printf("cold");
-        printf(" bytes=%llu P=%.6f Q=%.6f matched16=%.4f%% "
+        /* body 26: the warrant's receipt. The line is sealed together
+           with the law-digest it was judged under, so a transcribed
+           warrant can be refused by an external hand on any changed
+           operand, verdict, or silently amended law. */
+        char line[512], ctx[8];
+        if (contextual)
+            snprintf(ctx, sizeof ctx, "%02x%02x", cp2, cp1);
+        else
+            snprintf(ctx, sizeof ctx, "cold");
+        int ln = snprintf(line, sizeof line,
+               "court %d: digest=%016llx context=%s bytes=%llu "
+               "P=%.6f Q=%.6f matched16=%.4f%% "
                "matched-bytes=%llu/%llu G=%.6f gap-micro=%lld "
-               "changed=%llu/%llu verdict=%s\n",
+               "changed=%llu/%llu verdict=%s",
+               k, (unsigned long long)isl->digest, ctx,
                (unsigned long long)n, p, q, m,
                (unsigned long long)covered, (unsigned long long)n, g,
                (long long)gap_micro, (unsigned long long)changed,
                (unsigned long long)isl->len, verdict);
+        if (ln < 0 || (size_t)ln >= sizeof line) {
+            fprintf(stderr, "netta: warrant line overflow\n");
+            exit(1);
+        }
+        char sealed[640];
+        int sn = snprintf(sealed, sizeof sealed, "%s law-digest=%016llx",
+                          line, (unsigned long long)court_law_digest);
+        if (sn < 0 || (size_t)sn >= sizeof sealed) {
+            fprintf(stderr, "netta: warrant seal overflow\n");
+            exit(1);
+        }
+        uint64_t receipt = fnv1a64((const uint8_t *)sealed,
+                                   (uint64_t)sn, FNV_SEED);
+        printf("%s receipt=%016llx\n", line,
+               (unsigned long long)receipt);
     }
     ear_sam_free(&match);
 }
