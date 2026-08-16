@@ -45,3 +45,10 @@ Vdoeinl  a bhstnodb e.sehnnagh, teeahs a i b cassi   hw oorri c bn ehr_e.seso me
 Printable fractions: bi-at-64k 58.5, tri-at-384k 39.7, bi-at-384k
 89.7, uni-at-384k 97.7 percent. Printability alone cannot judge
 speech: the structureless census wins it without saying anything.
+
+Audit clarification: these exact streams were independently regrown from the
+pinned raw source.  The reported ruler counted ASCII `0x20..0x7e` plus LF as
+displayable (not C `isprint`).  They now reproduce under the explicit
+`--speak-laplace` red arm.  The default supported-backoff mouth and its
+measurements are recorded in `MOUTH_AUDIT_2026-08-16.md`; this first record is
+preserved rather than overwritten.
