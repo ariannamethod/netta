@@ -1136,3 +1136,36 @@ novelty, or prevent an easy-island attractor. The current fingerprint also
 reads an immutable island's whole content to establish identity even though
 the travel score reads only lived receipts. Those boundaries are explicit so
 Gutenberg blood can test the organ rather than be used to name it prematurely.
+
+## The fifteenth turn audited: the witness holds, the map holds
+
+All hundred and sixteen incoming verdicts reproduced by the auditor's
+own hand before reading. The witnessed registry was then attacked on
+its named surfaces. A three-world fresh birth presented in two
+different command-line orders produced bit-identical state and
+biography, so canonical acquaintance owes nothing to the convoy.
+Reordering two arrival receipts in the biography was refused under the
+new law by name, "does not conserve the island registry", showing the
+receipt discipline fires on order and not only on content. A duplicate
+path in an Atlas convoy collapsed to one identity with one arrival,
+and an island too small for the requested episode was passed over as
+ineligible while the sole survivor was chosen with an honest
+`eligible` receipt rather than a manufactured competition.
+
+One boundary is named rather than repaired: a coherent rewrite of both
+files at once -- an edited biography with a recomputed chain and a
+state forged to match it -- is not partial forgery but the fabrication
+of an entire life, and lies outside the threat model this constitution
+defends. The defense holds against every drift and every partial hand;
+against an author of a complete false world it holds nothing, and no
+account-keeping system does.
+
+The turn also harvested the buried prototype's neural scars as design
+law for the next body, read directly from the old log: unbounded
+accumulation drove a float accumulator past its ceiling into NaN, and
+more quietly, 54 percent of a vocabulary wore silently degenerate
+zero embeddings under normal-looking floats; a geometry collapsed
+into a cone where the background cosine reached 1.0 and a composite
+rose while the organism fell; beautiful mechanisms repeatedly lost to
+strong dumb controls; a saturated signal was a dead signal. Each scar
+becomes an executable gate where the neural tissue now enters.
