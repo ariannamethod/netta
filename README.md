@@ -115,6 +115,21 @@ technical source of truth for the living line.
   framing rather than secrecy. A receipt and docket authenticate their
   public tuples, never replace them, and grant nothing; FNV is a witness,
   not a signature, and activation authority remains a later body.
+- Under `--cite FILE`, body 28 lets a court's word touch the life for the
+  first time — as memory, never as power. A resumed life re-verifies a
+  single complete sitting with its own hands (its own canonical law in
+  text and digest, the sitting header, every leaf receipt in order, the
+  docket fold, and the close) and appends one biography line of type `w`:
+  episode, candidate digest, bytes, context, shores, law digest, docket
+  digest, verdict count — a pointer to the judgment, not the judgment's
+  power. Any verification failure refuses by name and leaves no trace; a
+  newborn, a foreign law, a second sitting in one file, and every play or
+  instrument flag are refused; a repeated citation is a second event; and
+  nothing reads `w` lines back into behaviour — a cited life and its
+  uncited twin play the next episode to bit-identical prices. The docket
+  names no life, so a citation records an external fact about a candidate
+  stream without claiming authorship; binding speech to speaker remains a
+  future body. State stays v20.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -162,7 +177,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 255-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 268-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -285,6 +300,10 @@ Useful experimental flags:
   `stranger`), with both prices and every exact integer decision operand
   printed beside it. Same 16384-byte sitting law as the ear; accepts only
   shores and an optional `--ear-context`; writes nothing and grants nothing.
+- `--cite P` appends one witnessed biography line for the single complete
+  sitting docket in P, after re-verifying all of it under this life's own
+  law. Accepts only `--cite`, `--state`, and `--bio`; requires a resumed
+  life; refuses forgeries by name without touching the biography.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.
