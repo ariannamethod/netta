@@ -1987,3 +1987,73 @@ court.  The ear still opens no state, writes no file, enters no election, and
 grants no authority.  State remains v20.  Two hundred and six gates, including
 the independent hand, the degenerate null, uniform replay, invocation law,
 and ASan/UBSan through the twin ear, pass.
+
+## The structural twin audited
+
+The tenth Sol turn was reproduced from zero: 206 gates with a fresh
+binary before its diffs were read.  The twin was then given an
+independent second hand at every length class: shores of two, three, a
+prime 257, the full 256-value binary alphabet, and the whole Dracula
+body all grow byte-identical twins under `--ear-twin` and under the
+sealed external `garena_prep.c shuffle` — same digest, same price to
+six decimals (3.970000 both ways on the Dracula slice), and the census
+conservation was re-counted outside the organism.  A zero-length and a
+one-length shore name their own degeneracy: `twin-changed=0/0` and
+`0/1`.  Thirty-two shores heard a full 16384-byte candidate with twins
+under ASan/UBSan in one invocation — silent — and a shore's verdict
+line is byte-identical alone and inside the convoy: one shore's twin
+cannot contaminate the next shore's books.  The null was pressed where
+it must stay quiet: on a repeated-boilerplate shore the twin price
+climbs from 1.85 to 7.95, while on a high-entropy shore the twin
+prices marginally below the true shore (7.998 against 8.001) — the
+null does not always speak, and no prose anywhere claims it does.  The
+question reader survived a regular stdin, an eight-megabyte prefix in
+under a second, and a one-byte FIFO with a late-closing writer refused
+by name after EOF.  The uniform shore was regrown from its published
+generator: shore SHA-256 and the sixteen-byte vector match the record,
+and all three locked speech streams reproduce their published SHA-256
+witnesses bit for bit on a rerun.
+
+## Body 24: the pattern court
+
+Mouth, ear, context, and twin exist; the ruler triple is sealed.  The
+twenty-fourth body seats the court that reads the triple — and it is
+named the pattern court, because its verdicts are measurement
+patterns, never causal accusations: the independent-cycle world below
+proves that a hand which never saw a shore can still replay it.
+
+The law was fixed before the calibration worlds were measured, in this
+turn's preregistered checklist: the court hears a candidate stream on
+every shore of the convoy and returns exactly one verdict from a
+four-word lattice, evaluated in order.  ABSTAIN when the shore's twin
+changed nothing — a shore whose null cannot move refuses structural
+jurisdiction.  REPLAY when matched-16 coverage reaches the frozen
+threshold: the stream is largely literal shore substring.  ORDER when
+coverage is below that threshold but the structure gap — twin price
+minus true price, in bits per byte — reaches its frozen threshold: the
+stream carries shore order it did not literally copy.  STRANGER
+otherwise.  The court is a trigram court: a stream carrying only the
+byte census prices near ignorance at trigram depth and is honestly
+read as a stranger; a census court would need its own ruler and its
+own body.
+
+Calibration, measured with the sealed ear before any threshold was
+frozen: the uniform replay world P=7.008 M=100.0 G=0.988; the
+independently written period-3 cycle P=0.894 M=100.0 G=1.849 — a
+replay pattern from a hand that copied nothing, the standing proof
+that pattern is not cause; the Dracula elected-tri stream P=2.995
+M=0.0 G=1.564; noise on Dracula P=8.067 M=0.0 G=-0.007; the
+constant shore twin-changed=0; the boilerplate world M=100.0 G=6.097;
+a synthetic order world of eleven lived bytes and one foreign byte
+repeated, P=2.715 M=0.0 G=1.371.  From these the thresholds are
+frozen with wide margins: matched-16 at 50 percent (replay worlds sit
+at 100, order worlds at 0) and structure gap at 0.5 bits per byte
+(order worlds at 1.37-1.85, the stranger at -0.007).  A straddle pair
+on the period-3 shore proves the match threshold bites: 73.7 percent
+coverage is REPLAY, 36.8 percent with gap 0.671 is ORDER.
+
+The court holds no office: it wires into no election, grants no speech
+authority, writes nothing, opens no state, and refuses every life,
+mouth, ear, and twin control by name — a court invocation is shores,
+`--court`, and an optional explicit context, nothing else.  State
+remains v20.

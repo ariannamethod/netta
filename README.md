@@ -86,6 +86,19 @@ technical source of truth for the living line.
   red where locked tri costs 7.005793 bits per byte yet replays all 300 bytes,
   while its twin price is 7.997098. The instrument writes nothing and has no
   threshold, court, candidacy, or authority.
+- Under `--court FILE`, body 24 seats the pattern court: it reads the sealed
+  triple — true-shore price, matched-16 coverage, structural-twin price —
+  and returns one verdict per shore from a four-word lattice frozen from
+  named calibration worlds before any candidate was read: `abstain` when
+  the shore's twin changed nothing, `replay` at matched-16 coverage of 50
+  or more, `order` at a structure gap of 0.5 bits per byte or more,
+  `stranger` otherwise. Verdicts are measurement patterns, never causal
+  accusations — an independently written period-3 cycle is judged replay
+  though no hand ever copied the shore — and a constant shore abstains over
+  a perfect match. It is a trigram court: a census-only stream reads as a
+  stranger. The court accepts only shores, `--court`, and an optional
+  `--ear-context`; it wires into no election, grants no speech authority,
+  opens no state, and writes nothing.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -133,7 +146,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 206-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 220-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -246,8 +259,14 @@ Useful experimental flags:
   bytes at a sitting and accepts no life or speech flags. Cold mode prices
   the first byte by uni and the second by bi before entering tri.
 - `--ear-context P` supplies at least two immutable context bytes to an ear
-  invocation; exactly the final two enter its trigram ladder and are named in
-  the output. It requires `--ear` and grants no authority.
+  or court invocation; exactly the final two enter its trigram ladder and
+  are named in the output. It requires `--ear` or `--court` and grants no
+  authority.
+- `--court P` seats the pattern court over the stream in P: one verdict per
+  shore from the frozen lattice (`abstain` / `replay` / `order` /
+  `stranger`), with the measured triple printed beside it. Same 16384-byte
+  sitting law as the ear; accepts only shores and an optional
+  `--ear-context`; writes nothing and grants nothing.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.

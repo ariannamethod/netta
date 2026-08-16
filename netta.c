@@ -2551,6 +2551,7 @@ static int speak_laplace = 0;
 static const char *ear_path = NULL;
 static const char *ear_context_path = NULL;
 static int ear_twin_requested = 0;
+static const char *court_path = NULL;
 static int life_control_named = 0;
 
 /* Body 22's repair: a question has one byte law even though mouth and ear
@@ -3089,6 +3090,89 @@ static void ear(void) {
     ear_sam_free(&match);
 }
 
+/* body 24: the pattern court. It reads the sealed triple -- true-shore
+   price, matched-16 coverage, structural-twin price -- and returns one
+   verdict from a four-word lattice frozen from named calibration worlds
+   before any candidate was read. The verdicts are measurement patterns,
+   never causal accusations: an independently generated hand can replay
+   a shore it never saw. ABSTAIN when the twin changed nothing, REPLAY
+   when coverage reaches its threshold, ORDER when the structure gap
+   reaches its threshold, STRANGER otherwise. This is a trigram court: a
+   census-only stream prices near ignorance at trigram depth and is
+   honestly read as a stranger. The court holds no office: no election,
+   no speech authority, no state, no writes. */
+#define COURT_MATCH_T 50.0
+#define COURT_ORDER_T 0.5
+
+static void court(void) {
+    FILE *f = fopen(court_path, "rb");
+    if (!f) {
+        fprintf(stderr, "netta: cannot open %s\n", court_path);
+        exit(1);
+    }
+    static uint8_t sp[EAR_MAX + 1];
+    size_t n = fread(sp, 1, sizeof sp, f);
+    int read_failed = ferror(f);
+    int close_failed = fclose(f) != 0;
+    if (read_failed || close_failed) {
+        fprintf(stderr, "netta: cannot read %s\n", court_path);
+        exit(1);
+    }
+    if (n > EAR_MAX) {
+        fprintf(stderr, "netta: the court hears at most %u bytes "
+                        "at a sitting\n", EAR_MAX);
+        exit(1);
+    }
+    if (n < 2) {
+        fprintf(stderr, "netta: the court needs at least two bytes\n");
+        exit(1);
+    }
+    uint8_t cp2 = 0, cp1 = 0;
+    int contextual = 0;
+    if (ear_context_path) {
+        question_tail(ear_context_path, "ear context", "ear context",
+                      &cp2, &cp1);
+        contextual = 1;
+    }
+    static uint32_t maxend[EAR_MAX];
+    EarSam match;
+    ear_sam_build(&match, sp, n);
+    for (int k = 0; k < island_count; ++k) {
+        Island *isl = &islands[k];
+        double bits = ear_price(isl, sp, n, contextual, cp2, cp1);
+        ear_sam_match(&match, isl, maxend);
+        uint64_t covered = 0;
+        size_t painted = 0;
+        for (size_t s = 0; s < n; ++s) {
+            if (maxend[s] >= EAR_MATCH_MIN) {
+                size_t le = s + 1 - maxend[s];
+                if (le < painted) le = painted;
+                covered += s + 1 - le;
+                painted = s + 1;
+            }
+        }
+        Island twin;
+        uint64_t changed;
+        ear_make_twin(isl, &twin, &changed);
+        double twin_bits = ear_price(&twin, sp, n, contextual, cp2, cp1);
+        free(twin.bytes);
+        double m = 100.0 * (double)covered / (double)n;
+        double g = (twin_bits - bits) / (double)n;
+        const char *verdict = changed == 0        ? "abstain"
+                            : m >= COURT_MATCH_T  ? "replay"
+                            : g >= COURT_ORDER_T  ? "order"
+                                                  : "stranger";
+        printf("court %d: digest=%016llx context=", k,
+               (unsigned long long)isl->digest);
+        if (contextual) printf("%02x%02x", cp2, cp1);
+        else printf("cold");
+        printf(" bytes=%llu P=%.6f matched16=%.1f%% G=%.6f "
+               "verdict=%s\n",
+               (unsigned long long)n, bits / (double)n, m, g, verdict);
+    }
+    ear_sam_free(&match);
+}
+
 int main(int argc, char **argv) {
     const char *state_path = "netta0.state";
     const char *bio_path = "netta0.bio.tsv";
@@ -3193,6 +3277,8 @@ int main(int argc, char **argv) {
             ear_context_path = argv[++i];
         else if (!strcmp(argv[i], "--ear-twin"))
             ear_twin_requested = 1;
+        else if (!strcmp(argv[i], "--court") && i + 1 < argc)
+            court_path = argv[++i];
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             life_control_named = 1;
             ++i;
@@ -3213,13 +3299,27 @@ int main(int argc, char **argv) {
             paths[paths_n++] = argv[i];
     }
 
-    if (ear_context_path && !ear_path) {
-        fprintf(stderr, "netta: --ear-context requires --ear\n");
+    if (ear_context_path && !ear_path && !court_path) {
+        fprintf(stderr, "netta: --ear-context requires --ear or --court\n");
         exit(1);
     }
     if (ear_twin_requested && !ear_path) {
         fprintf(stderr, "netta: --ear-twin requires --ear\n");
         exit(1);
+    }
+    if (court_path) {
+        if (ear_path || ear_twin_requested || speak_requested ||
+                speak_seed_set || prompt_path || speak_laplace ||
+                life_control_named) {
+            fprintf(stderr,
+                    "netta: the court accepts only shores, --court, and "
+                    "--ear-context\n");
+            exit(1);
+        }
+        if (paths_n == 0) {
+            fprintf(stderr, "netta: the court needs a shore\n");
+            exit(1);
+        }
     }
     if (ear_path) {
         if (speak_requested || speak_seed_set || prompt_path ||
@@ -3252,7 +3352,7 @@ int main(int argc, char **argv) {
                         "[--atlas] [--no-core] [--core-hebb-v1] [--jury] "
                         "[--speak N] [--speak-seed N] [--prompt-file P] "
                         "[--speak-laplace] [--ear P] [--ear-context P] "
-                        "[--ear-twin] "
+                        "[--ear-twin] [--court P] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "
@@ -3266,6 +3366,10 @@ int main(int argc, char **argv) {
     for (int i = 0; i < paths_n; ++i) island_load(paths[i]);
     /* A hearing cannot inspect ambient life defaults.  Enter the ear before
        any state/biography alias check or other life-only filesystem query. */
+    if (court_path) {
+        court();
+        return 0;
+    }
     if (ear_path) {
         ear();
         return 0;

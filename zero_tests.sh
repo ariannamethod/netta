@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B23. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B24. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -1465,6 +1465,66 @@ gate "B23 low trigram price can be a 300-byte literal replay ($b23t<$b23b<$b23u)
 awk -v t="$b23t" -v x="$b23tx" 'BEGIN{exit !(t < x)}'
 gate "B23 the preregistered twin coordinate exposes that replay ($b23t<$b23tx)" $? 0
 
+# --- B24: the pattern court ---------------------------------------------
+# The court reads the sealed triple and returns one verdict from a
+# four-word lattice frozen from named calibration worlds before any
+# candidate was read: abstain when the twin changed nothing, replay at
+# matched-16 >= 50, order at structure gap >= 0.5 bits/byte, stranger
+# otherwise. Verdicts are measurement patterns, never causal
+# accusations: the independently written cycle below replays a shore
+# no hand ever copied. The court holds no office and writes nothing.
+"$N" "$T/p3.bytes" --court "$T/b20.slice" > "$T/b24.a" 2>/dev/null
+grep -q 'verdict=replay$' "$T/b24.a"
+gate "B24 a literal slice is judged replay" $? 0
+i=0; : > "$T/b24.ind"
+while [ $i -lt 20 ]; do printf 'cacbab' >> "$T/b24.ind"; i=$((i+1)); done
+"$N" "$T/p3.bytes" --court "$T/b24.ind" > "$T/b24.b" 2>/dev/null
+grep -q 'verdict=replay$' "$T/b24.b"
+gate "B24 an independently written cycle is judged replay (pattern, not cause)" $? 0
+i=0; : > "$T/b24.ord"
+while [ $i -lt 25 ]; do printf 'abcacbabcacz' >> "$T/b24.ord"; i=$((i+1)); done
+"$N" "$T/p3.bytes" --court "$T/b24.ord" > "$T/b24.g" 2>/dev/null
+grep -q 'verdict=order$' "$T/b24.g"
+gate "B24 short lived runs with a foreign heartbeat are judged order" $? 0
+i=0; : > "$T/b24.zzz"
+while [ $i -lt 300 ]; do printf 'z' >> "$T/b24.zzz"; i=$((i+1)); done
+"$N" "$T/p3.bytes" --court "$T/b24.zzz" > "$T/b24.d" 2>/dev/null
+grep -q 'verdict=stranger$' "$T/b24.d"
+gate "B24 a foreign stream is judged stranger" $? 0
+i=0; : > "$T/b24.const"
+while [ $i -lt 4096 ]; do printf 'a' >> "$T/b24.const"; i=$((i+1)); done
+head -c 300 "$T/b24.const" > "$T/b24.cs"
+"$N" "$T/b24.const" --court "$T/b24.cs" > "$T/b24.e" 2>/dev/null
+grep -q 'matched16=100.0% .*verdict=abstain$' "$T/b24.e"
+gate "B24 a shore whose twin cannot move abstains over a perfect match" $? 0
+head -c 168 "$T/p3.bytes" > "$T/b24.hi"
+i=0; while [ $i -lt 60 ]; do printf 'x' >> "$T/b24.hi"; i=$((i+1)); done
+head -c 84 "$T/p3.bytes" > "$T/b24.lo"
+i=0; while [ $i -lt 144 ]; do printf 'x' >> "$T/b24.lo"; i=$((i+1)); done
+"$N" "$T/p3.bytes" --court "$T/b24.hi" > "$T/b24.h" 2>/dev/null
+"$N" "$T/p3.bytes" --court "$T/b24.lo" > "$T/b24.i" 2>/dev/null
+grep -q 'verdict=replay$' "$T/b24.h" && grep -q 'verdict=order$' "$T/b24.i"
+gate "B24 the match threshold bites: a straddle pair flips the verdict (red)" $? 0
+"$N" "$T/p3.bytes" --court "$T/b24.zzz" --ear-context "$T/b18.p1" \
+    > "$T/b24.ctx" 2>/dev/null
+grep -q 'context=6162 ' "$T/b24.ctx"
+gate "B24 an explicit context enters the court and is named" $? 0
+"$N" "$T/p3.bytes" --court "$T/b24.zzz" --ear "$T/b24.zzz" >/dev/null 2>&1
+gate "B24 the court and the ear are separate invocations" $? 1
+"$N" "$T/p3.bytes" --court "$T/b24.zzz" --ear-twin >/dev/null 2>&1
+gate "B24 the court grows its own twin and refuses the flag" $? 1
+"$N" "$T/p3.bytes" --court "$T/b24.zzz" --speak 5 >/dev/null 2>&1
+gate "B24 the court and the mouth are separate invocations" $? 1
+"$N" "$T/p3.bytes" --court "$T/b24.zzz" --seed 9 >/dev/null 2>&1
+gate "B24 the court refuses every life control" $? 1
+"$N" --court "$T/b24.zzz" >/dev/null 2>&1
+gate "B24 the court needs a shore" $? 1
+mkdir "$T/b24dir"
+( cd "$T/b24dir" && "$N" "$T/p3.bytes" --court "$T/b20.slice" \
+    >/dev/null 2>&1 )
+[ -z "$(ls -A "$T/b24dir")" ]
+gate "B24 the court writes nothing" $? 0
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -1549,6 +1609,9 @@ gate "S ASan/UBSan silent through the context-bearing ear" $rc 0
     > /dev/null 2>"$T/ss23.err"
 rc=$?; [ -s "$T/ss23.err" ] && rc=98
 gate "S ASan/UBSan silent through the structural-twin ear" $rc 0
+"$S" "$T/p3.bytes" --court "$T/b20.slice" > /dev/null 2>"$T/ss24.err"
+rc=$?; [ -s "$T/ss24.err" ] && rc=98
+gate "S ASan/UBSan silent through the pattern court" $rc 0
 "$S" "$T/p5.bytes" --reset --jury --seed 5 --episodes 1 --steps 300 \
     --state "$T/sc17.state" --bio "$T/sc17.bio" >/dev/null 2>"$T/sc17.err"
 rc=$?
