@@ -2550,7 +2550,86 @@ static int speak_seed_set = 0;
 static int speak_laplace = 0;
 static const char *ear_path = NULL;
 static const char *ear_context_path = NULL;
+static int ear_twin_requested = 0;
 static int life_control_named = 0;
+
+/* Body 22's repair: a question has one byte law even though mouth and ear
+   retain different public verbs.  For a regular file only the final two
+   bytes are semantically relevant, so read and verify that tail twice while
+   its open-file identity and length remain fixed.  A non-regular input is a
+   stream: EOF seals it and the final two observed bytes become the question.
+   This keeps FIFOs and /dev/stdin honest without scanning an irrelevant
+   multi-gigabyte prefix of an ordinary file. */
+static void question_tail(const char *path, const char *name,
+                          const char *law_name, uint8_t *p2, uint8_t *p1) {
+    FILE *f = fopen(path, "rb");
+    if (!f) {
+        fprintf(stderr, "netta: cannot open %s %s\n", name, path);
+        exit(1);
+    }
+    struct stat before;
+    if (fstat(fileno(f), &before) != 0) {
+        fclose(f);
+        fprintf(stderr, "netta: cannot read %s %s\n", name, path);
+        exit(1);
+    }
+
+    if (S_ISREG(before.st_mode)) {
+        if (before.st_size < 2) {
+            if (fclose(f) != 0) {
+                fprintf(stderr, "netta: cannot read %s %s\n", name, path);
+                exit(1);
+            }
+            fprintf(stderr, "netta: %s needs at least two bytes\n",
+                    law_name);
+            exit(1);
+        }
+        uint8_t first[2], second[2];
+        struct stat middle, after;
+        int failed = fseeko(f, (off_t)-2, SEEK_END) != 0 ||
+                     fread(first, 1, 2, f) != 2 ||
+                     fstat(fileno(f), &middle) != 0 ||
+                     before.st_dev != middle.st_dev ||
+                     before.st_ino != middle.st_ino ||
+                     before.st_size != middle.st_size ||
+                     fseeko(f, (off_t)-2, SEEK_END) != 0 ||
+                     fread(second, 1, 2, f) != 2 ||
+                     fstat(fileno(f), &after) != 0 ||
+                     middle.st_dev != after.st_dev ||
+                     middle.st_ino != after.st_ino ||
+                     middle.st_size != after.st_size;
+        int changed = !failed && memcmp(first, second, 2) != 0;
+        int close_failed = fclose(f) != 0;
+        if (failed || close_failed) {
+            fprintf(stderr, "netta: cannot read %s %s\n", name, path);
+            exit(1);
+        }
+        if (changed) {
+            fprintf(stderr, "netta: %s changed while being read\n", name);
+            exit(1);
+        }
+        *p2 = first[0];
+        *p1 = first[1];
+        return;
+    }
+
+    int c, have = 0;
+    while ((c = fgetc(f)) != EOF) {
+        *p2 = *p1;
+        *p1 = (uint8_t)c;
+        if (have < 2) have++;
+    }
+    int read_failed = ferror(f);
+    int close_failed = fclose(f) != 0;
+    if (read_failed || close_failed) {
+        fprintf(stderr, "netta: cannot read %s %s\n", name, path);
+        exit(1);
+    }
+    if (have < 2) {
+        fprintf(stderr, "netta: %s needs at least two bytes\n", law_name);
+        exit(1);
+    }
+}
 
 static uint64_t speak_next(uint64_t *s) {
     uint64_t z = (*s += 0x9e3779b97f4a7c15ULL);
@@ -2629,17 +2708,12 @@ static void speak(void) {
                 p1 = (uint8_t)b;
             }
     if (prompt_path) {
-        FILE *f = fopen(prompt_path, "rb");
-        if (!f) {
-            fprintf(stderr, "netta: cannot open prompt %s\n", prompt_path);
-            exit(1);
-        }
-        int c;
-        while ((c = fgetc(f)) != EOF) { p2 = p1; p1 = (uint8_t)c; }
-        if (ferror(f) || fclose(f) != 0) {
-            fprintf(stderr, "netta: cannot read prompt %s\n", prompt_path);
-            exit(1);
-        }
+        /* body 22: the question's law, shared with the ear. A byte hand
+           carries two context positions; a shorter prompt would leave a
+           hidden byte of the most-lived opening inside the question. A
+           question is at least two bytes, or it is absent and the
+           opening is named cold. */
+        question_tail(prompt_path, "prompt", "a prompt", &p2, &p1);
     }
     actor_elect();
     int hand = actor_current;
@@ -2864,6 +2938,74 @@ static void ear_grow(const Island *isl) {
     }
 }
 
+static double ear_price(const Island *isl, const uint8_t *sp, size_t n,
+                        int contextual, uint8_t cp2, uint8_t cp1) {
+    ear_grow(isl);
+    double bits = 0.0;
+    uint8_t p2 = cp2, p1 = cp1;
+    for (size_t i = 0; i < n; ++i) {
+        uint8_t b = sp[i];
+        double p;
+        if (!contextual && i == 0)
+            p = ((double)counts[b] + 1.0) /
+                ((double)counts_total + (double)ACTIONS);
+        else if (!contextual && i == 1)
+            p = ((double)bi_count[p1][b] + 1.0) /
+                ((double)bi_row[p1] + (double)ACTIONS);
+        else {
+            uint32_t t = ((uint32_t)p2 << 8) | p1;
+            p = ((double)tri_get(t, b) + 1.0) /
+                ((double)tri_row[t] + (double)ACTIONS);
+        }
+        bits += -log2(p);
+        p2 = p1;
+        p1 = b;
+    }
+    return bits;
+}
+
+#define EAR_TWIN_SEED 0x4e45545441475241ULL
+
+/* Body 23: the Gutenberg arena's already sealed shuffle, grown locally for
+   any island.  The null preserves the whole byte census while breaking
+   positional order; changed positions are counted so a degenerate shore can
+   never masquerade as a destroyed structure. */
+static void ear_make_twin(const Island *isl, Island *twin,
+                          uint64_t *changed) {
+    memset(twin, 0, sizeof *twin);
+    twin->len = isl->len;
+    twin->bytes = (uint8_t *)malloc(isl->len ? (size_t)isl->len : 1);
+    if (!twin->bytes) {
+        fprintf(stderr, "netta: oom\n");
+        exit(1);
+    }
+    if (isl->len) memcpy(twin->bytes, isl->bytes, (size_t)isl->len);
+    uint64_t true_hist[ACTIONS] = {0}, twin_hist[ACTIONS] = {0};
+    for (uint64_t i = 0; i < isl->len; ++i) true_hist[isl->bytes[i]]++;
+
+    uint64_t s = EAR_TWIN_SEED;
+    for (uint64_t span = twin->len; span > 1; --span) {
+        uint64_t i = span - 1;
+        uint64_t j = speak_next(&s) % span;
+        uint8_t t = twin->bytes[i];
+        twin->bytes[i] = twin->bytes[j];
+        twin->bytes[j] = t;
+    }
+    *changed = 0;
+    for (uint64_t i = 0; i < twin->len; ++i) {
+        twin_hist[twin->bytes[i]]++;
+        if (twin->bytes[i] != isl->bytes[i]) (*changed)++;
+    }
+    for (int b = 0; b < ACTIONS; ++b) {
+        if (true_hist[b] != twin_hist[b]) {
+            fprintf(stderr,
+                    "netta: an island twin failed to conserve its census\n");
+            exit(1);
+        }
+    }
+    twin->digest = fnv1a64(twin->bytes, twin->len, FNV_SEED);
+}
+
 static void ear(void) {
     FILE *f = fopen(ear_path, "rb");
     if (!f) {
@@ -2898,30 +3040,8 @@ static void ear(void) {
     uint8_t cp2 = 0, cp1 = 0;
     int contextual = 0;
     if (ear_context_path) {
-        f = fopen(ear_context_path, "rb");
-        if (!f) {
-            fprintf(stderr, "netta: cannot open ear context %s\n",
-                    ear_context_path);
-            exit(1);
-        }
-        int c, have = 0;
-        while ((c = fgetc(f)) != EOF) {
-            cp2 = cp1;
-            cp1 = (uint8_t)c;
-            if (have < 2) have++;
-        }
-        read_failed = ferror(f);
-        close_failed = fclose(f) != 0;
-        if (read_failed || close_failed) {
-            fprintf(stderr, "netta: cannot read ear context %s\n",
-                    ear_context_path);
-            exit(1);
-        }
-        if (have < 2) {
-            fprintf(stderr,
-                    "netta: ear context needs at least two bytes\n");
-            exit(1);
-        }
+        question_tail(ear_context_path, "ear context", "ear context",
+                      &cp2, &cp1);
         contextual = 1;
     }
     static uint32_t maxend[EAR_MAX];
@@ -2929,27 +3049,7 @@ static void ear(void) {
     ear_sam_build(&match, sp, n);
     for (int k = 0; k < island_count; ++k) {
         Island *isl = &islands[k];
-        ear_grow(isl);
-        double bits = 0.0;
-        uint8_t p2 = cp2, p1 = cp1;
-        for (size_t i = 0; i < n; ++i) {
-            uint8_t b = sp[i];
-            double p;
-            if (!contextual && i == 0)
-                p = ((double)counts[b] + 1.0) /
-                    ((double)counts_total + (double)ACTIONS);
-            else if (!contextual && i == 1)
-                p = ((double)bi_count[p1][b] + 1.0) /
-                    ((double)bi_row[p1] + (double)ACTIONS);
-            else {
-                uint32_t t = ((uint32_t)p2 << 8) | p1;
-                p = ((double)tri_get(t, b) + 1.0) /
-                    ((double)tri_row[t] + (double)ACTIONS);
-            }
-            bits += -log2(p);
-            p2 = p1;
-            p1 = b;
-        }
+        double bits = ear_price(isl, sp, n, contextual, cp2, cp1);
         ear_sam_match(&match, isl, maxend);
         uint64_t longest = 0, covered = 0;
         size_t painted = 0;
@@ -2967,10 +3067,24 @@ static void ear(void) {
         if (contextual) printf("%02x%02x", cp2, cp1);
         else printf("cold");
         printf(" bytes=%llu bits=%.6f "
-               "bits/byte=%.6f longest-match=%llu matched16=%.1f%%\n",
+               "bits/byte=%.6f longest-match=%llu matched16=%.1f%%",
                (unsigned long long)n,
                bits, bits / (double)n, (unsigned long long)longest,
                100.0 * (double)covered / (double)n);
+        if (ear_twin_requested) {
+            Island twin;
+            uint64_t changed;
+            ear_make_twin(isl, &twin, &changed);
+            double twin_bits = ear_price(&twin, sp, n, contextual, cp2, cp1);
+            printf(" twin-digest=%016llx twin-changed=%llu/%llu "
+                   "twin-bits=%.6f twin-bits/byte=%.6f",
+                   (unsigned long long)twin.digest,
+                   (unsigned long long)changed,
+                   (unsigned long long)twin.len,
+                   twin_bits, twin_bits / (double)n);
+            free(twin.bytes);
+        }
+        putchar('\n');
     }
     ear_sam_free(&match);
 }
@@ -3077,6 +3191,8 @@ int main(int argc, char **argv) {
             ear_path = argv[++i];
         else if (!strcmp(argv[i], "--ear-context") && i + 1 < argc)
             ear_context_path = argv[++i];
+        else if (!strcmp(argv[i], "--ear-twin"))
+            ear_twin_requested = 1;
         else if (!strcmp(argv[i], "--actor-lock") && i + 1 < argc) {
             life_control_named = 1;
             ++i;
@@ -3101,12 +3217,16 @@ int main(int argc, char **argv) {
         fprintf(stderr, "netta: --ear-context requires --ear\n");
         exit(1);
     }
+    if (ear_twin_requested && !ear_path) {
+        fprintf(stderr, "netta: --ear-twin requires --ear\n");
+        exit(1);
+    }
     if (ear_path) {
         if (speak_requested || speak_seed_set || prompt_path ||
                 speak_laplace || life_control_named) {
             fprintf(stderr,
                     "netta: the ear accepts only shores, --ear, and "
-                    "--ear-context\n");
+                    "--ear-context/--ear-twin\n");
             exit(1);
         }
         if (paths_n == 0) {
@@ -3132,6 +3252,7 @@ int main(int argc, char **argv) {
                         "[--atlas] [--no-core] [--core-hebb-v1] [--jury] "
                         "[--speak N] [--speak-seed N] [--prompt-file P] "
                         "[--speak-laplace] [--ear P] [--ear-context P] "
+                        "[--ear-twin] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
                         "[--no-unit-death] [--keep-dead-mass] "

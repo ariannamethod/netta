@@ -1863,3 +1863,127 @@ is now linear in shore plus candidate length rather than their product; a
 full 16384-byte sitting against the 855114-byte Dracula shore completes at
 the public bound instead of performing roughly fourteen billion DP cells.
 State stays v20.
+
+## The context-bearing ear audited
+
+The ninth turn was reproduced from zero: 190 gates with a fresh binary
+before its diffs were read.  The suffix automaton was then given a second
+hand: an independent brute-force longest-common-substring probe, built
+outside the repo, compared summary-for-summary against the shipped binary
+on two hundred deterministic random world/stream pairs — a quarter of them
+squeezed into a four-letter alphabet so real multi-byte matches occur — and
+on the shaped worlds: a uniform tape that forces clone chains, alternating
+offsets, all 256 byte values including NUL, the stream that is the shore's
+own tail, and the full public bound, 16384 candidate bytes against the
+855114-byte Dracula shore.  Two hundred and five comparisons, zero
+mismatches, longest-match 16384 exact on the self-slice.  A convoy of
+thirty-two shores heard one candidate in one invocation, thirty-two
+verdict lines, and the same run under ASan/UBSan wrote nothing to stderr.
+The invocation law held against all twenty-four life and mouth controls —
+twenty-four refusals, zero holes; duplicate mode flags resolve last-wins
+exactly as every other flag; a shore may hear itself and a stream may be
+its own context; and the verdict is identical from a foreign working
+directory.
+
+## The structural red, preregistered and landed
+
+Before the run, the prediction: on a shore drawn uniformly over all 256
+byte values, the locked-tri supported mouth would price below uni on the
+shore's own ear while carrying a matched-16 census above thirty percent,
+because on a structureless world every trigram row holds exactly one lived
+continuation and supported speech can only replay the tape.  The measured
+verdict was harder than the prediction: tri 7.01 bits per byte with
+longest-match 300 of 300 — matched-16 coverage 100 percent, a total parrot
+— bi 7.53 with longest-match 11, uni 8.00 with longest-match 2.  The
+price ordering tri < bi < uni, the same ordering the three English shores
+honour, is reproduced exactly by pure copying on a shore with nothing to
+learn.  Price alone cannot tell discipline from theft; the match census
+alone cannot tell theft from shared habit; the pair is the minimal honest
+verdict.
+
+For any future copying court the ruler is preregistered here, before any
+candidate is read: a stream offered to such a court is measured by the
+triple (bits per byte on the true shore's ear; matched-16 coverage against
+the true shore; bits per byte on the ear of the shore's sealed shuffled
+twin).  Speech that carries the shore's order prices low on the true ear
+and high on the twin; a census-only stream prices alike on both; a copied
+stream is named by the match census regardless.  No threshold is chosen
+today, no court is seated, and no ear number grants authority.
+
+## Body 22: the question's law
+
+The mouth accepted what the ear refuses.  A prompt of one byte left the
+second context position holding a byte of the most-lived opening — a
+hidden cold byte inside the question, the exact class the contextual ear
+was built to refuse — and an empty prompt file was a silent cold opening
+pretending to be a question.  The old law accepted both; the red run
+against the previous binary shows the one-byte question passing with rc 0.
+
+The twenty-second body makes the question one law everywhere: a question
+is at least two bytes, or it is absent and the opening is named cold.  The
+mouth now refuses a prompt of fewer than two bytes by name, exactly as the
+ear refuses its context.  A refused question leaves no fingerprint on
+state or biography.  Four gates seal it: the one-byte refusal by name, the
+empty-file refusal, the two-byte red arm proving the refusal can fail, and
+the memory-silence of a refused question.
+
+## The question law audited and repaired
+
+The tenth turn began from Don's untouched `14ae402`: all 194 gates were
+rebuilt and replayed before its diff was read.  The new refusal was correct,
+but mouth and ear carried the same rule in two independent loops, and a
+regular context file had no witness that its relevant tail stayed stable
+while it was read.  The old binary was then challenged with an exact two-byte
+question, a longer equal-suffix file, a FIFO, `/dev/stdin`, an eight-megabyte
+file, and a one-byte FIFO.  Every complete `ab` source produced identical
+speech and hearing; EOF made the short stream refuse by name.  The transport
+law was sound, but duplicated and under-specified.
+
+One `question_tail` reader now serves both public verbs.  A regular file is
+read in constant prefix-space and constant time with respect to its irrelevant
+prefix: its final two bytes are read twice while the open-file identity and
+length remain fixed, and a changed tail is refused.  A FIFO or other
+non-regular source remains a stream whose question is sealed only by EOF.
+The names stay distinct on purpose: `--prompt-file` warms a lived mouth;
+`--ear-context` warms a stateless measurement.  They share a byte law without
+pretending to share jurisdiction.  Three permanent stream gates join the four
+refusal gates, and all memory-silence invariants remain unchanged.
+
+## Body 23: every island casts a structural twin
+
+`research/STRUCTURAL_TWIN_AUDIT_2026-08-16.md` was sealed before the first
+new hearing.  Under explicit `--ear-twin`, every immutable shore now grows an
+in-memory twin with the already-published Gutenberg recipe: descending
+Fisher--Yates, SplitMix64 seed `0x4e45545441475241`, and `draw mod span`.
+Length and the complete 256-byte histogram are checked before a verdict.  The
+twin digest and changed-position count are printed, so the null cannot claim
+to have destroyed structure it did not change.  The independent
+`garena_prep.c` hand reproduced the in-memory twin's digest and price exactly.
+On the period-3 literal slice the true ear costs 0.457849 bits per byte,
+matched-16 coverage is 100 percent, and the shuffled-twin ear costs 2.136573.
+On a 4096-byte constant shore, zero positions change and both prices are
+0.087149.
+
+The uniform red now has a permanent portable generator,
+`scripts/uniform_shore.c`.  SplitMix64 seed `0x534f4c554e49464f` produces a
+4096-byte shore with SHA-256
+`8bf24111cf50bd943c8088991aa8799e8be06b0143fc1ed08e2f8e687139db8e`.
+A single life saw 302 transitions from offset 16; prompt bytes were offsets
+14--15; locked mouths emitted 300 bytes at seed 7.  The preregistered failure
+landed exactly:
+
+| hand | true bits/byte | longest match | matched-16 | twin bits/byte |
+| --- | ---: | ---: | ---: | ---: |
+| uni | 8.000412 | 2 | 0.0% | 8.000262 |
+| bi | 7.405849 | 10 | 0.0% | 8.000300 |
+| tri | 7.005793 | 300 | 100.0% | 7.997098 |
+
+The supported tri hand used trigram support on all 300 draws and replayed the
+tape verbatim.  Its cheap local price is therefore not evidence of abstraction;
+the true match and twin price expose the mechanism.  Body 23 completes Don's
+preregistered triple — true-shore price, true-shore matched-16 coverage, and
+shuffled-twin price — without choosing a threshold or seating a copying
+court.  The ear still opens no state, writes no file, enters no election, and
+grants no authority.  State remains v20.  Two hundred and six gates, including
+the independent hand, the degenerate null, uniform replay, invocation law,
+and ASan/UBSan through the twin ear, pass.
