@@ -1863,3 +1863,66 @@ is now linear in shore plus candidate length rather than their product; a
 full 16384-byte sitting against the 855114-byte Dracula shore completes at
 the public bound instead of performing roughly fourteen billion DP cells.
 State stays v20.
+
+## The context-bearing ear audited
+
+The ninth turn was reproduced from zero: 190 gates with a fresh binary
+before its diffs were read.  The suffix automaton was then given a second
+hand: an independent brute-force longest-common-substring probe, built
+outside the repo, compared summary-for-summary against the shipped binary
+on two hundred deterministic random world/stream pairs — a quarter of them
+squeezed into a four-letter alphabet so real multi-byte matches occur — and
+on the shaped worlds: a uniform tape that forces clone chains, alternating
+offsets, all 256 byte values including NUL, the stream that is the shore's
+own tail, and the full public bound, 16384 candidate bytes against the
+855114-byte Dracula shore.  Two hundred and five comparisons, zero
+mismatches, longest-match 16384 exact on the self-slice.  A convoy of
+thirty-two shores heard one candidate in one invocation, thirty-two
+verdict lines, and the same run under ASan/UBSan wrote nothing to stderr.
+The invocation law held against all twenty-four life and mouth controls —
+twenty-four refusals, zero holes; duplicate mode flags resolve last-wins
+exactly as every other flag; a shore may hear itself and a stream may be
+its own context; and the verdict is identical from a foreign working
+directory.
+
+## The structural red, preregistered and landed
+
+Before the run, the prediction: on a shore drawn uniformly over all 256
+byte values, the locked-tri supported mouth would price below uni on the
+shore's own ear while carrying a matched-16 census above thirty percent,
+because on a structureless world every trigram row holds exactly one lived
+continuation and supported speech can only replay the tape.  The measured
+verdict was harder than the prediction: tri 7.01 bits per byte with
+longest-match 300 of 300 — matched-16 coverage 100 percent, a total parrot
+— bi 7.53 with longest-match 11, uni 8.00 with longest-match 2.  The
+price ordering tri < bi < uni, the same ordering the three English shores
+honour, is reproduced exactly by pure copying on a shore with nothing to
+learn.  Price alone cannot tell discipline from theft; the match census
+alone cannot tell theft from shared habit; the pair is the minimal honest
+verdict.
+
+For any future copying court the ruler is preregistered here, before any
+candidate is read: a stream offered to such a court is measured by the
+triple (bits per byte on the true shore's ear; matched-16 coverage against
+the true shore; bits per byte on the ear of the shore's sealed shuffled
+twin).  Speech that carries the shore's order prices low on the true ear
+and high on the twin; a census-only stream prices alike on both; a copied
+stream is named by the match census regardless.  No threshold is chosen
+today, no court is seated, and no ear number grants authority.
+
+## Body 22: the question's law
+
+The mouth accepted what the ear refuses.  A prompt of one byte left the
+second context position holding a byte of the most-lived opening — a
+hidden cold byte inside the question, the exact class the contextual ear
+was built to refuse — and an empty prompt file was a silent cold opening
+pretending to be a question.  The old law accepted both; the red run
+against the previous binary shows the one-byte question passing with rc 0.
+
+The twenty-second body makes the question one law everywhere: a question
+is at least two bytes, or it is absent and the opening is named cold.  The
+mouth now refuses a prompt of fewer than two bytes by name, exactly as the
+ear refuses its context.  A refused question leaves no fingerprint on
+state or biography.  Four gates seal it: the one-byte refusal by name, the
+empty-file refusal, the two-byte red arm proving the refusal can fail, and
+the memory-silence of a refused question.

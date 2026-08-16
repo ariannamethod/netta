@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B21. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B22. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -1320,6 +1320,29 @@ printf z > "$T/b21.shortctx"
 "$N" "$T/b21.shore" --ear "$T/b21.aa" \
     --ear-context "$T/b21.shortctx" >/dev/null 2>&1
 gate "B21 an underspecified one-byte context is refused" $? 1
+
+# --- B22: the question's law -------------------------------------------
+# A byte hand carries two context positions. A shorter prompt would mix a
+# hidden byte of the most-lived opening into the question, the exact
+# hidden-cold-byte class the contextual ear refuses. A question is at
+# least two bytes everywhere, or it is absent and the opening is named
+# cold. The two-byte arm proves the refusal is not tautological.
+printf 'a' > "$T/b22.q1"
+"$N" --speak 20 --speak-seed 7 --prompt-file "$T/b22.q1" \
+    --state "$T/b18.state" --bio "$T/b18.bio" >/dev/null 2>"$T/b22.err"
+rc=$?
+[ "$rc" -eq 1 ] && grep -q 'a prompt needs at least two bytes' "$T/b22.err"
+gate "B22 a one-byte question is refused by name" $? 0
+: > "$T/b22.q0"
+"$N" --speak 20 --speak-seed 7 --prompt-file "$T/b22.q0" \
+    --state "$T/b18.state" --bio "$T/b18.bio" >/dev/null 2>&1
+gate "B22 an empty question is not a silent cold opening" $? 1
+printf 'ab' > "$T/b22.q2"
+"$N" --speak 20 --speak-seed 7 --prompt-file "$T/b22.q2" \
+    --state "$T/b18.state" --bio "$T/b18.bio" >/dev/null 2>&1
+gate "B22 a two-byte question still reaches the tongue (red)" $? 0
+cmp -s "$T/b18.state" "$T/b18.state.ref" && cmp -s "$T/b18.bio" "$T/b18.bio.ref"
+gate "B22 refused questions leave no fingerprints on memory" $? 0
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \

@@ -48,7 +48,9 @@ technical source of truth for the living line.
 - Under `--speak N`, the mouth is a read-only instrument: the elected seat
   samples N bytes from observed continuations at its deepest supported
   context, causally backing tri down through bi to the lived unigram. An
-  optional `--prompt-file` warms the last two byte-context positions and a
+  optional `--prompt-file` warms the last two byte-context positions — a
+  question is at least two bytes everywhere, exactly as the ear's context,
+  or it is absent and the opening is named cold — and a
   dedicated stream isolates speech from the life's RNG. It prices nothing,
   learns nothing, appends nothing, and saves nothing; a zero-byte life and a
   stranger island are refused. `--speak-laplace` preserves the first mouth's
@@ -118,7 +120,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 190-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 194-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -217,7 +219,8 @@ Useful experimental flags:
   repeated on every resumed invocation that intends to reproduce that arm.
 - `--speak N` opens the read-only mouth on a resumed life with at least one
   lived byte; `--speak-seed N` picks its dedicated stream and
-  `--prompt-file P` warms the last two byte-context positions. With
+  `--prompt-file P` warms the last two byte-context positions and refuses
+  fewer than two bytes by name. With
   `--actor-lock` the chosen hand speaks instead of the elected seat.
   `--speak-laplace` restores body 18's smoothing law as a matched red arm.
   Speech is a raw byte stream, so redirect it to a file when a lived binary

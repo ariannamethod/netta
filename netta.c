@@ -2634,10 +2634,24 @@ static void speak(void) {
             fprintf(stderr, "netta: cannot open prompt %s\n", prompt_path);
             exit(1);
         }
-        int c;
-        while ((c = fgetc(f)) != EOF) { p2 = p1; p1 = (uint8_t)c; }
+        /* body 22: the question's law, shared with the ear. A byte hand
+           carries two context positions; a shorter prompt would leave a
+           hidden byte of the most-lived opening inside the question. A
+           question is at least two bytes, or it is absent and the
+           opening is named cold. */
+        int c, have = 0;
+        while ((c = fgetc(f)) != EOF) {
+            p2 = p1;
+            p1 = (uint8_t)c;
+            if (have < 2) have++;
+        }
         if (ferror(f) || fclose(f) != 0) {
             fprintf(stderr, "netta: cannot read prompt %s\n", prompt_path);
+            exit(1);
+        }
+        if (have < 2) {
+            fprintf(stderr,
+                    "netta: a prompt needs at least two bytes\n");
             exit(1);
         }
     }
