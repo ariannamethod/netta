@@ -59,14 +59,20 @@ technical source of truth for the living line.
   because no cross-shore transition was ever lived for the tongue to walk.
 - Under `--ear FILE`, every island in the convoy carries its own statistical
   judge, grown from its immutable tape and nothing else: the ear prices the
-  given stream with the shore's own Laplace ladder (bits per byte), and,
-  because the tape is fully known, catches a parrot by exact substring — the
-  longest verbatim quote and the quoted-16 coverage. It opens no state,
-  writes nothing, holds no office, and refuses `--reset`, `--state`,
-  `--bio`, and a mouth in the same invocation. At its first sealed hearing
-  the elected trigram's supported speech priced 2.99 bits per byte on the
-  Dracula shore while printability's unigram champion priced 7.48, and no
-  recorded stream carried a sixteen-byte quotation.
+  given stream with the shore's own Laplace ladder (bits per byte), uni/bi
+  warmup before tri, and reports an exact substring census — longest match
+  and matched-16 coverage. A match proves shared bytes, not copying: a later
+  technical-shore hearing found a seventeen-space match produced by the
+  mouth itself. The ear opens no state, writes nothing, holds no office, and
+  refuses every explicit life or mouth control. Its first Dracula hearing
+  priced the elected trigram's supported speech at 2.99 bits per byte while
+  printability's unigram champion priced 7.48.
+- Under `--ear-context P`, body 21 gives that same powerless ear the final
+  two bytes of an explicit immutable context. This removes the cold uni/bi
+  warmup from a prompt-matched hearing without importing life state; the
+  context bytes are printed in every result. The cold body-20 instrument
+  remains the default. Three preregistered real-text hearings now agree on
+  the local supported ordering tri below bi below uni, but appoint no hand.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -100,8 +106,9 @@ plasticity null is recorded in `research/PLASTICITY_RESULTS_2026-08-16.md`.
 The neural core is a shadow witness with no authority yet; there is no dreaming,
 glyph system, generalizing travel predictor, unbounded life, or speaking
 court. The mouth is an operator-invoked instrument, not an autonomous right,
-and the ear is a sealed measurement with no threshold, promotion, or
-authority attached to its numbers.
+and both ear modes are sealed measurements with no threshold, promotion, or
+authority attached to their numbers. The ear audit and cross-shore record
+live in `research/EAR_AUDIT_2026-08-16.md`.
 Her first recorded words live in `research/FIRST_WORDS_2026-08-16.md`.
 
 ## Build and test
@@ -111,7 +118,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 175-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 190-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -123,8 +130,10 @@ checkpoint-forgery arm, the eight-genome jury's causal identity, zero
 intervention, restart identity and forgery witness, the neural invocation-law
 refusals, the independently checked arena-preparation hand, the read-only
 mouth with hostile invocation and RNG-isolation arms, supported generative
-backoff and its preserved Laplace red mouth, the island's ear with its
-quotation census, per-shore jurisdiction, and sorted-twin red arm,
+backoff and its preserved Laplace red mouth, the island's ear with its exact
+substring census, inclusive length boundary, complete invocation law,
+per-shore jurisdiction, two opposed sorted-world arms, and explicit-context
+warmup reversal,
 and failure-closed state and biography checks. A
 passing build ends with `ALL GATES PASS`.
 
@@ -214,9 +223,13 @@ Useful experimental flags:
   Speech is a raw byte stream, so redirect it to a file when a lived binary
   alphabet may contain terminal control bytes.
 - `--ear P` scores the byte stream in P against every island in the convoy:
-  bits per byte under the shore's own Laplace ladder, the longest verbatim
-  quote, and quoted-16 coverage, one line per shore. It listens to at most
-  16384 bytes at a sitting and takes no state, biography, or speech flags.
+  bits per byte under the shore's own Laplace ladder, longest exact match,
+  and matched-16 coverage, one line per shore. It listens to at most 16384
+  bytes at a sitting and accepts no life or speech flags. Cold mode prices
+  the first byte by uni and the second by bi before entering tri.
+- `--ear-context P` supplies at least two immutable context bytes to an ear
+  invocation; exactly the final two enter its trigram ladder and are named in
+  the output. It requires `--ear` and grants no authority.
 - `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
 - `--seed N` initializes a newborn life. On resume, RNG continuity comes from
   state; use `--start` when source positions must be held equal across arms.

@@ -1772,3 +1772,94 @@ One hundred and seventy-five gates now pass: the ear's convoy hearing,
 exact quotation census, per-shore jurisdiction, determinism, sorted-twin
 red, write-nothing law, four refusals by name, and ASan/UBSan through the
 ear join the constitution.
+
+## The ear audited: a match is not a confession
+
+The twentieth body and all one hundred and seventy-five inherited gates were
+first reproduced from a fresh binary at `6d9ee94`.  Three independent probes
+then broke the ear's stated constitution.  `--seed 99` returned success and
+was ignored, as did the rest of the untracked life-law surface.  A stream of
+exactly 16384 bytes was refused despite the inclusive public bound because a
+full `fread` had not yet set EOF.  And an otherwise valid hearing failed when
+the current directory happened to contain hardlinked default files named
+`netta0.state` and `netta0.bio.tsv`: life-only alias inspection ran before the
+supposedly state-free ear.
+
+All three are repaired without changing the state.  Ear mode now has one
+failure-closed invocation law: shores, `--ear`, and the later explicit ear
+context are its only inputs; every named life or mouth control is refused,
+even when its value equals the default.  The ear enters immediately after
+the immutable shores are loaded, before any state, biography, island-route,
+or ambient-default query.  A one-byte overread distinguishes the admitted
+16384th byte from a refused 16385th byte without truncation.  The descending
+substring recurrence was attacked independently at both tape boundaries,
+at lengths fifteen and sixteen, and through NUL; each exact verdict survived.
+
+The sorted red arm also received its missing jurisdiction.  Sorting a
+period-3 slice raises its price from 0.457849 to 8.000823 bits per byte, but
+on a block-sorted `a...ab...b` shore the sorted candidate costs 3.230624
+against 7.208411 for an alternating equal-census twin.  An ear hears order;
+it does not promise that one operation destroys order on every world.
+
+The deeper refusal was semantic.  The preregistered two-shore hearing below
+found seventeen consecutive spaces shared by a freely generated technical
+stream and its shore.  The DP was exact; the noun was not.  Substring proves
+shared bytes but cannot alone establish the causal act of quotation or name
+a parrot.  The live interface therefore reports `longest-match` and
+`matched16`.  Body 20's original names remain above as an auditable claim
+that failed.  No replacement threshold is chosen after seeing the spaces;
+a future copying court owes a preregistered complexity control.
+
+## Body 21: the ear remembers the question
+
+The cold ear's first byte is charged by the unigram book, its second by the
+bigram book, and only its third enters the trigram book.  That is a valid
+unprompted instrument, but it is not a neutral detail when the mouth was
+asked a question.  On the preregistered `a...azzbbbb` counterworld, cold `aa`
+beats `bb` at 1.836756 against 6.097363 bits per byte.  After the explicit
+context `zz`, the verdict reverses: `bb` costs 7.005625 and `aa` 8.002812.
+The warmup can change an ordering, so it must be carried or named.
+
+The twenty-first body adds `--ear-context P`.  The named file must contain at
+least two bytes; exactly its final two become the initial trigram context and
+their hexadecimal identity is printed in every verdict.  No life state is
+opened and no hidden most-lived context is borrowed.  Prefixes before the
+last two bytes are proved irrelevant bit-for-bit.  Without the flag, the
+body-20 cold ladder remains exact.  Both instruments are pure, read-only,
+and powerless; body 21 supplies experimental context, not a court.
+
+## The second and third hearings
+
+Before either result existed, `research/EAR_AUDIT_2026-08-16.md` registered
+the two shores, life and speech seeds, lengths, hands, laws, context, expected
+ordering, and failure meaning.  The published normalized Frankenstein and
+technical SHA-256 witnesses were rechecked.  Independent 384000-byte lives
+then spoke 300 bytes from locked uni, bi, and tri under supported and Laplace
+laws, prompt `The ` and speech seed 7.  The context-bearing local ear heard:
+
+| shore | supported tri | supported bi | supported uni | Laplace tri | Laplace bi | Laplace uni |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Frankenstein | 2.910738 | 4.992303 | 6.995211 | 8.002758 | 5.550433 | 7.163641 |
+| technical | 3.134352 | 5.268368 | 7.563339 | 7.827882 | 6.320897 | 7.617944 |
+
+Both preregistered price ladders pass, and every supported hand beats its
+matched Laplace twin.  The Dracula ordering is therefore no longer a
+one-shore accident: three real-text shores agree that supported tri is heard
+below bi below uni under their own books.  Three English byte worlds are not
+language in general, and the instrument promotes nobody.
+
+The preregistered no-match claim fails on technical tri: longest match
+seventeen, matched-16 coverage 5.7 percent, exactly seventeen spaces at
+speech offset 223 and shore offset 8956.  Frankenstein clears with longest
+match ten; all other new streams remain below sixteen.  The complete literal
+table lives in `research/ear_results/2026-08-16-cross-shore.tsv`.
+
+One hundred and ninety gates now pass.  The inclusive cap and loud
+overflow, binary substring boundaries, ambient-state independence, full
+ear law mask, opposed sorted-world reds, explicit-context reversal and
+suffix identity, refusal of underspecified context, and ASan/UBSan through
+the context-bearing ear join the inherited constitution.  The exact matcher
+is now linear in shore plus candidate length rather than their product; a
+full 16384-byte sitting against the 855114-byte Dracula shore completes at
+the public bound instead of performing roughly fourteen billion DP cells.
+State stays v20.
