@@ -1225,3 +1225,65 @@ no seat in the Atlas; those are courts it must still enter through
 doors that already exist. The suite pays real wall-clock for the
 shadow on every lived byte, and the periods seven and eight stand as
 open wounds by design.
+
+## The sixteenth turn audited: Hebb pays its first debt
+
+All one hundred twenty-seven incoming gates reproduced before the
+neural tissue was read. Its causal order then survived inspection:
+the current hidden state prices the byte, the truth moves the readout,
+the truth advances the recurrent state, and only then may recurrent
+plasticity affect a future prediction. The wake reads sixteen already
+observed bytes without charging or learning, the core consumes no game
+RNG, and the biography remains identical with the shadow disabled.
+
+The missing matched arm changed the verdict. Recurrent weights were
+frozen while the identical zero-born delta readout, embeddings, source
+positions, and truths remained live. On four 2000-byte episodes, the
+frozen and Hebb-v1 core prices were respectively:
+
+| world | frozen core | Hebb-v1 core | byte-tri |
+| --- | ---: | ---: | ---: |
+| period 5 | 0.211809 | 0.274086 | 0.859384 |
+| period 6 | 0.334798 | 3.133655 | 1.131458 |
+| period 7 | 0.379191 | 7.338107 | 0.845067 |
+| period 8 | 0.493587 | 2.921194 | 1.056921 |
+
+The rule did not merely fail to help: it lost every matched world and
+collapsed catastrophically on periods six through eight. On a
+forty-thousand-byte period-eight life, Hebb-v1 reached mean absolute
+hidden activation `0.9840` and priced `3.066149`, while the frozen
+reservoir stayed at `0.2115` activation and priced `0.277564`. Positive
+surprise gates outnumbered negative ones `34732` to `5076` in the live
+arm. This is the grave's old positive-feedback scar under a new name,
+not an unfortunate constant chosen one notch away from success.
+
+The repair is constitutional rather than cosmetic. Frozen recurrent
+dynamics are now the default core; `--core-hebb-v1` preserves the
+failed plasticity as an explicit red arm, counts its proposed positive
+and negative gates, and reproduces the period-seven loss as executable
+law. No rate was tuned after the verdict. A future Hebbian body must
+return through the buried design that actually earned trust: multiple
+shadow plasticity experts receive identical experience, prequential
+progress against a frozen readout decides fitness, and an external
+court quarantines genes before any winning rule touches the organism.
+
+A second falsifier found that the supposedly innate embedding table
+was persisted in v18. Replacing its checkpoint bytes with zeros
+resumed successfully and reported all 256 embeddings degenerate: the
+claim “nondegenerate by construction” had been true only at birth.
+State v19 removes the embedding table from the wire and regenerates it
+from its dedicated fixed seed on every invocation. The mutable neural
+weights, baseline, bit debt, and byte count are bound by an FNV witness;
+a one-byte edit to the otherwise admissible neural record is refused by
+name. As with the island registry, a coherent rewrite of the data and
+its witness remains fabrication of a whole life, not a partial-forgery
+surface claimed to be solved.
+
+Four new verdicts cover period six, period eight, the quarantined
+period-seven red arm, and partial neural-memory forgery. One hundred
+thirty-one gates pass, strict C11 and ASan/UBSan included. The core is
+still a witness without authority. Before any replacement Hebb rule or
+new organ, `GUTENBERG_ARENA.md` seals the promised Dracula,
+Frankenstein, shuffled, and technical-alien arena: six witnesses will
+now write the job description from real text, and every failed
+prediction will remain public.
