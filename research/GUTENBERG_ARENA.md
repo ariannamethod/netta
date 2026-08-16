@@ -2,7 +2,7 @@
 
 Status: **SEALED BEFORE THE FIRST NETTA RUN**  
 Date: 2026-08-16  
-Runner: `python3 gutenberg_arena.py WORK_DIR [--source-dir DIR]`
+Runner: `python3 scripts/gutenberg_arena.py WORK_DIR [--source-dir DIR]`
 
 This is the first real-text arc promised before bodies 15 and 16 were built.
 It is an arena for the existing organism, not a corpus on which to tune it.
@@ -84,4 +84,3 @@ even where they do not enter a binary prediction. The runner writes a JSON
 record, a flat TSV table, and a verdict TSV. It exits nonzero only when the
 protocol cannot be executed or verified; a scientific `FAIL` is a result,
 not a broken run.
-
