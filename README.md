@@ -101,16 +101,20 @@ technical source of truth for the living line.
   causal accusations; the trigram court still names an equal-census stream
   `stranger`. It accepts only shores, `--court`, and optional
   `--ear-context`; it wires into no election, grants no speech authority,
-  opens no state, and writes nothing. Body 26 seals the warrant: every
-  sitting opens by printing the canonical law text with its FNV-1a-64
-  law-digest, and every verdict line carries a receipt over its own
-  operands joined with that digest. `scripts/warrant_check.c` is the
-  independent external hand: it re-derives every verdict from the printed
-  operands alone and recomputes every receipt, refusing a transcript by
-  line on any changed operand, verdict, receipt, or silently amended law.
-  The receipt authenticates the tuple, never replaces it, and grants
-  nothing; FNV is a witness, not a signature, and activation authority
-  remains a later body.
+  opens no state, and writes nothing. Body 26 gives every verdict a receipt
+  over its operands and the exact canonical law. Body 27 closes the whole
+  sitting: a header names the candidate digest, byte length, context, shore
+  count, and law digest; sequential verdict leaves keep their body-26
+  receipts; a footer publishes a docket digest over the ordered header and
+  every leaf. `scripts/warrant_check.c` is the independent strict hand. It
+  carries the exact v2 law, accepts concatenated complete sittings, and
+  refuses non-canonical fields, foreign laws, missing or duplicated leaves,
+  reorderings, cross-candidate splices, unknown records, overlong records,
+  and premature EOF. `scripts/warrant_fixture.c` is the public red hand that
+  can rebuild FNV witnesses, proving the checker relies on grammar and
+  framing rather than secrecy. A receipt and docket authenticate their
+  public tuples, never replace them, and grant nothing; FNV is a witness,
+  not a signature, and activation authority remains a later body.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -158,7 +162,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 234-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 255-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -175,8 +179,10 @@ substring census, inclusive length boundary, complete invocation law,
 per-shore jurisdiction, two opposed sorted-world arms, and explicit-context
 warmup reversal, one question law across regular files and EOF-sealed streams,
 an independently reproduced structural twin, its degenerate no-change arm,
-and a deterministic uniform-replay red,
-and failure-closed state and biography checks. A
+a deterministic uniform-replay red, the public integer warrant, individually
+receipted verdicts, and the strict candidate-bearing sitting docket with
+drop, duplicate, reorder, splice, grammar, framing, and sanitizer reds, plus
+failure-closed state and biography checks. A
 passing build ends with `ALL GATES PASS`.
 
 ## Start a life
@@ -300,6 +306,12 @@ Counts must be finite non-negative integers. Infinite-life syntax such as
   adversarial audit, and body-19 supported-backoff result.
 - `research/PATTERN_COURT_AUDIT_2026-08-16.md` — body-24 adversarial audit,
   body-25 preregistration, and the public-warrant result.
+- `research/WARRANT_RECEIPT_AUDIT_2026-08-17.md` — body-26 parser and
+  transcript audit, body-27 preregistration, and sitting-docket result.
+- `scripts/warrant_check.c` — independent strict verifier for complete court
+  sittings; it shares no organism source or linked object.
+- `scripts/warrant_fixture.c` — public test-only FNV constructor proving that
+  receipt and docket safety comes from visible grammar, not a hidden hash.
 - `scripts/gutenberg_arena.py` — reproducible corpus preparation and
   arena runner.
 - `netta.txt` — an optional raw-byte example island, not model authority.

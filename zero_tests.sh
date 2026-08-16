@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B26. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B27. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -1590,7 +1590,7 @@ gate "B25 context may change a verdict only while naming its jurisdiction" $? 0
 # transcript by line. The receipt authenticates the tuple; it grants
 # nothing.
 cc -O2 -std=c11 -Wall -Wextra -Wpedantic scripts/warrant_check.c \
-    -o "$T/wcheck" 2>"$T/wcheck-build.log"
+    -lm -o "$T/wcheck" 2>"$T/wcheck-build.log"
 rc=$?; [ -s "$T/wcheck-build.log" ] && rc=98
 gate "B26 the warrant's external hand builds strict and silent" $rc 0
 { "$N" "$T/p3.bytes" --court "$T/b20.slice"
@@ -1613,7 +1613,7 @@ gate "B26 the law-digest is one law for every hearing" $? 0
 sed 's/gap-micro=0 /gap-micro=1 /' "$T/b26.transcript" > "$T/b26.t1"
 "$T/wcheck" < "$T/b26.t1" > "$T/b26.r1"
 rc=$?
-[ "$rc" -eq 1 ] && grep -q 'receipt does not match its operands' "$T/b26.r1"
+[ "$rc" -eq 1 ] && grep -q '^warrant refused: line ' "$T/b26.r1"
 gate "B26 a tampered operand is refused by name (red)" $? 0
 sed 's/verdict=order/verdict=replay/' "$T/b26.transcript" > "$T/b26.t2"
 "$T/wcheck" < "$T/b26.t2" >/dev/null 2>&1
@@ -1626,10 +1626,157 @@ sed 's/order if gap-micro>=500000/order if gap-micro>=500001/' \
     "$T/b26.transcript" > "$T/b26.t4"
 "$T/wcheck" < "$T/b26.t4" > "$T/b26.r4"
 rc=$?
-[ "$rc" -eq 1 ] && grep -q 'law text does not match its digest' "$T/b26.r4"
+[ "$rc" -eq 1 ] && grep -q 'law is not canonical v2' "$T/b26.r4"
 gate "B26 a silently amended law is refused by its own digest (red)" $? 0
 grep -v '^court law:' "$T/b26.transcript" | "$T/wcheck" >/dev/null 2>&1
 gate "B26 a verdict without a law is refused (red)" $? 1
+
+# --- B27: the warrant's sitting docket ---------------------------------
+# Individually valid leaves do not prove a complete book. A sitting now
+# names the exact candidate, context, and shore count, then closes with a
+# digest over the ordered header and every full warrant line. The external
+# hand is a strict framing and canonical-grammar parser. The fixture hand is
+# deliberately public: it can rebuild FNV witnesses, proving that malformed
+# re-sealed records are refused by grammar rather than by secrecy.
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic scripts/warrant_fixture.c \
+    -o "$T/wfixture" 2>"$T/wfixture-build.log"
+rc=$?; [ -s "$T/wfixture-build.log" ] && rc=98
+gate "B27 the public red constructor builds strict and silent" $rc 0
+
+"$N" "$T/p3.bytes" "$T/b24.const" --court "$T/b20.slice" \
+    > "$T/b27.full" 2>/dev/null
+"$T/wcheck" < "$T/b27.full" > "$T/b27.accept"
+rc=$?
+grep -q '^warrant accepted: 2 verdicts under law .* in 1 complete sittings$' \
+    "$T/b27.accept" || rc=98
+gate "B27 one two-shore sitting is accepted only with its close" $rc 0
+
+"$N" "$T/p3.bytes" --court "$T/b20.slice" > "$T/b27.one" 2>/dev/null
+"$N" "$T/p3.bytes" "$T/b24.const" --court "$T/b24.zzz" \
+    > "$T/b27.other" 2>/dev/null
+b27a=$(sed -n '3p' "$T/b27.one" | sed -E 's/.*candidate-digest=([^ ]+).*/\1/')
+b27b=$(sed -n '3p' "$T/b27.full" | sed -E 's/.*candidate-digest=([^ ]+).*/\1/')
+b27c=$(sed -n '3p' "$T/b27.other" | sed -E 's/.*candidate-digest=([^ ]+).*/\1/')
+b27x=$("$T/wfixture" bytes < "$T/b20.slice")
+[ "$b27a" = "$b27b" ] && [ "$b27a" = "$b27x" ] && [ "$b27a" != "$b27c" ]
+gate "B27 candidate identity is external, convoy-stable, and byte-sensitive" $? 0
+
+sed '5d' "$T/b27.full" > "$T/b27.drop"
+"$T/wcheck" < "$T/b27.drop" >/dev/null 2>&1
+gate "B27 dropping a valid leaf breaks the sitting" $? 1
+{ sed -n '1,4p' "$T/b27.full"; sed -n '4,6p' "$T/b27.full"; } \
+    > "$T/b27.duplicate"
+"$T/wcheck" < "$T/b27.duplicate" >/dev/null 2>&1
+gate "B27 duplicating a valid leaf breaks the sitting" $? 1
+{ sed -n '1,3p' "$T/b27.full"; sed -n '5p' "$T/b27.full";
+  sed -n '4p' "$T/b27.full"; sed -n '6p' "$T/b27.full"; } \
+    > "$T/b27.reorder"
+"$T/wcheck" < "$T/b27.reorder" >/dev/null 2>&1
+gate "B27 reordering valid leaves breaks the sitting" $? 1
+{ sed -n '1,4p' "$T/b27.full"; sed -n '5p' "$T/b27.other";
+  sed -n '6p' "$T/b27.full"; } > "$T/b27.splice"
+"$T/wcheck" < "$T/b27.splice" >/dev/null 2>&1
+gate "B27 cross-candidate splicing breaks the sitting" $? 1
+
+cat "$T/b27.full" "$T/b27.other" > "$T/b27.concat"
+"$T/wcheck" < "$T/b27.concat" > "$T/b27.concat.out"
+rc=$?
+grep -q '4 verdicts .* in 2 complete sittings$' "$T/b27.concat.out" || rc=98
+gate "B27 concatenated complete sittings remain a legal book" $rc 0
+{ sed -n '1,2p' "$T/b27.full"; sed -n '2,6p' "$T/b27.full"; } \
+    > "$T/b27.double-law"
+"$T/wcheck" < "$T/b27.double-law" >/dev/null 2>&1
+gate "B27 a repeated law cannot restart an unfinished sitting" $? 1
+sed 's/$/\r/' "$T/b27.full" > "$T/b27.crlf"
+"$T/wcheck" < "$T/b27.crlf" >/dev/null 2>&1
+gate "B27 CRLF transport preserves a complete sitting" $? 0
+
+printf '%s\n' 'pattern-court law v999: a digest is not semantics' \
+    | "$T/wfixture" hash > "$T/b27.alien.digest"
+b27ad=$(cat "$T/b27.alien.digest")
+{ printf 'NETTA ZERO\n';
+  printf 'court law: pattern-court law v999: a digest is not semantics law-digest=%s\n' \
+      "$b27ad";
+} > "$T/b27.alien"
+"$T/wcheck" < "$T/b27.alien" > "$T/b27.alien.out"
+rc=$?
+[ "$rc" -eq 1 ] && grep -q 'law is not canonical v2' "$T/b27.alien.out"
+gate "B27 a self-consistent foreign law cannot borrow v2 semantics" $? 0
+
+b27law=$(sed -n '2p' "$T/b27.one" | sed -E 's/.*law-digest=//')
+sed -n '4p' "$T/b27.one" | sed -E 's/ receipt=[0-9a-f]+$//' \
+    > "$T/b27.base"
+seal_bad() {
+    bad=$1
+    "$T/wfixture" receipt "$b27law" < "$T/$bad.base" > "$T/$bad.line" || return 2
+    { sed -n '3p' "$T/b27.one"; cat "$T/$bad.line"; } \
+        | "$T/wfixture" docket > "$T/$bad.docket" || return 2
+    bd=$(cat "$T/$bad.docket")
+    { sed -n '1,3p' "$T/b27.one"; cat "$T/$bad.line";
+      printf 'court close: verdicts=1 docket=%s\n' "$bd"; } > "$T/$bad"
+}
+
+sed 's/gap-micro=[^ ]*/gap-micro=garbage/;s/verdict=replay/verdict=abstain/' \
+    "$T/b27.base" > "$T/b27.badnum.base"
+seal_bad b27.badnum
+"$T/wcheck" < "$T/b27.badnum" >/dev/null 2>&1
+gate "B27 a re-sealed malformed integer is refused by grammar" $? 1
+
+sed 's/^court 0:/court 9999999999999999999999999999999:/' \
+    "$T/b27.base" > "$T/b27.overflow.base"
+seal_bad b27.overflow
+"$T/wcheck" < "$T/b27.overflow" >/dev/null 2>&1
+gate "B27 a re-sealed overflowing integer is refused without conversion UB" $? 1
+
+sed -E 's/ P=[^ ]+ Q=[^ ]+ matched16=[^ ]+//;s/ G=[^ ]+//' \
+    "$T/b27.base" > "$T/b27.missing.base"
+seal_bad b27.missing
+"$T/wcheck" < "$T/b27.missing" >/dev/null 2>&1
+gate "B27 a re-sealed warrant missing human operands is refused" $? 1
+
+sed -E 's/matched-bytes=[0-9]+\/[0-9]+/matched-bytes=0\/0/' \
+    "$T/b27.base" > "$T/b27.zeroden.base"
+seal_bad b27.zeroden
+"$T/wcheck" < "$T/b27.zeroden" >/dev/null 2>&1
+gate "B27 a re-sealed zero denominator cannot manufacture replay" $? 1
+
+sed -E 's/gap-micro=([^ ]+)/gap-micro=0 gap-micro=\1/;s/verdict=replay/verdict=abstain/' \
+    "$T/b27.base" > "$T/b27.dupfield.base"
+seal_bad b27.dupfield
+"$T/wcheck" < "$T/b27.dupfield" >/dev/null 2>&1
+gate "B27 a re-sealed duplicate operand is refused" $? 1
+
+sed -E '4s/receipt=[0-9a-f]/receipt=g/' "$T/b27.one" > "$T/b27.nonhex"
+"$T/wcheck" < "$T/b27.nonhex" >/dev/null 2>&1
+r1=$?
+sed -E '4s/receipt=([0-9a-f]{15})[0-9a-f]$/receipt=\1/' \
+    "$T/b27.one" > "$T/b27.short-receipt"
+"$T/wcheck" < "$T/b27.short-receipt" >/dev/null 2>&1
+r2=$?
+[ "$r1" -eq 1 ] && [ "$r2" -eq 1 ]
+gate "B27 non-hex and short receipts are refused as grammar" $? 0
+
+{ printf 'intruder\n'; cat "$T/b27.full"; } > "$T/b27.unknown"
+"$T/wcheck" < "$T/b27.unknown" >/dev/null 2>&1
+gate "B27 an unknown record cannot hide beside a valid sitting" $? 1
+{ head -c 1023 /dev/zero | tr '\000' x; printf '\n'; cat "$T/b27.full"; } \
+    > "$T/b27.long"
+"$T/wcheck" < "$T/b27.long" >/dev/null 2>&1
+gate "B27 a 1023-byte record is refused whole, never split" $? 1
+sed -n '1,4p' "$T/b27.one" > "$T/b27.partial"
+"$T/wcheck" < "$T/b27.partial" >/dev/null 2>&1
+gate "B27 EOF cannot silently close an unfinished sitting" $? 1
+
+cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
+   -fsanitize=address,undefined -fno-omit-frame-pointer \
+   scripts/warrant_check.c -lm -o "$T/wcheck-san" \
+   > "$T/wcheck-san-build.log" 2>&1
+rc=$?; [ -s "$T/wcheck-san-build.log" ] && rc=98
+"$T/wcheck-san" < "$T/b27.full" >/dev/null 2>"$T/wcheck-san.err" || rc=98
+"$T/wcheck-san" < "$T/b27.badnum" >/dev/null 2>>"$T/wcheck-san.err"
+[ "$?" -eq 1 ] || rc=98
+[ ! -s "$T/wcheck-san.err" ] || rc=98
+gate "B27 the strict external hand is sanitizer-silent on honest and crafted input" $rc 0
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \

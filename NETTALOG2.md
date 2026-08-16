@@ -2170,3 +2170,59 @@ thirty-four gates now pass: the external hand's strict build, a
 five-hearing acceptance, the one-law rule, and five red arms — tampered
 operand, tampered verdict, tampered receipt, amended law, and a verdict
 without a law — join the constitution.
+
+## Body 27: the warrant's sitting docket
+
+The twelfth Sol audit began from Don's untouched `81bc616`: all 234 inherited
+gates passed before its diff was read.  The organism's line receipt and the
+external hand's independent FNV implementation survived.  The book around
+those leaves did not.
+
+One two-shore invocation was rewritten four ways without changing a single
+leaf or receipt: one verdict dropped, one duplicated, the pair reversed, and
+one leaf replaced by a valid receipt from a different candidate.  Body 26
+accepted all four books.  It also accepted publicly re-sealed lines containing
+`gap-micro=garbage`, no P/Q/matched16/G fields, `matched-bytes=0/0`, or two
+gap operands.  Finally, any foreign law text could borrow the hand's hardcoded
+v2 semantics when its public digest and receipts were rebuilt; a mixed-law
+book was reported wholly under its final digest.  None is a cryptographic
+break.  Together they locate the missing object: a receipt line is not a
+complete sitting, and a checksum is not a grammar.
+
+Body 27 makes one hearing citable without yet letting it act.  After the exact
+v2 law, each invocation publishes a sitting header with FNV identity of the
+heard candidate bytes, candidate length, explicit context, shore count, and
+law digest.  Court ids must then run from zero through that declared count.
+The close publishes a docket digest over the exact header and every complete
+verdict line including its body-26 receipt, in order, with newline record
+boundaries.  The old leaf receipts do not change; the docket binds their
+membership, order, and candidate-bearing frame.
+
+The independent hand is now a strict state machine over complete sittings.
+It carries its own exact copy of the v2 law whose semantics it implements,
+accepts multiple separately closed sittings and CRLF transport, and refuses
+unknown, overlong, partial, duplicated, out-of-order, or out-of-frame records.
+Every court field occurs once in canonical order and consumes the whole line;
+integers, fractions, decimals, context, candidate length, court id, count,
+verdict, receipt, and docket must agree.  The test-only
+`scripts/warrant_fixture.c` can publicly rebuild both receipt and docket.  It
+exists to prove that re-sealed malformed lines are stopped by visible grammar,
+not by pretending the FNV witness is secret.
+
+The preregistered predictions held.  A two-shore hearing over the 300-byte
+candidate names `candidate-digest=ca0d16aadc050d91` and closes at
+`docket=e2898cdce3dfbe2d`; the fixture independently reproduces candidate
+identity, and the leaf receipts remain `fd8b7974e021a5a9` and
+`e98c2a2a2aedfae9`.  Drop, duplicate, reverse, and cross-candidate splice all
+fail.  Re-sealed garbage integer, missing human operands, zero denominator,
+duplicate operand, overflowing integer, foreign law, bad receipt, unknown
+record, 1023-byte record, and premature EOF all fail.  Two complete sittings
+and CRLF survive.
+
+Two hundred and fifty-five gates pass, including a sanitizer-silent strict
+hand on both honest and crafted input.  State remains v20.  The court still
+opens no life, writes nothing, elects nobody, and grants no speech or action
+authority.  The docket completes the mechanical prerequisite for a future
+biography to cite a court sitting as an event; it does not manufacture an
+independent reviewer, key holder, requested power, revocation law, or
+activation body.  A stronger checksum cannot create those social facts.
