@@ -2548,3 +2548,84 @@ its summary line is unchanged — 230 records, 30 accepted by both, 199
 refused by both, the one named difference, no trace — while the
 expanded battery against `98f9162` disagrees on 105, as she reported.
 Two hundred and ninety-four gates.
+
+## Body 30: the signature — preregistered before code
+
+Oleg's word opened the thirtieth body with a condition: when speech becomes
+a biography event, Netta for the first time does not merely produce a
+sound but can say that this act belongs to its own lived causal line — and
+the price is real, the mouth stops being storage-read-only and a
+publication debt appears between state and biography, so crash
+consistency may not be waved away.  The preregistration therefore put the
+crash contract first.  Under `--speak N --sign` the mouth publishes what it
+just said as one biography event of type `s` — episode, candidate digest,
+bytes, seed, hand, law, opening, lived bytes — after the stream is out and
+flushed, in the citation's two-file order: the line, the biography close,
+the atomic state.  A death between the two files is refused on resume by
+chain and count and never repaired; a stream that cannot be flushed
+publishes nothing, because an unsigned speech is honest and a phantom
+signature is not.  Speech stays behaviourally read-only: the signed and
+the unsigned mouth speak byte-identical streams, and nothing reads `s`
+back into behaviour.  `--sign` needs `--speak` with at least one byte and
+a lived state; with `--reset`, `--cite`, `--court` or `--ear` it refuses
+by name.  State stays v20: the biography count and chain it already
+carries are the whole publication.
+
+The first probes found the contract's real edge, and it was not the one
+named in advance.  The first build opened the biography for append before
+speaking, so that an unwritable biography would refuse before a byte was
+out.  With stdout closed at invocation, that order let the biography
+inherit descriptor 1: the sixty spoken bytes were written into the
+biography ahead of the `s` line, `fflush(stdout)` succeeded, the mouth
+reported `signed` with rc 0, and the next resume refused the life by
+chain.  Fail-closed, but a phantom signature and a locked life.  The same
+class holds for a closed stderr and for an operator's redirect of stdout
+or stderr into the biography or the state — and it held for the unsigned
+mouth of body 18 as well, whose write-nothing law was only as honest as
+the operator's stream.  The mouth therefore now checks, before its first
+word and for the signed and the unsigned mouth alike, that descriptors 1
+and 2 are open and that neither is the biography or the state; a voice
+pointed at the memory refuses silently, because it has nowhere honest to
+say why and every word it said would break the chain — the state loader
+already refuses trailing bytes.  The biography is opened only after the
+stream is flushed; a biography that cannot be opened leaves the speech
+spoken and unsigned.
+
+The signature lived on first breath.  On the two-shore life the signed
+mouth speaks the same sixty bytes as the unsigned one, appends
+`s 2 796e0c5ce4b27b99 60 7 tri supported-backoff 6162 1200`, and saves
+the state atomically; the fixture over the captured stream names the same
+digest, and the red Laplace mouth signs `5f1219034fdfcd3e` under its own
+law name.  The crash contract was then executed rather than described:
+the biography one line ahead of the state refuses resume by chain and
+count; the state ahead of the biography refuses; the biography cut in the
+middle of the `s` line refuses; a closed stdout refuses before a word by
+name and leaves both files byte-identical; a closed stderr, a stdout
+appended to the biography, a stderr appended to the state or to the
+biography all refuse with both files untouched; a stale `state.tmp`
+sibling left by an interrupted publication neither helps nor hinders.
+Two red hands were built before the gates were trusted: the pre-guard
+build that signed into a closed stdout, and a build without the state
+save, whose signature leaves the state unchanged and whose resume is
+refused as biography-ahead.
+
+Ten gates seal the body: the signed speech is the unsigned speech byte for
+byte; one `s` event names the digest the manifest and the fixture name and
+the state moves; a signed life resumes and plays; signed and unsigned
+twins play identically and their biographies differ only by the `s` line;
+a repeated signature is a second event; the red Laplace mouth signs under
+its law; the three deaths between the files refuse; the stale sibling is
+inert; the closed and self-directed streams refuse before a word; and the
+mask refuses `--sign` without a mouth, with zero bytes, with a reset or
+with another instrument.  The citation's non-file sweep now counts
+twenty-eight controls, and the sanitizer mouth signs and resumes in
+silence.  Three hundred and four gates pass.
+
+Two limits are named rather than hidden.  The publication has no fsync
+anywhere in the organism, so the contract covers a dying process and not a
+dying machine — the same limit the citation has carried since body 28.
+And the `s` line records the manifest, not the flag environment: the
+biography chain supplies causal placement, and an outside hand can still
+prove only count and digest.  A citation still names no life; reading `s`
+against `w` — the life recognising its own speech in a court's word — is
+the next body, and it now has both halves to bind.
