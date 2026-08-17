@@ -118,8 +118,9 @@ technical source of truth for the living line.
 - Under `--cite FILE`, body 28 lets a court's word touch the life for the
   first time — as memory, never as power. A resumed life re-verifies a
   single complete sitting with its own hands (its own canonical law in
-  text and digest, the sitting header, every leaf receipt in order, the
-  docket fold, and the close) and appends one biography line of type `w`:
+  text and digest, the strict canonical sitting header, every complete
+  semantic leaf and receipt in order, the docket fold, and the close) and
+  appends one biography line of type `w`:
   episode, candidate digest, bytes, context, shores, law digest, docket
   digest, verdict count — a pointer to the judgment, not the judgment's
   power. Any verification failure refuses by name and leaves no trace; a
@@ -129,7 +130,8 @@ technical source of truth for the living line.
   uncited twin play the next episode to bit-identical prices. The docket
   names no life, so a citation records an external fact about a candidate
   stream without claiming authorship; binding speech to speaker remains a
-  future body. State stays v20.
+  future body. The life and external checker implement the same canonical
+  language independently and share no parser code. State stays v20.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -177,7 +179,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 268-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 275-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation

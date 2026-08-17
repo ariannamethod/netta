@@ -1847,6 +1847,179 @@ gate "B28 the citation is between the life and the record" $? 1
     --bio "$T/b28t.bio" --episodes 3 >/dev/null 2>&1
 gate "B28 the citation refuses play controls by name" $? 1
 
+# The life and the external hand are independent implementations of one
+# canonical language. A public witness authenticates bytes, not meaning.
+printf '%s\n' 'court 0: canonical-shape=false verdict=replay' \
+    > "$T/b28.noncanonical.base"
+seal_bad b28.noncanonical
+cp "$T/b28t.bio" "$T/b28.noncanonical.ref"
+"$T/wcheck" < "$T/b28.noncanonical" >/dev/null 2>&1
+r1=$?
+"$N" --cite "$T/b28.noncanonical" --state "$T/b28t.state" \
+    --bio "$T/b28t.bio" >/dev/null 2>&1
+r2=$?
+[ "$r1" -eq 1 ] && [ "$r2" -eq 1 ] && \
+    cmp -s "$T/b28t.bio" "$T/b28.noncanonical.ref"
+gate "B28 a public witness cannot make a noncanonical record citable" $? 0
+
+b28_header_case() {
+    hc=$1; hx=$2
+    sed -E "$hx" "$T/b28.docket" | sed -n '1,4p' > "$T/$hc"
+    hd=$(sed -n '3,4p' "$T/$hc" | "$T/wfixture" docket) || return 2
+    printf 'court close: verdicts=1 docket=%s\n' "$hd" >> "$T/$hc"
+}
+b28_header_case b28.h-short \
+    '3s/candidate-digest=[0-9a-f]{16}/candidate-digest=a/'
+b28_header_case b28.h-signed '3s/bytes=[0-9]+/bytes=-1/'
+b28_header_case b28.h-padded '3s/bytes=([0-9]+)/bytes=0\1/'
+b28_header_case b28.h-context '3s/context=cold/context=other/'
+b28_header_case b28.h-split '3s/context=cold/context=0000/'
+b28_header_case b28.h-zero '3s/shores=1/shores=0/'
+b28_header_case b28.h-wide '3s/shores=1/shores=33/'
+cp "$T/b28t.bio" "$T/b28.headers.ref"
+hrc=0
+for hf in b28.h-short b28.h-signed b28.h-padded b28.h-context \
+          b28.h-split b28.h-zero b28.h-wide; do
+    "$N" --cite "$T/$hf" --state "$T/b28t.state" --bio "$T/b28t.bio" \
+        >/dev/null 2>&1
+    [ "$?" -eq 1 ] || hrc=98
+done
+cmp -s "$T/b28t.bio" "$T/b28.headers.ref" || hrc=98
+gate "B28 the sitting header is canonical and binds every record" $hrc 0
+
+sed 's/$/\r/' "$T/b28.docket" > "$T/b28.crlf"
+cp "$T/b28t.state" "$T/b28.crlf.state"
+cp "$T/b28t.bio" "$T/b28.crlf.bio"
+"$N" --cite "$T/b28.crlf" --state "$T/b28.crlf.state" \
+    --bio "$T/b28.crlf.bio" >/dev/null 2>&1
+gate "B28 CRLF transport preserves the citable sitting" $? 0
+
+{ head -c 1023 /dev/zero | tr '\000' x; printf '\n';
+  cat "$T/b28.docket"; } > "$T/b28.overlong"
+{ printf 'NETTA\000 ZERO\n'; sed -n '2,$p' "$T/b28.docket"; } \
+    > "$T/b28.nul"
+trc=0
+for tf in b28.overlong b28.nul; do
+    "$N" --cite "$T/$tf" --state "$T/b28t.state" --bio "$T/b28t.bio" \
+        >/dev/null 2>&1
+    [ "$?" -eq 1 ] || trc=98
+done
+i=1
+while [ "$i" -le 5 ]; do
+    tp=$(sed -n "1,${i}p" "$T/b28.docket")
+    printf '%s' "$tp" > "$T/b28.open-$i"
+    "$N" --cite "$T/b28.open-$i" --state "$T/b28t.state" \
+        --bio "$T/b28t.bio" >/dev/null 2>&1
+    [ "$?" -eq 1 ] || trc=98
+    i=$((i+1))
+done
+cmp -s "$T/b28t.bio" "$T/b28.headers.ref" || trc=98
+gate "B28 every record is bounded, binary-clean, and newline-sealed" $trc 0
+
+b28_mask_bad=0
+b28_mask_seen=0
+b28_mask_case() {
+    cp "$T/b28t.state" "$T/b28.mask.state"
+    cp "$T/b28t.bio" "$T/b28.mask.bio"
+    "$N" --cite "$T/b28.docket" --state "$T/b28.mask.state" \
+        --bio "$T/b28.mask.bio" "$@" >/dev/null 2>&1
+    mr=$?
+    b28_mask_seen=$((b28_mask_seen+1))
+    if [ "$mr" -ne 1 ] || ! cmp -s "$T/b28t.bio" "$T/b28.mask.bio"; then
+        b28_mask_bad=$((b28_mask_bad+1))
+    fi
+}
+b28_mask_case --seed 1
+b28_mask_case --episodes 1
+b28_mask_case --steps 1
+b28_mask_case --island 0
+b28_mask_case --start 0
+b28_mask_case --reset
+b28_mask_case --atlas
+b28_mask_case --no-units
+b28_mask_case --no-mv-nav
+b28_mask_case --no-island-court
+b28_mask_case --no-birth-floor
+b28_mask_case --no-local-probation
+b28_mask_case --no-unit-death
+b28_mask_case --keep-dead-mass
+b28_mask_case --no-core
+b28_mask_case --core-hebb-v1
+b28_mask_case --jury
+b28_mask_case --actor-lock uni
+b28_mask_case --speak 0
+b28_mask_case --speak-seed 1
+b28_mask_case --prompt-file "$T/b20.slice"
+b28_mask_case --speak-laplace
+b28_mask_case --ear "$T/b20.slice"
+b28_mask_case --ear-context "$T/b20.slice"
+b28_mask_case --ear-twin
+b28_mask_case --court "$T/b20.slice"
+b28_mask_case "$T/p3.bytes"
+[ "$b28_mask_seen" -eq 27 ] && [ "$b28_mask_bad" -eq 0 ]
+gate "B28 all 27 non-file controls stay outside citation" $? 0
+
+# Publication remains the inherited two-file law: either possible one-file
+# lead is detected on resume. The process fails closed and does not guess.
+cp "$T/b28t.state" "$T/b28.pub-before.state"
+cp "$T/b28t.bio" "$T/b28.pub-before.bio"
+cp "$T/b28t.state" "$T/b28.pub-after.state"
+cp "$T/b28t.bio" "$T/b28.pub-after.bio"
+"$N" --cite "$T/b28.docket" --state "$T/b28.pub-after.state" \
+    --bio "$T/b28.pub-after.bio" >/dev/null 2>&1
+cp "$T/b28.pub-before.state" "$T/b28.bio-ahead.state"
+cp "$T/b28.pub-after.bio" "$T/b28.bio-ahead.bio"
+"$N" "$T/p3.bytes" --episodes 1 --steps 8 \
+    --state "$T/b28.bio-ahead.state" --bio "$T/b28.bio-ahead.bio" \
+    >/dev/null 2> "$T/b28.bio-ahead.err"
+r1=$?
+cp "$T/b28.pub-after.state" "$T/b28.state-ahead.state"
+cp "$T/b28.pub-before.bio" "$T/b28.state-ahead.bio"
+"$N" "$T/p3.bytes" --episodes 1 --steps 8 \
+    --state "$T/b28.state-ahead.state" --bio "$T/b28.state-ahead.bio" \
+    >/dev/null 2> "$T/b28.state-ahead.err"
+r2=$?
+[ "$r1" -eq 1 ] && [ "$r2" -eq 1 ] && \
+    grep -q 'does not match state' "$T/b28.bio-ahead.err" && \
+    grep -q 'does not match state' "$T/b28.state-ahead.err"
+gate "B28 either one-file publication lead refuses resume" $? 0
+
+# The short price twin is extended through two resumed stretches, jury,
+# units, atlas choice, reversed convoy order, biography, and persisted state.
+"$N" "$T/p3.bytes" "$T/p5.bytes" --reset --jury --seed 29 \
+    --episodes 2 --steps 300 --state "$T/b28.long-a.state" \
+    --bio "$T/b28.long-a.bio" >/dev/null 2>&1
+cp "$T/b28.long-a.state" "$T/b28.long-b.state"
+cp "$T/b28.long-a.bio" "$T/b28.long-b.bio"
+"$N" --cite "$T/b28.docket" --state "$T/b28.long-a.state" \
+    --bio "$T/b28.long-a.bio" >/dev/null 2>&1
+"$N" "$T/p3.bytes" "$T/p5.bytes" --jury --atlas --episodes 4 --steps 300 \
+    --state "$T/b28.long-a.state" --bio "$T/b28.long-a.bio" \
+    > "$T/b28.long-a.1" 2>&1
+r1=$?
+"$N" "$T/p3.bytes" "$T/p5.bytes" --jury --atlas --episodes 4 --steps 300 \
+    --state "$T/b28.long-b.state" --bio "$T/b28.long-b.bio" \
+    > "$T/b28.long-b.1" 2>&1
+r2=$?
+"$N" "$T/p5.bytes" "$T/p3.bytes" --jury --atlas --episodes 3 --steps 400 \
+    --state "$T/b28.long-a.state" --bio "$T/b28.long-a.bio" \
+    > "$T/b28.long-a.2" 2>&1
+r3=$?
+"$N" "$T/p5.bytes" "$T/p3.bytes" --jury --atlas --episodes 3 --steps 400 \
+    --state "$T/b28.long-b.state" --bio "$T/b28.long-b.bio" \
+    > "$T/b28.long-b.2" 2>&1
+r4=$?
+grep -v "^w	" "$T/b28.long-a.bio" > "$T/b28.long-a.clean"
+grep -v "^w	" "$T/b28.long-b.bio" > "$T/b28.long-b.clean"
+state_extra=$(cmp -l "$T/b28.long-a.state" "$T/b28.long-b.state" | \
+    awk '$1 < 41 || $1 > 56 {n++} END {print n+0}')
+[ "$r1" -eq 0 ] && [ "$r2" -eq 0 ] && [ "$r3" -eq 0 ] && \
+    [ "$r4" -eq 0 ] && cmp -s "$T/b28.long-a.1" "$T/b28.long-b.1" && \
+    cmp -s "$T/b28.long-a.2" "$T/b28.long-b.2" && \
+    cmp -s "$T/b28.long-a.clean" "$T/b28.long-b.clean" && \
+    [ "$state_extra" -eq 0 ]
+gate "B28 the longer cited twin differs only in biography metadata" $? 0
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
