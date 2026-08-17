@@ -2498,3 +2498,53 @@ implemented in this turn.
 Two hundred and ninety-four gates pass.  State stays v20, strict builds are
 silent, and ASan/UBSan cover the independent manifest reader as well as the
 mouth.
+
+## The manifest reader audited: one grammar, two hands
+
+Sol's `bc103b6` was reproduced untouched before its diff was read: 294
+gates, strict build silent, sanitizers green.  Her two renamings stand on
+their reasons — the mouth's `opening=` is not the court's `context=`, and
+the speech `law=` is part of the act that produced the stream — and her
+reader `scripts/manifest_check.c` says exactly what it can prove: the
+count and the digest of the captured stream, nothing about seed, hand,
+law, opening, lived bytes or episode, which remain statements of the
+speaker until a body gives an outside hand the state to re-derive them.
+
+The reader was then met by a second hand rather than reread.  Fifty-two
+manifests were built from one canonical line: the identity at 15, 17
+and upper-case digits and flipped by one; every count with a leading
+zero, a sign, a 32-character token, an empty token, at the unsigned
+64-bit maximum and one past it; the hand as `Tri`, `mv`, `null`,
+`trix` and empty; the law shortened, capitalised, lengthened and with
+an underscore; the opening at three, five and upper-case digits and as
+`cold`; float and hexadecimal counts; a capitalised and a renamed
+prefix; a double space, a tab, a leading and a trailing space, an
+extra and a missing field, two fields swapped; CRLF, `\r\r\n`, a
+missing final newline, a trailing blank record, two records, a NUL in
+the middle, an overlong record, an empty input, a lone newline and a
+byte-order mark.  An independent hand — a full-line regular grammar
+with an explicit unsigned range check, transport rules and the stream
+witness through the public fixture — agreed with the reader on all 52,
+accepting exactly four: the canonical line, its CRLF form, the line
+with every speaker-only field restated, and the seed at the unsigned
+maximum.  The one disagreement of the first pass was the hand's own:
+its NUL detection did not exist on this platform's grep, so it read
+the record with the NUL removed and accepted; the reader had refused
+the record as unsealed, which is the law.  The hand was corrected and
+the pass repeated.
+
+Her question about `base32.t` is answered in the battery: the
+maximum-shore fixture is now replayed before any record from a formula
+rather than a stored world — shore i of thirty-two carries 33+13(i−1)
+bytes with byte k = ((2i+1)k + i) mod 256, the candidate 300 bytes
+with byte k = (11k + 5) mod 256 — and the fresh court output must be
+byte-identical to `base32.t` or the battery exits before emitting
+anything, which a corrupted copy of the fixture proved (rc 2, zero
+records).  The court of `98f9162` prints the same fixture byte for
+byte: the court has not moved since.  The regenerated fixture opens on
+candidate `53d2c84fac9d4eb5`, thirteen abstentions and nineteen
+strangers; the battery's verdicts do not depend on its contents, and
+its summary line is unchanged — 230 records, 30 accepted by both, 199
+refused by both, the one named difference, no trace — while the
+expanded battery against `98f9162` disagrees on 105, as she reported.
+Two hundred and ninety-four gates.

@@ -23,7 +23,7 @@ T=$(mktemp -d) || exit 2
 # Rebuild three static positive controls with the reader under test before any
 # mutation. Their sources are deliberately small and independent: a period-3
 # shore, a disjoint period-3 shore, two 228-byte candidates, and one opening.
-# base32 remains the separate maximum-shore grammar fixture.
+# base32 is replayed from its own formula below.
 i=0; : > "$T/p3"; : > "$T/x3"
 while [ $i -lt 300 ]; do
   printf abcacb >> "$T/p3"; printf xyzxzy >> "$T/x3"; i=$((i+1))
@@ -42,6 +42,25 @@ cmp -s base1.t "$T/base1" && cmp -s base2.t "$T/base2" && \
     echo "cross-reader base replay differs" >&2
     exit 2
   }
+
+# base32, the maximum-shore fixture, is replayed from a formula rather than a
+# stored world: shore i (1..32) has 33+13*(i-1) bytes, byte k = ((2i+1)*k + i)
+# mod 256; the candidate has 300 bytes, byte k = (11k + 5) mod 256.
+g32=""; i=1
+while [ $i -le 32 ]; do
+  len=$((33 + 13*(i-1))); k=0; s=""
+  while [ $k -lt $len ]; do
+    printf -v h '\\x%02x' $(( ((2*i+1)*k + i) % 256 )); s="$s$h"; k=$((k+1))
+  done
+  printf "$s" > "$T/g32.s$i.w"; g32="$g32 $T/g32.s$i.w"; i=$((i+1))
+done
+k=0; s=""
+while [ $k -lt 300 ]; do
+  printf -v h '\\x%02x' $(( (11*k + 5) % 256 )); s="$s$h"; k=$((k+1))
+done
+printf "$s" > "$T/g32.cand"
+"$NETTA" $g32 --court "$T/g32.cand" > "$T/base32" 2>/dev/null || exit 2
+cmp -s base32.t "$T/base32" || { echo "cross-reader base32 replay differs" >&2; exit 2; }
 
 emit() { cat > "$OUT/cases/$1.t"; }
 
