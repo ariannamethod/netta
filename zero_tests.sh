@@ -1951,13 +1951,14 @@ b28_mask_case --speak 0
 b28_mask_case --speak-seed 1
 b28_mask_case --prompt-file "$T/b20.slice"
 b28_mask_case --speak-laplace
+b28_mask_case --sign
 b28_mask_case --ear "$T/b20.slice"
 b28_mask_case --ear-context "$T/b20.slice"
 b28_mask_case --ear-twin
 b28_mask_case --court "$T/b20.slice"
 b28_mask_case "$T/p3.bytes"
-[ "$b28_mask_seen" -eq 27 ] && [ "$b28_mask_bad" -eq 0 ]
-gate "B28 all 27 non-file controls stay outside citation" $? 0
+[ "$b28_mask_seen" -eq 28 ] && [ "$b28_mask_bad" -eq 0 ]
+gate "B28 all 28 non-file controls stay outside citation" $? 0
 
 # Publication remains the inherited two-file law: either possible one-file
 # lead is detected on resume. The process fails closed and does not guess.
@@ -2185,6 +2186,113 @@ grep '^spoke:' "$T/b29.lap.err" > "$T/b29.lap.manifest"
     "$M" "$T/b29.lap" < "$T/b29.lap.manifest" >/dev/null 2>&1
 gate "B29 the red Laplace mouth names its distinct law in the same grammar" $? 0
 
+# --- B30: the signature ---------------------------------------------------
+# Under --sign the mouth publishes what it just said as one biography event
+# of type s -- episode, candidate digest, bytes, seed, hand, law, opening,
+# lived bytes -- after the stream is out and flushed, in the citation's
+# two-file order: the line, the biography close, the atomic state. Speech
+# stays behaviourally read-only and nothing reads s back into behaviour.
+# The crash contract is executable law: a death between the two files
+# refuses resume by chain and count and is never repaired; a closed or a
+# self-directed stream refuses before a word, for the signed and the
+# unsigned mouth alike.
+cp "$T/b18.state.ref" "$T/b30.state"; cp "$T/b18.bio.ref" "$T/b30.bio"
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b30.state" \
+    --bio "$T/b30.bio" > "$T/b30.words" 2> "$T/b30.err"
+rc=$?
+cmp -s "$T/b30.words" "$T/b29.words" && grep -q '^spoke: ' "$T/b30.err" && \
+    grep -q '^signed: ' "$T/b30.err" && [ "$rc" -eq 0 ]
+gate "B30 a signed speech is the unsigned speech, byte for byte" $? 0
+b30d=$(sed -n 's/^spoke: candidate-digest=\([0-9a-f]*\) .*/\1/p' "$T/b30.err")
+b30n=$(grep -c '' "$T/b30.bio"); b30r=$(grep -c '' "$T/b18.bio.ref")
+[ "$b30n" -eq $((b30r + 1)) ] && tail -1 "$T/b30.bio" | grep -qE \
+    "^s	[0-9]+	$b30d	60	7	(uni|bi|tri)	supported-backoff	[0-9a-f]{4}	[0-9]+$" && \
+    [ "$b30d" = "$("$T/wfixture" bytes < "$T/b30.words")" ] && \
+    ! cmp -s "$T/b30.state" "$T/b18.state.ref"
+gate "B30 one s event names the digest that the manifest and the fixture name" $? 0
+cp "$T/b30.state" "$T/b30r.state"; cp "$T/b30.bio" "$T/b30r.bio"
+"$N" "$T/p3.bytes" --episodes 1 --steps 600 --state "$T/b30r.state" \
+    --bio "$T/b30r.bio" > "$T/b30r.out" 2>&1
+gate "B30 a signed life resumes and plays" $? 0
+cp "$T/b18.state.ref" "$T/b30u.state"; cp "$T/b18.bio.ref" "$T/b30u.bio"
+"$N" "$T/p3.bytes" --episodes 1 --steps 600 --state "$T/b30u.state" \
+    --bio "$T/b30u.bio" > "$T/b30u.out" 2>&1
+grep -v '^biography: ' "$T/b30r.out" > "$T/b30r.play"
+grep -v '^biography: ' "$T/b30u.out" > "$T/b30u.play"
+grep -v '^s	' "$T/b30r.bio" > "$T/b30r.clean"
+cmp -s "$T/b30r.play" "$T/b30u.play" && cmp -s "$T/b30r.clean" "$T/b30u.bio"
+gate "B30 the signature is powerless: signed and unsigned twins play identically" $? 0
+cp "$T/b30.state" "$T/b30d.state"; cp "$T/b30.bio" "$T/b30d.bio"
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b30d.state" \
+    --bio "$T/b30d.bio" >/dev/null 2>&1
+[ "$(grep -c '^s	' "$T/b30d.bio")" -eq 2 ]
+gate "B30 a repeated signature is a second event, not a silence" $? 0
+cp "$T/b30.state" "$T/b30l.state"; cp "$T/b30.bio" "$T/b30l.bio"
+"$N" --speak 60 --speak-seed 7 --speak-laplace --sign --state "$T/b30l.state" \
+    --bio "$T/b30l.bio" > "$T/b30l.words" 2>/dev/null
+tail -1 "$T/b30l.bio" | grep -qE "^s	[0-9]+	$("$T/wfixture" bytes < "$T/b30l.words")	60	7	(uni|bi|tri)	laplace-red	[0-9a-f]{4}	[0-9]+$"
+gate "B30 the red Laplace mouth signs under its own law name" $? 0
+# crash contract: a death after the biography line and before the state
+cp "$T/b30.bio" "$T/b30c1.bio"; cp "$T/b18.state.ref" "$T/b30c1.state"
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30c1.state" \
+    --bio "$T/b30c1.bio" >/dev/null 2> "$T/b30c1.err"
+r1=$?
+# a death after the state and before the biography (order inverted by hand)
+cp "$T/b18.bio.ref" "$T/b30c2.bio"; cp "$T/b30.state" "$T/b30c2.state"
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30c2.state" \
+    --bio "$T/b30c2.bio" >/dev/null 2> "$T/b30c2.err"
+r2=$?
+# a death in the middle of the s line
+b30sz=$(wc -c < "$T/b30.bio" | tr -d ' '); b30ll=$(tail -1 "$T/b30.bio" | wc -c | tr -d ' ')
+head -c $((b30sz - b30ll / 2)) "$T/b30.bio" > "$T/b30c3.bio"; cp "$T/b18.state.ref" "$T/b30c3.state"
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30c3.state" \
+    --bio "$T/b30c3.bio" >/dev/null 2> "$T/b30c3.err"
+r3=$?
+[ "$r1" -eq 1 ] && [ "$r2" -eq 1 ] && [ "$r3" -eq 1 ] && \
+    grep -q 'does not match state' "$T/b30c1.err" && \
+    grep -q 'does not match state' "$T/b30c2.err" && \
+    grep -q 'refusing' "$T/b30c3.err"
+gate "B30 a death between the two files refuses resume by chain and count" $? 0
+# a stale state sibling left by an interrupted publication does not falsify resume
+cp "$T/b30.state" "$T/b30s.state"; cp "$T/b30.bio" "$T/b30s.bio"
+: > "$T/b30s.state.tmp.stale0"
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30s.state" \
+    --bio "$T/b30s.bio" >/dev/null 2>&1
+gate "B30 a stale state sibling neither helps nor hinders resume" $? 0
+# the stream: closed, or pointed at the life's own memory, refuses before a word
+b30g=0
+cp "$T/b18.state.ref" "$T/b30g.state"; cp "$T/b18.bio.ref" "$T/b30g.bio"
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b30g.state" \
+    --bio "$T/b30g.bio" 2> "$T/b30g.err" >&-
+[ $? -eq 1 ] && grep -q 'open stream' "$T/b30g.err" || b30g=98
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b30g.state" \
+    --bio "$T/b30g.bio" 2>&- > "$T/b30g.out"
+[ $? -eq 1 ] && [ ! -s "$T/b30g.out" ] || b30g=98
+"$N" --speak 60 --speak-seed 7 --state "$T/b30g.state" \
+    --bio "$T/b30g.bio" 2> "$T/b30g.err" >> "$T/b30g.bio"
+[ $? -eq 1 ] && grep -q 'own memory' "$T/b30g.err" || b30g=98
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b30g.state" \
+    --bio "$T/b30g.bio" 2>> "$T/b30g.state" >/dev/null
+[ $? -eq 1 ] || b30g=98
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b30g.state" \
+    --bio "$T/b30g.bio" 2>> "$T/b30g.bio" >/dev/null
+[ $? -eq 1 ] || b30g=98
+cmp -s "$T/b30g.state" "$T/b18.state.ref" && \
+    cmp -s "$T/b30g.bio" "$T/b18.bio.ref" || b30g=98
+gate "B30 a closed or self-directed stream refuses before a word, signed or not" $b30g 0
+# the mask: --sign is a mouth flag and nothing else
+b30m=0
+for args in "--sign" "--speak 0 --sign" "--speak 5 --sign --reset" \
+    "--sign --cite $T/b28.docket" "--sign --court $T/b20.slice $T/p3.bytes" \
+    "--sign --ear $T/b20.slice $T/p3.bytes"; do
+    # shellcheck disable=SC2086
+    "$N" $args --state "$T/b30g.state" --bio "$T/b30g.bio" >/dev/null 2>&1
+    [ $? -eq 1 ] || b30m=98
+done
+cmp -s "$T/b30g.state" "$T/b18.state.ref" && \
+    cmp -s "$T/b30g.bio" "$T/b18.bio.ref" || b30m=98
+gate "B30 --sign without a mouth, with zero bytes, a reset, or another instrument refuses" $b30m 0
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -2265,7 +2373,12 @@ rc=$?
     --state "$T/ss18.state" --bio "$T/ss18.bio" >/dev/null 2>>"$T/ss18.err" || rc=$?
 "$S" --speak 200 --speak-seed 7 --speak-laplace \
     --state "$T/ss18.state" --bio "$T/ss18.bio" >/dev/null 2>>"$T/ss18.err" || rc=$?
+"$S" --speak 200 --speak-seed 7 --sign \
+    --state "$T/ss18.state" --bio "$T/ss18.bio" >/dev/null 2>>"$T/ss18.err" || rc=$?
+"$S" "$T/p3.bytes" --episodes 1 --steps 60 \
+    --state "$T/ss18.state" --bio "$T/ss18.bio" >/dev/null 2>>"$T/ss18.err" || rc=$?
 grep -v '^speak:' "$T/ss18.err" | grep -v '^speak support:' | grep -v '^spoke:' | \
+    grep -v '^signed:' | \
     grep -v '^NETTA ZERO' > "$T/ss18.err2" || true
 [ -s "$T/ss18.err2" ] && rc=98
 gate "S ASan/UBSan silent through the speaking mouth" $rc 0

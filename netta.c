@@ -2522,6 +2522,12 @@ static int same_file(const char *a, const char *b) {
     return sa.st_dev == sb.st_dev && sa.st_ino == sb.st_ino;
 }
 
+static int fd_is_file(int fd, const char *path) {
+    struct stat sa, sb;
+    if (fstat(fd, &sa) != 0 || stat(path, &sb) != 0) return 0;
+    return sa.st_dev == sb.st_dev && sa.st_ino == sb.st_ino;
+}
+
 static int file_exists(const char *path) {
     struct stat s;
     if (stat(path, &s) == 0) return 1;
@@ -2557,6 +2563,14 @@ static int life_control_named = 0;
    stay outside this bit because a citation needs its life's files. */
 static int instrument_only_named = 0;
 static const char *cite_path = NULL;
+/* body 30: the signature. Under --sign the mouth publishes what it just
+   said as one biography event of type s, in the citation's two-file order;
+   speech itself stays behaviourally read-only. speak() leaves the facts of
+   the act here for the event line. */
+static int sign_requested = 0;
+static uint64_t spoke_digest = 0;
+static int spoke_hand = 0;
+static uint8_t spoke_open2 = 0, spoke_open1 = 0;
 
 /* Body 22's repair: a question has one byte law even though mouth and ear
    retain different public verbs.  For a regular file only the final two
@@ -2782,6 +2796,10 @@ static void speak(void) {
             speak_laplace ? "laplace-red" : "supported-backoff", open2, open1,
             (unsigned long long)atomic_bytes_lived,
             (unsigned long long)episode_no);
+    spoke_digest = spoken;
+    spoke_hand = hand;
+    spoke_open2 = open2;
+    spoke_open1 = open1;
 }
 
 /* body 20: the island's ear. Every island can carry its own statistical
@@ -3660,6 +3678,10 @@ int main(int argc, char **argv) {
             prompt_path = argv[++i];
         else if (!strcmp(argv[i], "--speak-laplace"))
             speak_laplace = 1;
+        else if (!strcmp(argv[i], "--sign")) {
+            instrument_only_named = 1;
+            sign_requested = 1;
+        }
         else if (!strcmp(argv[i], "--ear") && i + 1 < argc)
             ear_path = argv[++i];
         else if (!strcmp(argv[i], "--ear-context") && i + 1 < argc)
@@ -3701,6 +3723,7 @@ int main(int argc, char **argv) {
     }
     if (court_path) {
         if (ear_path || ear_twin_requested || speak_requested ||
+                sign_requested ||
                 speak_seed_set || prompt_path || speak_laplace ||
                 life_control_named) {
             fprintf(stderr,
@@ -3714,7 +3737,8 @@ int main(int argc, char **argv) {
         }
     }
     if (cite_path) {
-        if (speak_requested || speak_seed_set || prompt_path ||
+        if (speak_requested || sign_requested || speak_seed_set ||
+                prompt_path ||
                 speak_laplace || ear_path || ear_context_path ||
                 ear_twin_requested || court_path) {
             fprintf(stderr,
@@ -3736,7 +3760,8 @@ int main(int argc, char **argv) {
         }
     }
     if (ear_path) {
-        if (speak_requested || speak_seed_set || prompt_path ||
+        if (speak_requested || sign_requested || speak_seed_set ||
+                prompt_path ||
                 speak_laplace || life_control_named) {
             fprintf(stderr,
                     "netta: the ear accepts only shores, --ear, and "
@@ -3753,9 +3778,31 @@ int main(int argc, char **argv) {
                 "netta: --actor-lock mv requires units enabled\n");
         exit(1);
     }
-    if (!speak_requested && (speak_seed_set || prompt_path || speak_laplace)) {
+    if (!speak_requested &&
+            (speak_seed_set || prompt_path || speak_laplace ||
+             sign_requested)) {
         fprintf(stderr, "netta: speech flags require --speak\n");
         exit(1);
+    }
+    if (speak_requested) {
+        /* the stream and the voice must be open descriptors, and neither
+           may be the life's own memory: a closed stdout would let the
+           biography inherit its descriptor and swallow the speech, and a
+           redirect into the biography or state would break the chain.
+           Checked before the first word: a voice pointed at the memory
+           has nowhere honest to say why, so that case refuses silently. */
+        struct stat mouth_st;
+        if (fd_is_file(2, bio_path) || fd_is_file(2, state_path)) exit(1);
+        if (fstat(1, &mouth_st) != 0 || fstat(2, &mouth_st) != 0) {
+            fprintf(stderr, "netta: the mouth needs an open stream and "
+                            "voice\n");
+            exit(1);
+        }
+        if (fd_is_file(1, bio_path) || fd_is_file(1, state_path)) {
+            fprintf(stderr,
+                    "netta: the mouth cannot speak into its own memory\n");
+            exit(1);
+        }
     }
     if (speak_requested) fprintf(stderr, "NETTA ZERO\n");
     else printf("NETTA ZERO\n");
@@ -3765,7 +3812,8 @@ int main(int argc, char **argv) {
                         "[--start OFFSET] [--state P] [--bio P] [--reset] "
                         "[--atlas] [--no-core] [--core-hebb-v1] [--jury] "
                         "[--speak N] [--speak-seed N] [--prompt-file P] "
-                        "[--speak-laplace] [--ear P] [--ear-context P] "
+                        "[--speak-laplace] [--sign] [--ear P] "
+                        "[--ear-context P] "
                         "[--ear-twin] [--court P] [--cite P] "
                         "[--no-units] [--no-mv-nav] [--no-island-court] "
                         "[--no-birth-floor] [--no-local-probation] "
@@ -3837,7 +3885,44 @@ int main(int argc, char **argv) {
             fprintf(stderr, "netta: the mouth cannot meet new islands\n");
             exit(1);
         }
+        if (sign_requested && !speak_bytes) {
+            fprintf(stderr, "netta: the signature needs spoken bytes\n");
+            exit(1);
+        }
         speak();
+        if (sign_requested) {
+            /* body 30: the mouth signs what it just said. One biography
+               event of type s -- episode, candidate digest, bytes, seed,
+               hand, law, opening, lived bytes -- opened and appended only
+               after the stream is out and flushed, in the citation's
+               two-file order: the line, the biography close, then the
+               atomic state. A death between the two files is refused on
+               resume by chain and count, never repaired; a biography that
+               cannot be opened leaves the speech spoken and unsigned.
+               Nothing reads s back into behaviour. */
+            bio_open(bio_path, 0);
+            char sl[192];
+            snprintf(sl, sizeof sl,
+                     "s\t%llu\t%016llx\t%llu\t%llu\t%s\t%s\t%02x%02x\t%llu\n",
+                     (unsigned long long)episode_no,
+                     (unsigned long long)spoke_digest,
+                     (unsigned long long)speak_bytes,
+                     (unsigned long long)speak_seed, actor_name[spoke_hand],
+                     speak_laplace ? "laplace-red" : "supported-backoff",
+                     spoke_open2, spoke_open1,
+                     (unsigned long long)atomic_bytes_lived);
+            bio_append(sl);
+            if (fflush(bio_file) != 0 || fclose(bio_file) != 0) {
+                fprintf(stderr, "netta: biography close failed\n");
+                exit(1);
+            }
+            state_save(state_path);
+            fprintf(stderr, "signed: candidate %016llx as biography line "
+                            "%llu, chain %016llx\n",
+                    (unsigned long long)spoke_digest,
+                    (unsigned long long)bio_lines,
+                    (unsigned long long)bio_chain);
+        }
         return 0;
     }
     uint64_t cite_cand = 0, cite_bytes = 0, cite_docket = 0;
