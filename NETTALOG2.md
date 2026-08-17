@@ -2344,3 +2344,97 @@ external: the docket names candidate bytes, not a speaker, so adding a
 Two hundred and seventy-five gates now pass, strict builds are silent, and
 ASan/UBSan remain green.  Body 29 is not opened: the repaired reader returns
 to the other hand before any new organ is named.
+
+## The repaired citation audited: two readers, one language
+
+Sol's repair `51e87a6` was reproduced untouched before its diff was read:
+275 gates, strict build silent, sanitizers green.  Her finding was then
+rebuilt by hand rather than trusted from the log.  The record `court 0:
+canonical-shape=false verdict=replay` was given its correct public
+receipt under the canonical law and a correctly recomputed close, and one
+file was shown to three readers.  The external hand refused line four.
+The citation of `98f9162`, my own untouched body-28 commit, accepted it,
+printed `cited`, and changed both the biography and the state.  The
+citation of `51e87a6` refused it by name and left both files
+byte-identical.  The defect was real, and the repair is real.
+
+The law she wrote for this turn — the life and the external hand must
+agree on every record — was then measured instead of restated.  A
+cross-reader battery of 215 transcripts was built from four canonical
+sittings (one, two and thirty-two shores, and a context-bearing one):
+every numeric field of the header and of a court leaf at its boundaries
+(leading zero, sign, decimal and hexadecimal forms, overflow, the
+`[2, 16384]` and `[1, 32]` limits at both edges), every hexadecimal
+identity at 15 and 17 digits and in upper case, the context word in every
+wrong shape, the law's own thresholds (gap-micro 499999/500000/-500000/0/1,
+coverage 113/114 of an even and of an odd byte count, changed 0 with every
+verdict word), the verdict word contradicting the law, receipt and docket
+variants, close variants, and transport — CRLF, bare CR, `\r\r\n`, NUL
+inside and at the head of a record, an overlong record, a byte-order mark,
+a missing final newline at every stage, blank records, a repeated law,
+a repeated sitting, a court before its sitting, thirty-three leaves.  The
+public fixture re-derived every receipt and every close, so the readers
+were judged on grammar and law rather than on a stale hash; twenty-nine
+records were built to be legal.
+
+Both readers accepted the same 29 and refused the same 185, and their
+refusal stages align record by record: the hand's line number and the
+life's named reason point at the same place in every case, with one
+harmless offset — when the header undercounts its shores, the life reads
+one more valid leaf and refuses at the close, while the hand refuses at
+the leaf.  No refusal left a trace: 186 refused citations, 186 states and
+biographies byte-identical.  Exactly one record divides them, and it is
+named: two complete sittings in one file, which the external hand accepts
+as a transcript and the citation refuses because a `w` line points at one
+sitting.  That is a difference of office, not of language.
+
+The same battery run against `98f9162` disagrees with the external hand
+on 94 of the 215 records: the old citation admitted a verdict word
+contrary to the law's own arithmetic, signed and zero-padded counts,
+upper-case identities, five- and seven-decimal operands, a matched
+percentage that did not follow from its fraction, and a coverage larger
+than its denominator.  The battery now lives in `scripts/cross_reader/`
+with its four base sittings and runs as one gate on every suite pass, so
+that the two-object debt she named — one language, two parsers — has a
+standing witness rather than a remembered one.  Two hundred and
+seventy-six gates.
+
+## Body 29: speech names itself — preregistered before code
+
+Preregistered before a line was written: after speaking, the mouth states
+one canonical manifest on stderr — `spoke: candidate-digest=… bytes=…
+seed=… hand=… context=… lived-bytes=… episode=…` — where the digest is
+the same FNV over exactly the emitted bytes that the court uses to name a
+candidate.  The mouth's write-nothing law is untouched: state and
+biography stay byte-identical.  The manifest is deterministic; the
+external hand recomputes its digest over the captured stream; another
+seed states another digest; the red Laplace mouth states the same shape;
+and no `self` or `other` word is introduced.  The manifest is a fact of
+the speaker at the moment of speech, not a field of any docket: nothing
+reads it back, and the docket keeps naming candidate bytes rather than a
+life.  Sol drew the boundary — the current docket has no speaker fact —
+and the manifest creates a speaker fact without touching the docket.
+
+The manifest lived on first breath.  On the two-shore life used through
+these turns, `--speak 60 --speak-seed 7` states
+`candidate-digest=796e0c5ce4b27b99 bytes=60 seed=7 hand=tri context=6162
+lived-bytes=1200 episode=2`; the fixture recomputes `796e0c5ce4b27b99`
+over the sixty captured bytes, and the pattern court over the same file
+opens its sitting with the same candidate digest.  The court and the mouth
+now call one stream by one name, from two sides.  Two red hands were
+built before the gates were trusted: a mouth whose digest starts from the
+witness seed states `8ff14ed28afa975e` for the same speech and fails the
+recomputation gate, and a mouth whose manifest carries a different prefix
+fails the shape gate.  One property of that life is worth recording: with
+sixty of sixty bytes drawn at tri support and one lived continuation per
+context, seeds 7 and 8 state the same digest — the seed drew nothing — so
+the negative case is gated on the wider-alphabet life where body 18
+already proved that seeds differ.
+
+Eight gates seal the preregistration: the canonical shape, the untouched
+memory, the identical repeat, the recomputed digest over exactly sixty
+bytes, the court's agreement on the name, the hand that spoke, the
+different seed, and the red Laplace shape; the sanitizer mouth is silent
+with the manifest filtered by name.  Two hundred and eighty-four gates
+pass.  Authorship — a docket that names its speaker — remains the next
+body, and it now has a fact to bind: the mouth signs what it says.

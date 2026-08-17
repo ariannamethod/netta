@@ -61,6 +61,12 @@ technical source of truth for the living line.
   lived. The mouth is the life's, and speech lives in the basin of its
   opening: a life on two shores with disjoint alphabets speaks one shore,
   because no cross-shore transition was ever lived for the tongue to walk.
+  After speaking, the mouth states one canonical manifest on stderr —
+  `spoke: candidate-digest=… bytes=… seed=… hand=… context=…
+  lived-bytes=… episode=…` — the same FNV digest over exactly the emitted
+  bytes that the court uses to name a candidate, so mouth and court call
+  one stream by one name; it is a fact of the speaker at the moment of
+  speech, not a field of any docket, and it writes nothing.
 - Under `--ear FILE`, every island in the convoy carries its own statistical
   judge, grown from its immutable tape and nothing else: the ear prices the
   given stream with the shore's own Laplace ladder (bits per byte), uni/bi
@@ -131,7 +137,12 @@ technical source of truth for the living line.
   names no life, so a citation records an external fact about a candidate
   stream without claiming authorship; binding speech to speaker remains a
   future body. The life and external checker implement the same canonical
-  language independently and share no parser code. State stays v20.
+  language independently and share no parser code. A 215-record
+  cross-reader battery (`scripts/cross_reader/`) runs on every suite pass:
+  both readers accept the same 29 records and refuse the same 185, and the
+  one named divergence is two complete sittings in one file, which the
+  checker accepts as a transcript and the citation refuses as more than one
+  sitting. State stays v20.
 - Experience can cross islands, while worlds, receipts, and counterfactual
   controls remain distinguishable.
 - With `--atlas`, navigation becomes an earned organ: among islands present
@@ -179,7 +190,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 275-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 284-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -287,7 +298,9 @@ Useful experimental flags:
   `--actor-lock` the chosen hand speaks instead of the elected seat.
   `--speak-laplace` restores body 18's smoothing law as a matched red arm.
   Speech is a raw byte stream, so redirect it to a file when a lived binary
-  alphabet may contain terminal control bytes.
+  alphabet may contain terminal control bytes. The mouth ends every
+  speech with a `spoke:` manifest on stderr naming the digest, count, seed,
+  hand, opening context, lived bytes, and episode of what it just said.
 - `--ear P` scores the byte stream in P against every island in the convoy:
   bits per byte under the shore's own Laplace ladder, longest exact match,
   and matched-16 coverage, one line per shore. It listens to at most 16384

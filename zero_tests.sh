@@ -2020,6 +2020,61 @@ state_extra=$(cmp -l "$T/b28.long-a.state" "$T/b28.long-b.state" | \
     [ "$state_extra" -eq 0 ]
 gate "B28 the longer cited twin differs only in biography metadata" $? 0
 
+# The life and the external hand read one canonical language with no shared
+# code. A 215-record battery (canonical records, every numeric and hex field
+# at its boundaries, the law's thresholds, receipt, close and framing
+# variants, transport and truncation) must draw the same verdict from both,
+# with the single named divergence (two concatenated sittings) and no trace
+# left by any refusal. The pre-repair citation disagreed on 94 of these.
+bash scripts/cross_reader/battery.sh "$N" "$T/wcheck" "$T/wfixture" \
+    "$T/b28.state" "$T/b28.bio" "$T/b28.xr" > "$T/b28.xr.out" 2>&1
+grep -qx 'transcripts=215 both-accept=29 disagree=1 \[S14_two_sittings\] trace-leaks=0' \
+    "$T/b28.xr.out"
+gate "B28 the life and the external hand agree on 215 records" $? 0
+
+# --- B29: speech names itself -------------------------------------------
+# After speaking, the mouth states one canonical manifest on stderr: the
+# candidate digest over exactly the emitted bytes, their count, the stream
+# seed, the hand, the opening context, and the speaker's lived bytes and
+# episode. A fact of the speaker at the moment of speech, not a field of
+# any docket: the mouth still writes nothing, nothing reads the manifest
+# back, and no self/other word is invented.
+"$N" --speak 60 --speak-seed 7 --state "$T/b18.state" --bio "$T/b18.bio" \
+    > "$T/b29.words" 2> "$T/b29.err"
+rc=$?
+grep -qE '^spoke: candidate-digest=[0-9a-f]{16} bytes=60 seed=7 hand=(uni|bi|tri) context=[0-9a-f]{4} lived-bytes=[0-9]+ episode=[0-9]+$' \
+    "$T/b29.err" && [ "$rc" -eq 0 ]
+gate "B29 speech states one canonical manifest of itself" $? 0
+cmp -s "$T/b18.state" "$T/b18.state.ref" && cmp -s "$T/b18.bio" "$T/b18.bio.ref"
+gate "B29 the manifest writes no memory" $? 0
+"$N" --speak 60 --speak-seed 7 --state "$T/b18.state" --bio "$T/b18.bio" \
+    > "$T/b29.words2" 2> "$T/b29.err2"
+cmp -s "$T/b29.words" "$T/b29.words2" && cmp -s "$T/b29.err" "$T/b29.err2"
+gate "B29 the same speech states the same manifest" $? 0
+b29d=$(sed -n 's/^spoke: candidate-digest=\([0-9a-f]*\) .*/\1/p' "$T/b29.err")
+b29x=$("$T/wfixture" bytes < "$T/b29.words")
+[ "$b29d" = "$b29x" ] && [ "$(wc -c < "$T/b29.words" | tr -d ' ')" -eq 60 ]
+gate "B29 the external hand recomputes the digest over the emitted bytes" $? 0
+"$N" "$T/p3.bytes" --court "$T/b29.words" > "$T/b29.court" 2>/dev/null
+grep -q "^court sitting: candidate-digest=$b29d bytes=60 " "$T/b29.court"
+gate "B29 the court names the candidate the mouth named" $? 0
+b29h=$(sed -n 's/^speak: .* hand \([a-z]*\),.*/\1/p' "$T/b29.err")
+grep -q "^spoke: .* hand=$b29h " "$T/b29.err"
+gate "B29 the manifest's hand is the hand that spoke" $? 0
+"$N" --speak 60 --speak-seed 7 --state "$T/b18b.state" --bio "$T/b18b.bio" \
+    >/dev/null 2> "$T/b29b.err7"
+"$N" --speak 60 --speak-seed 8 --state "$T/b18b.state" --bio "$T/b18b.bio" \
+    >/dev/null 2> "$T/b29b.err8"
+b29d7=$(sed -n 's/^spoke: candidate-digest=\([0-9a-f]*\) .*/\1/p' "$T/b29b.err7")
+b29d8=$(sed -n 's/^spoke: candidate-digest=\([0-9a-f]*\) .*/\1/p' "$T/b29b.err8")
+[ -n "$b29d7" ] && [ -n "$b29d8" ] && [ "$b29d7" != "$b29d8" ]
+gate "B29 a different seed states a different digest (red: not tautological)" $? 0
+"$N" --speak 60 --speak-seed 7 --speak-laplace --state "$T/b18.state" \
+    --bio "$T/b18.bio" > "$T/b29.lap" 2> "$T/b29.lap.err"
+b29l=$(sed -n 's/^spoke: candidate-digest=\([0-9a-f]*\) bytes=60 seed=7 hand=[a-z]* context=[0-9a-f]\{4\} lived-bytes=[0-9]* episode=[0-9]*$/\1/p' "$T/b29.lap.err")
+[ -n "$b29l" ] && [ "$b29l" = "$("$T/wfixture" bytes < "$T/b29.lap")" ]
+gate "B29 the red Laplace mouth states the same manifest shape" $? 0
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -2088,7 +2143,7 @@ rc=$?
     --state "$T/ss18.state" --bio "$T/ss18.bio" >/dev/null 2>>"$T/ss18.err" || rc=$?
 "$S" --speak 200 --speak-seed 7 --speak-laplace \
     --state "$T/ss18.state" --bio "$T/ss18.bio" >/dev/null 2>>"$T/ss18.err" || rc=$?
-grep -v '^speak:' "$T/ss18.err" | grep -v '^speak support:' | \
+grep -v '^speak:' "$T/ss18.err" | grep -v '^speak support:' | grep -v '^spoke:' | \
     grep -v '^NETTA ZERO' > "$T/ss18.err2" || true
 [ -s "$T/ss18.err2" ] && rc=98
 gate "S ASan/UBSan silent through the speaking mouth" $rc 0
