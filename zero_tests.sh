@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B28. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B29. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -2021,30 +2021,44 @@ state_extra=$(cmp -l "$T/b28.long-a.state" "$T/b28.long-b.state" | \
 gate "B28 the longer cited twin differs only in biography metadata" $? 0
 
 # The life and the external hand read one canonical language with no shared
-# code. A 215-record battery (canonical records, every numeric and hex field
+# code. A 230-record battery (canonical records, every numeric and hex field
 # at its boundaries, the law's thresholds, receipt, close and framing
 # variants, transport and truncation) must draw the same verdict from both,
 # with the single named divergence (two concatenated sittings) and no trace
-# left by any refusal. The pre-repair citation disagreed on 94 of these.
+# left by any refusal. The pre-repair citation's old 215-record result
+# disagreed on 94; the expanded historical comparison is recorded separately.
 bash scripts/cross_reader/battery.sh "$N" "$T/wcheck" "$T/wfixture" \
     "$T/b28.state" "$T/b28.bio" "$T/b28.xr" > "$T/b28.xr.out" 2>&1
-grep -qx 'transcripts=215 both-accept=29 disagree=1 \[S14_two_sittings\] trace-leaks=0' \
+grep -qx 'transcripts=230 both-accept=30 disagree=1 \[S14_two_sittings\] trace-leaks=0' \
     "$T/b28.xr.out"
-gate "B28 the life and the external hand agree on 215 records" $? 0
+gate "B28 the life and the external hand agree on 230 records" $? 0
 
 # --- B29: speech names itself -------------------------------------------
 # After speaking, the mouth states one canonical manifest on stderr: the
 # candidate digest over exactly the emitted bytes, their count, the stream
-# seed, the hand, the opening context, and the speaker's lived bytes and
-# episode. A fact of the speaker at the moment of speech, not a field of
-# any docket: the mouth still writes nothing, nothing reads the manifest
-# back, and no self/other word is invented.
+# seed, the hand, its law, the opening, and the speaker's lived bytes and
+# episode. A fact of the speaker at the moment of speech, not a field of any
+# docket: the mouth still writes nothing, and no self/other word is invented.
+# An independent reader verifies exact grammar, byte count, and digest. The
+# remaining fields are speaker statements until a later body supplies enough
+# independent state to rederive them.
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic scripts/manifest_check.c \
+   -o "$T/mcheck" 2> "$T/mcheck-build.log"
+rc=$?; [ -s "$T/mcheck-build.log" ] && rc=98
+gate "B29 independent manifest reader builds strict and silent" $rc 0
+M="$T/mcheck"
 "$N" --speak 60 --speak-seed 7 --state "$T/b18.state" --bio "$T/b18.bio" \
     > "$T/b29.words" 2> "$T/b29.err"
 rc=$?
-grep -qE '^spoke: candidate-digest=[0-9a-f]{16} bytes=60 seed=7 hand=(uni|bi|tri) context=[0-9a-f]{4} lived-bytes=[0-9]+ episode=[0-9]+$' \
+grep -qE '^spoke: candidate-digest=[0-9a-f]{16} bytes=60 seed=7 hand=(uni|bi|tri) law=supported-backoff opening=[0-9a-f]{4} lived-bytes=[0-9]+ episode=[0-9]+$' \
     "$T/b29.err" && [ "$rc" -eq 0 ]
 gate "B29 speech states one canonical manifest of itself" $? 0
+grep '^spoke:' "$T/b29.err" > "$T/b29.manifest"
+"$M" "$T/b29.words" < "$T/b29.manifest" > "$T/b29.read" 2>&1
+rc=$?
+grep -Eq '^manifest accepted: 60 bytes digest [0-9a-f]{16}$' \
+    "$T/b29.read" || rc=98
+gate "B29 an independent reader accepts the exact stream witness" $rc 0
 cmp -s "$T/b18.state" "$T/b18.state.ref" && cmp -s "$T/b18.bio" "$T/b18.bio.ref"
 gate "B29 the manifest writes no memory" $? 0
 "$N" --speak 60 --speak-seed 7 --state "$T/b18.state" --bio "$T/b18.bio" \
@@ -2061,6 +2075,100 @@ gate "B29 the court names the candidate the mouth named" $? 0
 b29h=$(sed -n 's/^speak: .* hand \([a-z]*\),.*/\1/p' "$T/b29.err")
 grep -q "^spoke: .* hand=$b29h " "$T/b29.err"
 gate "B29 the manifest's hand is the hand that spoke" $? 0
+b29law=$(sed -n 's/^speak: .* law \([a-z-]*\)$/\1/p' "$T/b29.err")
+grep -q "^spoke: .* law=$b29law " "$T/b29.err" && \
+    grep -q ' opening=' "$T/b29.manifest" && \
+    ! grep -q ' context=' "$T/b29.manifest"
+gate "B29 law and opening name speech rather than the court's context" $? 0
+
+# Every token has one spelling. The reader parses bounded tokens and then
+# reconstructs the entire record, so no signed, padded, widened, reordered, or
+# renamed spelling can borrow the public digest.
+b29_refuses() {
+    "$M" "$T/b29.words" < "$1" >/dev/null 2>&1
+    [ $? -eq 1 ]
+}
+b29bad=0
+sed 's/ bytes=60 / bytes=060 /' "$T/b29.manifest" > "$T/b29.bad-bytes"
+b29_refuses "$T/b29.bad-bytes" || b29bad=98
+sed 's/ seed=7 / seed=+7 /' "$T/b29.manifest" > "$T/b29.bad-seed"
+b29_refuses "$T/b29.bad-seed" || b29bad=98
+sed 's/ hand=[a-z]*/ hand=mv/' "$T/b29.manifest" > "$T/b29.bad-hand"
+b29_refuses "$T/b29.bad-hand" || b29bad=98
+sed 's/ law=[a-z-]*/ law=supported/' "$T/b29.manifest" > "$T/b29.bad-law"
+b29_refuses "$T/b29.bad-law" || b29bad=98
+sed 's/opening=./opening=A/' "$T/b29.manifest" > "$T/b29.bad-opening"
+b29_refuses "$T/b29.bad-opening" || b29bad=98
+sed 's/lived-bytes=/lived-bytes=0/' "$T/b29.manifest" > "$T/b29.bad-lived"
+b29_refuses "$T/b29.bad-lived" || b29bad=98
+sed 's/episode=/episode=+/' "$T/b29.manifest" > "$T/b29.bad-episode"
+b29_refuses "$T/b29.bad-episode" || b29bad=98
+sed 's/ bytes=60 / bytes=00000000000000000000000000000000 /' \
+    "$T/b29.manifest" > "$T/b29.bad-wide"
+b29_refuses "$T/b29.bad-wide" || b29bad=98
+sed 's/ opening=/ context=/' "$T/b29.manifest" > "$T/b29.bad-name"
+b29_refuses "$T/b29.bad-name" || b29bad=98
+sed 's/ seed=7 hand=/ hand=/' "$T/b29.manifest" > "$T/b29.bad-missing"
+b29_refuses "$T/b29.bad-missing" || b29bad=98
+sed 's/$/ extra=1/' "$T/b29.manifest" > "$T/b29.bad-extra"
+b29_refuses "$T/b29.bad-extra" || b29bad=98
+gate "B29 the reader refuses noncanonical manifest fields" $b29bad 0
+
+# One record is one record. CRLF is the transport normalization shared with
+# the docket language; fragments, extra records, NUL, and long lines are never
+# silently split or ignored.
+b29transport=0
+awk '{printf "%s\r\n",$0}' "$T/b29.manifest" > "$T/b29.crlf"
+"$M" "$T/b29.words" < "$T/b29.crlf" >/dev/null 2>&1 || b29transport=98
+head -c $(( $(wc -c < "$T/b29.manifest") - 1 )) "$T/b29.manifest" \
+    > "$T/b29.fragment"
+b29_refuses "$T/b29.fragment" || b29transport=98
+cat "$T/b29.manifest" "$T/b29.manifest" > "$T/b29.twice"
+b29_refuses "$T/b29.twice" || b29transport=98
+{ head -c $(( $(wc -c < "$T/b29.manifest") - 1 )) "$T/b29.manifest";
+  printf '%0600d\n' 0; } > "$T/b29.long"
+b29_refuses "$T/b29.long" || b29transport=98
+{ cat "$T/b29.manifest"; printf '\0'; } > "$T/b29.nul"
+b29_refuses "$T/b29.nul" || b29transport=98
+gate "B29 one newline-sealed manifest survives transport without ambiguity" $b29transport 0
+
+# Count and digest are independently recoverable from the stream. The other
+# canonical fields are intentionally not claimed as independently proven yet.
+sed 's/ bytes=60 / bytes=61 /' "$T/b29.manifest" > "$T/b29.bad-count"
+b29_refuses "$T/b29.bad-count"; r1=$?
+sed 's/candidate-digest=./candidate-digest=0/' "$T/b29.manifest" \
+    > "$T/b29.bad-digest"
+b29_refuses "$T/b29.bad-digest"; r2=$?
+cp "$T/b29.words" "$T/b29.other-words"; printf x >> "$T/b29.other-words"
+"$M" "$T/b29.other-words" < "$T/b29.manifest" >/dev/null 2>&1; r3=$?
+[ "$r1" -eq 0 ] && [ "$r2" -eq 0 ] && [ "$r3" -eq 1 ]
+gate "B29 count, digest, and captured bytes must name one stream" $? 0
+
+sed 's/ seed=7 / seed=8 /;s/ hand=[a-z]*/ hand=uni/;s/law=supported-backoff/law=laplace-red/;s/opening=[0-9a-f]*/opening=0000/;s/lived-bytes=[0-9]*/lived-bytes=1/;s/episode=[0-9]*/episode=0/' \
+    "$T/b29.manifest" > "$T/b29.claims"
+"$M" "$T/b29.words" < "$T/b29.claims" > "$T/b29.claims.out" 2>&1 && \
+    grep -Eq '^manifest accepted: 60 bytes digest [0-9a-f]{16}$' \
+        "$T/b29.claims.out"
+gate "B29 the reader does not pretend to rederive speaker-only claims" $? 0
+
+"$N" --speak 0 --speak-seed 7 --state "$T/b18.state" --bio "$T/b18.bio" \
+    > "$T/b29.zero" 2> "$T/b29.zero.err"
+grep '^spoke:' "$T/b29.zero.err" > "$T/b29.zero.manifest"
+"$M" "$T/b29.zero" < "$T/b29.zero.manifest" >/dev/null 2>&1 && \
+    grep -q '^spoke: candidate-digest=cbf29ce484222325 bytes=0 ' \
+        "$T/b29.zero.manifest"
+gate "B29 zero speech has the defined empty-stream witness" $? 0
+
+# The period-3 source gives every observed pair exactly one continuation; all
+# sixty draws therefore remain tri and seeds 7 and 8 are observationally equal.
+# The wider world below remains the genuine negative case for seed identity.
+"$N" --speak 60 --speak-seed 8 --state "$T/b18.state" --bio "$T/b18.bio" \
+    > "$T/b29.det8" 2> "$T/b29.det8.err"
+awk '{for(i=1;i+2<=length($0);i++){k=substr($0,i,2);v=substr($0,i+2,1);if(k in n && n[k]!=v)bad=1;n[k]=v}} END{exit bad}' \
+    "$T/p3.bytes" && cmp -s "$T/b29.words" "$T/b29.det8" && \
+    grep -q '^speak support: uni 0, bi 0, tri 60$' "$T/b29.err" && \
+    grep -q '^speak support: uni 0, bi 0, tri 60$' "$T/b29.det8.err"
+gate "B29 deterministic tri support explains equal seeds on the narrow world" $? 0
 "$N" --speak 60 --speak-seed 7 --state "$T/b18b.state" --bio "$T/b18b.bio" \
     >/dev/null 2> "$T/b29b.err7"
 "$N" --speak 60 --speak-seed 8 --state "$T/b18b.state" --bio "$T/b18b.bio" \
@@ -2071,17 +2179,31 @@ b29d8=$(sed -n 's/^spoke: candidate-digest=\([0-9a-f]*\) .*/\1/p' "$T/b29b.err8"
 gate "B29 a different seed states a different digest (red: not tautological)" $? 0
 "$N" --speak 60 --speak-seed 7 --speak-laplace --state "$T/b18.state" \
     --bio "$T/b18.bio" > "$T/b29.lap" 2> "$T/b29.lap.err"
-b29l=$(sed -n 's/^spoke: candidate-digest=\([0-9a-f]*\) bytes=60 seed=7 hand=[a-z]* context=[0-9a-f]\{4\} lived-bytes=[0-9]* episode=[0-9]*$/\1/p' "$T/b29.lap.err")
-[ -n "$b29l" ] && [ "$b29l" = "$("$T/wfixture" bytes < "$T/b29.lap")" ]
-gate "B29 the red Laplace mouth states the same manifest shape" $? 0
+b29l=$(sed -n 's/^spoke: candidate-digest=\([0-9a-f]*\) bytes=60 seed=7 hand=[a-z]* law=laplace-red opening=[0-9a-f]\{4\} lived-bytes=[0-9]* episode=[0-9]*$/\1/p' "$T/b29.lap.err")
+grep '^spoke:' "$T/b29.lap.err" > "$T/b29.lap.manifest"
+[ -n "$b29l" ] && [ "$b29l" = "$("$T/wfixture" bytes < "$T/b29.lap")" ] && \
+    "$M" "$T/b29.lap" < "$T/b29.lap.manifest" >/dev/null 2>&1
+gate "B29 the red Laplace mouth names its distinct law in the same grammar" $? 0
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \
    netta.c -lm -o "$T/netta-san" >"$T/san-build.log" 2>&1
-rc=$?; [ -s "$T/san-build.log" ] && rc=98
-gate "S sanitizer build is strict and silent" $rc 0
+rc=$?
+cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
+   -fsanitize=address,undefined -fno-omit-frame-pointer \
+   scripts/manifest_check.c -o "$T/mcheck-san" \
+   >>"$T/san-build.log" 2>&1 || rc=$?
+[ -s "$T/san-build.log" ] && rc=98
+gate "S sanitizer builds are strict and silent" $rc 0
 S="$T/netta-san"
+MS="$T/mcheck-san"
+"$MS" "$T/b29.words" < "$T/b29.manifest" >/dev/null 2> "$T/ms29.err"
+rc=$?
+"$MS" "$T/b29.words" < "$T/b29.long" >/dev/null 2>> "$T/ms29.err"
+[ $? -eq 1 ] || rc=98
+grep -Eq 'AddressSanitizer|runtime error:' "$T/ms29.err" && rc=98
+gate "S ASan/UBSan silent through the independent manifest reader" $rc 0
 "$S" "$T/rep.bytes" --reset --seed 42 --episodes 1 --steps 4000 \
     --state "$T/sr.state" --bio "$T/sr.bio" >/dev/null 2>"$T/sr.err"
 rc=$?

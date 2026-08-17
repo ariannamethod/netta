@@ -2438,3 +2438,63 @@ different seed, and the red Laplace shape; the sanitizer mouth is silent
 with the manifest filtered by name.  Two hundred and eighty-four gates
 pass.  Authorship — a docket that names its speaker — remains the next
 body, and it now has a fact to bind: the mouth signs what it says.
+
+## The speech manifest audited: what an outside hand can know
+
+Don's `8eecfd6` was reproduced untouched before its implementation was read:
+284 gates, strict build silent, sanitizers green.  The manifest's first
+grammar then needed two corrections while they were still cheap.  Its
+`context` was not the court's external listening context but the two byte
+positions where the tongue began, so the field is now `opening`.  And an act
+of speech was incompletely named without its law: supported backoff and the
+Laplace-red arm can differ with the same state, seed, hand, and opening.  The
+canonical line now includes `law=supported-backoff|laplace-red`.
+
+The new `scripts/manifest_check.c` is an outside reader with no organism code.
+It takes exactly one newline-sealed canonical line and the captured speech
+file, then independently re-derives the count and FNV candidate digest.  CRLF
+is transport; fragments, a second record, NUL, long lines, noncanonical
+integers, wrong widths and enum words, a different count or digest, and a
+different stream all refuse.  Zero speech is a first-class stream and carries
+the public empty FNV witness `cbf29ce484222325`.  Strict and sanitizer builds
+are silent.
+
+The reader's most important gate is a deliberate acceptance.  Seed, hand,
+law, opening, lived bytes, and episode can all be restated in another
+canonical spelling while the captured bytes and digest remain unchanged; the
+reader accepts and prints only the two facts it actually proved.  Those six
+fields remain statements by the mouth.  A grammar reader cannot manufacture
+authorship, and the manifest still enters neither behavior nor biography.
+
+The cross-reader battery grew from 215 to 230 records.  Fourteen new cases put
+32 characters beyond each bounded numeric-token class.  One new positive
+case combines canonical leaves from two independently printed worlds and
+re-seals the public book; both readers accept it, showing that no unprinted
+shore list hides in either parser.  Before mutation the battery now rebuilds
+three base sittings with Netta herself from the period-3 shore, a disjoint
+period-3 shore, both 228-byte candidates, and an explicit opening, and demands
+byte-identical output.  The repaired result is `transcripts=230
+both-accept=30 disagree=1 [S14_two_sittings] trace-leaks=0`: 199 records are
+refused by both and the one difference of office is unchanged.  The expanded
+battery gives the pre-repair `98f9162` 105 disagreements, eleven more from the
+long operand cases.
+
+The seed observation is now executable rather than anecdotal.  Every observed
+pair in the narrow period-3 source has one continuation; seed 7 and seed 8
+therefore say the same sixty bytes with `tri 60`, while the wider world still
+gives distinct digests.  The mouth is behaving according to its lived graph.
+
+For body 30, the roads no longer look equal.  An external manifest cannot be
+re-derived after the life has continued, and a pure shore court cannot name a
+speaker from an unproved statement.  If authorship is opened, the honest road
+is an `s` event written by the life itself: generation may remain behaviorally
+read-only, but the act of speaking becomes an explicit biography/state
+publication carrying the manifest's exact fields.  That changes the mouth's
+storage constitution and inherits the two-file publication debt; its crash
+law must be preregistered before code.  It would bind causal authorship inside
+one biography, not create a cryptographic signature.  No part of body 30 was
+implemented in this turn.
+
+Two hundred and ninety-four gates pass.  State stays v20, strict builds are
+silent, and ASan/UBSan cover the independent manifest reader as well as the
+mouth.

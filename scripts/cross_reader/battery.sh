@@ -20,6 +20,29 @@ LAWLINE=$(sed -n 2p base2.t)
 BANNER='NETTA ZERO'
 T=$(mktemp -d) || exit 2
 
+# Rebuild three static positive controls with the reader under test before any
+# mutation. Their sources are deliberately small and independent: a period-3
+# shore, a disjoint period-3 shore, two 228-byte candidates, and one opening.
+# base32 remains the separate maximum-shore grammar fixture.
+i=0; : > "$T/p3"; : > "$T/x3"
+while [ $i -lt 300 ]; do
+  printf abcacb >> "$T/p3"; printf xyzxzy >> "$T/x3"; i=$((i+1))
+done
+head -c 168 "$T/p3" > "$T/hi"
+i=0; while [ $i -lt 60 ]; do printf x >> "$T/hi"; i=$((i+1)); done
+head -c 84 "$T/p3" > "$T/lo"
+i=0; while [ $i -lt 144 ]; do printf x >> "$T/lo"; i=$((i+1)); done
+printf ab > "$T/ab"
+"$NETTA" "$T/p3" --court "$T/hi" > "$T/base1" 2>/dev/null || exit 2
+"$NETTA" "$T/p3" "$T/x3" --court "$T/lo" > "$T/base2" 2>/dev/null || exit 2
+"$NETTA" "$T/p3" --court "$T/hi" --ear-context "$T/ab" \
+  > "$T/basectx" 2>/dev/null || exit 2
+cmp -s base1.t "$T/base1" && cmp -s base2.t "$T/base2" && \
+  cmp -s basectx.t "$T/basectx" || {
+    echo "cross-reader base replay differs" >&2
+    exit 2
+  }
+
 emit() { cat > "$OUT/cases/$1.t"; }
 
 # recompute every court receipt under LAW and rewrite the close over the sitting
@@ -60,6 +83,11 @@ mk1() {
 # ---- P: positive controls
 for b in base1 base2 base32 basectx; do cp $b.t "$OUT/cases/P_$b.t"; done
 reseal < base2.t | emit P_base2_resealed
+# The public language binds an ordered set of canonical shore leaves, not an
+# unstated reader-owned list. Mix two independently printed worlds with equal
+# sitting bytes/context and reseal the book: both readers must accept it.
+{ sed -n '1,3p' base2.t; sed -n 4p base1.t; sed -n 5p base2.t; } \
+  | reseal | emit P_cross_world_leaves
 
 # ---- H: sitting header fields (docket resealed, so only the header is in question)
 mr H01_bytes_lead0        '3s/bytes=228/bytes=0228/'
@@ -100,6 +128,8 @@ mr H35_trailing_space     '3s/$/ /'
 mr H36_extra_field        '3s/$/ extra=1/'
 mr H37_tab_sep            '3s/ bytes=/	bytes=/'
 mr H38_field_order        '3s/bytes=228 context=cold/context=cold bytes=228/'
+mr H39_bytes_token32      '3s/bytes=228/bytes=22222222222222222222222222222222/'
+mr H40_shores_token32     '3s/shores=2/shores=22222222222222222222222222222222/'
 
 # ---- B: bytes limits (constructed, one shore, witnesses re-derived)
 mk1 B01_bytes_min2      2     cold "$(mkcourt 0 cold 2     5.390580 670993 1  2     1226 1800 replay)"
@@ -188,6 +218,17 @@ mr C77_field_extra        '4s/ verdict=order/ extra=1 verdict=order/'
 mr C78_tab_sep            '4s/ P=/	P=/'
 mr C79_labels_swapped     '4s/P=5.390580 Q=6.061573/Q=5.390580 P=6.061573/'
 mr C80_prefix_cap         '4s/^court 0:/Court 0:/'
+mr C81_id_token32         '4s/^court 0:/court 00000000000000000000000000000000:/'
+mr C82_bytes_token32      '4s/bytes=228/bytes=22222222222222222222222222222222/'
+mr C83_P_token32          '4s/P=5.390580/P=55555555555555555555555555555555/'
+mr C84_Q_token32          '4s/Q=6.061573/Q=66666666666666666666666666666666/'
+mr C85_m16_token32        '4s/matched16=36.8421%/matched16=33333333333333333333333333333333%/'
+mr C86_covered_token32    '4s|matched-bytes=84/228|matched-bytes=88888888888888888888888888888888/228|'
+mr C87_denominator_token32 '4s|matched-bytes=84/228|matched-bytes=84/22222222222222222222222222222222|'
+mr C88_G_token32          '4s/G=0.670993/G=77777777777777777777777777777777/'
+mr C89_micro_token32      '4s/gap-micro=670993/gap-micro=77777777777777777777777777777777/'
+mr C90_changed_token32    '4s|changed=1226/1800|changed=11111111111111111111111111111111/1800|'
+mr C91_shore_token32      '4s|changed=1226/1800|changed=1226/11111111111111111111111111111111|'
 
 # ---- L: law boundaries (constructed, witnesses re-derived)
 mk1 L01_gm500000_order      228 cold "$(mkcourt 0 cold 228 5.390580 500000  84  228 1226 1800 order)"
@@ -245,6 +286,7 @@ sed -n '1,4p' base2.t | reseal | emit X13_close_after_1_of_2
 { sed -n '1,3p' base2.t; printf 'court close: verdicts=0 docket=%s\n' "$(sed -n 3p base2.t | "$WFIX" docket)"; } | emit X16_close_no_courts
 mp X17_close_cap          '6s/court close:/Court close:/'
 mp X18_close_verdicts_neg '6s/verdicts=2/verdicts=-2/'
+mp X19_verdicts_token32   '6s/verdicts=2/verdicts=22222222222222222222222222222222/'
 
 # ---- S: structure, transport, truncation
 : | emit S01_empty
