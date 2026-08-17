@@ -2770,15 +2770,16 @@ static void speak(void) {
                 (unsigned long long)support_order[2]);
     /* body 29: speech names itself. One canonical manifest of what was
        just said -- the candidate digest over exactly the emitted bytes,
-       their count, the stream seed, the hand, the opening context, and
-       the speaker's lived bytes and episode. It is a fact of the speaker
-       at the moment of speech, not a field of any docket: nothing reads
-       it back, nothing is written, and no self/other word is invented. */
+       their count, the stream seed, the hand and its law, the opening,
+       and the speaker's lived bytes and episode. It is a fact of the
+       speaker at the moment of speech, not a field of any docket: nothing
+       reads it back, nothing is written, and no self/other word is invented. */
     fprintf(stderr,
             "spoke: candidate-digest=%016llx bytes=%llu seed=%llu hand=%s "
-            "context=%02x%02x lived-bytes=%llu episode=%llu\n",
+            "law=%s opening=%02x%02x lived-bytes=%llu episode=%llu\n",
             (unsigned long long)spoken, (unsigned long long)speak_bytes,
-            (unsigned long long)speak_seed, actor_name[hand], open2, open1,
+            (unsigned long long)speak_seed, actor_name[hand],
+            speak_laplace ? "laplace-red" : "supported-backoff", open2, open1,
             (unsigned long long)atomic_bytes_lived,
             (unsigned long long)episode_no);
 }
