@@ -2294,3 +2294,53 @@ biography byte-identical.  Two hundred and sixty-eight gates pass,
 sanitizers silent through the citation.  For the first time a court's
 word stands inside a life's own hash-chained memory — and the life
 itself proved every hash before letting it in.
+
+## The citation audited and repaired: a witness is not a grammar
+
+The twelfth Don turn was reproduced untouched before its diff was read:
+268 gates and the citation sanitizer all passed.  The broader law held.
+The citation was memory-only, the invocation mask was separate from play,
+and a valid docket entered one `w` line without changing state v20.  But
+the life's claim to have re-derived the whole sitting did not yet hold.
+
+The external hand parsed the canonical meaning of every court record.
+`cite_verify()` checked the exact law, ordered ids, leaf receipts, docket
+fold, and close, but treated the bytes before a valid receipt as opaque.
+A public hand therefore built `court 0: canonical-shape=false
+verdict=replay`, computed its correct receipt and close under the real
+law, and presented one file to both readers.  The external checker
+refused line four.  The life accepted it and appended a citation.  The
+same gap admitted a short candidate digest, signed and zero-padded byte
+counts, an undeclared context, and a canonical header whose context or
+byte count disagreed with its leaf.  Every public hash was correct; the
+language was not.
+
+The repair leaves the court and the record unchanged.  Netta now carries
+an independent strict parser for the same body-27 language as the
+external hand: fixed-width lowercase identities, canonical bounded
+integers, `cold` or four-hex context, complete finite decimal operands,
+header/leaf equality, exact coverage and gap witnesses, the verdict
+derived from the integer law, the receipt, and the ordered docket fold.
+The two readers still share no code.  The six measured counterexamples
+now refuse before the biography is opened.
+
+The surrounding claims were widened rather than remembered.  CRLF remains
+legal; overlong, binary-interrupted, and every incomplete newline boundary
+refuse.  All twenty-seven non-file controls were swept one by one and left
+the biography unchanged.  The citation's inherited two-object publication
+debt was made explicit: a biography one line ahead of state and a state one
+line ahead of biography both refuse resume by chain and line count.  This is
+fail-closed, not an atomic transaction and not an automatic recovery law;
+body 28 neither hides nor repairs that older debt.
+
+The powerlessness twin now crosses two resumes, seven further episodes,
+2400 lived bytes per arm, units, jury, atlas choice, and a reversed convoy.
+Both arms print byte-identical output; after removing the one `w` event their
+biographies are identical, and their final states differ only in the stored
+biography count and chain.  A cross-life citation remains legal and honestly
+external: the docket names candidate bytes, not a speaker, so adding a
+`self` or `other` word would invent knowledge.  Authorship remains future.
+
+Two hundred and seventy-five gates now pass, strict builds are silent, and
+ASan/UBSan remain green.  Body 29 is not opened: the repaired reader returns
+to the other hand before any new organ is named.

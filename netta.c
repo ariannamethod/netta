@@ -3255,6 +3255,173 @@ static void court(void) {
     ear_sam_free(&match);
 }
 
+static int cite_lower_hex(const char *s, size_t n) {
+    if (strlen(s) != n) return 0;
+    for (size_t i = 0; i < n; ++i)
+        if (!((s[i] >= '0' && s[i] <= '9') ||
+              (s[i] >= 'a' && s[i] <= 'f'))) return 0;
+    return 1;
+}
+
+static int cite_context_ok(const char *s) {
+    return strcmp(s, "cold") == 0 || cite_lower_hex(s, 4);
+}
+
+static int cite_token_u64(const char *s, uint64_t *out) {
+    if (!*s || *s == '-' || *s == '+') return 0;
+    errno = 0;
+    char *end;
+    unsigned long long v = strtoull(s, &end, 10);
+    if (errno == ERANGE || end == s || *end) return 0;
+    *out = (uint64_t)v;
+    return 1;
+}
+
+static int cite_token_i64(const char *s, int64_t *out) {
+    if (!*s || *s == '+') return 0;
+    errno = 0;
+    char *end;
+    long long v = strtoll(s, &end, 10);
+    if (errno == ERANGE || end == s || *end) return 0;
+    *out = (int64_t)v;
+    return 1;
+}
+
+static int cite_token_double(const char *s, double *out) {
+    if (!*s || *s == '+') return 0;
+    errno = 0;
+    char *end;
+    double v = strtod(s, &end);
+    if (errno == ERANGE || end == s || *end || !isfinite(v)) return 0;
+    *out = v;
+    return 1;
+}
+
+/* Kept independent from scripts/warrant_check.c: the life and the external
+   hand must agree on the language without sharing an implementation. */
+static int cite_parse_sitting(const char *line, const char *law_hex,
+                              char candidate_hex[17], uint64_t *bytes,
+                              char context[8], int *shores) {
+    char digest[17] = {0}, ctx[8] = {0}, named_law[17] = {0};
+    char nb_token[32] = {0}, ns_token[32] = {0};
+    uint64_t nb = 0, ns64 = 0;
+    int used = 0;
+    int got = sscanf(line,
+        "court sitting: candidate-digest=%16[0-9a-f] bytes=%31s "
+        "context=%7s shores=%31s law-digest=%16[0-9a-f]%n",
+        digest, nb_token, ctx, ns_token, named_law, &used);
+    if (got != 5 || line[used] != 0 || !cite_lower_hex(digest, 16) ||
+            !cite_token_u64(nb_token, &nb) ||
+            !cite_token_u64(ns_token, &ns64) ||
+            !cite_context_ok(ctx) || ns64 < 1 || ns64 > MAX_ISLANDS ||
+            nb < 2 || nb > EAR_MAX || !cite_lower_hex(named_law, 16) ||
+            strcmp(named_law, law_hex) != 0)
+        return 0;
+    int ns = (int)ns64;
+    char canonical[256];
+    int n = snprintf(canonical, sizeof canonical,
+        "court sitting: candidate-digest=%s bytes=%llu context=%s "
+        "shores=%d law-digest=%s", digest, (unsigned long long)nb,
+        ctx, ns, named_law);
+    if (n < 0 || (size_t)n >= sizeof canonical || strcmp(line, canonical))
+        return 0;
+    memcpy(candidate_hex, digest, 17);
+    memcpy(context, ctx, strlen(ctx) + 1);
+    *bytes = nb;
+    *shores = ns;
+    return 1;
+}
+
+static int cite_parse_court(const char *line, const char *law_hex,
+                            int expected_id, uint64_t sitting_bytes,
+                            const char *sitting_context) {
+    int used = 0;
+    char digest[17] = {0}, context[8] = {0};
+    char verdict[9] = {0}, receipt[17] = {0};
+    char id_token[32] = {0}, bytes_token[32] = {0};
+    char p_token[32] = {0}, q_token[32] = {0}, matched_token[32] = {0};
+    char covered_token[32] = {0}, denominator_token[32] = {0};
+    char gap_token[32] = {0}, gm_token[32] = {0};
+    char changed_token[32] = {0}, shore_token[32] = {0};
+    uint64_t id64 = 0, bytes = 0, covered = 0, denominator = 0;
+    uint64_t changed = 0, shore = 0;
+    int64_t gap_micro = 0;
+    double p = 0.0, q = 0.0, matched = 0.0, gap = 0.0;
+    int got = sscanf(line,
+        "court %31[^:]: digest=%16[0-9a-f] context=%7s bytes=%31s "
+        "P=%31s Q=%31s matched16=%31[^%%]%% "
+        "matched-bytes=%31[0-9]/%31[0-9] G=%31s gap-micro=%31s "
+        "changed=%31[0-9]/%31[0-9] verdict=%8[a-z] "
+        "receipt=%16[0-9a-f]%n",
+        id_token, digest, context, bytes_token, p_token, q_token,
+        matched_token, covered_token, denominator_token, gap_token,
+        gm_token, changed_token, shore_token, verdict, receipt, &used);
+    if (got != 15 || line[used] != 0 ||
+            !cite_token_u64(id_token, &id64) || id64 > INT_MAX ||
+            !cite_token_u64(bytes_token, &bytes) ||
+            !cite_token_double(p_token, &p) ||
+            !cite_token_double(q_token, &q) ||
+            !cite_token_double(matched_token, &matched) ||
+            !cite_token_u64(covered_token, &covered) ||
+            !cite_token_u64(denominator_token, &denominator) ||
+            !cite_token_double(gap_token, &gap) ||
+            !cite_token_i64(gm_token, &gap_micro) ||
+            !cite_token_u64(changed_token, &changed) ||
+            !cite_token_u64(shore_token, &shore) ||
+            (int)id64 != expected_id || !cite_lower_hex(digest, 16) ||
+            !cite_context_ok(context) ||
+            strcmp(context, sitting_context) != 0 ||
+            bytes != sitting_bytes || denominator != sitting_bytes ||
+            denominator == 0 || covered > denominator || changed > shore ||
+            p < 0.0 || q < 0.0 || matched < 0.0 ||
+            signbit(p) || signbit(q) || signbit(matched) ||
+            (gap_micro == 0 && signbit(gap)) ||
+            !cite_lower_hex(receipt, 16))
+        return 0;
+
+    int id = (int)id64;
+    char base[640], canonical[704];
+    int bn = snprintf(base, sizeof base,
+        "court %d: digest=%s context=%s bytes=%llu "
+        "P=%.6f Q=%.6f matched16=%.4f%% matched-bytes=%llu/%llu "
+        "G=%.6f gap-micro=%lld changed=%llu/%llu verdict=%s",
+        id, digest, context, (unsigned long long)bytes, p, q, matched,
+        (unsigned long long)covered, (unsigned long long)denominator,
+        gap, (long long)gap_micro, (unsigned long long)changed,
+        (unsigned long long)shore, verdict);
+    int cn = snprintf(canonical, sizeof canonical, "%s receipt=%s",
+                      base, receipt);
+    if (bn < 0 || (size_t)bn >= sizeof base || cn < 0 ||
+            (size_t)cn >= sizeof canonical || strcmp(line, canonical))
+        return 0;
+
+    char seen_match[32], want_match[32], seen_gap[32], want_gap[32];
+    snprintf(seen_match, sizeof seen_match, "%.4f", matched);
+    snprintf(want_match, sizeof want_match, "%.4f",
+             100.0 * (double)covered / (double)denominator);
+    snprintf(seen_gap, sizeof seen_gap, "%.6f", gap);
+    snprintf(want_gap, sizeof want_gap, "%.6f",
+             (double)gap_micro / 1000000.0);
+    if (strcmp(seen_match, want_match) || strcmp(seen_gap, want_gap) ||
+            fabs((q - p) - gap) > 0.000002)
+        return 0;
+
+    const char *want = (changed == 0 || gap_micro == 0) ? "abstain"
+                     : (covered >= (denominator + 1) / 2) ? "replay"
+                     : (gap_micro >= COURT_ORDER_MICRO) ? "order"
+                                                       : "stranger";
+    if (strcmp(verdict, want)) return 0;
+
+    char sealed[768], mine_hex[17];
+    int sn = snprintf(sealed, sizeof sealed, "%s law-digest=%s",
+                      base, law_hex);
+    if (sn < 0 || (size_t)sn >= sizeof sealed) return 0;
+    snprintf(mine_hex, sizeof mine_hex, "%016llx",
+             (unsigned long long)fnv1a64((const uint8_t *)sealed,
+                                         (uint64_t)sn, FNV_SEED));
+    return strcmp(receipt, mine_hex) == 0;
+}
+
 /* body 28: the citation. A life cites only what it can itself
    re-derive: the whole single sitting is re-verified with the life's
    own hands -- the banner, its own canonical law in text and digest,
@@ -3306,22 +3473,12 @@ static void cite_verify(uint64_t *cand, uint64_t *cbytes,
                      (unsigned long long)court_law_digest);
             stage = 2;
         } else if (stage == 2) {
-            unsigned long long nbll = 0;
-            int nsl = 0, used = 0;
-            char nlaw[17] = {0};
-            if (sscanf(line,
-                    "court sitting: candidate-digest=%16[0-9a-f] "
-                    "bytes=%llu context=%7s shores=%d "
-                    "law-digest=%16[0-9a-f]%n",
-                    cand_hex, &nbll, ctx, &nsl, nlaw, &used) != 5 ||
-                    line[used] || strcmp(nlaw, law_hex) ||
-                    nsl < 1 || nsl > MAX_ISLANDS) {
+            if (!cite_parse_sitting(line, law_hex, cand_hex, &nb, ctx,
+                                    &ns)) {
                 fprintf(stderr,
-                        "netta: the docket sitting is malformed\n");
+                        "netta: the docket sitting is not canonical\n");
                 exit(1);
             }
-            nb = nbll;
-            ns = nsl;
             docket = court_docket_record(FNV_SEED, line);
             stage = 3;
         } else if (stage == 3 && !strncmp(line, "court close: ", 13)) {
@@ -3343,34 +3500,9 @@ static void cite_verify(uint64_t *cand, uint64_t *cbytes,
             }
             stage = 4;
         } else if (stage == 3) {
-            char prefix[32];
-            snprintf(prefix, sizeof prefix, "court %d: ", leaf);
-            if (strncmp(line, prefix, strlen(prefix))) {
+            if (!cite_parse_court(line, law_hex, leaf, nb, ctx)) {
                 fprintf(stderr,
-                        "netta: the docket leaves are out of order\n");
-                exit(1);
-            }
-            char *rp = strstr(line, " receipt=");
-            if (!rp || strlen(rp + 9) != 16) {
-                fprintf(stderr,
-                        "netta: a docket leaf has no receipt\n");
-                exit(1);
-            }
-            char sealed[1200];
-            int sn = snprintf(sealed, sizeof sealed,
-                              "%.*s law-digest=%s", (int)(rp - line),
-                              line, law_hex);
-            if (sn < 0 || (size_t)sn >= sizeof sealed) {
-                fprintf(stderr, "netta: a docket leaf overflows\n");
-                exit(1);
-            }
-            char hex[17];
-            snprintf(hex, sizeof hex, "%016llx",
-                     (unsigned long long)fnv1a64((const uint8_t *)sealed,
-                                                 (uint64_t)sn, FNV_SEED));
-            if (strcmp(hex, rp + 9)) {
-                fprintf(stderr,
-                        "netta: a docket leaf fails its receipt\n");
+                        "netta: a docket court record is not canonical\n");
                 exit(1);
             }
             docket = court_docket_record(docket, line);
