@@ -2799,7 +2799,7 @@ first `s` reader has no way in — `s` with its nine canonical fields, `w`
 with its nine (episode, candidate digest, bytes in the court's `[2,
 16384]`, `cold` or four-hex context, shores in `[1, 32]`, law digest,
 docket digest, and a verdict count equal to the shores), and `i` by shape.
-The eleven other types are admitted by type only, as the organism admits
+The ten other types are admitted by type only, as the organism admits
 them today; the reader is stricter than the organism on `w`, which the
 organism chains but does not yet parse — a difference named for the later
 turn, not hidden.  It prints the record count and the FNV chain over the
@@ -2851,3 +2851,64 @@ between lives will need first — while the life itself keeps its citations
 as external facts.  Whether the life should ever read its own recognition,
 and how, is the question the next turn inherits together with the eleven
 unparsed grammars.
+
+## The recognition audited: a file is not a life identity
+
+Don's `1c56f9a` was reproduced untouched before its implementation was
+read: 325 gates, strict build silent, sanitizers green.  The organism was
+indeed absent from the body-31 commit.  The outside reader changed no
+biography byte and no path from its report entered state, resume or
+behaviour.  Prior `s`, later `w`, equal digest and bytes, causal order and
+honest multiplicity all stood.
+
+Two executable I/O defects remained in the reader's own contract.  It used
+`fopen` before `fstat`, so a FIFO with no peer blocked before the promised
+regular-file refusal.  It also ignored the final stdout flush, so a complete
+lost report could return rc 0 although rc 2 was declared for I/O failure.
+The hand now opens nonblocking, verifies the opened descriptor is regular,
+and enters stdio only afterward; a failed report flush returns 2.  Records
+are read into a fixed 1024-byte frame rather than an unbounded `getline`:
+overlong and unsealed rows, NUL, CR and more than sixteen fields refuse by
+name.  CR is one global separator law, not a privilege of whichever record
+grammars have already been implemented.  The empty sequence is valid
+syntax, a lone newline is an untyped record, and a single canonical `s` is
+a valid one-event sequence.  Citation bounds are inclusive at 2 and 16384
+bytes and at 1 and 32 shores.
+
+The phrase "two readers, one language" needed a narrower noun.  The outside
+reader has no state, so it reads context-free record syntax.  Resume reads
+that syntax and then judges historical validity: an `s` episode beyond the
+loaded episode or lived bytes beyond the loaded life must be refused by the
+organism and accepted as canonical syntax by the outside hand.  Twenty-seven
+`s` rows agree after those contextual bounds are held fixed; two future-bound
+rows disagree for the declared reason.  The same distinction already exists
+for `i`, whose registry identity only state can judge.
+
+The older `w` debt is now measured rather than gestured at.  Twenty-four
+independently re-sealed families -- signs and leading zeroes, hex widths and
+case, byte and shore bounds, context, law and docket shape, verdict count,
+field count, exact tabs, CRLF and record length -- are accepted by current
+resume because it chains `w` by type, while the outside reader refuses them.
+This is a finite corpus of debt families, not a claim that malformed strings
+are finite.  The reader parses three of thirteen record types (`i`, `s`,
+`w`); ten remain type-only outside.  The organism parses two, so eleven
+remain to close there.
+
+Finally, two sibling lives were forked from one honest past.  Life A signed
+a stream; life B cited the court's word about A without signing it.  Each
+biography alone reported the right result.  Concatenating A before B by hand
+manufactured a prior-`s`/later-`w` recognition.  No stat, FNV chain or record
+grammar can recover the missing life boundary from that file alone.  The
+report therefore says its premise literally: `one supplied file is treated
+as one life; state identity unverified`.  Recognition is a true relation
+inside the supplied sequence, not independently proved provenance of that
+sequence.
+
+The later grammar refactor should preserve this independence.  `netta.c`
+must grow or retain all thirteen validators inside its self-sufficient heart;
+the outside reader should implement the language again without a shared
+linked object or required header.  A shared parser would shorten code by
+destroying the differential witness.  Documentation and adversarial corpora
+may be shared; executable hands should not be.  That refactor is not opened
+by this audit.  Three hundred and thirty-two gates pass; `netta.c` and state
+v20 are untouched.
