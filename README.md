@@ -80,15 +80,19 @@ technical source of truth for the living line.
   behaviour, and signed and unsigned twins play identically. The crash
   contract is executable law rather than a promise: a death between the
   two files is refused on resume by chain and count and never repaired; a
-  closed stdout or stderr, or a stream pointed at the biography or the
-  state, refuses before a word — for the signed and the unsigned mouth
-  alike, because a closed descriptor would let the biography inherit it
-  and swallow the speech. `--sign` needs `--speak` with at least one byte
-  and a lived state; with `--reset`, `--cite`, `--court` or `--ear` it
-  refuses by name. The publication has no fsync: the contract covers a
-  dying process, not a dying machine — the same limit as the citation.
-  A citation still names no life; reading `s` against `w` remains a
-  future body.
+  closed or unwritable stdout/stderr, a stream pointed at biography, state,
+  or a named shore, and a persistent sink shared by stdout and stderr all
+  refuse before a word. Biography itself is a regular-file contract:
+  `/dev/null`, FIFOs, and other disappearing sinks cannot acknowledge a
+  life. On resume, `bio_verify` parses `s` as its own canonical event
+  class (fixed hex widths, canonical unsigned integers, hand/law enums,
+  four-hex opening, and historical bounds); a recomputed chain cannot turn
+  malformed fields into a signature. `--sign` needs `--speak` with at
+  least one byte and a lived state; with `--reset`, `--cite`, `--court`
+  or `--ear` it refuses by name. The publication has no fsync: the contract
+  covers a dying process, not a dying machine — the same limit as the
+  citation. A citation still names no life; reading `s` against `w`
+  remains a future body.
 - Under `--ear FILE`, every island in the convoy carries its own statistical
   judge, grown from its immutable tape and nothing else: the ear prices the
   given stream with the shore's own Laplace ladder (bits per byte), uni/bi
@@ -213,7 +217,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 304-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 312-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -233,7 +237,10 @@ an independently reproduced structural twin, its degenerate no-change arm,
 a deterministic uniform-replay red, the public integer warrant, individually
 receipted verdicts, and the strict candidate-bearing sitting docket with
 drop, duplicate, reorder, splice, grammar, framing, and sanitizer reds, plus
-failure-closed state and biography checks. A
+failure-closed state and biography checks, real partial-write and SIGKILL
+publication deaths, descriptor/shore isolation, fourteen re-sealed malformed
+`s` records, and a three-signature long differential through jury, Atlas,
+reversed convoy order, and restart. A
 passing build ends with `ALL GATES PASS`.
 
 ## Start a life
@@ -326,7 +333,9 @@ Useful experimental flags:
   hand, speech law, opening, lived bytes, and episode of what it just said.
   With `--sign` the same speech is also published as one `s` biography event
   (episode, digest, bytes, seed, hand, law, opening, lived bytes) after the
-  stream is flushed; a closed or self-directed stream refuses first.
+  stream is flushed. The stream and diagnostic voice must remain distinct
+  from state, biography, and every named shore; biography must be a regular
+  file, and every persisted `s` row is parsed canonically on resume.
 - `--ear P` scores the byte stream in P against every island in the convoy:
   bits per byte under the shore's own Laplace ladder, longest exact match,
   and matched-16 coverage, one line per shore. It listens to at most 16384

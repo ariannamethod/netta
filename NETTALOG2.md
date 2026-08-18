@@ -2629,3 +2629,86 @@ biography chain supplies causal placement, and an outside hand can still
 prove only count and digest.  A citation still names no life; reading `s`
 against `w` — the life recognising its own speech in a court's word — is
 the next body, and it now has both halves to bind.
+
+## The signature audited: the mouth cannot write its world
+
+Don's `7982e38` was reproduced untouched before its implementation was
+read: 304 gates, strict build silent, sanitizers green.  The advertised
+one-file leads both refused, but they were file constructions rather than
+process deaths.  The contract was therefore met at the write boundary.
+`RLIMIT_FSIZE` cut the biography in the middle of its `s` row, stopped a
+state sibling after the complete biography publication, and killed the
+process by `SIGXFSZ` during that state write; an interposed rename first
+returned `EXDEV`, then stopped the process at the exact pre-rename call so a
+real `SIGKILL` could end it.  Every old state remained intact, every
+biography lead refused resume by grammar or count/chain, and complete and
+partial stale siblings conferred no recovery power.  The law covers the
+dying process it claims to cover.
+
+The descriptor sweep found a different breach.  When stdout was opened for
+append on a named shore that the resumed life was allowed to meet, the mouth
+loaded and verified the old shore, wrote sixty words into it, signed the
+speech, and on the next invocation accepted the mutated file as a new island
+arrival.  The world had been changed by the instrument whose constitution
+says no life mutates a world.  A second arm sent stdout and stderr through one
+plain file: banner, diagnostics, speech, manifest and the `signed` receipt
+became one mixed object, while the biography claimed a sixty-byte candidate
+that no longer existed as the captured file.  A read-only directory failed
+only at the eventual stdout flush.  These were not signature-only defects;
+they belonged to the mouth's stream law.
+
+The guard now runs before the banner.  Descriptors 1 and 2 must be writable;
+state, biography and every named shore are protected on both channels; and
+one regular or framed sink cannot carry both the byte stream and its voice.
+A terminal remains an intentional interactive surface.  A protected stderr
+still refuses silently because the reason itself would write the forbidden
+object; when stdout alone is protected, stderr can name the refusal.  A full
+speech sink may receive a real prefix, but a failed flush publishes no
+signature and moves neither memory file.
+
+Biography had the same kind of unspoken boundary.  An ordinary newborn life
+could write its biography to `/dev/null` or a FIFO, publish a state whose
+line count and chain described the vanished bytes, and become impossible to
+resume.  Biography is now explicitly a regular-file object.  Non-regular
+paths are refused before a FIFO can block; newly created regular files and
+existing regular files keep the old append/reset behavior.
+
+The `s` event also receives its own reader now, rather than borrowing only
+the outer chain.  `bio_verify` demands canonical unsigned decimal tokens,
+sixteen lower-hex digest positions, `uni|bi|tri`,
+`supported-backoff|laplace-red`, four lower-hex opening positions, positive
+speech and lived-byte counts, and episode/lived-byte values no later than the
+loaded life.  The public red constructor
+`scripts/biography_fixture.c` recomputes the state's line count and FNV
+chain after mutating the row.  Fourteen correctly re-sealed records —
+leading, signed, zero and future integers; short and upper-case hex; a move
+hand; a foreign law; malformed opening; and an extra field — all refuse.
+FNV remains an integrity witness, never secret authorship.
+
+The short powerless twin was extended instead of merely repeated.  Three
+signed speeches of 73, 91 and 127 bytes, including the Laplace arm, were
+interleaved with jury, units, Atlas choice, reversed convoy order and two
+final resumes.  The unsigned twin heard the identical speeches.  All four
+played transcripts matched after the public biography counter was removed;
+the biographies differed only by exactly three `s` rows, and the states
+differed only in bytes 41–56, the biography count and chain.  No signature
+entered behavior indirectly through a later life.
+
+Eight gates were added: strict red-hand construction; regular biography;
+shore/channel isolation; newborn and full-output refusal; partial/full file
+ceilings; rename refusal and real `SIGKILL`; fourteen re-sealed grammar
+cases; and the long three-signature twin.  Three hundred and twelve gates
+pass.  State stays v20 and the sanitizer court remains green.
+
+Body 31 should not amend the `w` line and should not immediately mint a
+redundant `r` fact.  A warrant is the court's immutable statement; the
+relation between a prior `s` and a later `w` is derivable from one verified
+causal chain.  The first recognition should therefore be a read-only reader:
+within one biography, match candidate digest *and byte count*, require the
+`s` row to precede the `w` row, and report how many prior own speech events
+share that public candidate identity.  Another life's identical digest is
+absent from this chain and grants nothing; a grafted `s` breaks count/chain
+unless the state is also re-sealed, which remains the named non-cryptographic
+integrity limit.  Repeated identical speeches are membership, not proof of
+which physical utterance the court heard.  No recognition code is opened
+without Oleg's word.

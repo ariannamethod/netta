@@ -34,6 +34,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <limits.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -100,6 +101,7 @@ static uint64_t reg_witness[MAX_REGISTRY];
 static uint64_t reg_len[MAX_REGISTRY];
 static int reg_count = 0;
 static uint64_t episode_no;   /* forward: persisted state below */
+static uint64_t atomic_bytes_lived; /* forward: signature bounds below */
 static int fixed_start_set = 0;
 static uint64_t fixed_start = 0;
 
@@ -139,10 +141,88 @@ static FILE   *bio_file;
 static uint64_t bio_chain = FNV_SEED;
 static uint64_t bio_lines = 0;
 
+static int bio_lower_hex(const char *s, size_t n) {
+    if (strlen(s) != n) return 0;
+    for (size_t i = 0; i < n; ++i)
+        if (!((s[i] >= '0' && s[i] <= '9') ||
+              (s[i] >= 'a' && s[i] <= 'f'))) return 0;
+    return 1;
+}
+
+static int bio_canonical_u64(const char *s, uint64_t *out) {
+    if (!*s || *s == '-' || *s == '+') return 0;
+    errno = 0;
+    char *end = NULL;
+    unsigned long long value = strtoull(s, &end, 10);
+    if (errno == ERANGE || !end || *end) return 0;
+    char canonical[32];
+    int n = snprintf(canonical, sizeof canonical, "%llu", value);
+    if (n < 0 || (size_t)n >= sizeof canonical ||
+            strcmp(s, canonical) != 0)
+        return 0;
+    *out = (uint64_t)value;
+    return 1;
+}
+
+/* Body 30 owns the grammar of the event it introduced. The biography chain
+   proves placement, not shape: a re-sealed malformed s line must not become
+   a signature merely because an FNV witness can be recomputed. */
+static int bio_signature_ok(const char *line, ssize_t n) {
+    char ep_s[32] = {0}, digest[17] = {0}, bytes_s[32] = {0};
+    char seed_s[32] = {0}, hand[4] = {0}, law[18] = {0};
+    char opening[5] = {0}, lived_s[32] = {0};
+    uint64_t ep = 0, bytes = 0, seed = 0, lived = 0;
+    int used = -1;
+    int got = sscanf(line,
+        "s\t%31[^\t\n]\t%16[^\t\n]\t%31[^\t\n]\t%31[^\t\n]\t"
+        "%3[^\t\n]\t%17[^\t\n]\t%4[^\t\n]\t%31[^\t\n]%n",
+        ep_s, digest, bytes_s, seed_s, hand, law, opening, lived_s, &used);
+    if (got != 8 || used < 0 || (ssize_t)used != n - 1 ||
+            !bio_canonical_u64(ep_s, &ep) ||
+            !bio_lower_hex(digest, 16) ||
+            !bio_canonical_u64(bytes_s, &bytes) || bytes == 0 ||
+            !bio_canonical_u64(seed_s, &seed) ||
+            (strcmp(hand, "uni") && strcmp(hand, "bi") &&
+             strcmp(hand, "tri")) ||
+            (strcmp(law, "supported-backoff") &&
+             strcmp(law, "laplace-red")) ||
+            !bio_lower_hex(opening, 4) ||
+            !bio_canonical_u64(lived_s, &lived) || lived == 0 ||
+            ep > episode_no || lived > atomic_bytes_lived)
+        return 0;
+    (void)seed;
+    return 1;
+}
+
 static void bio_verify(const char *path) {
+    struct stat named;
+    if (stat(path, &named) != 0) {
+        if (errno == ENOENT)
+            fprintf(stderr,
+                    "netta: biography %s is missing; refusing resume\n",
+                    path);
+        else
+            fprintf(stderr, "netta: cannot inspect biography %s\n", path);
+        exit(1);
+    }
+    if (!S_ISREG(named.st_mode)) {
+        fprintf(stderr,
+                "netta: biography %s is not a regular file; refusing\n",
+                path);
+        exit(1);
+    }
     FILE *f = fopen(path, "rb");
     if (!f) {
         fprintf(stderr, "netta: biography %s is missing; refusing resume\n",
+                path);
+        exit(1);
+    }
+    struct stat opened;
+    if (fstat(fileno(f), &opened) != 0 || !S_ISREG(opened.st_mode) ||
+            opened.st_dev != named.st_dev || opened.st_ino != named.st_ino) {
+        fclose(f);
+        fprintf(stderr,
+                "netta: biography %s changed while being opened; refusing\n",
                 path);
         exit(1);
     }
@@ -167,6 +247,9 @@ static void bio_verify(const char *path) {
                 malformed = 1;
             arrivals++;
         }
+        if (n >= 2 && line[0] == 's' && line[1] == '\t' &&
+                !bio_signature_ok(line, n))
+            malformed = 1;
     }
     free(line);
     if (ferror(f) || fclose(f) != 0) {
@@ -192,8 +275,25 @@ static void bio_verify(const char *path) {
 }
 
 static void bio_open(const char *path, int reset) {
-    bio_file = fopen(path, reset ? "wb" : "ab");
+    int flags = O_WRONLY | O_CREAT | O_NONBLOCK |
+                (reset ? O_TRUNC : O_APPEND);
+    int fd = open(path, flags, 0666);
+    if (fd < 0) {
+        fprintf(stderr, "netta: cannot open biography %s\n", path);
+        exit(1);
+    }
+    struct stat opened, named;
+    if (fstat(fd, &opened) != 0 || stat(path, &named) != 0 ||
+            !S_ISREG(opened.st_mode) || !S_ISREG(named.st_mode) ||
+            opened.st_dev != named.st_dev || opened.st_ino != named.st_ino) {
+        close(fd);
+        fprintf(stderr,
+                "netta: biography %s must be a regular file\n", path);
+        exit(1);
+    }
+    bio_file = fdopen(fd, reset ? "wb" : "ab");
     if (!bio_file) {
+        close(fd);
         fprintf(stderr, "netta: cannot open biography %s\n", path);
         exit(1);
     }
@@ -2528,6 +2628,22 @@ static int fd_is_file(int fd, const char *path) {
     return sa.st_dev == sb.st_dev && sa.st_ino == sb.st_ino;
 }
 
+static int fd_writable(int fd) {
+    int flags = fcntl(fd, F_GETFL);
+    return flags >= 0 && (flags & O_ACCMODE) != O_RDONLY;
+}
+
+static int fds_share_framed_sink(int a, int b) {
+    struct stat sa, sb;
+    if (fstat(a, &sa) != 0 || fstat(b, &sb) != 0 ||
+            sa.st_dev != sb.st_dev || sa.st_ino != sb.st_ino)
+        return 0;
+    /* A terminal is intentionally allowed: it is an interactive surface,
+       not a captured candidate. Regular files, pipes, sockets and directories
+       cannot carry both the byte stream and its diagnostic voice honestly. */
+    return !S_ISCHR(sa.st_mode);
+}
+
 static int file_exists(const char *path) {
     struct stat s;
     if (stat(path, &s) == 0) return 1;
@@ -3785,22 +3901,36 @@ int main(int argc, char **argv) {
         exit(1);
     }
     if (speak_requested) {
-        /* the stream and the voice must be open descriptors, and neither
-           may be the life's own memory: a closed stdout would let the
-           biography inherit its descriptor and swallow the speech, and a
-           redirect into the biography or state would break the chain.
-           Checked before the first word: a voice pointed at the memory
-           has nowhere honest to say why, so that case refuses silently. */
-        struct stat mouth_st;
-        if (fd_is_file(2, bio_path) || fd_is_file(2, state_path)) exit(1);
-        if (fstat(1, &mouth_st) != 0 || fstat(2, &mouth_st) != 0) {
-            fprintf(stderr, "netta: the mouth needs an open stream and "
-                            "voice\n");
+        /* The stream and voice are checked before the banner. A protected
+           sink on stderr has nowhere honest to receive the reason and is
+           therefore silent. A named shore is protected by the same law as
+           state and biography: the mouth may describe a world, never write
+           into it. */
+        int voice_protected = fd_is_file(2, bio_path) ||
+                              fd_is_file(2, state_path);
+        for (int p = 0; p < paths_n; ++p)
+            if (fd_is_file(2, paths[p])) voice_protected = 1;
+        if (voice_protected || !fd_writable(2)) exit(1);
+        if (!fd_writable(1)) {
+            fprintf(stderr,
+                    "netta: the mouth needs an open stream and voice, both "
+                    "writable\n");
             exit(1);
         }
-        if (fd_is_file(1, bio_path) || fd_is_file(1, state_path)) {
+        int stream_protected = fd_is_file(1, bio_path) ||
+                               fd_is_file(1, state_path);
+        for (int p = 0; p < paths_n; ++p)
+            if (fd_is_file(1, paths[p])) stream_protected = 1;
+        if (stream_protected) {
             fprintf(stderr,
-                    "netta: the mouth cannot speak into its own memory\n");
+                    "netta: the mouth cannot speak into its own memory or "
+                    "a shore\n");
+            exit(1);
+        }
+        if (fds_share_framed_sink(1, 2)) {
+            fprintf(stderr,
+                    "netta: the mouth needs separate stream and voice "
+                    "sinks\n");
             exit(1);
         }
     }
