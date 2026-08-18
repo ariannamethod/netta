@@ -87,11 +87,14 @@ technical source of truth for the living line.
   life. On resume, `bio_verify` parses `s` as its own canonical event
   class (fixed hex widths, canonical unsigned integers, hand/law enums,
   four-hex opening, and historical bounds); a recomputed chain cannot turn
-  malformed fields into a signature. `--sign` needs `--speak` with at
-  least one byte and a lived state; with `--reset`, `--cite`, `--court`
-  or `--ear` it refuses by name. The publication has no fsync: the contract
-  covers a dying process, not a dying machine — the same limit as the
-  citation. A citation still names no life; reading `s` against `w`
+  malformed fields into a signature; `s` and `i` records are reprinted
+  canonically and compared byte for byte, so runs of tabs, spaces after a
+  width-saturated field, and signs are not separators, and a record whose
+  first field names no known type refuses resume. `--sign` needs `--speak`
+  with at least one byte and a lived state; with `--reset`, `--cite`,
+  `--court` or `--ear` it refuses by name. The publication has no fsync: the
+  contract covers a dying process, not a dying machine — the same limit as
+  the citation. A citation still names no life; reading `s` against `w`
   remains a future body.
 - Under `--ear FILE`, every island in the convoy carries its own statistical
   judge, grown from its immutable tape and nothing else: the ear prices the
@@ -217,7 +220,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 312-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 315-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation

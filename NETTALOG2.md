@@ -2712,3 +2712,67 @@ unless the state is also re-sealed, which remains the named non-cryptographic
 integrity limit.  Repeated identical speeches are membership, not proof of
 which physical utterance the court heard.  No recognition code is opened
 without Oleg's word.
+
+## The signature audited twice: a tab in a format is not a byte
+
+Sol's `1c1bd3f` was reproduced untouched before its diff was read: 312
+gates, strict build silent, sanitizers green.  Her three findings on body
+30 were real and her repairs stand: the mouth could append its speech to
+a named shore and the next invocation would meet the mutated world as an
+arrival; a stream and a voice merged into one plain file made a mixed
+object under a clean sixty-byte signature; and a biography could
+disappear into `/dev/null` or a FIFO and leave a life that no resume
+could open.  The publication order survived real deaths — partial
+writes, a refused rename, `SIGXFSZ`, a `SIGKILL` at the pre-rename stop —
+and the long twin carried three signatures through jury, atlas, a
+reversed convoy and two resumes with only `s` rows and the state's count
+and chain apart.
+
+Her request was to meet `bio_signature_ok` with an independent parser
+rather than to reread it, and the second hand found what a reading would
+not.  Fifty-four `s` rows were built from one canonical row — every
+field with a leading zero, a sign, a 32-character token, an empty token,
+at the unsigned maximum and past it, the episode and lived-byte bounds at
+and past the state's, the digest at 15, 17 and upper-case digits, the
+hand as `mv`, `null`, `Tri`, `trix` and empty, the law shortened,
+capitalised, lengthened and underscored, the opening at three, five and
+upper-case digits and as `cold`, an extra and a missing field, a
+trailing tab, a trailing and a leading space, a space for a tab, the
+prefix as `S` and `ss`, two fields swapped, CRLF, a bare `s` and `s`
+with a tab — each re-sealed into the state by her public fixture and
+shown to two readers: the organism on resume, and a full-line regular
+grammar with an explicit unsigned range and the state's bounds.  Five
+rows divided them, and one of the five was a defect of the reader she
+had called strict.  A tab in a `scanf` format is a whitespace directive:
+it matches any run of blanks, including none.  So `s\t2\t<digest> 60\t…`
+resumed as a canonical signature, and so did a row with two tabs after
+its type and a row with two spaces after its hand.  The `i` record of the
+island registry, older than the signature, carried the same root — a row
+with spaces for tabs, a row with `+0` for its episode, and a row with two
+tabs all resumed.  The court's readers and the manifest reader never had
+this hole, because each of them reprints the canonical line and compares
+it byte for byte; `bio_verify` did not.  It does now, for `s` and for
+`i`: the row must equal its own canonical reprint, tab for tab.
+
+The other four rows named an older debt.  A bare `s`, ` s\t…`, `S\t…`
+and `ss\t…` were admitted because the biography reader knew only two of
+its thirteen record types — the step row that opens with an episode
+number, and the letters `a b d i m q r s t u v w` — and chained the rest
+unread.  The type set is closed now: a record whose first field is
+neither a canonical episode number nor one of those letters, followed by
+a tab, refuses resume by its own name.  This is a partial closure and is
+called so: the type is known, the shape is proved for `i` and `s` only,
+and the eleven other grammars are still chained rather than parsed.
+That is the door the next turn should walk through.
+
+The battery repeated on the repaired reader agrees on all fifty-four
+rows, accepting exactly the eleven built to be legal.  Three gates seal
+the repair against her fixture — tab runs, spaces and signs refuse in
+`s` and `i`; the five records of no known type refuse by name; the
+canonical rows still resume — with her own `1c1bd3f` as the red hand
+that accepted every one of them.  The descriptor law was met by the
+states she had not listed and held on all of them: a read-only stdout,
+both channels on `/dev/null`, a stdout on a symlink and on a hard link of
+the biography, a biography reached through a symlink, a directory,
+`/dev/null`, a FIFO without a reader, and a state that is its own
+biography.  Three hundred and fifteen gates.

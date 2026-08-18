@@ -2303,18 +2303,17 @@ cmp -s "$T/b30g.state" "$T/b18.state.ref" && \
 gate "B30 --sign without a mouth, with zero bytes, a reset, or another instrument refuses" $b30m 0
 
 # A biography is a resumable regular file, never a sink that can acknowledge
-# writes and discard the life. The FIFO arm has a reader so the old blocking
-# fopen can run to its incorrect success instead of hanging the red test.
+# writes and discard the life. The FIFO arm is held open by the shell so the old
+# blocking fopen can run to its incorrect success instead of hanging the red test.
 b30f=0
 rm -f "$T/b30.devnull.state" "$T/b30.fifo.state"
 "$N" "$T/p3.bytes" --reset --seed 5 --episodes 1 --steps 60 --state "$T/b30.devnull.state" --bio /dev/null >/dev/null 2> "$T/b30.devnull.err"
 [ $? -eq 1 ] && [ ! -e "$T/b30.devnull.state" ] && grep -q 'regular file' "$T/b30.devnull.err" || b30f=98
 mkfifo "$T/b30.bio.fifo"
-cat "$T/b30.bio.fifo" >/dev/null & b30reader=$!
+exec 3<> "$T/b30.bio.fifo"   # the shell itself holds the FIFO open: no reader race
 "$N" "$T/p3.bytes" --reset --seed 5 --episodes 1 --steps 60 --state "$T/b30.fifo.state" --bio "$T/b30.bio.fifo" >/dev/null 2> "$T/b30.fifo.err"
 [ $? -eq 1 ] && [ ! -e "$T/b30.fifo.state" ] && grep -q 'regular file' "$T/b30.fifo.err" || b30f=98
-kill "$b30reader" 2>/dev/null || true
-wait "$b30reader" 2>/dev/null || true
+exec 3>&-
 gate "B30 a biography cannot disappear into devnull or a FIFO" $b30f 0
 
 # The named world joins state and biography in the protected sink set. A
@@ -2439,6 +2438,39 @@ b30_signature_case lived-zero 9 0 || b30sg=98
 b30_signature_case lived-future 9 18446744073709551615 || b30sg=98
 b30_signature_case extra-field 10 extra || b30sg=98
 gate "B30 fourteen re-sealed malformed s events are not signatures" $b30sg 0
+# A tab in a scanf format is a whitespace directive, not a byte: only a
+# canonical reprint proves the separators. Runs of tabs or a space after a
+# width-saturated field once passed as s and i records; the record's first
+# field must also name a known type, or the row is no record at all.
+b30_row_case() {
+    name=$1; shift
+    cp "$T/b30.state" "$T/b30.r-$name.state"
+    awk -F '\t' -v OFS='\t' "$@" "$T/b30.bio" > "$T/b30.r-$name.bio"
+    "$BF" "$T/b30.r-$name.state" "$T/b30.r-$name.bio" || return 98
+    "$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30.r-$name.state" \
+        --bio "$T/b30.r-$name.bio" >/dev/null 2> "$T/b30.r-$name.err"
+    [ $? -eq 1 ] && grep -q 'refusing' "$T/b30.r-$name.err"
+}
+b30sep=0
+b30_row_case s-double-tab '$1=="s" {$0=$1 "\t\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9} {print}' || b30sep=98
+b30_row_case s-space-after-digest '$1=="s" {$0=$1 "\t" $2 "\t" $3 " " $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9} {print}' || b30sep=98
+b30_row_case s-space-after-hand '$1=="s" {$0=$1 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "  \t" $7 "\t" $8 "\t" $9} {print}' || b30sep=98
+b30_row_case i-spaces 'NR==1 && $1=="i" {gsub(/\t/, " "); sub(/^i /, "i\t")} {print}' || b30sep=98
+b30_row_case i-plus 'NR==1 && $1=="i" {$2="+" $2} {print}' || b30sep=98
+b30_row_case i-double-tab 'NR==1 && $1=="i" {$0=$1 "\t\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6} {print}' || b30sep=98
+gate "B30 tab runs, spaces and signs are not separators in s or i records" $b30sep 0
+b30typ=0
+for bad in 'S' 'ss' ' s' 'x'; do
+    b30_row_case "type-$bad" -v b="$bad" '$1=="s" {$1=b} {print}' || b30typ=98
+    grep -q 'no known type' "$T/b30.r-type-$bad.err" || b30typ=98
+done
+b30_row_case type-bare '$1=="s" {$0="s"} {print}' || b30typ=98
+grep -q 'no known type' "$T/b30.r-type-bare.err" || b30typ=98
+gate "B30 a record of no known type refuses resume by name" $b30typ 0
+cp "$T/b30.state" "$T/b30.r-canon.state"; cp "$T/b30.bio" "$T/b30.r-canon.bio"
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30.r-canon.state" \
+    --bio "$T/b30.r-canon.bio" >/dev/null 2>&1
+gate "B30 canonical s and i records still resume" $? 0
 
 # Three signatures are interleaved with jury, units, atlas, reversed convoy
 # order and two final resumes. The unsigned twin receives the same speech.
