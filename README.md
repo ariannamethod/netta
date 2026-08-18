@@ -87,12 +87,27 @@ technical source of truth for the living line.
   life. On resume, `bio_verify` parses `s` as its own canonical event
   class (fixed hex widths, canonical unsigned integers, hand/law enums,
   four-hex opening, and historical bounds); a recomputed chain cannot turn
-  malformed fields into a signature. `--sign` needs `--speak` with at
-  least one byte and a lived state; with `--reset`, `--cite`, `--court`
-  or `--ear` it refuses by name. The publication has no fsync: the contract
-  covers a dying process, not a dying machine — the same limit as the
-  citation. A citation still names no life; reading `s` against `w`
-  remains a future body.
+  malformed fields into a signature; `s` and `i` records are reprinted
+  canonically and compared byte for byte, so runs of tabs, spaces after a
+  width-saturated field, and signs are not separators, and a record whose
+  first field names no known type refuses resume. `--sign` needs `--speak`
+  with at least one byte and a lived state; with `--reset`, `--cite`,
+  `--court` or `--ear` it refuses by name. The publication has no fsync: the
+  contract covers a dying process, not a dying machine — the same limit as
+  the citation. A citation still names no life inside the organism.
+- Body 31 reads `s` against `w` from outside: `scripts/biography_check.c` is
+  an independent read-only reader of the biography language — no organism
+  code, no state, nothing written, no effect on resume or behaviour. It
+  refuses records that are not newline-sealed, carry a NUL, open with no
+  known type, or, for `s`, `w` and `i`, are not canonical tab for tab (the
+  eleven other record types are admitted by type only, as the organism
+  admits them; on `w` the reader is stricter than the organism, a named
+  difference for a later turn), prints the record count and chain the
+  organism also prints, and reports recognition: a `w` whose candidate
+  digest and byte count equal a prior `s` of this life is recognised with
+  its multiplicity; every other `w` is an external fact; a signature after
+  the citation recognises nothing. Two readers, one language: the organism
+  on resume and the reader draw one verdict on re-sealed `s` rows.
 - Under `--ear FILE`, every island in the convoy carries its own statistical
   judge, grown from its immutable tape and nothing else: the ear prices the
   given stream with the shore's own Laplace ladder (bits per byte), uni/bi
@@ -217,7 +232,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 312-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 325-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -381,6 +396,14 @@ Counts must be finite non-negative integers. Infinite-life syntax such as
   sittings; it shares no organism source or linked object.
 - `scripts/warrant_fixture.c` — public test-only FNV constructor proving that
   receipt and docket safety comes from visible grammar, not a hidden hash.
+- `scripts/manifest_check.c` — independent reader of the speech manifest; it
+  proves the captured stream's count and digest and nothing more.
+- `scripts/biography_check.c` — independent read-only reader of the biography
+  language with the recognition report (prior `s` → later `w`).
+- `scripts/biography_fixture.c` — public re-sealer of the state's biography
+  count and chain, so malformed rows can meet the reader.
+- `scripts/cross_reader/` — the docket cross-reader battery and its base
+  sittings, run by the suite on every pass.
 - `scripts/gutenberg_arena.py` — reproducible corpus preparation and
   arena runner.
 - `netta.txt` — an optional raw-byte example island, not model authority.

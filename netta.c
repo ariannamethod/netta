@@ -190,8 +190,31 @@ static int bio_signature_ok(const char *line, ssize_t n) {
             !bio_canonical_u64(lived_s, &lived) || lived == 0 ||
             ep > episode_no || lived > atomic_bytes_lived)
         return 0;
-    (void)seed;
-    return 1;
+    /* a tab in a scanf format is a whitespace directive, not a byte: only
+       the canonical reprint proves the separators */
+    char canonical[192];
+    int cn = snprintf(canonical, sizeof canonical,
+                      "s\t%llu\t%s\t%llu\t%llu\t%s\t%s\t%s\t%llu\n",
+                      (unsigned long long)ep, digest,
+                      (unsigned long long)bytes, (unsigned long long)seed,
+                      hand, law, opening, (unsigned long long)lived);
+    return cn > 0 && (ssize_t)cn == n &&
+           memcmp(canonical, line, (size_t)n) == 0;
+}
+
+/* every record the organism writes opens with its type: the episode number
+   of a step, or one letter of the closed set; anything else is no record */
+static int bio_record_type_ok(const char *line, ssize_t n) {
+    ssize_t i = 0;
+    if (n >= 2 && line[0] >= '0' && line[0] <= '9') {
+        while (i < n && line[i] >= '0' && line[i] <= '9') i++;
+        if (line[0] == '0' && i != 1) return 0;
+    } else if (n >= 2 && strchr("abdimqrstuvw", line[0]) && line[0]) {
+        i = 1;
+    } else {
+        return 0;
+    }
+    return i < n && line[i] == '\t';
 }
 
 static void bio_verify(const char *path) {
@@ -230,16 +253,24 @@ static void bio_verify(const char *path) {
     size_t cap = 0;
     ssize_t n;
     uint64_t chain = FNV_SEED, lines = 0;
-    int arrivals = 0, malformed = 0;
+    int arrivals = 0, malformed = 0, unknown = 0;
     while ((n = getline(&line, &cap, f)) >= 0) {
         chain = fnv1a64((const uint8_t *)line, (uint64_t)n, chain);
         lines++;
         if (n == 0 || line[n - 1] != '\n') malformed = 1;
+        else if (!bio_record_type_ok(line, n)) unknown = 1;
         if (n >= 2 && line[0] == 'i' && line[1] == '\t') {
             unsigned long long ep, digest, witness, len;
             int id, used = -1;
+            char canonical[128];
+            int cn = -1;
             if (sscanf(line, "i\t%llu\t%d\t%16llx\t%16llx\t%llu%n",
-                       &ep, &id, &digest, &witness, &len, &used) != 5 ||
+                       &ep, &id, &digest, &witness, &len, &used) == 5)
+                cn = snprintf(canonical, sizeof canonical,
+                              "i\t%llu\t%d\t%016llx\t%016llx\t%llu\n",
+                              ep, id, digest, witness, len);
+            if (cn <= 0 || (ssize_t)cn != n ||
+                memcmp(canonical, line, (size_t)n) != 0 ||
                 (ssize_t)used != n - 1 || id != arrivals || id < 0 ||
                 id >= reg_count || ep > episode_no ||
                 digest != reg_digest[id] ||
@@ -254,6 +285,12 @@ static void bio_verify(const char *path) {
     free(line);
     if (ferror(f) || fclose(f) != 0) {
         fprintf(stderr, "netta: cannot verify biography %s\n", path);
+        exit(1);
+    }
+    if (unknown) {
+        fprintf(stderr,
+                "netta: biography %s carries a record of no known type; "
+                "refusing\n", path);
         exit(1);
     }
     if (malformed || arrivals != reg_count) {
