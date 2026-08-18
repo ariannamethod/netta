@@ -2516,6 +2516,124 @@ cmp -s "$T/b30.long-a.clean" "$T/b30.long-b.bio" || b30long=98
 [ "$b30extra" -eq 0 ] || b30long=98
 gate "B30 three signatures remain powerless through the long twin" $b30long 0
 
+# --- B31: the recognition ------------------------------------------------
+# scripts/biography_check.c is an independent, read-only reader of the
+# biography language: it shares no organism code, takes no state, writes
+# nothing, and influences no resume or behaviour. It refuses records that
+# are not newline-sealed, carry a NUL, open with no known type, or -- for
+# s, w and i -- are not canonical tab for tab; and it reports recognition:
+# a later w whose candidate digest AND byte count equal a PRIOR s of this
+# life, with its multiplicity; every other w is an external fact.
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic scripts/biography_check.c \
+    -o "$T/bcheck" 2>"$T/bcheck-build.log"
+rc=$?; [ -s "$T/bcheck-build.log" ] && rc=98
+gate "B31 the biography reader builds strict and silent" $rc 0
+BC="$T/bcheck"
+cp "$T/b18.state.ref" "$T/b31.state"; cp "$T/b18.bio.ref" "$T/b31.bio"
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b31.state" \
+    --bio "$T/b31.bio" > "$T/b31.words" 2>/dev/null
+"$N" "$T/p3.bytes" --court "$T/b31.words" > "$T/b31.docket" 2>/dev/null
+"$N" --state "$T/b31.state" --bio "$T/b31.bio" --cite "$T/b31.docket" \
+    >/dev/null 2>&1
+b31d=$("$T/wfixture" bytes < "$T/b31.words")
+cp "$T/b31.bio" "$T/b31.bio.before"
+"$BC" "$T/b31.bio" > "$T/b31.rec"
+rc=$?
+grep -q "^recognised: line [0-9]* episode [0-9]* candidate $b31d bytes 60 multiplicity 1 s-lines [0-9]*$" "$T/b31.rec" && \
+    grep -q '^recognition: s=1 w=1 recognised=1 external=0$' "$T/b31.rec" && \
+    cmp -s "$T/b31.bio" "$T/b31.bio.before" && [ "$rc" -eq 0 ]
+gate "B31 a life recognises a court's word about its own signed speech" $? 0
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b31.state" \
+    --bio "$T/b31.bio" > "$T/b31.play" 2>&1
+b31org=$(sed -n 's/^biography: \([0-9]*\) lines, chain \([0-9a-f]*\)$/\1 \2/p' "$T/b31.play")
+b31rd=$("$BC" "$T/b31.bio" | sed -n 's/^biography: \([0-9]*\) records, chain \([0-9a-f]*\)$/\1 \2/p')
+[ -n "$b31org" ] && [ "$b31org" = "$b31rd" ]
+gate "B31 the reader's count and chain are the organism's" $? 0
+cp "$T/b18.state.ref" "$T/b31f.state"; cp "$T/b18.bio.ref" "$T/b31f.bio"
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b31f.state" \
+    --bio "$T/b31f.bio" >/dev/null 2>&1
+"$N" --state "$T/b31f.state" --bio "$T/b31f.bio" --cite "$T/b28.docket" \
+    >/dev/null 2>&1
+"$BC" "$T/b31f.bio" | grep -q '^recognition: s=1 w=1 recognised=0 external=1$'
+gate "B31 a court's word about a foreign candidate stays an external fact" $? 0
+cp "$T/b18.state.ref" "$T/b31o.state"; cp "$T/b18.bio.ref" "$T/b31o.bio"
+"$N" --state "$T/b31o.state" --bio "$T/b31o.bio" --cite "$T/b31.docket" \
+    >/dev/null 2>&1
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b31o.state" \
+    --bio "$T/b31o.bio" >/dev/null 2>&1
+"$BC" "$T/b31o.bio" | grep -q '^recognition: s=1 w=1 recognised=0 external=1$'
+gate "B31 a signature after the citation does not recognise it (order is causal)" $? 0
+cp "$T/b18.state.ref" "$T/b31m.state"; cp "$T/b18.bio.ref" "$T/b31m.bio"
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b31m.state" \
+    --bio "$T/b31m.bio" >/dev/null 2>&1
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b31m.state" \
+    --bio "$T/b31m.bio" >/dev/null 2>&1
+"$N" --state "$T/b31m.state" --bio "$T/b31m.bio" --cite "$T/b31.docket" \
+    >/dev/null 2>&1
+"$N" --state "$T/b31m.state" --bio "$T/b31m.bio" --cite "$T/b31.docket" \
+    >/dev/null 2>&1
+"$BC" "$T/b31m.bio" > "$T/b31m.rec"
+[ "$(grep -c 'multiplicity 2 s-lines' "$T/b31m.rec")" -eq 2 ] && \
+    grep -q '^recognition: s=2 w=2 recognised=2 external=0$' "$T/b31m.rec"
+gate "B31 multiplicity is reported, not resolved: two signatures, two citations" $? 0
+# same digest, different byte count: not the same stream (red for a digest-only reader)
+sed 's/^\(s	[0-9]*	[0-9a-f]*	\)60	/\161	/' "$T/b31.bio" > "$T/b31b.bio"
+"$BC" "$T/b31b.bio" | grep -q '^recognition: s=1 w=1 recognised=0 external=1$'
+gate "B31 recognition needs the byte count as well as the digest" $? 0
+# refusals by name: the language, not just the pairing
+b31r=0
+b31_refuse_case() {
+    name=$1; want=$2; shift 2
+    awk -F '\t' -v OFS='\t' "$@" "$T/b31.bio" > "$T/b31.x-$name.bio"
+    "$BC" "$T/b31.x-$name.bio" > "$T/b31.x-$name.out"
+    [ $? -eq 1 ] && grep -q "^biography refused: line [0-9]* $want" "$T/b31.x-$name.out"
+}
+b31_refuse_case s-space 's record' '$1=="s" {$0=$1 "\t" $2 "\t" $3 " " $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9} {print}' || b31r=98
+b31_refuse_case s-digest15 's record' '$1=="s" {$3=substr($3,1,15)} {print}' || b31r=98
+b31_refuse_case s-hand 's record' '$1=="s" {$6="mv"} {print}' || b31r=98
+b31_refuse_case w-verdicts 'w record' '$1=="w" {$9=$9+1} {print}' || b31r=98
+b31_refuse_case w-context 'w record' '$1=="w" {$5="COLD"} {print}' || b31r=98
+b31_refuse_case w-shores0 'w record' '$1=="w" {$6=0; $9=0} {print}' || b31r=98
+b31_refuse_case i-plus 'i record' 'NR==1 && $1=="i" {$2="+" $2} {print}' || b31r=98
+b31_refuse_case type-S 'opens with no known' '$1=="s" {$1="S"} {print}' || b31r=98
+b31_refuse_case type-x 'opens with no known' 'NR==2 {$1="x"} {print}' || b31r=98
+{ head -c 100 "$T/b31.bio"; printf '\0'; tail -c +101 "$T/b31.bio"; } > "$T/b31.x-nul.bio"
+"$BC" "$T/b31.x-nul.bio" > "$T/b31.x-nul.out"; [ $? -eq 1 ] && grep -q 'NUL' "$T/b31.x-nul.out" || b31r=98
+head -c $(( $(wc -c < "$T/b31.bio") - 1 )) "$T/b31.bio" > "$T/b31.x-unsealed.bio"
+"$BC" "$T/b31.x-unsealed.bio" > "$T/b31.x-unsealed.out"; [ $? -eq 1 ] && grep -q 'not newline-sealed' "$T/b31.x-unsealed.out" || b31r=98
+gate "B31 the reader refuses malformed s, w and i records, unknown types, NUL and unsealed rows by name" $b31r 0
+# two readers, one language: the organism on resume and the reader agree on s rows
+b31x=0
+b31_agree_case() {
+    name=$1; shift
+    cp "$T/b31.state" "$T/b31.a-$name.state"
+    awk -F '\t' -v OFS='\t' "$@" "$T/b31.bio" > "$T/b31.a-$name.bio"
+    "$BF" "$T/b31.a-$name.state" "$T/b31.a-$name.bio" || return 98
+    "$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b31.a-$name.state" \
+        --bio "$T/b31.a-$name.bio" >/dev/null 2>&1
+    o=$?
+    "$BC" "$T/b31.a-$name.bio" >/dev/null; r=$?
+    { [ $o -eq 0 ] && [ $r -eq 0 ]; } || { [ $o -ne 0 ] && [ $r -ne 0 ]; }
+}
+b31_agree_case canon '{print}' || b31x=98
+b31_agree_case seed0 '$1=="s" {$5=0} {print}' || b31x=98
+b31_agree_case hand-bi '$1=="s" {$6="bi"} {print}' || b31x=98
+b31_agree_case law-laplace '$1=="s" {$7="laplace-red"} {print}' || b31x=98
+b31_agree_case dtab '$1=="s" {$0=$1 "\t\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9} {print}' || b31x=98
+b31_agree_case bytes0 '$1=="s" {$4=0} {print}' || b31x=98
+b31_agree_case seed-plus '$1=="s" {$5="+7"} {print}' || b31x=98
+b31_agree_case open-upper '$1=="s" {$8="6A62"} {print}' || b31x=98
+b31_agree_case type-ss '$1=="s" {$1="ss"} {print}' || b31x=98
+gate "B31 two readers, one language: organism and reader agree on nine s rows" $b31x 0
+cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic -fsanitize=address,undefined \
+   -fno-omit-frame-pointer scripts/biography_check.c -o "$T/bcheck-san" \
+   > "$T/bcheck-san-build.log" 2>&1
+rc=$?; [ -s "$T/bcheck-san-build.log" ] && rc=98
+"$T/bcheck-san" "$T/b31m.bio" >/dev/null 2>"$T/bcheck-san.err" || rc=$?
+"$T/bcheck-san" "$T/b31.x-s-space.bio" >/dev/null 2>>"$T/bcheck-san.err" || true
+[ -s "$T/bcheck-san.err" ] && rc=98
+gate "S ASan/UBSan silent through the biography reader" $rc 0
+
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
    -fsanitize=address,undefined -fno-omit-frame-pointer \

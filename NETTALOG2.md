@@ -2776,3 +2776,78 @@ both channels on `/dev/null`, a stdout on a symlink and on a hard link of
 the biography, a biography reached through a symlink, a directory,
 `/dev/null`, a FIFO without a reader, and a state that is its own
 biography.  Three hundred and fifteen gates.
+
+## Body 31: the recognition — preregistered before code
+
+Oleg's word opened the thirty-first body with a boundary drawn tighter than
+either audit had asked: `biography_check.c` as an independent read-only
+organ — prior `s`, later `w`, equal digest and byte count, honest
+multiplicity, a report and nothing else — and no grammar taken out of
+`netta.c`, because Netta must stay self-sufficient and survive without any
+external module; two independent readers prove one language first, and the
+extraction of grammars is a separate refactor after the other hand's audit.
+So the organism did not move: the commit of this body changes no line of
+`netta.c`.
+
+The reader shares no organism code.  It takes one biography, requires a
+regular file, and reads it record by record with its own hands: every
+record newline-sealed and free of NUL; every record opening with a known
+type — the episode number of a step or one of the letters `a b d i m q r s
+t u v w`; and, for the three records it parses, a grammar split on exact
+tab bytes, so that the whitespace directive that fooled the organism's
+first `s` reader has no way in — `s` with its nine canonical fields, `w`
+with its nine (episode, candidate digest, bytes in the court's `[2,
+16384]`, `cold` or four-hex context, shores in `[1, 32]`, law digest,
+docket digest, and a verdict count equal to the shores), and `i` by shape.
+The eleven other types are admitted by type only, as the organism admits
+them today; the reader is stricter than the organism on `w`, which the
+organism chains but does not yet parse — a difference named for the later
+turn, not hidden.  It prints the record count and the FNV chain over the
+raw records, the same public witness the organism prints after a played
+episode, so the two can be laid side by side.
+
+Recognition is causal and exact.  A `w` is recognised when a signature
+that stands EARLIER in the biography carries the same candidate digest and
+the same byte count; the report names the line, the episode, the
+candidate, the bytes, the multiplicity and every matching `s` line; a `w`
+with no such prior signature is printed as an external fact.  A signature
+after the citation recognises nothing — the life did not yet own the
+speech when the court's word arrived — and a signature of the same digest
+with a different byte count is not the same stream.  Multiplicity is
+reported, not resolved: two signatures and two citations of one stream
+give two recognised lines of multiplicity two.  Nothing is decided by it;
+it is a reading.
+
+Measured on the two-shore life: `--speak 60 --speak-seed 7 --sign` leaves
+`s` at record 1539 with candidate `796e0c5ce4b27b99`; the pattern court
+over the captured sixty bytes opens a sitting on that same candidate; the
+citation of that docket leaves `w` at record 1540; the reader prints
+`recognised: line 1540 episode 2 candidate 796e0c5ce4b27b99 bytes 60
+multiplicity 1 s-lines 1539` and `recognition: s=1 w=1 recognised=1
+external=0`, and after a played episode its `1554 records, chain
+5f3805c3f5633fed` equals the organism's own `biography:` line.  Two red
+hands were built before the gates were trusted: a reader that pairs on
+digest alone recognises a signature whose byte count was changed to 61,
+which the law calls a different stream; and the causal order was checked
+against a life that cited first and signed after, which must not
+recognise.
+
+Ten gates seal the body: the strict silent build; the recognised
+citation of the life's own signed speech with the biography byte-identical
+after the reading; the reader's count and chain equal to the organism's;
+a foreign docket left external; the citation before the signature left
+external; multiplicity two on two signatures and two citations; the byte
+count required beside the digest; malformed `s`, `w` and `i` rows,
+unknown types, a NUL and an unsealed row refused by name; nine re-sealed
+`s` rows on which the organism on resume and the reader draw one verdict;
+and the sanitizer reader silent.  Three hundred and twenty-five gates.
+
+What this body does not do is also its content.  It reads `s` against `w`
+outside the life: the organism does not know that a `w` is about its own
+speech, and no `w` field, no new event and no behaviour changed.  The
+recognition exists as a fact an outside hand can derive from the public
+biography alone — which is exactly the fact a later organism growing
+between lives will need first — while the life itself keeps its citations
+as external facts.  Whether the life should ever read its own recognition,
+and how, is the question the next turn inherits together with the eleven
+unparsed grammars.
