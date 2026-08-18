@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B29. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B30. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -2196,6 +2196,15 @@ gate "B29 the red Laplace mouth names its distinct law in the same grammar" $? 0
 # refuses resume by chain and count and is never repaired; a closed or a
 # self-directed stream refuses before a word, for the signed and the
 # unsigned mouth alike.
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic scripts/fsize_exec.c -o "$T/fsize-exec" > "$T/b30-build.log" 2>&1
+rc=$?
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic scripts/biography_fixture.c -o "$T/bio-fixture" >> "$T/b30-build.log" 2>&1 || rc=$?
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Drename=netta_test_rename netta.c scripts/rename_fault.c -lm -o "$T/netta-rename-fault" >> "$T/b30-build.log" 2>&1 || rc=$?
+[ -s "$T/b30-build.log" ] && rc=98
+gate "B30 publication red hands build strict and silent" $rc 0
+FL="$T/fsize-exec"
+BF="$T/bio-fixture"
+NR="$T/netta-rename-fault"
 cp "$T/b18.state.ref" "$T/b30.state"; cp "$T/b18.bio.ref" "$T/b30.bio"
 "$N" --speak 60 --speak-seed 7 --sign --state "$T/b30.state" \
     --bio "$T/b30.bio" > "$T/b30.words" 2> "$T/b30.err"
@@ -2292,6 +2301,188 @@ done
 cmp -s "$T/b30g.state" "$T/b18.state.ref" && \
     cmp -s "$T/b30g.bio" "$T/b18.bio.ref" || b30m=98
 gate "B30 --sign without a mouth, with zero bytes, a reset, or another instrument refuses" $b30m 0
+
+# A biography is a resumable regular file, never a sink that can acknowledge
+# writes and discard the life. The FIFO arm has a reader so the old blocking
+# fopen can run to its incorrect success instead of hanging the red test.
+b30f=0
+rm -f "$T/b30.devnull.state" "$T/b30.fifo.state"
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 1 --steps 60 --state "$T/b30.devnull.state" --bio /dev/null >/dev/null 2> "$T/b30.devnull.err"
+[ $? -eq 1 ] && [ ! -e "$T/b30.devnull.state" ] && grep -q 'regular file' "$T/b30.devnull.err" || b30f=98
+mkfifo "$T/b30.bio.fifo"
+cat "$T/b30.bio.fifo" >/dev/null & b30reader=$!
+"$N" "$T/p3.bytes" --reset --seed 5 --episodes 1 --steps 60 --state "$T/b30.fifo.state" --bio "$T/b30.bio.fifo" >/dev/null 2> "$T/b30.fifo.err"
+[ $? -eq 1 ] && [ ! -e "$T/b30.fifo.state" ] && grep -q 'regular file' "$T/b30.fifo.err" || b30f=98
+kill "$b30reader" 2>/dev/null || true
+wait "$b30reader" 2>/dev/null || true
+gate "B30 a biography cannot disappear into devnull or a FIFO" $b30f 0
+
+# The named world joins state and biography in the protected sink set. A
+# merged regular stdout/stderr cannot be a captured candidate because the
+# voice bytes would sit inside the stream. A read-only directory descriptor
+# is refused by writability before speak() tries a byte.
+b30x=0
+cp "$T/p3.bytes" "$T/b30.shore"
+"$N" "$T/b30.shore" --reset --seed 5 --episodes 1 --steps 60 --state "$T/b30.shore.state" --bio "$T/b30.shore.bio" >/dev/null 2>&1
+cp "$T/b30.shore.state" "$T/b30.shore.state.ref"
+cp "$T/b30.shore.bio" "$T/b30.shore.bio.ref"
+b30shore=$(wc -c < "$T/b30.shore" | tr -d ' ')
+"$N" "$T/b30.shore" --speak 60 --speak-seed 7 --sign --state "$T/b30.shore.state" --bio "$T/b30.shore.bio" >> "$T/b30.shore" 2> "$T/b30.shore.err"
+[ $? -eq 1 ] && [ "$(wc -c < "$T/b30.shore" | tr -d ' ')" -eq "$b30shore" ] && cmp -s "$T/b30.shore.state" "$T/b30.shore.state.ref" && cmp -s "$T/b30.shore.bio" "$T/b30.shore.bio.ref" || b30x=98
+"$N" "$T/b30.shore" --speak 60 --speak-seed 7 --sign --state "$T/b30.shore.state" --bio "$T/b30.shore.bio" > "$T/b30.shore.words" 2>> "$T/b30.shore"
+[ $? -eq 1 ] && [ ! -s "$T/b30.shore.words" ] && [ "$(wc -c < "$T/b30.shore" | tr -d ' ')" -eq "$b30shore" ] || b30x=98
+cp "$T/b18.state.ref" "$T/b30.merge.state"
+cp "$T/b18.bio.ref" "$T/b30.merge.bio"
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b30.merge.state" --bio "$T/b30.merge.bio" > "$T/b30.merge.out" 2>&1
+[ $? -eq 1 ] && grep -q 'separate stream and voice' "$T/b30.merge.out" && cmp -s "$T/b30.merge.state" "$T/b18.state.ref" && cmp -s "$T/b30.merge.bio" "$T/b18.bio.ref" || b30x=98
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b30.merge.state" --bio "$T/b30.merge.bio" 1< "$T" 2> "$T/b30.dir.err"
+[ $? -eq 1 ] && grep -q 'both writable' "$T/b30.dir.err" && cmp -s "$T/b30.merge.state" "$T/b18.state.ref" && cmp -s "$T/b30.merge.bio" "$T/b18.bio.ref" || b30x=98
+gate "B30 the mouth cannot write a shore or merge its stream and voice" $b30x 0
+
+# A newborn state path does not alias an absent file accidentally. A full
+# output file is represented by an exact RLIMIT_FSIZE and must fail before
+# either memory file moves.
+b30o=0
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b30.newborn.state" --bio "$T/b30.newborn.bio" > "$T/b30.newborn.words" 2> "$T/b30.newborn.err"
+[ $? -eq 1 ] && [ ! -s "$T/b30.newborn.words" ] && [ ! -e "$T/b30.newborn.state" ] && [ ! -e "$T/b30.newborn.bio" ] || b30o=98
+cp "$T/b18.state.ref" "$T/b30.outfull.state"
+cp "$T/b18.bio.ref" "$T/b30.outfull.bio"
+"$FL" 30 ignore "$N" --speak 60 --speak-seed 7 --sign --state "$T/b30.outfull.state" --bio "$T/b30.outfull.bio" > "$T/b30.outfull.words" 2> "$T/b30.outfull.err"
+[ $? -eq 1 ] && [ "$(wc -c < "$T/b30.outfull.words" | tr -d ' ')" -eq 30 ] && cmp -s "$T/b30.outfull.state" "$T/b18.state.ref" && cmp -s "$T/b30.outfull.bio" "$T/b18.bio.ref" || b30o=98
+gate "B30 a newborn and a full speech sink publish no signature" $b30o 0
+
+# Real file-write ceilings meet both halves of publication. A partial
+# biography line and a complete biography followed by a failed state sibling
+# both refuse resume. The fatal arm dies from SIGXFSZ during state_save.
+b30p=0
+b30bs=$(wc -c < "$T/b18.bio.ref" | tr -d ' ')
+cp "$T/b18.state.ref" "$T/b30.limbio.state"
+cp "$T/b18.bio.ref" "$T/b30.limbio.bio"
+"$FL" $((b30bs + 30)) ignore "$N" --speak 60 --speak-seed 7 --sign --state "$T/b30.limbio.state" --bio "$T/b30.limbio.bio" > "$T/b30.limbio.words" 2> "$T/b30.limbio.err"
+r1=$?
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30.limbio.state" --bio "$T/b30.limbio.bio" >/dev/null 2> "$T/b30.limbio.resume"
+r2=$?
+cmp -s "$T/b30.limbio.state" "$T/b18.state.ref" || b30p=98
+[ "$r1" -eq 1 ] && [ "$r2" -eq 1 ] || b30p=98
+cp "$T/b18.state.ref" "$T/b30.limstate.state"
+cp "$T/b18.bio.ref" "$T/b30.limstate.bio"
+"$FL" $((b30bs + 1024)) ignore "$N" --speak 60 --speak-seed 7 --sign --state "$T/b30.limstate.state" --bio "$T/b30.limstate.bio" > "$T/b30.limstate.words" 2> "$T/b30.limstate.err"
+r3=$?
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30.limstate.state" --bio "$T/b30.limstate.bio" >/dev/null 2> "$T/b30.limstate.resume"
+r4=$?
+cmp -s "$T/b30.limstate.state" "$T/b18.state.ref" || b30p=98
+ls "$T"/b30.limstate.state.tmp.* >/dev/null 2>&1 || b30p=98
+[ "$r3" -eq 1 ] && [ "$r4" -eq 1 ] || b30p=98
+cp "$T/b18.state.ref" "$T/b30.sigx.state"
+cp "$T/b18.bio.ref" "$T/b30.sigx.bio"
+"$FL" $((b30bs + 1024)) die "$N" --speak 60 --speak-seed 7 --sign --state "$T/b30.sigx.state" --bio "$T/b30.sigx.bio" > "$T/b30.sigx.words" 2> "$T/b30.sigx.err" &
+b30sigxpid=$!
+wait "$b30sigxpid" 2>/dev/null
+r5=$?
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30.sigx.state" --bio "$T/b30.sigx.bio" >/dev/null 2> "$T/b30.sigx.resume"
+r6=$?
+[ "$r5" -gt 128 ] && [ "$r6" -eq 1 ] && cmp -s "$T/b30.sigx.state" "$T/b18.state.ref" || b30p=98
+gate "B30 full biography and state writes die fail-closed" $b30p 0
+
+# The same production state_save is linked to a syscall-level red hand.
+# First rename refuses; then the process stops at that exact call and receives
+# SIGKILL. In both cases the old state remains and the biography lead refuses.
+b30k=0
+cp "$T/b18.state.ref" "$T/b30.rename.state"
+cp "$T/b18.bio.ref" "$T/b30.rename.bio"
+NETTA_RENAME_FAULT=fail "$NR" --speak 60 --speak-seed 7 --sign --state "$T/b30.rename.state" --bio "$T/b30.rename.bio" > "$T/b30.rename.words" 2> "$T/b30.rename.err"
+r1=$?
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30.rename.state" --bio "$T/b30.rename.bio" >/dev/null 2> "$T/b30.rename.resume"
+r2=$?
+[ "$r1" -eq 1 ] && [ "$r2" -eq 1 ] && grep -q 'cannot publish state' "$T/b30.rename.err" && cmp -s "$T/b30.rename.state" "$T/b18.state.ref" || b30k=98
+cp "$T/b18.state.ref" "$T/b30.kill.state"
+cp "$T/b18.bio.ref" "$T/b30.kill.bio"
+NETTA_RENAME_FAULT=stop NETTA_RENAME_MARK="$T/b30.kill.mark" "$NR" --speak 60 --speak-seed 7 --sign --state "$T/b30.kill.state" --bio "$T/b30.kill.bio" > "$T/b30.kill.words" 2> "$T/b30.kill.err" &
+b30pid=$!
+b30stopped=0; b30wait=0
+while [ "$b30wait" -lt 500 ]; do
+    if [ -s "$T/b30.kill.mark" ]; then b30stopped=1; break; fi
+    sleep 0.01
+    b30wait=$((b30wait + 1))
+done
+kill -KILL "$b30pid" 2>/dev/null || b30k=98
+wait "$b30pid" 2>/dev/null
+r3=$?
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30.kill.state" --bio "$T/b30.kill.bio" >/dev/null 2> "$T/b30.kill.resume"
+r4=$?
+[ "$b30stopped" -eq 1 ] && [ "$r3" -gt 128 ] && [ "$r4" -eq 1 ] && cmp -s "$T/b30.kill.state" "$T/b18.state.ref" || b30k=98
+gate "B30 rename refusal and real SIGKILL preserve the crash law" $b30k 0
+
+# The chain is a public witness, so malformed s rows are re-sealed against the
+# state before resume. Grammar, enums and historical bounds must still refuse.
+b30_signature_case() {
+    name=$1; field=$2; value=$3
+    cp "$T/b30.state" "$T/b30.s-$name.state"
+    awk -F '\t' -v OFS='\t' -v f="$field" -v v="$value" '$1=="s" {$f=v} {print}' "$T/b30.bio" > "$T/b30.s-$name.bio"
+    "$BF" "$T/b30.s-$name.state" "$T/b30.s-$name.bio" || return 98
+    "$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/b30.s-$name.state" --bio "$T/b30.s-$name.bio" >/dev/null 2> "$T/b30.s-$name.err"
+    [ $? -eq 1 ] && grep -q 'does not conserve' "$T/b30.s-$name.err"
+}
+b30sg=0
+b30_signature_case ep-leading 2 02 || b30sg=98
+b30_signature_case ep-future 2 18446744073709551615 || b30sg=98
+b30_signature_case digest-short 3 123456789abcdef || b30sg=98
+b30_signature_case digest-upper 3 ABCDEF0123456789 || b30sg=98
+b30_signature_case bytes-zero 4 0 || b30sg=98
+b30_signature_case bytes-leading 4 060 || b30sg=98
+b30_signature_case seed-sign 5 +7 || b30sg=98
+b30_signature_case hand-mv 6 mv || b30sg=98
+b30_signature_case law-foreign 7 forged || b30sg=98
+b30_signature_case opening-short 8 abc || b30sg=98
+b30_signature_case opening-upper 8 ABCD || b30sg=98
+b30_signature_case lived-zero 9 0 || b30sg=98
+b30_signature_case lived-future 9 18446744073709551615 || b30sg=98
+b30_signature_case extra-field 10 extra || b30sg=98
+gate "B30 fourteen re-sealed malformed s events are not signatures" $b30sg 0
+
+# Three signatures are interleaved with jury, units, atlas, reversed convoy
+# order and two final resumes. The unsigned twin receives the same speech.
+# Only s rows and the state's count/chain words may differ.
+"$N" "$T/p3.bytes" "$T/p5.bytes" --reset --jury --seed 29 --episodes 2 --steps 300 --state "$T/b30.long-a.state" --bio "$T/b30.long-a.bio" >/dev/null 2>&1
+cp "$T/b30.long-a.state" "$T/b30.long-b.state"
+cp "$T/b30.long-a.bio" "$T/b30.long-b.bio"
+"$N" --jury --speak 73 --speak-seed 7 --sign --state "$T/b30.long-a.state" --bio "$T/b30.long-a.bio" > "$T/b30.long-a.s1" 2>/dev/null
+"$N" --jury --speak 73 --speak-seed 7 --state "$T/b30.long-b.state" --bio "$T/b30.long-b.bio" > "$T/b30.long-b.s1" 2>/dev/null
+"$N" "$T/p3.bytes" "$T/p5.bytes" --jury --atlas --episodes 4 --steps 300 --state "$T/b30.long-a.state" --bio "$T/b30.long-a.bio" > "$T/b30.long-a.1" 2>&1
+r1=$?
+"$N" "$T/p3.bytes" "$T/p5.bytes" --jury --atlas --episodes 4 --steps 300 --state "$T/b30.long-b.state" --bio "$T/b30.long-b.bio" > "$T/b30.long-b.1" 2>&1
+r2=$?
+"$N" --jury --speak 91 --speak-seed 8 --speak-laplace --sign --state "$T/b30.long-a.state" --bio "$T/b30.long-a.bio" > "$T/b30.long-a.s2" 2>/dev/null
+"$N" --jury --speak 91 --speak-seed 8 --speak-laplace --state "$T/b30.long-b.state" --bio "$T/b30.long-b.bio" > "$T/b30.long-b.s2" 2>/dev/null
+"$N" "$T/p5.bytes" "$T/p3.bytes" --jury --atlas --episodes 3 --steps 400 --state "$T/b30.long-a.state" --bio "$T/b30.long-a.bio" > "$T/b30.long-a.2" 2>&1
+r3=$?
+"$N" "$T/p5.bytes" "$T/p3.bytes" --jury --atlas --episodes 3 --steps 400 --state "$T/b30.long-b.state" --bio "$T/b30.long-b.bio" > "$T/b30.long-b.2" 2>&1
+r4=$?
+"$N" --jury --speak 127 --speak-seed 9 --sign --state "$T/b30.long-a.state" --bio "$T/b30.long-a.bio" > "$T/b30.long-a.s3" 2>/dev/null
+"$N" --jury --speak 127 --speak-seed 9 --state "$T/b30.long-b.state" --bio "$T/b30.long-b.bio" > "$T/b30.long-b.s3" 2>/dev/null
+"$N" "$T/p3.bytes" "$T/p5.bytes" --jury --atlas --episodes 2 --steps 500 --state "$T/b30.long-a.state" --bio "$T/b30.long-a.bio" > "$T/b30.long-a.3" 2>&1
+r5=$?
+"$N" "$T/p3.bytes" "$T/p5.bytes" --jury --atlas --episodes 2 --steps 500 --state "$T/b30.long-b.state" --bio "$T/b30.long-b.bio" > "$T/b30.long-b.3" 2>&1
+r6=$?
+"$N" "$T/p5.bytes" "$T/p3.bytes" --jury --atlas --episodes 2 --steps 500 --state "$T/b30.long-a.state" --bio "$T/b30.long-a.bio" > "$T/b30.long-a.4" 2>&1
+r7=$?
+"$N" "$T/p5.bytes" "$T/p3.bytes" --jury --atlas --episodes 2 --steps 500 --state "$T/b30.long-b.state" --bio "$T/b30.long-b.bio" > "$T/b30.long-b.4" 2>&1
+r8=$?
+for x in 1 2 3 4; do
+    grep -v '^biography: ' "$T/b30.long-a.$x" > "$T/b30.long-a.$x.clean"
+    grep -v '^biography: ' "$T/b30.long-b.$x" > "$T/b30.long-b.$x.clean"
+done
+grep -v "^s	" "$T/b30.long-a.bio" > "$T/b30.long-a.clean"
+b30extra=$(cmp -l "$T/b30.long-a.state" "$T/b30.long-b.state" | awk '$1 < 41 || $1 > 56 {n++} END {print n+0}')
+b30long=0
+[ "$r1" -eq 0 ] && [ "$r2" -eq 0 ] && [ "$r3" -eq 0 ] && [ "$r4" -eq 0 ] && [ "$r5" -eq 0 ] && [ "$r6" -eq 0 ] && [ "$r7" -eq 0 ] && [ "$r8" -eq 0 ] || b30long=98
+for x in s1 s2 s3 1.clean 2.clean 3.clean 4.clean; do
+    cmp -s "$T/b30.long-a.$x" "$T/b30.long-b.$x" || b30long=98
+done
+cmp -s "$T/b30.long-a.clean" "$T/b30.long-b.bio" || b30long=98
+[ "$(grep -c "^s	" "$T/b30.long-a.bio")" -eq 3 ] || b30long=98
+[ "$b30extra" -eq 0 ] || b30long=98
+gate "B30 three signatures remain powerless through the long twin" $b30long 0
 
 # --- S: sanitizers are executable law, not a remembered side run --------
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic \
