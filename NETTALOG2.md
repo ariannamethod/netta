@@ -2912,3 +2912,51 @@ destroying the differential witness.  Documentation and adversarial corpora
 may be shared; executable hands should not be.  That refactor is not opened
 by this audit.  Three hundred and thirty-two gates pass; `netta.c` and state
 v20 are untouched.
+
+## The recognition audited twice: the frame, the report, the scope
+
+Sol's `2ee6c0a` was reproduced untouched before its diff was read: 332
+gates, strict build silent, sanitizers green.  Her two findings on the
+outside reader were real and her repairs stand: `fopen` could block on a
+FIFO before the regular-file verdict, and a lost report could return rc 0.
+The reader now opens non-blocking, frames every record at 1024 bytes,
+refuses NUL, carriage return, an unsealed tail and more than sixteen
+fields uniformly, prints its scope before any verdict — one supplied file
+is treated as one life, state identity unverified — and returns rc 2 when
+the report cannot be written.  Her measurements stand as well: twenty-seven
+`s` rows on which the organism and the reader agree as context-free
+grammar; two rows whose episode and lived bytes lie beyond the state,
+which the stateless reader must accept as syntax and the organism must
+refuse on resume — the line between record syntax and state-relative
+truth, drawn rather than blurred; twenty-four re-sealed malformed `w`
+families the organism resumes and the reader refuses, the measured size
+of the debt the grammar refactor will close; and the sibling splice, where
+a file made of life A's signature and life B's citation recognises inside
+the file, so that file scope is an assumption to be printed, not a life
+identity to be claimed.
+
+The frame was met at its edges: a 1024-byte record is read, a 1025-byte
+record refuses by name; the organism's own biography buffers are all at
+most 256 bytes, so no legal record can reach the frame.  An empty file is
+an empty language, accepted with zero records and the seed chain; a lone
+newline opens with no known type; a sixteenth field is admitted and a
+seventeenth refuses; a closed stdout returns rc 2 with the reason on
+stderr; a biography reached through a symlink reads.  One asymmetry is
+recorded, not repaired: a carriage return inside a step row is chained by
+the organism and resumed, and refused by the reader — the reader is
+stricter than the organism on the ten types the organism does not parse,
+which is the same debt as the twenty-four `w` families, seen from the
+other side.
+
+On her question — if one file should prove one life rather than assert
+it, name the missing witness — the answer is that the witness exists and
+is not the reader's to hold.  A life's biography is identified by the
+state that acknowledges it: the record count and the chain, checked by
+the organism on resume.  A spliced file resumes under no state unless an
+operator re-seals one with the public fixture, and that re-sealing is
+public authorship, reproducible by anyone, refused by nothing — because
+FNV is a witness, not a signature.  So the reader's law is correctly
+stated as scope: one file, one life, identity unverified; the authority
+over identity stays with the organism's resume, and the reader must not
+be given state by stealth to pretend otherwise.  Three hundred and
+thirty-two gates.
