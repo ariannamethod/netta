@@ -2960,3 +2960,60 @@ stated as scope: one file, one life, identity unverified; the authority
 over identity stays with the organism's resume, and the reader must not
 be given state by stealth to pretend otherwise.  Three hundred and
 thirty-two gates.
+
+## Grammar closure — preregistered before code, on Oleg's contract
+
+Oleg opened the refactor with a contract stricter than the position
+either hand had taken.  `netta.c` stays a self-sufficient single-file
+heart: no required headers, no shared objects, no external parser code.
+The specification and the canonical corpus come first, derived from all
+emit sites rather than from samples; a document and test data are the
+only things two readers may share — executable code stays independent,
+because the second hand is the differential witness.  Context-free
+grammar and state-relative truth are described separately, and
+`disagree=0` refers to the verdict class on the context-free language
+only.  All thirteen record types close with exact tabs, canonical
+fields and byte-for-byte reprint; every type receives its own
+malformed-and-resealed red battery.  State v20, biography emission,
+behaviour, RNG and lived results do not change; the long twins before
+and after must be bit-identical.  The work lands in separate commits —
+specification and corpus, then the inner reader, then the outer — so a
+divergence, if one appears, is localised by construction.  The end of
+the body: thirteen of thirteen in both hands, grammar disagreement
+zero, the twenty-four-family `w` debt at zero, the carriage-return
+asymmetry at zero, and the full suite green on a clean archive.  After
+that, the other hand audits, and the freeze is declared by Oleg's word,
+not by an automatism; the heart is not emptied, and the circle is not
+yet called closed.
+
+This first commit is the specification and the corpus, and the
+specification promptly paid for being derived from the code rather
+than from memory.  The `t` record has three arms, not two: `eligible`
+and `earned` were in every sample this log had seen, and `chart` — the
+under-lived shore chosen by least lived bytes, with the runner-up's
+lived count or `18446744073709551615` when there is none — appeared
+only when a real varied life was run and its atlas rows were counted.
+A specification written from the two known arms would have been wrong
+on eight of the first hundred and twenty-four atlas decisions of that
+life.  The corpus therefore carries one row of every type and every
+arm — nineteen shapes across the thirteen types, seventeen harvested
+from lives lived for this commit, and the two arms those lives did not
+walk (`r` with seven fields, `q` naming the null hand) derived from
+their emit formats and said so.  Ninety-one malformed rows across
+thirteen files carry the separator, sign, leading-zero, hex, literal,
+enum, arity and fixed-point faults every reader must refuse.
+
+Two findings from the harvesting are recorded for the next hands, not
+silently repaired.  A life lived under a neural-law flag can never
+cite: without the flag the state refuses to load (the invocation law
+changed), and with it the citation's mask refuses the flag — the
+citation of body 28 is unreachable for a jury-law life, which the
+suite never noticed because its cited lives are plain.  And CodeQL's
+first alert on this repository names the stat-then-open sequence of
+`bio_verify` as a race; the post-open identity check added by the
+fifteenth turn (fstat against the named stat, device and inode) closes
+it fail-closed, but a swap to a FIFO between the two calls would hang
+the plain fopen — the verify-side open wants the same non-blocking
+discipline the write side already has.  Both belong to an organism
+turn under audit, not to this refactor, whose contract forbids
+touching behaviour.
