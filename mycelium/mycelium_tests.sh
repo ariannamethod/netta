@@ -158,6 +158,24 @@ for i in range(1, 11):
     else:
         glory.append(f"A numbered courier route {i:02d} delivers the quiet evening ledger across town.")
 room_meals("glory-field", glory, 90)
+
+opposite = []
+for i in range(1, 19):
+    if i <= 2:
+        opposite.append(f"The quiet raven counts the copper coins before dawn {i:02d}.")
+    elif i <= 10:
+        opposite.append(f"The quiet raven counts the copper coins on evening {i:02d}. "
+                        f"The quiet raven counts the silver ledger on evening {i:02d} once more.")
+    else:
+        opposite.append(f"The quiet raven counts the copper coins on evening {i:02d}. "
+                        f"The quiet raven sings beside the silver ledger on evening {i:02d} once more.")
+room_meals("opposite-field", opposite, 120)
+
+carry = [
+    "The steady signal returns beside the copper archive before dawn. "
+    "Another steady sentence gives the repeated meal enough plain tokens."
+] * 10
+room_meals("carry-field", carry, 150)
 PY
 
 mkdir "$T/honest"
@@ -472,6 +490,7 @@ names = (
     "props-flip", "props-trunc", "props-mono", "props-empty",
     "props-law", "props-before-w", "props-arity", "props-canon",
     "props-future", "props-main-prefix", "props-prefix-w", "props-prefix-p",
+    "props-snapshot",
 )
 for name in names:
     path = os.path.join(root, name)
@@ -523,6 +542,11 @@ noncanon[1] = b"02"
 open(os.path.join(root, "props-canon", ".mycelium.proposals"), "wb").write(
     seal([payloads[0], b"\t".join(noncanon)]))
 
+snapshot = payloads[1].split(b"\t")
+snapshot[3] = str(int(snapshot[3]) + 1).encode()
+open(os.path.join(root, "props-snapshot", ".mycelium.proposals"), "wb").write(
+    seal([payloads[0], b"\t".join(snapshot)]))
+
 future = payloads[-1].split(b"\t")
 future[1] = b"999"
 future[2] = b"0000000000000000"
@@ -564,6 +588,12 @@ done
 cmp "$T/props-future/.mycelium.proposals" "$T/props-future/proposals.before" &&
     pass "a foreign future prefix refuses before the writer appends" ||
     fail "future prefix append"
+
+(
+    cd "$T/props-snapshot"
+    expect_fail "the examiner re-derives a historical proposal snapshot" \
+        "P snapshot drifted from the main prefix" "$MYC" propose
+)
 
 for name in props-prefix-w props-prefix-p; do
     (
@@ -644,6 +674,64 @@ mkdir "$T/glory-room"
         pass "past glory buys nothing after the bell" || fail "past glory"
 )
 
+(
+    cd "$T/nul-props-field"
+    "$MYC" enroll-hex 2 616c7068610068696464656e 6d656d6f7279 >enroll-hex.out
+    python3 - .mycelium.school <<'PY'
+import sys
+raw = open(sys.argv[1], "rb").read()
+raise SystemExit(0 if b"H\t1\t2\t19\talpha\0hidden memory\t" in raw else 1)
+PY
+    "$CHECK" >/dev/null
+    pass "a NUL-bearing proposal enrolls through the canonical hex lane"
+)
+
+mkdir "$T/carry-room"
+(
+    cd "$T/carry-room"
+    i=1
+    while [ $i -le 2 ]; do
+        "$MYC" ingest carrier "$T/carry-field/speech-$i" "$T/carry-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" enroll 3 steady signal returns >/dev/null
+    while [ $i -le 10 ]; do
+        "$MYC" ingest carrier "$T/carry-field/speech-$i" "$T/carry-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" examine >ex.out
+    costs=$(awk '/^  O hyp 1/ { print $9 ":" $11 }' ex.out | sort -u | wc -l | tr -d ' ')
+    [ "$costs" -gt 1 ] &&
+        pass "Laplace state is carried across byte-identical meals" ||
+        fail "school reset its pricing state per meal"
+)
+
+mkdir "$T/opposite-room"
+(
+    cd "$T/opposite-room"
+    i=1
+    while [ $i -le 2 ]; do
+        "$MYC" ingest scholar "$T/opposite-field/speech-$i" "$T/opposite-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" enroll 3 quiet raven counts >/dev/null
+    while [ $i -le 10 ]; do
+        "$MYC" ingest scholar "$T/opposite-field/speech-$i" "$T/opposite-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" examine >/dev/null
+    "$MYC" enroll 2 quiet raven >/dev/null
+    while [ $i -le 18 ]; do
+        "$MYC" ingest scholar "$T/opposite-field/speech-$i" "$T/opposite-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" examine >ex.out
+    grep -F 'verdict: hyp 2 pass' ex.out >/dev/null &&
+        grep -F 'glyph 2 minted for hyp 2' ex.out >/dev/null &&
+        pass "a pair outside its legalised triple earns uncovered marginal gain" ||
+        fail "opposite marginal case"
+)
+
 python3 - "$T" <<'PY'
 import os, shutil, sys
 
@@ -667,7 +755,14 @@ def seal(payloads):
 school = os.path.join(root, "school")
 raw = open(os.path.join(school, ".mycelium.school"), "rb").read()
 payloads = [line[:-17] for line in raw.splitlines()]
-for name in ("school-flip", "school-trunc", "school-vtot"):
+names = (
+    "school-flip", "school-trunc", "school-vtot", "school-prefix",
+    "school-shape", "school-h-len", "school-h-proposal", "school-o-order",
+    "school-o-unarrived", "school-v-early", "school-l-missing",
+    "school-l-delayed", "school-l-second", "school-overflow",
+    "school-verdict-wrap", "school-r-prefix", "school-r-reason", "school-law",
+)
+for name in names:
     path = os.path.join(root, name)
     os.makedirs(path)
     shutil.copytree(os.path.join(school, ".mycelium.grave"),
@@ -688,11 +783,101 @@ for i, row in enumerate(p):
         p[i] = b"\t".join(fields)
         break
 open(os.path.join(root, "school-vtot", ".mycelium.school"), "wb").write(seal(p))
+
+h1 = next(i for i, row in enumerate(payloads) if row.startswith(b"H\t1\t"))
+o1 = [i for i, row in enumerate(payloads) if row.startswith(b"O\t1\t")]
+v1 = next(i for i, row in enumerate(payloads) if row.startswith(b"V\t1\t"))
+l1 = next(i for i, row in enumerate(payloads) if row.startswith(b"L\t1\t"))
+r_open = next(i for i, row in enumerate(payloads)
+              if row.startswith(b"R\talready-enrolled\t"))
+r_legal = next(i for i, row in enumerate(payloads)
+               if row.startswith(b"R\talready-legalised\t"))
+
+def write(name, rows):
+    open(os.path.join(root, name, ".mycelium.school"), "wb").write(seal(rows))
+
+p = payloads.copy()
+f = p[h1].split(b"\t"); f[6] = b"0000000000000000"; p[h1] = b"\t".join(f)
+write("school-prefix", p)
+
+f = payloads[h1].split(b"\t")
+f[3] = b"19"; f[4] = b"quiet  raven counts"
+write("school-shape", [payloads[0], b"\t".join(f)])
+
+f = payloads[h1].split(b"\t"); f[3] = b"17"
+write("school-h-len", [payloads[0], b"\t".join(f)])
+
+f = payloads[h1].split(b"\t")
+f[2] = b"2"; f[3] = b"11"; f[4] = b"velvet moon"
+write("school-h-proposal", [payloads[0], b"\t".join(f)])
+
+p = payloads.copy(); p[o1[0]], p[o1[1]] = p[o1[1]], p[o1[0]]
+write("school-o-order", p)
+
+write("school-o-unarrived", payloads[:v1 + 1])
+main = open(os.path.join(root, "school-o-unarrived", ".mycelium.ledger"), "rb").read().splitlines()
+cut, meals = [], 0
+for row in main:
+    cut.append(row)
+    if row[:-17].startswith(b"G\t"):
+        meals += 1
+    if meals == 2:
+        break
+open(os.path.join(root, "school-o-unarrived", ".mycelium.ledger"), "wb").write(
+    b"\n".join(cut) + b"\n")
+
+v = payloads[v1].split(b"\t")
+first_o = payloads[o1[0]].split(b"\t")
+v[2] = b"pass"; v[3] = first_o[4]; v[4] = first_o[5]
+write("school-v-early", [payloads[0], payloads[h1], payloads[o1[0]], b"\t".join(v)])
+
+write("school-l-missing", payloads[:v1 + 1])
+p = payloads.copy(); p[l1], p[r_legal] = p[r_legal], p[l1]
+write("school-l-delayed", p)
+p = payloads.copy(); p.insert(l1 + 1, payloads[l1])
+write("school-l-second", p)
+
+zero_o = []
+for pos, idx in enumerate(o1):
+    f = payloads[idx].split(b"\t")
+    f[4] = b"18446744073709551615" if pos == 0 else b"1" if pos == 1 else b"0"
+    f[5] = b"0"
+    zero_o.append(b"\t".join(f))
+write("school-overflow", [payloads[0], payloads[h1]] + zero_o)
+
+wrap_o = []
+for pos, idx in enumerate(o1):
+    f = payloads[idx].split(b"\t")
+    f[4] = b"8000000" if pos == len(o1) - 1 else b"0"
+    f[5] = b"18446744073709551615" if pos == len(o1) - 1 else b"0"
+    wrap_o.append(b"\t".join(f))
+v = payloads[v1].split(b"\t")
+v[2] = b"pass"; v[3] = b"8000000"; v[4] = b"18446744073709551615"
+write("school-verdict-wrap", [payloads[0], payloads[h1]] + wrap_o +
+      [b"\t".join(v), payloads[l1]])
+
+p = payloads.copy(); f = p[r_open].split(b"\t"); f[5] = b"0000000000000000"; p[r_open] = b"\t".join(f)
+write("school-r-prefix", p)
+p = payloads.copy(); f = p[r_open].split(b"\t"); f[1] = b"already-legalised"; p[r_open] = b"\t".join(f)
+write("school-r-reason", p)
+p = payloads.copy(); f = p[0].split(b"\t"); f[2] = b"body3-school-v1"; p[0] = b"\t".join(f)
+write("school-law", p)
 PY
 
 for spec in "school-flip:school chain broken:chain does not fold" \
             "school-trunc:unsealed:unsealed" \
-            "school-vtot:V totals:V totals"; do
+            "school-vtot:V totals:V totals" \
+            "school-prefix:H main prefix:H main prefix" \
+            "school-shape:H shape is not canonical:H shape is not canonical" \
+            "school-h-len:H field grammar:H shape length" \
+            "school-o-order:O outside the window's order:O outside the window's order" \
+            "school-o-unarrived:O prices an unarrived meal:O prices an unarrived meal" \
+            "school-v-early:V before the window closed:V before the window closed" \
+            "school-l-delayed:must be legalised immediately:must be legalised immediately" \
+            "school-l-second:L without a pass:L glyph is not sequential" \
+            "school-r-prefix:R main prefix:R main prefix" \
+            "school-r-reason:R reason does not match:R reason does not match" \
+            "school-law:school law record:school law record"; do
     name=${spec%%:*}; rest=${spec#*:}; writer=${rest%%:*}; reader=${rest#*:}
     (
         cd "$T/$name"
@@ -700,6 +885,32 @@ for spec in "school-flip:school chain broken:chain does not fold" \
         expect_fail "$name reader refusal" "$reader" "$CHECK"
     )
 done
+
+(
+    cd "$T/school-l-missing"
+    "$CHECK" >/dev/null
+    "$MYC" examine >recover.out
+    grep -F 'recovered glyph 1 for hyp 1 after a V-boundary prefix' recover.out >/dev/null &&
+        [ "$(grep -c "$(printf 'L\t1\t1\t')" .mycelium.school)" -eq 1 ] &&
+        "$CHECK" >/dev/null &&
+        pass "a sealed pass at EOF recovers its one mandatory L" ||
+        fail "V-boundary recovery"
+)
+
+(
+    cd "$T/school-h-proposal"
+    expect_fail "the writer re-derives H proposal state at its pinned prefix" \
+        "H shape was not an alive proposal" "$MYC" examine
+)
+(
+    cd "$T/school-overflow"
+    expect_fail "the reader refuses overflowing O totals" "O totals overflow" "$CHECK"
+)
+(
+    cd "$T/school-verdict-wrap"
+    expect_fail "the reader classifies gain without u64 wraparound" \
+        "V verdict class" "$CHECK"
+)
 
 for n in one two; do
     mkdir "$T/school-det-$n"

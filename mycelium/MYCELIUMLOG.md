@@ -3,6 +3,75 @@
 The arc's own log, in the arc's own folder. The heart's log stays
 NETTALOG2.md; nothing here reaches into it.
 
+## Body 3 — the second hand (2026-08-21)
+
+The untouched school reproduced at 75/75 gates and its central result
+was real: the recurring triple passed by 126845532 microbits, its covered
+pair gained exactly zero, and past glory bought exactly zero. The audit
+then left the builder's fixtures and found four accepted histories which
+the writer could not honestly have made. A re-sealed H for `velvet moon`
+sat despite never being an alive proposal at its pinned prefix; the C
+reader accepted an H naming a main chain which never existed and O rows
+for meals absent from the supplied ledger; both hands accepted a pass V
+at EOF without ever minting its promised L. The same crafted surface
+also exposed unchecked u64 accumulation/classification, unpinned R
+reasons, and the argv hole behind the claim that hypothesis identity was
+binary-safe: a NUL proposal could exist but could not be named to
+`enroll`.
+
+The repair is the deliberately incompatible `body3-school-v2`. Body 2
+and body 3 now call one proposal derivation; every existing P snapshot is
+re-derived from its historical main prefix before enrollment, and every
+H is independently checked against the alive proposal state at the
+prefix it names. P remains a witness rather than authority, so an absent
+optional proposals file neither creates nor erases a candidate. H and R
+prefixes are checked by both hands; R now pins after-meals and main-chain,
+and the writer proves its named reason against that state. The plain-C
+reader proves the school-state half of the reason but continues to state
+its narrower boundary: it does not duplicate proposal tokenization or
+microbit pricing.
+
+Pass-to-glyph is now a crash grammar rather than a wish. V pass requires
+L as the next record. A V at EOF is a recognisable record-boundary
+interruption; the next `enroll` or `examine` appends exactly that L before
+doing anything else. An intervening record, delayed L or second L
+refuses. A sealed R needs no second action and is already the terminal
+result of the refused command. A partial unsealed append remains the
+older general process/disk limit; no fsync claim has been invented.
+
+The pricing reading matched the code: A is the number of distinct symbols
+before pricing the next symbol, and one state is carried across all eight
+meals. Resetting per meal changes every nontrivial total but not the five
+fixture verdicts: recurring triple pass, covered pair fail, past-glory
+fail, uncovered pair pass, identical-meal triple pass. Exact half-
+microbit ties cannot occur for an exact rational Laplace product; a libm
+approximation can still meet a rounding boundary. The law therefore says
+`laplace-unigram-lmf-u6-libm-v1`, O recomputation makes drift loud, and no
+decorative build string is pretended to make incompatible math portable.
+
+The opposite marginal case now lives in the battery. After the triple
+was legalised, `quiet raven` occurred both under that triple and outside
+it. Covered boundaries paid nothing twice; uncovered boundaries gave the
+pair base 338109359 against candidate 297687318, a gain of 40422041
+microbits, and glyph 2. A separate hex lane enrolled
+`alpha\0hidden memory` without weakening canonical text enrollment.
+
+The permanent battery closes 105 gates. It adds historical P/H replay,
+NUL enrollment, carried-state evidence, both marginal directions, the
+school-v2 grammar, H/R prefixes and shape lengths, O order/arrival,
+early V, V-boundary recovery, delayed/second L, checked totals and
+wrap-safe verdicts. Ordinary and ASan/UBSan runs both return 105/105; the
+whole untouched NETTA ZERO line returns ALL GATES PASS.
+
+The school already gives body 4 enough ballot material: every attempt's
+O trail, V totals/class and L outcome are sealed and the gain is derived
+without a second summary record. Parliament must read every V for a
+shape, not cherry-pick its latest attempt, and must keep proposal,
+admission and plasticity roles separate. Before that body opens, the
+planned two-life text run can now exercise the first complete
+life-to-ledger-to-proposal-to-school cycle and expose operational debts
+which synthetic rooms cannot.
+
 ## Body 2 — the second hand (2026-08-20)
 
 The untouched proposer arrived with 39 green gates and the whole zero

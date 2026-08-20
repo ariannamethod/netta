@@ -106,6 +106,30 @@ static int field_eq(const char *s, size_t n, const char *literal) {
     return strlen(literal) == n && !memcmp(s, literal, n);
 }
 
+static int school_byte_space(unsigned char c) {
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' ||
+           c == '\f' || (c >= 0x1c && c <= 0x1f);
+}
+
+/* School shapes are tokens joined by exactly one ASCII space. Tokens may
+   contain any other byte, including NUL; tabs are delimiters and therefore
+   cannot be shape bytes. */
+static int school_shape_canonical(const char *s, size_t n, uint64_t arity) {
+    uint64_t tokens = 1;
+    size_t i;
+    if (n == 0 || s[0] == ' ' || s[n - 1] == ' ') return 0;
+    for (i = 0; i < n; ++i) {
+        unsigned char c = (unsigned char)s[i];
+        if (c == ' ') {
+            if (i == 0 || s[i - 1] == ' ') return 0;
+            tokens++;
+        } else if (school_byte_space(c)) {
+            return 0;
+        }
+    }
+    return tokens == arity;
+}
+
 static int lower_hex_n(const char *s, size_t n, size_t width) {
     size_t i;
     if (n != width) return 0;
@@ -338,21 +362,25 @@ _Noreturn static void refuse_school(unsigned long long line, const char *what) {
 typedef struct {
     uint64_t after, last_meal, base_total, cand_total;
     int verdicted, passed;
+    char *shape;
+    size_t slen;
 } SchoolHyp;
 
 static const char *school_verdict(uint64_t base_total, uint64_t cand_total) {
-    if (base_total >= cand_total + 8000000ULL) return "pass";
+    if (base_total >= cand_total && base_total - cand_total >= 8000000ULL)
+        return "pass";
     if (base_total > cand_total) return "weak";
     return "fail";
 }
 
-static void check_school(void) {
+static void check_school(uint64_t main_meals) {
     FILE *sf = fopen(school_path, "rb");
     if (!sf) return;
     uint64_t chain = 0xcbf29ce484222325ULL;
     unsigned long long lineno = 0, h_count = 0, r_count = 0, o_count = 0,
                        v_count = 0, l_count = 0;
     int law_seen = 0;
+    uint64_t pending_glyph = 0;
     SchoolHyp *hyps = NULL;
     size_t hyp_cap = 0;
     char *line = NULL;
@@ -389,12 +417,14 @@ static void check_school(void) {
         char type = fl[0][0];
         if (type == 'S') {
             if (lineno != 1 || nf != 3 || !field_eq(fl[1], fn[1], "1") ||
-                    !field_eq(fl[2], fn[2], "body3-school-v1"))
+                    !field_eq(fl[2], fn[2], "body3-school-v2"))
                 refuse_school(lineno, "school law record");
             law_seen = 1;
             continue;
         }
         if (!law_seen) refuse_school(lineno, "record before school law");
+        if (pending_glyph && type != 'L')
+            refuse_school(lineno, "passed hypothesis must be legalised immediately");
         if (type == 'H') {
             uint64_t id, arity, slen, after, mc;
             if (nf != 9) refuse_school(lineno, "H arity");
@@ -404,11 +434,26 @@ static void check_school(void) {
                 refuse_school(lineno, "H shape arity");
             if (!parse_u64(fl[3], fn[3], &slen) || fn[4] != slen || slen == 0)
                 refuse_school(lineno, "H shape length");
+            if (!school_shape_canonical(fl[4], fn[4], arity))
+                refuse_school(lineno, "H shape is not canonical for its arity");
             if (!parse_u64(fl[5], fn[5], &after)) refuse_school(lineno, "H after-meals");
             if (!parse_hex16(fl[6], fn[6], &mc)) refuse_school(lineno, "H main chain");
+            if (!prefix_has(after, mc)) refuse_school(lineno, "H main prefix");
+            if (after > UINT64_MAX - 8) refuse_school(lineno, "H window overflows");
             if (!field_eq(fl[7], fn[7], "8") ||
-                    !field_eq(fl[8], fn[8], "laplace-unigram-lmf"))
+                    !field_eq(fl[8], fn[8], "laplace-unigram-lmf-u6-libm-v1"))
                 refuse_school(lineno, "H window or baseline law");
+            {
+                size_t i;
+                for (i = 0; i < h_count; ++i) {
+                    int same = hyps[i].slen == fn[4] &&
+                               !memcmp(hyps[i].shape, fl[4], fn[4]);
+                    if (same && !hyps[i].verdicted)
+                        refuse_school(lineno, "H shape already open");
+                    if (same && hyps[i].passed == 2)
+                        refuse_school(lineno, "H shape already legalised");
+                }
+            }
             if (h_count == hyp_cap) {
                 size_t next = hyp_cap ? hyp_cap * 2 : 16;
                 SchoolHyp *p = realloc(hyps, next * sizeof *p);
@@ -416,17 +461,45 @@ static void check_school(void) {
                 hyps = p;
                 hyp_cap = next;
             }
-            hyps[h_count] = (SchoolHyp){after, 0, 0, 0, 0, 0};
+            hyps[h_count] = (SchoolHyp){0};
+            hyps[h_count].after = after;
+            hyps[h_count].shape = malloc(fn[4]);
+            if (!hyps[h_count].shape) {
+                fprintf(stderr, "ledger_check: memory\n");
+                exit(1);
+            }
+            memcpy(hyps[h_count].shape, fl[4], fn[4]);
+            hyps[h_count].slen = fn[4];
             h_count++;
         } else if (type == 'R') {
-            uint64_t slen;
-            if (nf != 4) refuse_school(lineno, "R arity");
+            uint64_t slen, after, mc;
+            int open = 0, legal = 0;
+            size_t i;
+            if (nf != 6) refuse_school(lineno, "R arity");
             if (!field_eq(fl[1], fn[1], "not-proposed") &&
                     !field_eq(fl[1], fn[1], "already-enrolled") &&
                     !field_eq(fl[1], fn[1], "already-legalised"))
                 refuse_school(lineno, "R reason");
             if (!parse_u64(fl[2], fn[2], &slen) || fn[3] != slen || slen == 0)
                 refuse_school(lineno, "R shape length");
+            if (!school_shape_canonical(fl[3], fn[3], 2) &&
+                    !school_shape_canonical(fl[3], fn[3], 3))
+                refuse_school(lineno, "R shape is not canonical");
+            if (!parse_u64(fl[4], fn[4], &after) ||
+                    !parse_hex16(fl[5], fn[5], &mc))
+                refuse_school(lineno, "R state grammar");
+            if (!prefix_has(after, mc)) refuse_school(lineno, "R main prefix");
+            for (i = 0; i < h_count; ++i) {
+                int same = hyps[i].slen == fn[3] &&
+                           !memcmp(hyps[i].shape, fl[3], fn[3]);
+                if (same && !hyps[i].verdicted) open = 1;
+                if (same && hyps[i].passed == 2) legal = 1;
+            }
+            if ((field_eq(fl[1], fn[1], "already-legalised") && !legal) ||
+                    (field_eq(fl[1], fn[1], "already-enrolled") &&
+                     (legal || !open)) ||
+                    (field_eq(fl[1], fn[1], "not-proposed") && (legal || open)))
+                refuse_school(lineno, "R reason does not match school state");
             r_count++;
         } else if (type == 'O') {
             uint64_t id, meal, frags, base_mb, cand_mb, expect;
@@ -443,6 +516,10 @@ static void check_school(void) {
             if (hyps[id - 1].verdicted || meal != expect ||
                     meal > hyps[id - 1].after + 8)
                 refuse_school(lineno, "O outside the window's order");
+            if (meal > main_meals) refuse_school(lineno, "O prices an unarrived meal");
+            if (UINT64_MAX - hyps[id - 1].base_total < base_mb ||
+                    UINT64_MAX - hyps[id - 1].cand_total < cand_mb)
+                refuse_school(lineno, "O totals overflow");
             hyps[id - 1].last_meal = meal;
             hyps[id - 1].base_total += base_mb;
             hyps[id - 1].cand_total += cand_mb;
@@ -463,6 +540,7 @@ static void check_school(void) {
                 refuse_school(lineno, "V verdict class");
             hyps[id - 1].verdicted = 1;
             hyps[id - 1].passed = field_eq(fl[2], fn[2], "pass");
+            if (hyps[id - 1].passed) pending_glyph = id;
             v_count++;
         } else if (type == 'L') {
             uint64_t id, glyph;
@@ -471,22 +549,29 @@ static void check_school(void) {
                 refuse_school(lineno, "L names no hypothesis");
             if (!parse_u64(fl[2], fn[2], &glyph) || glyph != l_count + 1)
                 refuse_school(lineno, "L glyph is not sequential");
-            if (!hyps[id - 1].verdicted || hyps[id - 1].passed != 1)
+            if (!hyps[id - 1].verdicted || hyps[id - 1].passed != 1 ||
+                    pending_glyph != id)
                 refuse_school(lineno, "L without a pass");
             hyps[id - 1].passed = 2; /* legalised; a second L must refuse */
+            pending_glyph = 0;
             l_count++;
         } else {
             refuse_school(lineno, "unknown school record type");
         }
     }
+    if (ferror(sf)) refuse_school(lineno + 1, "cannot read school");
     fclose(sf);
     free(line);
-    free(hyps);
     if (!law_seen) refuse_school(lineno, "school has no law record");
     printf("school: %llu records (S 1, H %llu, R %llu, O %llu, V %llu, L %llu), "
            "chain %016llx\n",
            lineno, h_count, r_count, o_count, v_count, l_count,
            (unsigned long long)chain);
+    {
+        size_t i;
+        for (i = 0; i < h_count; ++i) free(hyps[i].shape);
+    }
+    free(hyps);
 }
 
 int main(int argc, char **argv) {
@@ -614,7 +699,7 @@ int main(int argc, char **argv) {
     printf("ledger_check: %llu records (V %llu, G %llu, U %llu), chain %016llx\n",
            lineno, v_count, g_count, u_count, (unsigned long long)chain);
     check_proposals();
-    check_school();
+    check_school((uint64_t)g_count);
     printf("scope: internal consistency of the supplied file; a prefix cut at "
            "a record boundary needs an external witness\n");
     size_t i;
