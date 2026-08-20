@@ -13,8 +13,8 @@
    -- so the same event refuses forever while the life keeps living.
 
    Ledger record grammar (tab-separated payload, then '\t' hex16 chain):
+     V \t 1 \t body1-byte-v1
      G \t label \t priordigest \t ordinal \t speechdigest \t bytes \t slen \t s-line
-     F \t label \t speechdigest \t fragments \t tokens
      U \t promptdigest \t corpsedigest \t k \t touched \t sources-csv
    The chain folds each payload's raw bytes into the running FNV-1a-64
    (seed cbf29ce484222325); the hex16 after the payload is the chain
@@ -32,6 +32,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include <dirent.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -41,6 +42,8 @@ static const uint64_t FNV_SEED = 0xcbf29ce484222325ULL;
 static const uint64_t FNV_PRIME = 0x100000001b3ULL;
 static const char *LEDGER_PATH = ".mycelium.ledger";
 static const char *GRAVE_DIR = ".mycelium.grave";
+static const char *LEDGER_LAW = "body1-byte-v1";
+static const size_t LEDGER_RECORD_MAX = 4096;
 
 static uint64_t fnv64(const void *p, size_t n, uint64_t h) {
     const uint8_t *b = (const uint8_t *)p;
@@ -63,12 +66,16 @@ static bool read_file(const std::string &path, std::string &out) {
     FILE *f = fopen(path.c_str(), "rb");
     if (!f) return false;
     char buf[65536];
-    size_t n;
     out.clear();
-    while ((n = fread(buf, 1, sizeof buf, f)) > 0) out.append(buf, n);
-    if (ferror(f)) { fclose(f); return false; }
-    fclose(f);
-    return true;
+    for (;;) {
+        size_t n = fread(buf, 1, sizeof buf, f);
+        if (n) out.append(buf, n);
+        if (n < sizeof buf) {
+            bool ok = !ferror(f);
+            fclose(f);
+            return ok;
+        }
+    }
 }
 
 /* ---- the byte law: hashing, lowering, cuts over bytes, ASCII semantics */
@@ -132,7 +139,8 @@ static double cosine(const std::vector<double> &a, const std::vector<double> &b)
 }
 
 static bool byte_space(unsigned char c) {
-    return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f';
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f' ||
+           (c >= 0x1c && c <= 0x1f);
 }
 
 static std::vector<std::string> split_ws(const std::string &s) {
@@ -169,7 +177,7 @@ static std::vector<std::string> segment(const std::string &text) {
     while (i < text.size()) {
         if (text[i] == '\n') {
             size_t j = i + 1;
-            while (j < text.size() && (text[j] == ' ' || text[j] == '\t' || text[j] == '\r')) ++j;
+            while (j < text.size() && text[j] != '\n' && byte_space(text[j])) ++j;
             if (j < text.size() && text[j] == '\n') {
                 blocks.push_back(text.substr(start, i - start));
                 i = j + 1;
@@ -277,6 +285,13 @@ static bool canon_hex16(const std::string &s, uint64_t *out) {
     return true;
 }
 
+static bool canon_hex4(const std::string &s) {
+    if (s.size() != 4) return false;
+    for (char c : s)
+        if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'))) return false;
+    return true;
+}
+
 static std::vector<std::string> split_tabs(const std::string &s) {
     std::vector<std::string> f;
     size_t p = 0;
@@ -287,6 +302,33 @@ static std::vector<std::string> split_tabs(const std::string &s) {
         p = q + 1;
     }
     return f;
+}
+
+static bool label_ok(const std::string &s) {
+    if (s.empty() || s.size() > 32) return false;
+    for (char c : s)
+        if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' || c == '-'))
+            return false;
+    return true;
+}
+
+static bool parse_s_event(const std::string &line, uint64_t *candidate,
+                          uint64_t *bytes) {
+    auto f = split_tabs(line);
+    uint64_t episode, seed, lived;
+    if (f.size() != 9 || f[0] != "s" || !canon_u64(f[1], &episode) ||
+        !canon_hex16(f[2], candidate) || !canon_u64(f[3], bytes) || *bytes == 0 ||
+        !canon_u64(f[4], &seed) ||
+        (f[5] != "uni" && f[5] != "bi" && f[5] != "tri") ||
+        (f[6] != "supported-backoff" && f[6] != "laplace-red") ||
+        !canon_hex4(f[7]) || !canon_u64(f[8], &lived) || lived == 0)
+        return false;
+    return true;
+}
+
+static void write_bytes(FILE *f, const std::string &s, size_t limit = SIZE_MAX) {
+    size_t n = std::min(s.size(), limit);
+    if (n && fwrite(s.data(), 1, n, f) != n) die("stdout write failed");
 }
 
 /* ---- the ledger: append-only chain, replayed into the field */
@@ -305,6 +347,8 @@ struct Ledger {
     uint64_t records = 0;
 
     void append(const std::string &payload) {
+        if (payload.size() + 18 > LEDGER_RECORD_MAX)
+            die("ledger record exceeds 4096-byte law");
         chain = fnv64(payload.data(), payload.size(), chain);
         std::string line = payload + "\t" + hex16(chain) + "\n";
         int fd = open(LEDGER_PATH, O_WRONLY | O_APPEND | O_CREAT, 0644);
@@ -318,7 +362,7 @@ struct Ledger {
 
 struct Frag {
     std::string text;
-    std::string source; /* life label */
+    std::string source; /* operator-supplied source label */
     std::string sref;   /* "label s#N" */
     std::vector<std::string> toks;
     std::vector<double> emb;
@@ -328,18 +372,20 @@ struct Mycelium {
     Ledger led;
     std::vector<Frag> frags;
     std::vector<std::string> corpora;   /* labels in ingest order */
-    std::set<uint64_t> keys;            /* attestation keys eaten */
+    std::set<std::string> keys;         /* exact attestation witnesses eaten */
     std::set<std::string> blobs_seen;   /* speech digests referenced by G */
+    bool version_seen = false;
 
-    static uint64_t make_key(uint64_t prior, uint64_t ord, const std::string &sline) {
-        std::string id = hex16(prior) + ":" + std::to_string(ord) + ":" + sline;
-        return fnv64(id.data(), id.size(), FNV_SEED);
+    static std::string make_key(uint64_t prior, uint64_t ord,
+                                const std::string &sline) {
+        return hex16(prior) + ":" + std::to_string(ord) + ":" + sline;
     }
 
     void add_fragments(const GraveEvent &g, const std::string &speech,
                        uint64_t *out_frags, uint64_t *out_toks) {
         uint64_t nf = 0, nt = 0;
-        std::string sref = g.label + " s#" + std::to_string(g.ordinal);
+        std::string sref = g.label + "@" + hex16(g.prior_digest) +
+                           " s#" + std::to_string(g.ordinal);
         for (const auto &entry : segment(speech)) {
             auto toks = tokenize(entry);
             if (toks.size() < 2) continue;
@@ -375,6 +421,9 @@ struct Mycelium {
             if (nl == std::string::npos)
                 die("ledger line " + std::to_string(lineno + 1) + " is unsealed");
             std::string line = raw.substr(pos, nl - pos);
+            if (line.size() + 1 > LEDGER_RECORD_MAX)
+                die("ledger line " + std::to_string(lineno + 1) +
+                    " exceeds 4096-byte law");
             pos = nl + 1;
             lineno++;
             size_t tab = line.rfind('\t');
@@ -391,21 +440,29 @@ struct Mycelium {
             led.records++;
             replay(payload, lineno);
         }
+        if (!version_seen) die("ledger has no version record");
     }
 
     void replay(const std::string &payload, uint64_t lineno) {
         auto f = split_tabs(payload);
         const std::string where = "ledger line " + std::to_string(lineno);
         if (f.empty()) die(where + " is empty");
-        if (f[0] == "G") {
+        if (f[0] == "V") {
+            if (lineno != 1 || version_seen || f.size() != 3 || f[1] != "1" ||
+                f[2] != LEDGER_LAW)
+                die(where + ": version record");
+            version_seen = true;
+        } else if (f[0] == "G") {
+            if (!version_seen) die(where + ": G before version record");
             /* G label prior ord sdig sbytes slen s-line(by length, may hold tabs) */
             if (f.size() < 8) die(where + ": G arity");
             GraveEvent g;
             g.label = f[1];
             uint64_t slen;
-            if (!canon_hex16(f[2], &g.prior_digest) || !canon_u64(f[3], &g.ordinal) ||
+            if (!label_ok(g.label) || !canon_hex16(f[2], &g.prior_digest) ||
+                !canon_u64(f[3], &g.ordinal) || g.ordinal == 0 ||
                 !canon_hex16(f[4], &g.speech_digest) || !canon_u64(f[5], &g.speech_bytes) ||
-                !canon_u64(f[6], &slen))
+                g.speech_bytes == 0 || !canon_u64(f[6], &slen) || slen == 0)
                 die(where + ": G field grammar");
             /* the s line is everything after the 7th tab, by declared length */
             size_t head = f[0].size() + f[1].size() + f[2].size() + f[3].size() +
@@ -413,7 +470,11 @@ struct Mycelium {
             if (payload.size() < head || payload.size() - head != slen)
                 die(where + ": s line length does not match slen");
             g.s_line = payload.substr(head);
-            uint64_t key = make_key(g.prior_digest, g.ordinal, g.s_line);
+            uint64_t candidate, bytes;
+            if (!parse_s_event(g.s_line, &candidate, &bytes) ||
+                candidate != g.speech_digest || bytes != g.speech_bytes)
+                die(where + ": attested s line is not canonical for its grave blob");
+            std::string key = make_key(g.prior_digest, g.ordinal, g.s_line);
             if (!keys.insert(key).second) die(where + ": pair eaten twice");
             std::string blob_path = std::string(GRAVE_DIR) + "/" + hex16(g.speech_digest);
             std::string speech;
@@ -425,35 +486,58 @@ struct Mycelium {
             blobs_seen.insert(hex16(g.speech_digest));
             uint64_t nf, nt;
             add_fragments(g, speech, &nf, &nt);
-            pending_f = true;
-            pending_frags = nf;
-            pending_toks = nt;
-            pending_label = g.label;
-            pending_sdig = g.speech_digest;
-        } else if (f[0] == "F") {
-            if (f.size() != 5) die(where + ": F arity");
-            uint64_t sdig, nf, nt;
-            if (!canon_hex16(f[2], &sdig) || !canon_u64(f[3], &nf) || !canon_u64(f[4], &nt))
-                die(where + ": F field grammar");
-            if (!pending_f || f[1] != pending_label || sdig != pending_sdig)
-                die(where + ": F does not follow its G");
-            if (nf != pending_frags || nt != pending_toks)
-                die(where + ": fragment census drifted");
-            pending_f = false;
+            (void)nf;
+            (void)nt;
         } else if (f[0] == "U") {
+            if (!version_seen) die(where + ": U before version record");
             if (f.size() != 6) die(where + ": U arity");
-            uint64_t d;
-            if (!canon_hex16(f[1], &d) || !canon_hex16(f[2], &d))
+            uint64_t d, k, touched;
+            if (!canon_hex16(f[1], &d) || !canon_hex16(f[2], &d) ||
+                !canon_u64(f[3], &k) || k == 0 ||
+                !canon_u64(f[4], &touched) || touched == 0 || touched > k)
                 die(where + ": U field grammar");
+            std::set<std::string> named;
+            size_t p = 0;
+            while (p <= f[5].size()) {
+                size_t q = f[5].find(',', p);
+                std::string label = f[5].substr(p, q == std::string::npos ? q : q - p);
+                if (!label_ok(label) || !named.insert(label).second ||
+                    std::find(corpora.begin(), corpora.end(), label) == corpora.end())
+                    die(where + ": U sources");
+                if (q == std::string::npos) break;
+                p = q + 1;
+            }
+            if (named.size() != touched) die(where + ": U touched/source count");
             /* a receipt; nothing to rebuild */
         } else {
             die(where + ": unknown record type");
         }
     }
 
-    bool pending_f = false;
-    uint64_t pending_frags = 0, pending_toks = 0, pending_sdig = 0;
-    std::string pending_label;
+    void ensure_version() {
+        if (version_seen) return;
+        if (led.records != 0) die("cannot version a nonempty ledger");
+        led.append(std::string("V\t1\t") + LEDGER_LAW);
+        version_seen = true;
+    }
+
+    void report_orphans() const {
+        struct stat st;
+        if (stat(GRAVE_DIR, &st) != 0) return;
+        if (!S_ISDIR(st.st_mode)) die("the grave is not a directory");
+        DIR *dir = opendir(GRAVE_DIR);
+        if (!dir) die("cannot read the grave");
+        std::vector<std::string> names;
+        while (struct dirent *de = readdir(dir)) {
+            std::string name = de->d_name;
+            if (name != "." && name != ".." && !blobs_seen.count(name))
+                names.push_back(name);
+        }
+        closedir(dir);
+        std::sort(names.begin(), names.end());
+        for (const auto &name : names)
+            fprintf(stderr, "mycelium: orphan grave blob %s (ignored)\n", name.c_str());
+    }
 };
 
 /* ---- resonate: kk's X.Wr under a per-source cap, ported */
@@ -463,11 +547,13 @@ struct Scored { double score; const Frag *frag; };
 static std::vector<Scored> resonate(const std::vector<Frag> &frags,
                                     const std::vector<double> &field,
                                     int k, int per_source_cap,
-                                    const Frag *exclude = nullptr) {
+                                    const Frag *exclude = nullptr,
+                                    const std::string *exclude_clause = nullptr) {
     std::vector<Scored> scored;
     scored.reserve(frags.size());
     for (const auto &f : frags) {
         if (&f == exclude) continue;
+        if (exclude_clause && cut_clause(f.text) == *exclude_clause) continue;
         scored.push_back({cosine(field, f.emb), &f});
     }
     std::stable_sort(scored.begin(), scored.end(),
@@ -485,14 +571,6 @@ static std::vector<Scored> resonate(const std::vector<Frag> &frags,
 
 /* ---- commands */
 
-static bool label_ok(const std::string &s) {
-    if (s.empty() || s.size() > 32) return false;
-    for (char c : s)
-        if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' || c == '-'))
-            return false;
-    return true;
-}
-
 static void cmd_ingest(Mycelium &m, const std::string &label,
                        const std::string &speech_path, const std::string &bio_path) {
     if (!label_ok(label))
@@ -504,11 +582,13 @@ static void cmd_ingest(Mycelium &m, const std::string &label,
     std::string bio;
     if (!read_file(bio_path, bio)) die("cannot open biography " + bio_path);
 
-    /* find the first s event whose candidate digest and byte count match;
-       the attestation prefix runs through that line's newline */
+    /* Find the first UNEATEN canonical s event whose candidate digest and
+       byte count match. The attestation prefix runs through its newline;
+       an unsealed final row is not a biography event. */
     uint64_t ordinal = 0, prior = 0;
     std::string s_line;
-    bool found = false;
+    bool found = false, matched_eaten = false;
+    uint64_t eaten_ordinal = 0, eaten_prior = 0;
     size_t pos = 0;
     uint64_t lineno = 0;
     while (pos < bio.size() && !found) {
@@ -516,29 +596,38 @@ static void cmd_ingest(Mycelium &m, const std::string &label,
         size_t end = (nl == std::string::npos) ? bio.size() : nl;
         std::string line = bio.substr(pos, end - pos);
         lineno++;
-        if (line.size() > 2 && line[0] == 's' && line[1] == '\t') {
-            auto f = split_tabs(line);
+        if (nl != std::string::npos && line.size() <= 1023) {
             uint64_t cand, bytes;
-            if (f.size() == 9 && canon_hex16(f[2], &cand) && canon_u64(f[3], &bytes) &&
-                cand == sdig && bytes == speech.size()) {
-                found = true;
-                ordinal = lineno;
-                s_line = line;
-                size_t prefix_end = (nl == std::string::npos) ? bio.size() : nl + 1;
-                prior = fnv64(bio.data(), prefix_end, FNV_SEED);
+            if (parse_s_event(line, &cand, &bytes) && cand == sdig &&
+                bytes == speech.size()) {
+                size_t prefix_end = nl + 1;
+                uint64_t candidate_prior = fnv64(bio.data(), prefix_end, FNV_SEED);
+                std::string candidate_key =
+                    Mycelium::make_key(candidate_prior, lineno, line);
+                if (!m.keys.count(candidate_key)) {
+                    found = true;
+                    ordinal = lineno;
+                    s_line = line;
+                    prior = candidate_prior;
+                } else if (!matched_eaten) {
+                    matched_eaten = true;
+                    eaten_ordinal = lineno;
+                    eaten_prior = candidate_prior;
+                }
             }
         }
         if (nl == std::string::npos) break;
         pos = nl + 1;
     }
+    if (!found && matched_eaten)
+        die("already eaten witness: s#" + std::to_string(eaten_ordinal) +
+            " of biography prefix " + hex16(eaten_prior));
     if (!found)
         die("speech " + speech_path + " (digest " + hex16(sdig) +
-            ") matches no s event in " + bio_path + "; only attested speech is food");
+            ") matches no canonical newline-sealed s event in " + bio_path +
+            "; only attested speech is food");
 
-    uint64_t key = Mycelium::make_key(prior, ordinal, s_line);
-    if (m.keys.count(key))
-        die("already eaten: " + label + " s#" + std::to_string(ordinal) +
-            " of biography prefix " + hex16(prior));
+    std::string key = Mycelium::make_key(prior, ordinal, s_line);
 
     /* blob first (temp then rename), ledger second */
     struct stat st;
@@ -567,22 +656,21 @@ static void cmd_ingest(Mycelium &m, const std::string &label,
     g.speech_digest = sdig;
     g.speech_bytes = speech.size();
     g.s_line = s_line;
+    m.ensure_version();
     std::string gp = "G\t" + label + "\t" + hex16(prior) + "\t" + std::to_string(ordinal) +
                      "\t" + hex16(sdig) + "\t" + std::to_string(speech.size()) + "\t" +
                      std::to_string(s_line.size()) + "\t" + s_line;
     m.led.append(gp);
     m.keys.insert(key);
+    m.blobs_seen.insert(hex16(sdig));
 
     uint64_t nf = 0, nt = 0;
     m.add_fragments(g, speech, &nf, &nt);
-    std::string fp = "F\t" + label + "\t" + hex16(sdig) + "\t" + std::to_string(nf) +
-                     "\t" + std::to_string(nt);
-    m.led.append(fp);
 
     printf("ate %s s#%llu: %llu fragments, %llu tokens (grave %s)\n",
            label.c_str(), (unsigned long long)ordinal, (unsigned long long)nf,
            (unsigned long long)nt, hex16(sdig).c_str());
-    printf("field: %zu fragments from %zu lives | ledger %llu records chain %s\n",
+    printf("field: %zu fragments from %zu sources | ledger %llu records chain %s\n",
            m.frags.size(), m.corpora.size(),
            (unsigned long long)m.led.records, hex16(m.led.chain).c_str());
 }
@@ -591,13 +679,15 @@ static void cmd_unfold(Mycelium &m, const std::string &prompt) {
     if (m.frags.empty()) die("the mycelium is empty; ingest something first");
     auto core = tokenize(prompt);
     auto field = mean_embed(core);
-    printf("  prompt : \"%s\"\n", prompt.c_str());
+    printf("  prompt : \"");
+    write_bytes(stdout, prompt);
+    printf("\"\n");
     printf("  field  :");
     if (core.empty()) printf(" (none)");
-    for (const auto &t : core) printf(" %s", t.c_str());
+    for (const auto &t : core) { putchar(' '); write_bytes(stdout, t); }
     printf("\n");
     auto res = resonate(m.frags, field, 9, 3);
-    printf("\n  -- CORPSE (spliced from %zu lives by resonance) --\n", m.corpora.size());
+    printf("\n  -- CORPSE (spliced from %zu sources by resonance) --\n", m.corpora.size());
     std::string corpse;
     std::set<std::string> touched;
     std::vector<std::pair<std::string, const Scored *>> cuts;
@@ -610,12 +700,18 @@ static void cmd_unfold(Mycelium &m, const std::string &prompt) {
         corpse += cuts[i].first;
     }
     corpse += ".";
-    printf("  %s\n", corpse.c_str());
-    printf("\n  -- lineage (which life each clause bled from) --\n");
-    for (const auto &c : cuts)
-        printf("    [%-12s r=%.3f]  %.60s\n", c.second->frag->sref.c_str(),
-               c.second->score, c.first.c_str());
-    printf("\n  -> the corpse drew on %zu/%zu lives (", touched.size(), m.corpora.size());
+    printf("  ");
+    write_bytes(stdout, corpse);
+    printf("\n");
+    printf("\n  -- lineage (which source each clause came from) --\n");
+    for (const auto &c : cuts) {
+        printf("    [");
+        write_bytes(stdout, c.second->frag->sref);
+        printf(" r=%.3f]  ", c.second->score);
+        write_bytes(stdout, c.first, 60);
+        putchar('\n');
+    }
+    printf("\n  -> the corpse drew on %zu/%zu sources (", touched.size(), m.corpora.size());
     size_t i = 0;
     for (const auto &t : touched) printf("%s%s", i++ ? ", " : "", t.c_str());
     printf(")\n");
@@ -634,21 +730,21 @@ static void cmd_unfold(Mycelium &m, const std::string &prompt) {
 }
 
 static void cmd_field(Mycelium &m) {
-    printf("lives  : %zu (", m.corpora.size());
+    printf("sources: %zu (", m.corpora.size());
     for (size_t i = 0; i < m.corpora.size(); ++i)
         printf("%s%s", i ? ", " : "", m.corpora[i].c_str());
     printf(")\n");
     printf("frags  : %zu\n", m.frags.size());
-    printf("eaten  : %zu attested pairs\n", m.keys.size());
+    printf("eaten  : %zu attested witnesses\n", m.keys.size());
     printf("ledger : %llu records chain %s\n",
            (unsigned long long)m.led.records, hex16(m.led.chain).c_str());
 }
 
 /* ablate: the mechanism's own trial, read-only. For every fragment, its
-   clause becomes a prompt and its origin is excluded from the field; the
+   clause becomes a prompt and every prompt-equivalent fragment is excluded;
    real embeddings answer, then a control where every embedding -- prompt
    and fragment alike -- is the whole-string hash vector. Metric A: top-1
-   comes from the origin's life. Metric B: mean top-k score. The sealed
+   comes from the origin's source. Metric B: mean top-k score. The sealed
    prediction: real beats control on both, or resonance failed vivisection. */
 
 static std::vector<double> hash_unit_vec(const std::string &s) {
@@ -677,12 +773,12 @@ static void cmd_ablate(Mycelium &m) {
         auto core = tokenize(prompt);
         if (core.size() < 2) continue;
         prompts++;
-        auto res = resonate(m.frags, mean_embed(core), 9, 3, &m.frags[i]);
+        auto res = resonate(m.frags, mean_embed(core), 9, 3, &m.frags[i], &prompt);
         if (!res.empty() && res[0].frag->source == m.frags[i].source) hitsA_real++;
         double b = 0.0;
         for (const auto &s : res) b += s.score;
         if (!res.empty()) sumB_real += b / (double)res.size();
-        auto cres = resonate(ctrl, hash_unit_vec(prompt), 9, 3, &ctrl[i]);
+        auto cres = resonate(ctrl, hash_unit_vec(prompt), 9, 3, &ctrl[i], &prompt);
         if (!cres.empty() && cres[0].frag->source == m.frags[i].source) hitsA_ctrl++;
         b = 0.0;
         for (const auto &s : cres) b += s.score;
@@ -711,7 +807,7 @@ int main(int argc, char **argv) {
     if (argc < 2) { fputs(usage, stderr); return 1; }
     Mycelium m;
     m.load();
-    if (m.pending_f) die("ledger ends between G and F; the last meal is unsealed");
+    m.report_orphans();
     std::string cmd = argv[1];
     if (cmd == "ingest") {
         if (argc != 5) { fputs(usage, stderr); return 1; }

@@ -65,3 +65,49 @@ and seed, histories identical through the matching s line — refuse the
 second offering as already eaten, because prefix, ordinal and s line are
 all byte-identical. Indistinguishable evidence is one event; the position
 stands in the handoff for the second hand's verdict.
+
+### The second hand (same day, after the twin)
+
+The audit began from two new lives rather than the builder's fixtures:
+Netta lived 27,600 bytes on the Q README and Leo's LEOLOG respectively,
+then each bi mouth spoke and signed 1,200 bytes. The untouched graft ate
+both streams and its sealed mechanism won: real A=10/16 against control
+5/16, real B=0.1462 against 0.0828. The independent reader accepted the
+same chain. The result reproduces resonance; it does not yet prove speech.
+The manifested corpse was byte soup, so body 1's `unfold` is now named as
+a binary-safe diagnostic and law 3 remains unearned until a later body
+pre-registers and passes a readable-coherence gate.
+
+The hostile reading found twelve boundaries the first hand had not made
+executable. An s-shaped row with five plausible fields and an unsealed
+final s row entered through the writer's loose matcher; a second matching
+s event was unreachable after the first was eaten. The C and C++ hands
+disagreed on re-sealed labels, U receipts and the canonical s grammar.
+Pure-ASCII vertical tab split differently from the Python prototype. An
+orphan grave blob was promised but silent. G then F made one meal a
+two-record transaction, so a process interruption could leave the field
+permanently between events. A repeated fragment could answer the ablation
+prompt for its exact twin. NUL survived the internal bytes but disappeared
+from the printed corpse and lineage. The ledger named no replay-law
+version. Finally, runtime language promoted an unauthenticated operator
+label into a life.
+
+The repair makes the contract executable rather than larger. Every ledger
+starts with `V 1 body1-byte-v1`; one complete G record is one meal, and F
+is gone because its fragment census is deterministically re-derived. Both
+hands independently enforce the same bounded V/G/U grammar and the full
+nine-field, newline-sealed biography s grammar. A witness key is the exact
+prefix digest, ordinal and s-line tuple; later matching events remain
+edible, while a perfect clone still refuses by the now honest name
+`already eaten witness`. Grave orphans speak on stderr but hold no power.
+ASCII whitespace, binary output, prompt-equivalent holdout and source
+terminology now obey the written law.
+
+The permanent body-1 battery closes 24 gates, including malformed and
+unsealed attestations, the second witness, a third named refusal, ASCII
+parity, orphan reporting, duplicate-fragment leakage, NUL output, five
+crafted ledger classes judged by both hands, the honest prefix limit and
+clean-room determinism. It passes under strict builds and again under
+ASan/UBSan. The whole untouched zero line also returns `ALL GATES PASS`.
+The twin verdict stands: indistinguishable evidence is one witness, not a
+defect and not multiplicity manufactured by a caller's label.
