@@ -75,12 +75,12 @@ hands; this list is a map, not a promise of shape.
   with their own ablation. Input: attested speech of two Nettas raised
   on different texts. C++ earns its place with long-lived objects —
   Grave, Fragment, Field, Ledger — identity, ownership, lifetime.
-- **Body 2 — the proposer** (this turn). Units over events: recurring
+- **Body 2 — the proposer** (landed, audited, closed). Units over events: recurring
   event-shapes PROPOSED as provisional units by lived support, paying
   rent, dying, resurrecting — Netta's unit law lifted one floor
   (molequla's evolving BPE as the other parent). Body 2 only proposes;
   frequency alone mints nothing permanent.
-- **Body 3 — the school.** Leo's loop with the world as the teacher: a
+- **Body 3 — the school** (this turn). Leo's loop with the world as the teacher: a
   provisional unit becomes a hypothesis; the exam is prequential — does
   it price the FUTURE stream better than its absence (never
   retrospective); only a passed exam legalises consolidation and coins a
@@ -234,3 +234,67 @@ are closed and untouched.
   list grown; a flipped byte, a truncation and a non-monotonic P in the
   proposals file refuse by name in both hands; a clean-room repeat of
   the full sequence reproduces the proposals file byte for byte.
+
+## Body 3 contract (frozen before code)
+
+The school examines what the proposer noticed. A hypothesis is enrolled,
+priced only on the stream that arrives AFTER enrollment, and judged
+against a baseline fixed before that stream is seen. Nothing here
+touches the field: a legalised unit gains power only over future exams'
+baselines; power over resonance waits for body 4's parliament. The main
+ledger (`body1-byte-v1`) and the proposals chain (`body2-props-v1`) are
+closed and untouched.
+
+- New commands `enroll <arity> <shape-tokens...>` and `examine`, same
+  organism file; both write only `.mycelium.school` — its own chain,
+  same sealing discipline, law row `S \t 1 \t body3-school-v1` at
+  line 1.
+- **Identity.** A hypothesis names its shape as exact bytes with an
+  explicit arity: `H \t hyp-id \t arity \t slen \t shape-bytes \t
+  enrolled-after-meals \t main-chain \t window \t baseline-law`. The
+  shape field is read by slen, binary-safe; hyp-id is the 1-based
+  enrollment ordinal.
+- **Enrollment.** Only a shape that is a currently-alive proposal with
+  support from at least 2 distinct meals may enroll. A refusal is a
+  public track-record event: `R \t reason \t slen \t shape-bytes` with
+  reason in {not-proposed, already-enrolled, already-legalised}.
+- **The exam is prequential and future-only.** The window is fixed in
+  the law: W_EXAM = 8 meals after enrollment. `examine` prices, for
+  each open hypothesis, every arrived meal m with
+  enrolled-after < m <= enrolled-after + W_EXAM, in meal order, each
+  meal once: `O \t hyp-id \t meal \t frags \t base-microbits \t
+  cand-microbits` (bits scaled by 1e6, canonical u64). A meal at or
+  before enrollment can never be priced; past glory buys nothing.
+- **Baseline and candidate, one law.** Both arms price the meal's
+  fragments' token streams with a prequential Laplace unigram over an
+  evolving symbol alphabet — P(sym) = (count+1)/(N+A+1), count/N/A
+  updating as the stream is priced, state carried per hypothesis across
+  its window. The baseline arm's symbols are single tokens plus every
+  unit LEGALISED before this hypothesis enrolled, merged
+  longest-match-first, leftmost, non-overlapping. The candidate arm
+  adds exactly this hypothesis's shape to that set. Gain is therefore
+  MARGINAL by construction: a token boundary already covered by a
+  legalised unit or by the longer nested match cannot be credited
+  twice — pair and triple stay separate candidates in one risk set.
+- **Verdict.** After the window closes: `V \t hyp-id \t verdict \t
+  base-total \t cand-total` with verdict in {pass, weak, fail}: pass
+  iff gain >= GAIN_MIN = 8000000 microbits (one full byte), weak iff
+  0 < gain < GAIN_MIN, fail iff gain <= 0. Weak and fail stay public
+  forever; no silent discards. A pass mints `L \t hyp-id \t
+  glyph-ordinal`: the unit joins the legalised set for every LATER
+  enrollment's baseline.
+- The reader (`ledger_check`) verifies the school chain's grammar,
+  chain, H-before-O-before-V order, one O per (hyp, meal), monotonic
+  meals within a hypothesis, and V totals equal to the sum of O rows;
+  re-deriving bits is the examiner's work and the battery's, not the
+  reader's.
+- Red hands, sealed before code: a shape rich in the PAST but absent
+  after enrollment fails; the one-law window cannot be chosen after
+  seeing the stream (it is a constant, and the battery proves an early
+  verdict is impossible: no V before the window's meals arrive or the
+  window closes); the nested marginal law is walked in the flesh — a
+  legalised triple starves its own pair of credit on boundaries the
+  triple covers; enrollment refusals by name for all three reasons;
+  flipped byte, truncated tail and order faults in the school chain
+  refuse in both hands; clean-room reproduces `.mycelium.school` byte
+  for byte.
