@@ -3017,3 +3017,26 @@ the plain fopen — the verify-side open wants the same non-blocking
 discipline the write side already has.  Both belong to an organism
 turn under audit, not to this refactor, whose contract forbids
 touching behaviour.
+
+## Grammar closure, the inner reader: thirteen types in the organism's hands
+
+The second commit grows `bio_verify` to the whole language.  Eleven
+grammars join the `i` and `s` checks of the fifteenth turn: the step
+record and the letters `a b d m q r t u v w`, each split on exact tab
+bytes, each field held to its canonical shape from `BIOGRAPHY.md`, each
+record closed by its exact field count — so a run of tabs, a stray
+space, a sign, a leading zero, a wrong literal, a wrong enum, a
+non-canonical fixed-point rendering or a carriage return refuses resume,
+for every type, with the organism's own hands and no external code.  The
+seventeen canonical corpus rows of foreign types graft onto a lived
+biography and resume; all ninety-one malformed corpus rows refuse; the
+twenty-four `w` families that measured the debt now refuse in both
+hands, and the gate that counted them as debt now counts them as repaid;
+the carriage-return asymmetry is closed from the organism's side.  What
+did not change is proved, not promised: a two-stage life frozen from the
+pre-closure binary — seed 11, atlas and jury, ten episodes over two
+shores — lands on the same record counts and the same chains,
+`18c67d0e0ca68401` and `1fc3f4127170a2f9`, byte for byte, and the whole
+suite stands at three hundred and thirty-six.  The outside reader still
+parses three types; its closure is the third commit, and the gate that
+will hold both hands to all ninety-one rows waits there.

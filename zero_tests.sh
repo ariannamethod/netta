@@ -2729,7 +2729,7 @@ b31_w_debt_case() {
         --bio "$T/b31.wd-$name.bio" >/dev/null 2>&1
     o=$?
     "$BC" "$T/b31.wd-$name.bio" >/dev/null; r=$?
-    [ "$o" -eq 0 ] && [ "$r" -eq 1 ]
+    [ "$o" -eq 1 ] && [ "$r" -eq 1 ]
 }
 b31wd=0
 b31_w_debt_case ep-plus '$1=="w" {$2="+" $2} {print}' && b31wd=$((b31wd+1))
@@ -2757,7 +2757,58 @@ b31_w_debt_case crlf '$1=="w" {printf "%s\r\n",$0; next} {print}' && b31wd=$((b3
 b31_w_debt_case tabs16 '$1=="w" {$0="w"; for(j=0;j<16;j++) $0=$0 "\t"} {print}' && b31wd=$((b31wd+1))
 b31_w_debt_case overlong '$1=="w" {printf "w\t"; for(j=0;j<1022;j++) printf "x"; printf "\n"; next} {print}' && b31wd=$((b31wd+1))
 [ "$b31wd" -eq 24 ]
-gate "B31 twenty-four malformed w families measure the organism's unparsed debt" $? 0
+gate "GC the twenty-four w families refuse in both hands: the debt is repaid" $? 0
+
+# --- GC: grammar closure, the inner reader --------------------------------
+# bio_verify now checks the whole biography language of BIOGRAPHY.md with
+# the organism's own hands: exact tabs, canonical fields, exact counts for
+# all thirteen types. The shared corpus is data; the implementations stay
+# independent. Emission, behaviour, RNG and lived results are unchanged,
+# which a life frozen from the pre-closure binary proves bit for bit.
+gcC=0; gcN=0
+while IFS= read -r row; do
+    t=$(printf '%s' "$row" | cut -f1)
+    case "$t" in s|i) continue ;; esac
+    gcN=$((gcN+1))
+    cp "$T/b30.state" "$T/gc.c.state"
+    { cat "$T/b30.bio"; printf '%s\n' "$row"; } > "$T/gc.c.bio"
+    "$BF" "$T/gc.c.state" "$T/gc.c.bio" || continue
+    "$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/gc.c.state" \
+        --bio "$T/gc.c.bio" >/dev/null 2>&1 && gcC=$((gcC+1))
+done < scripts/biography_corpus/canonical.rows
+[ "$gcN" -eq 17 ] && [ "$gcC" -eq 17 ]
+gate "GC seventeen canonical corpus rows of every foreign type resume ($gcC/17)" $? 0
+gcM=0; gcR=0
+for cf in scripts/biography_corpus/*_malformed.rows; do
+    while IFS= read -r row; do
+        gcM=$((gcM+1))
+        cp "$T/b30.state" "$T/gc.m.state"
+        { cat "$T/b30.bio"; printf '%s\n' "$row"; } > "$T/gc.m.bio"
+        "$BF" "$T/gc.m.state" "$T/gc.m.bio" || continue
+        "$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/gc.m.state" \
+            --bio "$T/gc.m.bio" >/dev/null 2>&1 || gcR=$((gcR+1))
+    done < "$cf"
+done
+[ "$gcM" -eq 91 ] && [ "$gcR" -eq 91 ]
+gate "GC ninety-one re-sealed malformed corpus rows refuse in the organism ($gcR/91)" $? 0
+# a carriage return inside a step row is no longer chained unread
+cp "$T/b30.state" "$T/gc.cr.state"
+awk 'NR==4{printf "%s\r\n",$0;next}{print}' "$T/b30.bio" > "$T/gc.cr.bio"
+"$BF" "$T/gc.cr.state" "$T/gc.cr.bio"
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/gc.cr.state" \
+    --bio "$T/gc.cr.bio" >/dev/null 2>&1
+gate "GC a carriage return inside a step row refuses resume (asymmetry closed)" $? 1
+# bit equivalence with the pre-closure organism, frozen before the change:
+# the same two-stage life must land on the same chains, byte for byte
+printf 'abcacb%.0s' $(seq 1 300) > "$T/gc.p3"
+printf 'xyzxzy%.0s' $(seq 1 300) > "$T/gc.p5"
+"$N" "$T/gc.p3" "$T/gc.p5" --reset --seed 11 --atlas --jury --episodes 6 \
+    --steps 600 --state "$T/gc.fz.state" --bio "$T/gc.fz.bio" > "$T/gc.fz1" 2>&1
+"$N" "$T/gc.p5" "$T/gc.p3" --seed 11 --atlas --jury --episodes 4 \
+    --steps 400 --state "$T/gc.fz.state" --bio "$T/gc.fz.bio" > "$T/gc.fz2" 2>&1
+grep -q '^biography: 4421 lines, chain 18c67d0e0ca68401$' "$T/gc.fz1" && \
+    grep -q '^biography: 5829 lines, chain 1fc3f4127170a2f9$' "$T/gc.fz2"
+gate "GC the closed reader leaves the lived world bit-identical (frozen chains)" $? 0
 # No state witness means the file boundary is an explicit assumption. Two
 # sibling lives share a past, then diverge: A signs, B cites A's stream. Each
 # file is honest alone; concatenating A before B manufactures within-file
