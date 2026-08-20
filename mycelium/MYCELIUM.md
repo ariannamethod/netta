@@ -159,7 +159,7 @@ wherever the scale demands them.
      honest biography, refuses: its digest matches no `s` line;
   2. the same speech with one byte flipped refuses the same way;
   3. re-ingest of an already-eaten pair refuses by name;
-  4. named non-claim: a wholly forged, canonically-shaped (speech,
+  4. named non-claim: an invalid pair invented whole, canonically shaped (speech,
      biography) pair PASSES this gate by construction — the gate
      attests pairing; the pinned digests in the ledger are what the
      future state-witness will judge;
