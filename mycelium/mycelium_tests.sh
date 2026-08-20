@@ -108,6 +108,21 @@ case("dup-b", dup_b, sig(dup_b, 22))
 orphan = os.path.join(T, "orphan", ".mycelium.grave")
 os.makedirs(orphan)
 open(os.path.join(orphan, f"{fnv(sea):016x}"), "wb").write(sea)
+
+rent = os.path.join(T, "renter")
+os.makedirs(rent)
+bio = []
+for i in range(1, 20):
+    if i in (1, 2, 19):
+        text = (f"The crimson lantern flickers beside the granite tower on evening {i:02d}. "
+                "Another calm sentence carries enough plain tokens for the grave tonight.")
+    else:
+        text = (f"A numbered courier route {i:02d} delivers the evening ledger across town. "
+                "Another calm sentence carries enough plain tokens for the grave tonight.")
+    data = text.encode()
+    open(os.path.join(rent, f"speech-{i}"), "wb").write(data)
+    bio.append(sig(data, 40 + i))
+open(os.path.join(rent, "bio"), "wb").write(("\n".join(bio) + "\n").encode())
 PY
 
 mkdir "$T/honest"
@@ -208,7 +223,8 @@ def seal(payloads):
 
 raw = open(ledger, "rb").read()
 payloads = [line[:-17] for line in raw.splitlines()]
-for name in ("mut-label", "mut-u", "mut-s", "prefix", "missing", "unsealed"):
+for name in ("mut-label", "mut-u", "mut-s", "mut-usort", "prefix", "missing",
+             "unsealed"):
     path = os.path.join(root, name)
     os.makedirs(path)
     if name != "missing":
@@ -241,6 +257,18 @@ for i, row in enumerate(p):
         break
 open(os.path.join(root, "mut-s", ".mycelium.ledger"), "wb").write(seal(p))
 
+p = payloads.copy()
+for i, row in enumerate(p):
+    if row.startswith(b"U\t"):
+        fields = row.split(b"\t")
+        parts = fields[5].split(b",")
+        assert len(parts) >= 2, "mut-usort needs a two-source U receipt"
+        parts.reverse()
+        fields[5] = b",".join(parts)
+        p[i] = b"\t".join(fields)
+        break
+open(os.path.join(root, "mut-usort", ".mycelium.ledger"), "wb").write(seal(p))
+
 lines = raw.splitlines(keepends=True)
 open(os.path.join(root, "prefix", ".mycelium.ledger"), "wb").write(b"".join(lines[:2]))
 open(os.path.join(root, "missing", ".mycelium.ledger"), "wb").write(raw)
@@ -250,6 +278,7 @@ PY
 for spec in "mut-label:G field grammar:G label" \
             "mut-u:U field grammar:U k" \
             "mut-s:attested s line:attested s line" \
+            "mut-usort:canonical order:U sources" \
             "missing:grave blob:grave blob" \
             "unsealed:unsealed:unsealed"; do
     name=${spec%%:*}; rest=${spec#*:}; writer=${rest%%:*}; reader=${rest#*:}
@@ -278,15 +307,127 @@ for n in one two; do
         "$MYC" ingest sea "$T/sea/speech" "$T/sea/bio"
         "$MYC" ingest engine "$T/engine/speech" "$T/engine/bio"
         "$MYC" unfold "patient memory follows the changing signal"
+        "$MYC" propose
     ) >"$T/determinism-$n/stdout" 2>"$T/determinism-$n/stderr"
 done
 if cmp "$T/determinism-one/.mycelium.ledger" "$T/determinism-two/.mycelium.ledger" &&
         diff -r "$T/determinism-one/.mycelium.grave" "$T/determinism-two/.mycelium.grave" &&
+        cmp "$T/determinism-one/.mycelium.proposals" "$T/determinism-two/.mycelium.proposals" &&
         cmp "$T/determinism-one/stdout" "$T/determinism-two/stdout"; then
     pass "clean-room grave, ledger and stdout are byte-identical"
 else
     fail "clean-room determinism"
 fi
+
+# ---- body 2: the proposer ----
+cp -R "$T/honest" "$T/no-props"
+(
+    cd "$T/honest"
+    "$MYC" propose >propose-one.out
+    "$MYC" propose >propose-two.out
+    "$CHECK" >check-props.out
+)
+grep -F "(W 1, P 2)" "$T/honest/check-props.out" >/dev/null &&
+    pass "the proposals chain is read by the independent hand" || fail "props chain read"
+d1=$(grep -o 'snapshot [0-9a-f]*' "$T/honest/propose-one.out")
+d2=$(grep -o 'snapshot [0-9a-f]*' "$T/honest/propose-two.out")
+[ -n "$d1" ] && [ "$d1" = "$d2" ] &&
+    pass "the snapshot digest is a pure function of the field" || fail "snapshot purity"
+
+(
+    cd "$T/honest"
+    "$MYC" unfold "patient memory follows the changing signal" >unfold-after.out
+    "$MYC" ablate >ablate-after.out
+)
+(
+    cd "$T/no-props"
+    "$MYC" unfold "patient memory follows the changing signal" >unfold-after.out
+    "$MYC" ablate >ablate-after.out
+)
+cmp "$T/honest/unfold-after.out" "$T/no-props/unfold-after.out" &&
+    pass "proposals grant no authority to unfold" || fail "unfold authority leak"
+cmp "$T/honest/ablate-after.out" "$T/no-props/ablate-after.out" &&
+    pass "proposals grant no authority to the ablation" || fail "ablate authority leak"
+
+mkdir "$T/echo-field"
+(
+    cd "$T/echo-field"
+    "$MYC" ingest echo "$T/dup-a/speech" "$T/dup-a/bio" >/dev/null
+    "$MYC" propose >out
+    grep -F "(nothing recurs across meals yet)" out >/dev/null &&
+        pass "a one-meal echo proposes nothing" || fail "one-meal echo"
+)
+
+mkdir "$T/rent-field"
+(
+    cd "$T/rent-field"
+    i=1
+    while [ $i -le 18 ]; do
+        "$MYC" ingest renter "$T/renter/speech-$i" "$T/renter/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" propose >rent18.out
+    grep -F "dead crimson lantern flickers support=2 meals=1,2 last=2" rent18.out >/dev/null &&
+        pass "rent starves an unwitnessed shape after sixteen meals" || fail "rent death"
+    "$MYC" ingest renter "$T/renter/speech-19" "$T/renter/bio" >/dev/null
+    "$MYC" propose >rent19.out
+    grep -F "alive crimson lantern flickers support=3 meals=1,2,19" rent19.out >/dev/null &&
+        pass "a starved identity resurrects with its history grown" || fail "resurrection"
+)
+
+python3 - "$T" <<'PY'
+import os, shutil, sys
+
+root = sys.argv[1]
+SEED = 0xcbf29ce484222325
+PRIME = 0x100000001b3
+
+def fnv(data, h):
+    for byte in data:
+        h ^= byte
+        h = (h * PRIME) & 0xffffffffffffffff
+    return h
+
+def seal(payloads):
+    out, h = bytearray(), SEED
+    for payload in payloads:
+        h = fnv(payload, h)
+        out += payload + b"\t" + f"{h:016x}".encode() + b"\n"
+    return bytes(out)
+
+honest = os.path.join(root, "honest")
+raw = open(os.path.join(honest, ".mycelium.proposals"), "rb").read()
+payloads = [line[:-17] for line in raw.splitlines()]
+for name in ("props-flip", "props-trunc", "props-mono"):
+    path = os.path.join(root, name)
+    os.makedirs(path)
+    shutil.copytree(os.path.join(honest, ".mycelium.grave"),
+                    os.path.join(path, ".mycelium.grave"))
+    shutil.copy(os.path.join(honest, ".mycelium.ledger"),
+                os.path.join(path, ".mycelium.ledger"))
+
+flipped = bytearray(raw)
+flipped[3] ^= 1
+open(os.path.join(root, "props-flip", ".mycelium.proposals"), "wb").write(bytes(flipped))
+open(os.path.join(root, "props-trunc", ".mycelium.proposals"), "wb").write(raw[:-1])
+
+last_p = [p for p in payloads if p.startswith(b"P\t")][-1]
+fields = last_p.split(b"\t")
+fields[1] = b"1"
+open(os.path.join(root, "props-mono", ".mycelium.proposals"), "wb").write(
+    seal(payloads + [b"\t".join(fields)]))
+PY
+
+for spec in "props-flip:proposals chain broken:chain does not fold" \
+            "props-trunc:unsealed:unsealed" \
+            "props-mono:not monotonic:not monotonic"; do
+    name=${spec%%:*}; rest=${spec#*:}; writer=${rest%%:*}; reader=${rest#*:}
+    (
+        cd "$T/$name"
+        expect_fail "$name writer refusal" "$writer" "$MYC" propose
+        expect_fail "$name reader refusal" "$reader" "$CHECK"
+    )
+done
 
 if [ ! -e "$T/.failed" ]; then
     printf '%s\n' '----' 'ALL MYCELIUM GATES PASS'

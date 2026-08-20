@@ -111,3 +111,53 @@ clean-room determinism. It passes under strict builds and again under
 ASan/UBSan. The whole untouched zero line also returns `ALL GATES PASS`.
 The twin verdict stands: indistinguishable evidence is one witness, not a
 defect and not multiplicity manufactured by a caller's label.
+
+## Turn 2 — the third hand and the order of names (2026-08-20)
+
+The second hand's repair reproduced whole: her 24 gates pass in this
+hand's shell on Apple clang, and the untouched zero suite stays green.
+Three probes of my own construction went beyond her battery. The mv
+question died in the organism's source: an elected mv actor at the
+microphone is demoted to the best byte hand before speaking, so the
+three readers — the gate, the zero-line biography reader and the mouth
+itself — hold one hand law. Her version record, which her battery never
+set on fire, survived three crafted mutations (wrong law, absent, twice)
+with both hands refusing in the same class at the same line. Repeated
+witnesses were walked my way: the same bytes signed twice by one life
+land as two G events over one blob, and the third offering refuses by
+the first eaten ordinal.
+
+One boundary gap was found and closed on Oleg's word: a U receipt whose
+sources csv is valid but out of canonical order — a rendering the writer
+cannot produce, since it emits from a sorted set — was accepted by both
+hands. Now the writer refuses it as an order fault and the reader's
+sources grammar refuses the same class; the battery carries the
+mut-usort crafted room and stands at 26 gates, all green. The same
+species the second hand filed against the first implementation — one
+hand accepting what the other refuses — has a mirror form, both hands
+accepting what neither writes, and it is now part of the ledger
+language's law.
+
+### Body 2 — the proposer (same turn)
+
+The contract went first, frozen in the constitution before code. The
+proposer is the evolving tokenizer's first floor and holds exactly one
+right: to notice. Adjacent token pairs and triples inside one fragment
+become proposals only when witnessed by at least two distinct meals; one
+meal echoing itself twelve times proposes nothing, and the battery
+watches it fail to. Rent runs over a sixteen-meal window: the crimson
+lantern of the renter's life, witnessed in meals one and two, is
+reported dead with its history intact after sixteen hungry meals, and a
+nineteenth meal resurrects the same identity with its meal list grown to
+1,2,19 — no convenient twin. Receipts live in .mycelium.proposals under
+their own chain and their own body2-props-v1 law: one W, then one P per
+run carrying the after-meals position, the pinned main chain, the
+alive and dead counts and a snapshot digest that two consecutive runs
+prove to be a pure function of the field. Authority is the organ's
+loudest absence: unfold and ablate answer byte-for-byte the same in a
+room with proposals and in a clone without them, because legalisation
+belongs to body 3's prequential exam and to nothing else. Both hands
+refuse the flipped byte, the truncated tail and the non-monotonic
+receipt in the same class, and the clean-room now reproduces the
+proposals file byte for byte beside the grave and the ledger. The
+battery stands at 39 gates, all green.
