@@ -3182,3 +3182,25 @@ closed enough to freeze, new organs belong outside `netta.c`, and the
 heart stays single-file and behaviourally unchanged.  The two recorded
 organism findings — the jury-law life that cannot cite, and nothing
 else — wait for his word separately.  The declaration itself is his.
+
+## The descriptor is the biography being judged
+
+Don's `c2b73ba` was reproduced untouched before its audit note was read: 339
+gates, strict builds silent, sanitizers green.  His second walk of every new
+value edge stands, as does his fresh three-stage equivalence life: 9972
+records and chain `a855ca70189ea535` in both bodies.  Two independent hands
+therefore give Oleg the same freeze verdict on the closed biography language.
+
+GitHub CodeQL then named the residue of the earlier FIFO repair.  Non-blocking
+open had removed the possible hang, and comparing the opened device and inode
+to a preceding named `stat` made a replacement fail closed, but the check and
+the use were still two pathname operations.  The read-only verifier needs no
+pathname identity after resolution: an open descriptor already pins the
+object whose bytes it reads.  `bio_verify` now opens once with
+`O_RDONLY|O_NONBLOCK`, judges that descriptor with `fstat`, and gives the same
+descriptor to `fdopen`.  There is no named pre-check and therefore no interval
+in which a changed pathname can redirect the object being verified.  A
+regular biography reached through a symlink remains legal; a FIFO without a
+writer is refused immediately as non-regular.  The biography grammar, its
+emitters, state v20, RNG and lived behaviour are untouched.  The remote alert
+is not called closed until GitHub analyses the delivered commit.

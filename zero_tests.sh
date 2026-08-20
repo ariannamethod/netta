@@ -2653,6 +2653,25 @@ kill "$b31guard" 2>/dev/null || true
 wait "$b31guard" 2>/dev/null || true
 [ "$b31fifo" -eq 2 ] && grep -q 'not a regular file' "$T/b31.fifo.err"
 gate "B31 a FIFO is refused as a regular biography without blocking" $? 0
+# The organism follows the same descriptor-first law without forbidding a
+# regular biography reached through a symlink. A FIFO with no writer must still
+# be refused immediately by the opened descriptor's type.
+cp "$T/b18.state.ref" "$T/gc.open.state"
+cp "$T/b18.bio.ref" "$T/gc.open.target"
+ln -s "$T/gc.open.target" "$T/gc.open.link"
+"$N" --speak 1 --speak-seed 7 --state "$T/gc.open.state" \
+    --bio "$T/gc.open.link" >/dev/null 2>"$T/gc.open.link.err"
+gc_link=$?
+mkfifo "$T/gc.open.fifo"
+"$N" --speak 1 --speak-seed 7 --state "$T/gc.open.state" \
+    --bio "$T/gc.open.fifo" >/dev/null 2>"$T/gc.open.fifo.err" & gc_pid=$!
+( sleep 2; kill "$gc_pid" 2>/dev/null ) & gc_guard=$!
+wait "$gc_pid"; gc_fifo=$?
+kill "$gc_guard" 2>/dev/null || true
+wait "$gc_guard" 2>/dev/null || true
+[ "$gc_link" -eq 0 ] && [ "$gc_fifo" -eq 1 ] && \
+    grep -q 'not a regular file' "$T/gc.open.fifo.err"
+gate "GC bio_verify judges one opened descriptor: symlink yes, FIFO no" $? 0
 # rc 2 names I/O failure on both sides of the reader; losing the report at
 # flush cannot be acknowledged as a successful reading.
 "$FL" 1 ignore "$BC" "$T/b31.empty.bio" > "$T/b31.short-report" 2> "$T/b31.short-report.err"

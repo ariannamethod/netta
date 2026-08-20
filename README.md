@@ -108,9 +108,10 @@ technical source of truth for the living line.
   fixed registry, unit, move, length and court-role domains, while existence,
   ownership and order remain state-relative. The audit corpus carries 137
   malformed rows and both hands give one verdict class on all 154 grafted
-  canonical and malformed rows. The organism also opens a biography for
-  verification with non-blocking discipline before its regular-file and
-  identity verdict, so a path swapped to a FIFO cannot trap resume. It prints
+  canonical and malformed rows. The organism opens a biography once with
+  non-blocking discipline and judges the opened descriptor, never a prior
+  pathname snapshot, so a FIFO cannot trap resume and a later pathname change
+  cannot change the object being verified. It prints
   the record count and chain the organism also prints and reports recognition:
   a `w` whose
   candidate digest and byte count equal a prior `s` in the supplied file is
