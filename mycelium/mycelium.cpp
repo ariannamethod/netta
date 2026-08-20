@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <climits>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
@@ -50,8 +51,8 @@ static const char *PROPS_PATH = ".mycelium.proposals";
 static const char *PROPS_LAW = "body2-props-v1";
 static const uint64_t RENT_WINDOW = 16;
 static const char *SCHOOL_PATH = ".mycelium.school";
-static const char *SCHOOL_LAW = "body3-school-v1";
-static const char *BASELINE_LAW = "laplace-unigram-lmf";
+static const char *SCHOOL_LAW = "body3-school-v2";
+static const char *BASELINE_LAW = "laplace-unigram-lmf-u6-libm-v1";
 static const uint64_t W_EXAM = 8;
 static const uint64_t GAIN_MIN = 8000000; /* microbits: one full byte */
 
@@ -560,6 +561,79 @@ struct Mycelium {
     }
 };
 
+struct ProposalState {
+    std::string shape;
+    std::set<uint64_t> meals;
+    bool alive = false;
+};
+
+struct ProposalSnapshot {
+    std::vector<ProposalState> states;
+    std::string block;
+    uint64_t alive = 0, dead = 0, digest = FNV_SEED;
+};
+
+/* One derivation serves both body 2's public receipt and body 3's
+   historical enrollment check. This keeps "currently alive proposal"
+   from becoming a second, drifting implementation inside the school. */
+static ProposalSnapshot proposal_snapshot(const Mycelium &m, uint64_t after,
+                                            uint64_t mainchain) {
+    std::map<std::string, std::set<uint64_t>> shapes;
+    for (const auto &f : m.frags) {
+        if (f.meal > after) continue;
+        for (size_t i = 0; i + 1 < f.toks.size(); ++i) {
+            shapes[f.toks[i] + " " + f.toks[i + 1]].insert(f.meal);
+            if (i + 2 < f.toks.size())
+                shapes[f.toks[i] + " " + f.toks[i + 1] + " " + f.toks[i + 2]]
+                    .insert(f.meal);
+        }
+    }
+    ProposalSnapshot snap;
+    for (const auto &kv : shapes) {
+        if (kv.second.size() < 2) continue;
+        ProposalState state;
+        state.shape = kv.first;
+        state.meals = kv.second;
+        state.alive = after - *state.meals.rbegin() < RENT_WINDOW;
+        snap.states.push_back(std::move(state));
+    }
+    std::stable_sort(snap.states.begin(), snap.states.end(),
+                     [](const ProposalState &a, const ProposalState &b) {
+        if (a.meals.size() != b.meals.size()) return a.meals.size() > b.meals.size();
+        return a.shape < b.shape;
+    });
+    snap.block = "proposals after meal " + std::to_string(after) +
+                 " (main chain " + hex16(mainchain) + "):\n";
+    for (const auto &state : snap.states) {
+        std::string csv;
+        for (uint64_t meal : state.meals) {
+            if (!csv.empty()) csv += ",";
+            csv += std::to_string(meal);
+        }
+        if (state.alive) {
+            snap.alive++;
+            snap.block += "  alive " + state.shape + " support=" +
+                          std::to_string(state.meals.size()) + " meals=" + csv + "\n";
+        } else {
+            snap.dead++;
+            snap.block += "  dead " + state.shape + " support=" +
+                          std::to_string(state.meals.size()) + " meals=" + csv +
+                          " last=" + std::to_string(*state.meals.rbegin()) + "\n";
+        }
+    }
+    if (snap.states.empty()) snap.block += "  (nothing recurs across meals yet)\n";
+    snap.digest = fnv64(snap.block.data(), snap.block.size(), FNV_SEED);
+    return snap;
+}
+
+static bool proposal_alive_at(const Mycelium &m, uint64_t after,
+                              uint64_t mainchain, const std::string &shape) {
+    ProposalSnapshot snap = proposal_snapshot(m, after, mainchain);
+    for (const auto &state : snap.states)
+        if (state.alive && state.shape == shape) return true;
+    return false;
+}
+
 /* body 2: the proposer's receipts. Their own chain under their own law;
    the main ledger and its closed body1-byte-v1 law are never touched. */
 struct Props {
@@ -568,7 +642,7 @@ struct Props {
     uint64_t last_after = 0;
     bool law_seen = false;
 
-    void load(const std::set<std::pair<uint64_t, uint64_t>> &main_prefixes) {
+    void load(const Mycelium &m) {
         std::string raw;
         if (!read_file(PROPS_PATH, raw)) {
             struct stat st;
@@ -616,10 +690,13 @@ struct Props {
                     !canon_u64(f[3], &alive) || !canon_u64(f[4], &dead) ||
                     !canon_hex16(f[5], &dig))
                     die(where + ": P field grammar");
-                if (!main_prefixes.count({after, mainchain}))
+                if (!m.prefixes.count({after, mainchain}))
                     die(where + ": P main prefix");
                 if (after < last_after)
                     die(where + ": P after-meals is not monotonic");
+                ProposalSnapshot snap = proposal_snapshot(m, after, mainchain);
+                if (alive != snap.alive || dead != snap.dead || dig != snap.digest)
+                    die(where + ": P snapshot drifted from the main prefix");
                 last_after = after;
             } else {
                 die(where + ": unknown proposals record type");
@@ -737,6 +814,7 @@ struct School {
     std::vector<Hyp> hyps;
     std::vector<std::string> legalised;  /* shapes in L order */
     uint64_t r_count = 0, o_count = 0, v_count = 0;
+    uint64_t pending_glyph = 0;
 
     explicit School(const Mycelium &myc) : m(myc) {}
 
@@ -775,8 +853,13 @@ struct School {
                 h.cand.price(sym);
         }
         *frags_out = nf;
-        *base_out = (uint64_t)llround((h.base.bits - b0) * 1e6);
-        *cand_out = (uint64_t)llround((h.cand.bits - c0) * 1e6);
+        double bd = h.base.bits - b0, cd = h.cand.bits - c0;
+        double limit = (double)LLONG_MAX / 1e6;
+        if (!std::isfinite(bd) || !std::isfinite(cd) || bd < 0.0 || cd < 0.0 ||
+            bd > limit || cd > limit)
+            die("school observation exceeds the microbit range");
+        *base_out = (uint64_t)llround(bd * 1e6);
+        *cand_out = (uint64_t)llround(cd * 1e6);
     }
 
     void load() {
@@ -827,6 +910,8 @@ struct School {
             return;
         }
         if (!law_seen) die(where + ": record before school law");
+        if (pending_glyph && f[0] != "L")
+            die(where + ": passed hypothesis must be legalised immediately");
         if (f[0] == "H") {
             if (f.size() != 9) die(where + ": H arity");
             Hyp h;
@@ -839,6 +924,8 @@ struct School {
             if (!canon_hex16(f[6], &mainchain) ||
                 !m.prefixes.count({h.after, mainchain}))
                 die(where + ": H main prefix");
+            if (h.after > UINT64_MAX - W_EXAM)
+                die(where + ": H window overflows");
             if (f[7] != std::to_string(W_EXAM) || f[8] != BASELINE_LAW)
                 die(where + ": H window or baseline law");
             std::vector<std::string> toks;
@@ -847,15 +934,30 @@ struct School {
             h.shape = f[4];
             if (open_by_shape(h.shape)) die(where + ": H shape already open");
             if (is_legalised(h.shape)) die(where + ": H shape already legalised");
+            if (!proposal_alive_at(m, h.after, mainchain, h.shape))
+                die(where + ": H shape was not an alive proposal at its prefix");
             for (const auto &u : legalised) h.base_units.push_back(split_ws(u));
             hyps.push_back(std::move(h));
         } else if (f[0] == "R") {
-            uint64_t slen;
-            if (f.size() != 4 ||
+            uint64_t slen, after, mainchain;
+            if (f.size() != 6 ||
                 (f[1] != "not-proposed" && f[1] != "already-enrolled" &&
                  f[1] != "already-legalised") ||
-                !canon_u64(f[2], &slen) || f[3].size() != slen)
+                !canon_u64(f[2], &slen) || f[3].size() != slen ||
+                !canon_u64(f[4], &after) || !canon_hex16(f[5], &mainchain))
                 die(where + ": R field grammar");
+            if (!m.prefixes.count({after, mainchain}))
+                die(where + ": R main prefix");
+            std::vector<std::string> toks;
+            if (!shape_canonical(f[3], 2, &toks) && !shape_canonical(f[3], 3, &toks))
+                die(where + ": R shape is not canonical");
+            bool open = open_by_shape(f[3]) != nullptr;
+            bool legal = is_legalised(f[3]);
+            bool alive = proposal_alive_at(m, after, mainchain, f[3]);
+            if ((f[1] == "already-legalised" && !legal) ||
+                (f[1] == "already-enrolled" && (legal || !open)) ||
+                (f[1] == "not-proposed" && (legal || open || alive)))
+                die(where + ": R reason does not match its pinned state");
             r_count++;
         } else if (f[0] == "O") {
             uint64_t id, meal, nf, base_mb, cand_mb;
@@ -874,6 +976,9 @@ struct School {
             if (rf != nf || rb != base_mb || rc != cand_mb)
                 die(where + ": observation drifted from the field");
             h.last_meal = meal;
+            if (UINT64_MAX - h.base_total < base_mb ||
+                UINT64_MAX - h.cand_total < cand_mb)
+                die(where + ": O totals overflow");
             h.base_total += base_mb;
             h.cand_total += cand_mb;
             o_count++;
@@ -891,6 +996,7 @@ struct School {
             if (f[2] != verdict_word(bt, ct)) die(where + ": V verdict class");
             h.verdicted = true;
             h.passed = f[2] == "pass";
+            if (h.passed) pending_glyph = h.id;
             v_count++;
         } else if (f[0] == "L") {
             uint64_t id, glyph;
@@ -898,17 +1004,20 @@ struct School {
                 die(where + ": L field grammar");
             if (id == 0 || id > hyps.size()) die(where + ": L names no hypothesis");
             Hyp &h = hyps[id - 1];
-            if (!h.verdicted || !h.passed || is_legalised(h.shape) ||
+            if (!h.verdicted || !h.passed || pending_glyph != id ||
+                is_legalised(h.shape) ||
                 glyph != legalised.size() + 1)
                 die(where + ": L without a pass or out of order");
             legalised.push_back(h.shape);
+            pending_glyph = 0;
         } else {
             die(where + ": unknown school record type");
         }
     }
 
     static const char *verdict_word(uint64_t base_total, uint64_t cand_total) {
-        if (base_total >= cand_total + GAIN_MIN) return "pass";
+        if (base_total >= cand_total && base_total - cand_total >= GAIN_MIN)
+            return "pass";
         if (base_total > cand_total) return "weak";
         return "fail";
     }
@@ -918,6 +1027,18 @@ struct School {
         if (records != 0) die("cannot start a nonempty school");
         append(std::string("S\t1\t") + SCHOOL_LAW);
         law_seen = true;
+    }
+
+    bool recover_pending_glyph() {
+        if (!pending_glyph) return false;
+        Hyp &h = hyps[pending_glyph - 1];
+        uint64_t glyph = legalised.size() + 1;
+        append("L\t" + std::to_string(h.id) + "\t" + std::to_string(glyph));
+        legalised.push_back(h.shape);
+        pending_glyph = 0;
+        printf("  recovered glyph %llu for hyp %llu after a V-boundary prefix\n",
+               (unsigned long long)glyph, (unsigned long long)h.id);
+        return true;
     }
 
     void append(const std::string &payload) {
@@ -1200,84 +1321,29 @@ static void cmd_ablate(Mycelium &m) {
 static void cmd_propose(Mycelium &m) {
     if (m.meals == 0) die("the mycelium is empty; ingest something first");
     Props pr;
-    pr.load(m.prefixes);
-    std::map<std::string, std::set<uint64_t>> shapes;
-    for (const auto &f : m.frags)
-        for (size_t i = 0; i + 1 < f.toks.size(); ++i) {
-            shapes[f.toks[i] + " " + f.toks[i + 1]].insert(f.meal);
-            if (i + 2 < f.toks.size())
-                shapes[f.toks[i] + " " + f.toks[i + 1] + " " + f.toks[i + 2]]
-                    .insert(f.meal);
-        }
-    struct Prop { const std::string *shape; const std::set<uint64_t> *meals; };
-    std::vector<Prop> props;
-    for (const auto &kv : shapes)
-        if (kv.second.size() >= 2) props.push_back({&kv.first, &kv.second});
-    std::stable_sort(props.begin(), props.end(), [](const Prop &a, const Prop &b) {
-        if (a.meals->size() != b.meals->size())
-            return a.meals->size() > b.meals->size();
-        return *a.shape < *b.shape;
-    });
-    std::string block = "proposals after meal " + std::to_string(m.meals) +
-                        " (main chain " + hex16(m.led.chain) + "):\n";
-    uint64_t alive = 0, dead = 0;
-    for (const auto &p : props) {
-        uint64_t last = *p.meals->rbegin();
-        bool live = m.meals - last < RENT_WINDOW;
-        std::string csv;
-        for (uint64_t meal : *p.meals) {
-            if (!csv.empty()) csv += ",";
-            csv += std::to_string(meal);
-        }
-        if (live) {
-            alive++;
-            block += "  alive " + *p.shape + " support=" +
-                     std::to_string(p.meals->size()) + " meals=" + csv + "\n";
-        } else {
-            dead++;
-            block += "  dead " + *p.shape + " support=" +
-                     std::to_string(p.meals->size()) + " meals=" + csv +
-                     " last=" + std::to_string(last) + "\n";
-        }
-    }
-    if (props.empty()) block += "  (nothing recurs across meals yet)\n";
-    write_bytes(stdout, block);
-    uint64_t dig = fnv64(block.data(), block.size(), FNV_SEED);
+    pr.load(m);
+    ProposalSnapshot snap = proposal_snapshot(m, m.meals, m.led.chain);
+    write_bytes(stdout, snap.block);
     if (!pr.law_seen) {
         pr.append(std::string("W\t1\t") + PROPS_LAW);
         pr.law_seen = true;
     }
     std::string payload = "P\t" + std::to_string(m.meals) + "\t" +
-                          hex16(m.led.chain) + "\t" + std::to_string(alive) +
-                          "\t" + std::to_string(dead) + "\t" + hex16(dig);
+                          hex16(m.led.chain) + "\t" + std::to_string(snap.alive) +
+                          "\t" + std::to_string(snap.dead) + "\t" +
+                          hex16(snap.digest);
     pr.append(payload);
     printf("  receipt: snapshot %s | proposals %llu records chain %s\n",
-           hex16(dig).c_str(), (unsigned long long)pr.records,
+           hex16(snap.digest).c_str(), (unsigned long long)pr.records,
            hex16(pr.chain).c_str());
-}
-
-/* the shapes currently alive under the proposer's own derivation */
-static std::set<std::string> alive_shapes(const Mycelium &m) {
-    std::map<std::string, std::set<uint64_t>> shapes;
-    for (const auto &f : m.frags)
-        for (size_t i = 0; i + 1 < f.toks.size(); ++i) {
-            shapes[f.toks[i] + " " + f.toks[i + 1]].insert(f.meal);
-            if (i + 2 < f.toks.size())
-                shapes[f.toks[i] + " " + f.toks[i + 1] + " " + f.toks[i + 2]]
-                    .insert(f.meal);
-        }
-    std::set<std::string> alive;
-    for (const auto &kv : shapes)
-        if (kv.second.size() >= 2 && m.meals - *kv.second.rbegin() < RENT_WINDOW)
-            alive.insert(kv.first);
-    return alive;
 }
 
 [[noreturn]] static void enroll_refuse(School &sc, const char *reason,
                                        const std::string &shape) {
     sc.ensure_law();
     sc.append(std::string("R\t") + reason + "\t" +
-              std::to_string(shape.size()) + "\t" + shape);
+              std::to_string(shape.size()) + "\t" + shape + "\t" +
+              std::to_string(sc.m.meals) + "\t" + hex16(sc.m.led.chain));
     die(std::string("enrollment refused (") + reason + "): " + shape);
 }
 
@@ -1295,11 +1361,15 @@ static void cmd_enroll(Mycelium &m, const std::string &arity_str,
     std::vector<std::string> toks;
     if (!shape_canonical(shape, arity, &toks))
         die("enroll tokens are not canonical");
+    Props pr;
+    pr.load(m); /* body 3 is where historical P snapshots are re-derived */
     School sc(m);
     sc.load();
+    sc.recover_pending_glyph();
     if (sc.is_legalised(shape)) enroll_refuse(sc, "already-legalised", shape);
     if (sc.open_by_shape(shape)) enroll_refuse(sc, "already-enrolled", shape);
-    if (!alive_shapes(m).count(shape)) enroll_refuse(sc, "not-proposed", shape);
+    if (!proposal_alive_at(m, m.meals, m.led.chain, shape))
+        enroll_refuse(sc, "not-proposed", shape);
     sc.ensure_law();
     uint64_t id = sc.hyps.size() + 1;
     sc.append("H\t" + std::to_string(id) + "\t" + std::to_string(arity) + "\t" +
@@ -1315,11 +1385,41 @@ static void cmd_enroll(Mycelium &m, const std::string &arity_str,
            (unsigned long long)sc.records, hex16(sc.chain).c_str());
 }
 
+static bool decode_hex_token(const std::string &hex, std::string *out) {
+    if (hex.empty() || hex.size() % 2) return false;
+    out->clear();
+    out->reserve(hex.size() / 2);
+    for (size_t i = 0; i < hex.size(); i += 2) {
+        int hi = hex[i] >= '0' && hex[i] <= '9' ? hex[i] - '0' :
+                 hex[i] >= 'a' && hex[i] <= 'f' ? hex[i] - 'a' + 10 : -1;
+        int lo = hex[i + 1] >= '0' && hex[i + 1] <= '9' ? hex[i + 1] - '0' :
+                 hex[i + 1] >= 'a' && hex[i + 1] <= 'f' ? hex[i + 1] - 'a' + 10 : -1;
+        if (hi < 0 || lo < 0) return false;
+        unsigned char byte = (unsigned char)((hi << 4) | lo);
+        if (byte_space(byte)) return false;
+        out->push_back((char)byte);
+    }
+    return true;
+}
+
+static void cmd_enroll_hex(Mycelium &m, const std::string &arity_str,
+                           const std::vector<std::string> &encoded) {
+    std::vector<std::string> tokens;
+    tokens.reserve(encoded.size());
+    for (const auto &hex : encoded) {
+        std::string token;
+        if (!decode_hex_token(hex, &token))
+            die("enroll-hex tokens must be nonempty lowercase even hex without byte-space");
+        tokens.push_back(std::move(token));
+    }
+    cmd_enroll(m, arity_str, tokens);
+}
+
 static void cmd_examine(Mycelium &m) {
     School sc(m);
     sc.load();
     if (!sc.law_seen) die("the school is empty; enroll something first");
-    uint64_t sealed = 0;
+    uint64_t sealed = sc.recover_pending_glyph() ? 1 : 0;
     for (auto &h : sc.hyps) {
         if (h.verdicted) continue;
         uint64_t meal = h.last_meal ? h.last_meal + 1 : h.after + 1;
@@ -1328,6 +1428,9 @@ static void cmd_examine(Mycelium &m) {
         for (; meal <= stop; ++meal) {
             uint64_t nf, base_mb, cand_mb;
             sc.price_meal(h, meal, &nf, &base_mb, &cand_mb);
+            if (UINT64_MAX - h.base_total < base_mb ||
+                UINT64_MAX - h.cand_total < cand_mb)
+                die("school observation totals overflow");
             sc.append("O\t" + std::to_string(h.id) + "\t" + std::to_string(meal) +
                       "\t" + std::to_string(nf) + "\t" + std::to_string(base_mb) +
                       "\t" + std::to_string(cand_mb));
@@ -1376,6 +1479,7 @@ int main(int argc, char **argv) {
         "       mycelium ablate\n"
         "       mycelium propose\n"
         "       mycelium enroll <arity> <token...>\n"
+        "       mycelium enroll-hex <arity> <lower-hex-token...>\n"
         "       mycelium examine\n";
     if (argc < 2) { fputs(usage, stderr); return 1; }
     Mycelium m;
@@ -1404,6 +1508,11 @@ int main(int argc, char **argv) {
         std::vector<std::string> tokens;
         for (int i = 3; i < argc; ++i) tokens.push_back(argv[i]);
         cmd_enroll(m, argv[2], tokens);
+    } else if (cmd == "enroll-hex") {
+        if (argc < 4) { fputs(usage, stderr); return 1; }
+        std::vector<std::string> tokens;
+        for (int i = 3; i < argc; ++i) tokens.push_back(argv[i]);
+        cmd_enroll_hex(m, argv[2], tokens);
     } else if (cmd == "examine") {
         cmd_examine(m);
     } else {

@@ -80,7 +80,7 @@ hands; this list is a map, not a promise of shape.
   rent, dying, resurrecting — Netta's unit law lifted one floor
   (molequla's evolving BPE as the other parent). Body 2 only proposes;
   frequency alone mints nothing permanent.
-- **Body 3 — the school** (this turn). Leo's loop with the world as the teacher: a
+- **Body 3 — the school** (landed, audited, closed). Leo's loop with the world as the teacher: a
   provisional unit becomes a hypothesis; the exam is prequential — does
   it price the FUTURE stream better than its absence (never
   retrospective); only a passed exam legalises consolidation and coins a
@@ -225,7 +225,9 @@ are closed and untouched.
   end honestly at record boundaries, but they may not describe different
   histories. The reader verifies grammar, both chains and monotonic
   after-meals; re-deriving a historical snapshot is the examiner's work
-  in body 3 and is not claimed here.
+  in body 3 and is not claimed here. The body 3 writer now performs that
+  re-derivation before enrollment; the grammar-only C reader still does
+  not claim to reconstruct proposal contents.
 - Red hands, sealed before the first run: a one-meal echo proposes
   nothing; unfold and ablate outputs are byte-identical before and
   after propose; the rent story is walked in the flesh — a shape
@@ -235,7 +237,7 @@ are closed and untouched.
   proposals file refuse by name in both hands; a clean-room repeat of
   the full sequence reproduces the proposals file byte for byte.
 
-## Body 3 contract (frozen before code)
+## Body 3 contract (frozen before code, repaired by the second hand)
 
 The school examines what the proposer noticed. A hypothesis is enrolled,
 priced only on the stream that arrives AFTER enrollment, and judged
@@ -245,9 +247,10 @@ baselines; power over resonance waits for body 4's parliament. The main
 ledger (`body1-byte-v1`) and the proposals chain (`body2-props-v1`) are
 closed and untouched.
 
-- New commands `enroll <arity> <shape-tokens...>` and `examine`, same
-  organism file; both write only `.mycelium.school` — its own chain,
-  same sealing discipline, law row `S \t 1 \t body3-school-v1` at
+- New commands `enroll <arity> <shape-tokens...>`, binary-safe
+  `enroll-hex <arity> <lower-hex-token...>`, and `examine`, same
+  organism file; all write only `.mycelium.school` — its own chain,
+  same sealing discipline, law row `S \t 1 \t body3-school-v2` at
   line 1.
 - **Identity.** A hypothesis names its shape as exact bytes with an
   explicit arity: `H \t hyp-id \t arity \t slen \t shape-bytes \t
@@ -255,9 +258,18 @@ closed and untouched.
   shape field is read by slen, binary-safe; hyp-id is the 1-based
   enrollment ordinal.
 - **Enrollment.** Only a shape that is a currently-alive proposal with
-  support from at least 2 distinct meals may enroll. A refusal is a
-  public track-record event: `R \t reason \t slen \t shape-bytes` with
-  reason in {not-proposed, already-enrolled, already-legalised}.
+  support from at least 2 distinct meals may enroll. Body 2 and body 3
+  use one derivation, and replay checks the shape at the historical main
+  prefix named by H; body 3 also re-derives every supplied historical P
+  snapshot before enrollment. A P receipt remains a witness, not
+  authority: absence of the optional receipts file does not manufacture
+  or erase proposal state. `enroll-hex` closes argv's NUL hole while
+  preserving the same canonical token law. A refusal is a public
+  track-record event pinned to the state that caused it:
+  `R \t reason \t slen \t shape-bytes \t after-meals \t main-chain`,
+  with reason in {not-proposed, already-enrolled, already-legalised}.
+  `already-enrolled` means an open exam; a public weak/fail may enroll
+  again later and its earlier verdict remains in the chain.
 - **The exam is prequential and future-only.** The window is fixed in
   the law: W_EXAM = 8 meals after enrollment. `examine` prices, for
   each open hypothesis, every arrived meal m with
@@ -275,26 +287,45 @@ closed and untouched.
   adds exactly this hypothesis's shape to that set. Gain is therefore
   MARGINAL by construction: a token boundary already covered by a
   legalised unit or by the longer nested match cannot be credited
-  twice — pair and triple stay separate candidates in one risk set.
+  twice — pair and triple stay separate candidates in one risk set. The
+  state is carried across the entire eight-meal window, not reset per
+  meal. Each O charge is `llround(delta-bits * 1e6)` after the whole meal,
+  with C++ `double`/`log2` and half-away rounding named by baseline law
+  `laplace-unigram-lmf-u6-libm-v1`.
 - **Verdict.** After the window closes: `V \t hyp-id \t verdict \t
   base-total \t cand-total` with verdict in {pass, weak, fail}: pass
   iff gain >= GAIN_MIN = 8000000 microbits (one full byte), weak iff
   0 < gain < GAIN_MIN, fail iff gain <= 0. Weak and fail stay public
   forever; no silent discards. A pass mints `L \t hyp-id \t
-  glyph-ordinal`: the unit joins the legalised set for every LATER
-  enrollment's baseline.
+  glyph-ordinal` immediately as the next record: the unit joins the
+  legalised set for every LATER enrollment's baseline. A pass without
+  its L at EOF is an honest record-boundary interruption; the next
+  school command appends that one L before doing anything else. Any
+  intervening record, delayed L or second L is malformed.
 - The reader (`ledger_check`) verifies the school chain's grammar,
-  chain, H-before-O-before-V order, one O per (hyp, meal), monotonic
-  meals within a hypothesis, and V totals equal to the sum of O rows;
-  re-deriving bits is the examiner's work and the battery's, not the
-  reader's.
+  chain, real main prefixes for H/R, H-before-O-before-V order, one O per
+  (hyp, meal), monotonic and already-arrived meals within a hypothesis,
+  checked u64 accumulation, immediate V-pass-to-L closure, and V totals
+  equal to the sum of O rows; re-deriving proposal contents and bits is
+  the C++ examiner's work and the battery's, not the reader's.
 - Red hands, sealed before code: a shape rich in the PAST but absent
   after enrollment fails; the one-law window cannot be chosen after
   seeing the stream (it is a constant, and the battery proves an early
   verdict is impossible: no V before the window's meals arrive or the
   window closes); the nested marginal law is walked in the flesh — a
   legalised triple starves its own pair of credit on boundaries the
-  triple covers; enrollment refusals by name for all three reasons;
-  flipped byte, truncated tail and order faults in the school chain
-  refuse in both hands; clean-room reproduces `.mycelium.school` byte
-  for byte.
+  triple covers, while a pair recurring outside that triple can pass on
+  uncovered boundaries; enrollment refusals by name for all three
+  reasons; NUL enrollment, carried pricing state, foreign prefixes,
+  unarrived observations, overflow, V-boundary L recovery,
+  delayed/second L, flipped byte, truncated tail and order faults refuse
+  at their declared hand;
+  clean-room reproduces `.mycelium.school` byte for byte.
+
+The pricing portability limit is explicit rather than disguised. Exact
+half-microbit ties cannot arise from an exact product of rational
+Laplace probabilities, but the libm approximation can land on a rounding
+boundary. O rows are therefore the pricing witness: a binary/libm that
+recomputes different microbits refuses loudly as observation drift. A
+build string in every H would only name that incompatibility, not remove
+it, so the law names `libm` once and the log keeps the limit public.
