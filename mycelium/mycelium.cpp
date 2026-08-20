@@ -497,6 +497,7 @@ struct Mycelium {
                 !canon_u64(f[4], &touched) || touched == 0 || touched > k)
                 die(where + ": U field grammar");
             std::set<std::string> named;
+            std::string prev;
             size_t p = 0;
             while (p <= f[5].size()) {
                 size_t q = f[5].find(',', p);
@@ -504,6 +505,9 @@ struct Mycelium {
                 if (!label_ok(label) || !named.insert(label).second ||
                     std::find(corpora.begin(), corpora.end(), label) == corpora.end())
                     die(where + ": U sources");
+                if (!prev.empty() && !(prev < label))
+                    die(where + ": U sources are not in canonical order");
+                prev = label;
                 if (q == std::string::npos) break;
                 p = q + 1;
             }

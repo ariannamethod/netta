@@ -186,14 +186,29 @@ static int label_add(const char *s, size_t n) {
     return 1;
 }
 
+static int label_lt(const char *a, size_t an, const char *b, size_t bn) {
+    size_t n = an < bn ? an : bn;
+    int c = memcmp(a, b, n);
+    if (c) return c < 0;
+    return an < bn;
+}
+
 static int sources_valid(const char *s, size_t n, uint64_t touched) {
     size_t start = 0, count = 0, i, j;
+    size_t prev_start = 0, prev_len = 0;
+    int have_prev = 0;
     if (!n) return 0;
     while (start <= n) {
         size_t end = start;
         while (end < n && s[end] != ',') end++;
         if (!label_valid(s + start, end - start) ||
                 !label_known(s + start, end - start)) return 0;
+        if (have_prev &&
+                !label_lt(s + prev_start, prev_len, s + start, end - start))
+            return 0;
+        prev_start = start;
+        prev_len = end - start;
+        have_prev = 1;
         for (i = 0, j = 0; i < start; ++i)
             if (s[i] == ',') {
                 size_t prior_start = j;

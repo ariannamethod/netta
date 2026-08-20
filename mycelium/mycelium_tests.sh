@@ -208,7 +208,8 @@ def seal(payloads):
 
 raw = open(ledger, "rb").read()
 payloads = [line[:-17] for line in raw.splitlines()]
-for name in ("mut-label", "mut-u", "mut-s", "prefix", "missing", "unsealed"):
+for name in ("mut-label", "mut-u", "mut-s", "mut-usort", "prefix", "missing",
+             "unsealed"):
     path = os.path.join(root, name)
     os.makedirs(path)
     if name != "missing":
@@ -241,6 +242,18 @@ for i, row in enumerate(p):
         break
 open(os.path.join(root, "mut-s", ".mycelium.ledger"), "wb").write(seal(p))
 
+p = payloads.copy()
+for i, row in enumerate(p):
+    if row.startswith(b"U\t"):
+        fields = row.split(b"\t")
+        parts = fields[5].split(b",")
+        assert len(parts) >= 2, "mut-usort needs a two-source U receipt"
+        parts.reverse()
+        fields[5] = b",".join(parts)
+        p[i] = b"\t".join(fields)
+        break
+open(os.path.join(root, "mut-usort", ".mycelium.ledger"), "wb").write(seal(p))
+
 lines = raw.splitlines(keepends=True)
 open(os.path.join(root, "prefix", ".mycelium.ledger"), "wb").write(b"".join(lines[:2]))
 open(os.path.join(root, "missing", ".mycelium.ledger"), "wb").write(raw)
@@ -250,6 +263,7 @@ PY
 for spec in "mut-label:G field grammar:G label" \
             "mut-u:U field grammar:U k" \
             "mut-s:attested s line:attested s line" \
+            "mut-usort:canonical order:U sources" \
             "missing:grave blob:grave blob" \
             "unsealed:unsealed:unsealed"; do
     name=${spec%%:*}; rest=${spec#*:}; writer=${rest%%:*}; reader=${rest#*:}
