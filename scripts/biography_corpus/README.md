@@ -10,7 +10,8 @@ row and the `q` null row are derived from their emit formats
 
 `<type>_malformed.rows`: rows every reader must refuse — separator,
 sign, leading-zero, hex case and width, literal, enum, arity and
-non-canonical fixed-point faults. All values here are context-free
-grammar faults; state-relative rows (future episodes, foreign
-registries) are deliberately absent — that law belongs to the
-organism's resume alone.
+non-canonical fixed-point faults, plus the compile-time registry, unit,
+move, length and role domains. All values here are context-free grammar
+faults; state-relative rows (future episodes or a bounded id that this
+life has not actually registered) are deliberately absent — that law
+belongs to the organism's resume alone.

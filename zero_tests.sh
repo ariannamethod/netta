@@ -2789,8 +2789,8 @@ for cf in scripts/biography_corpus/*_malformed.rows; do
             --bio "$T/gc.m.bio" >/dev/null 2>&1 || gcR=$((gcR+1))
     done < "$cf"
 done
-[ "$gcM" -eq 91 ] && [ "$gcR" -eq 91 ]
-gate "GC ninety-one re-sealed malformed corpus rows refuse in the organism ($gcR/91)" $? 0
+[ "$gcM" -eq 137 ] && [ "$gcR" -eq 137 ]
+gate "GC 137 re-sealed malformed corpus rows refuse in the organism ($gcR/137)" $? 0
 gcB=0
 for cf in scripts/biography_corpus/*_malformed.rows; do
     while IFS= read -r row; do
@@ -2798,8 +2798,8 @@ for cf in scripts/biography_corpus/*_malformed.rows; do
         "$BC" "$T/gc.b.bio" >/dev/null 2>&1 || gcB=$((gcB+1))
     done < "$cf"
 done
-[ "$gcB" -eq 91 ]
-gate "GC the same ninety-one rows refuse in the outside reader ($gcB/91)" $? 0
+[ "$gcB" -eq 137 ]
+gate "GC the same 137 rows refuse in the outside reader ($gcB/137)" $? 0
 gcK=0
 while IFS= read -r row; do
     printf '%s\n' "$row" > "$T/gc.k.bio"
@@ -2836,8 +2836,8 @@ done < scripts/biography_corpus/canonical.rows
 for cf in scripts/biography_corpus/*_malformed.rows; do
     while IFS= read -r row; do gc_both "$row" refuse; done < "$cf"
 done
-[ "$gcT" -eq 108 ] && [ "$gcD" -eq 0 ]
-gate "GC two readers, one language: one verdict class on all 108 grafted rows (disagree=$gcD)" $? 0
+[ "$gcT" -eq 154 ] && [ "$gcD" -eq 0 ]
+gate "GC two readers, one language: one verdict class on all 154 grafted rows (disagree=$gcD)" $? 0
 # a carriage return inside a step row is no longer chained unread
 cp "$T/b30.state" "$T/gc.cr.state"
 awk 'NR==4{printf "%s\r\n",$0;next}{print}' "$T/b30.bio" > "$T/gc.cr.bio"
@@ -2883,6 +2883,13 @@ cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic -fsanitize=address,undefined \
 rc=$?; [ -s "$T/bcheck-san-build.log" ] && rc=98
 "$T/bcheck-san" "$T/b31m.bio" >/dev/null 2>"$T/bcheck-san.err" || rc=$?
 "$T/bcheck-san" "$T/b31.x-s-space.bio" >/dev/null 2>>"$T/bcheck-san.err" || true
+printf 't\t1\n' > "$T/gc.short-t.bio"
+"$T/bcheck-san" "$T/gc.short-t.bio" >/dev/null 2>>"$T/bcheck-san.err"
+[ "$?" -eq 1 ] || rc=98
+printf 'm\t1\t0\t1\t0\t2\t18446744073709551616.000000\n' \
+    > "$T/gc.fix6-overflow.bio"
+"$T/bcheck-san" "$T/gc.fix6-overflow.bio" >/dev/null 2>>"$T/bcheck-san.err"
+[ "$?" -eq 1 ] || rc=98
 [ -s "$T/bcheck-san.err" ] && rc=98
 gate "S ASan/UBSan silent through the biography reader" $rc 0
 

@@ -146,7 +146,7 @@ static int parse_w(char **f, int k, uint64_t *ep, char digest[17],
 static int parse_i(char **f, int k) {
     uint64_t ep, id, len;
     return k == 6 && !strcmp(f[0], "i") && canon_u64(f[1], &ep) &&
-           canon_u64(f[2], &id) && id <= 2147483647ULL &&
+           canon_u64(f[2], &id) && id <= 1023 &&
            lower_hex(f[3], 16) && lower_hex(f[4], 16) &&
            canon_u64(f[5], &len);
 }
@@ -164,19 +164,21 @@ static int u64_at_most(const char *s, uint64_t max) {
     return canon_u64(s, &v) && v <= max;
 }
 
-static int i64_shape(const char *s) {
-    if (s[0] == '-')
-        return s[1] && !(s[1] == '0' && !s[2]) && u64_shape(s + 1);
-    return u64_shape(s);
-}
-
 static int fix6_shape(const char *s) {
     const char *dot = strchr(s, '.');
     if (!dot || dot == s || dot - s > 20 || strlen(dot + 1) != 6) return 0;
     if (s[0] == '0' && dot - s != 1) return 0;
     for (const char *p = s; *p; ++p)
         if (p != dot && (*p < '0' || *p > '9')) return 0;
+    static const char max[] = "18446744073709551615";
+    size_t whole_n = (size_t)(dot - s);
+    if (whole_n == sizeof max - 1 && memcmp(s, max, whole_n) > 0) return 0;
     return 1;
+}
+
+static int fix6_at_most_eight(const char *s) {
+    return fix6_shape(s) && s[1] == '.' &&
+           (s[0] < '8' || (s[0] == '8' && !strcmp(s + 1, ".000000")));
 }
 
 static int actor_word(const char *s) {
@@ -184,9 +186,22 @@ static int actor_word(const char *s) {
            !strcmp(s, "mv") || !strcmp(s, "null");
 }
 
+static int byte_actor_word(const char *s) {
+    return !strcmp(s, "uni") || !strcmp(s, "bi") || !strcmp(s, "tri");
+}
+
+static int seated_word(const char *s) {
+    return byte_actor_word(s) || !strcmp(s, "mv");
+}
+
+static int challenger_word(const char *s) {
+    return byte_actor_word(s) || !strcmp(s, "null");
+}
+
 static int parse_step(char **f, int k) {
     return k == 12 && u64_shape(f[0]) && u64_shape(f[1]) &&
-           u64_shape(f[2]) && u64_shape(f[3]) && lower_hex(f[4], 16) &&
+           u64_at_most(f[2], 1023) && u64_shape(f[3]) &&
+           lower_hex(f[4], 16) &&
            u64_at_most(f[5], 255) && u64_at_most(f[6], 255) &&
            fix6_shape(f[7]) && lower_hex(f[8], 16) &&
            !strcmp(f[9], "atomic") && !strcmp(f[10], "1") &&
@@ -194,7 +209,7 @@ static int parse_step(char **f, int k) {
 }
 
 static int parse_rest(char **f, int k) {
-    uint64_t len;
+    uint64_t len, support, idle, move, advance, target, policy, lived;
     switch (f[0][0]) {
     case 'a':
         return k == 3 && u64_shape(f[1]) &&
@@ -202,40 +217,55 @@ static int parse_rest(char **f, int k) {
     case 'b':
         return k == 6 && u64_shape(f[1]) && u64_at_most(f[2], 4095) &&
                canon_u64(f[3], &len) && len >= 2 && len <= 16 &&
-               lower_hex(f[4], (size_t)(2 * len)) && u64_shape(f[5]);
+               lower_hex(f[4], (size_t)(2 * len)) &&
+               canon_u64(f[5], &support) && support >= 64 &&
+               support % 64 == 0;
     case 'u':
-        return k == 4 && u64_shape(f[1]) && u64_shape(f[2]) &&
-               u64_shape(f[3]);
+        return k == 4 && u64_shape(f[1]) && u64_at_most(f[2], 4095) &&
+               canon_u64(f[3], &support) && support >= 64 &&
+               support % 64 == 0;
     case 'd':
-        return k == 5 && u64_shape(f[1]) && u64_shape(f[2]) &&
-               u64_shape(f[3]) && u64_shape(f[4]);
+        return k == 5 && u64_shape(f[1]) && u64_at_most(f[2], 4095) &&
+               u64_shape(f[3]) && canon_u64(f[4], &idle) && idle >= 16384;
     case 'm':
         return k == 7 && u64_shape(f[1]) && u64_at_most(f[2], 31) &&
-               u64_shape(f[3]) && u64_shape(f[4]) && u64_shape(f[5]) &&
+               u64_shape(f[3]) && u64_at_most(f[4], 4095) &&
+               canon_u64(f[5], &len) && len >= 2 && len <= 16 &&
                fix6_shape(f[6]);
     case 'v':
         if (k != 9 && k != 10) return 0;
-        if (k == 10 && !i64_shape(f[9])) return 0;
-        return u64_shape(f[1]) && u64_shape(f[2]) && u64_shape(f[3]) &&
-               u64_shape(f[4]) && u64_shape(f[5]) && u64_shape(f[6]) &&
-               strcmp(f[6], "0") != 0 && fix6_shape(f[7]) &&
-               u64_shape(f[8]);
+        if (!u64_shape(f[1]) || !u64_at_most(f[2], 1023) ||
+                !u64_shape(f[3]) || !canon_u64(f[4], &move) || move > 4351 ||
+                !canon_u64(f[5], &len) || len < 1 || len > 16 ||
+                (move < 256 ? len != 1 : len < 2) ||
+                !canon_u64(f[6], &advance) || advance < 1 || advance > len ||
+                !fix6_shape(f[7]) || !canon_u64(f[8], &target) ||
+                target > 4351)
+            return 0;
+        return k == 9 || (canon_u64(f[9], &policy) && policy <= 4351);
     case 't':
-        if (!u64_shape(f[1]) || !u64_shape(f[2])) return 0;
+        if (k < 3 || !u64_shape(f[1]) || !u64_at_most(f[2], 1023)) return 0;
         if (k == 4) return !strcmp(f[3], "eligible");
-        if (k == 6) return !strcmp(f[3], "chart") && u64_shape(f[4]) &&
+        if (k == 6) return !strcmp(f[3], "chart") &&
+                           canon_u64(f[4], &lived) && lived < 1000 &&
                            u64_shape(f[5]);
-        if (k == 7) return !strcmp(f[3], "earned") && fix6_shape(f[4]) &&
-                           fix6_shape(f[5]) && u64_shape(f[6]);
+        if (k == 7) return !strcmp(f[3], "earned") &&
+                           fix6_at_most_eight(f[4]) &&
+                           fix6_at_most_eight(f[5]) &&
+                           canon_u64(f[6], &lived) && lived >= 1000;
         return 0;
     case 'r':
         if (k != 7 && k != 8) return 0;
         if (k == 8 && strcmp(f[7], "8.000000") != 0) return 0;
-        return u64_shape(f[1]) && u64_shape(f[2]) && actor_word(f[3]) &&
-               actor_word(f[4]) && fix6_shape(f[5]) && fix6_shape(f[6]);
+        return u64_shape(f[1]) && u64_at_most(f[2], 1023) &&
+               strcmp(f[3], "uni") && seated_word(f[3]) &&
+               (k == 7 ? byte_actor_word(f[4]) : challenger_word(f[4])) &&
+               strcmp(f[3], f[4]) && fix6_shape(f[5]) &&
+               fix6_shape(f[6]);
     case 'q':
-        return k == 6 && u64_shape(f[1]) && u64_shape(f[2]) &&
-               actor_word(f[3]) && actor_word(f[4]) && !strcmp(f[5], "0");
+        return k == 6 && u64_shape(f[1]) && u64_at_most(f[2], 1023) &&
+               seated_word(f[3]) && challenger_word(f[4]) &&
+               strcmp(f[3], f[4]) && !strcmp(f[5], "0");
     default:
         return 0;
     }

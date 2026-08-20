@@ -104,8 +104,15 @@ technical source of truth for the living line.
   for tab in both hands — the organism's `bio_verify` and this reader
   implement the language independently, sharing only the specification and
   the corpus in `scripts/biography_corpus/`, and one verdict class on the
-  context-free language is a suite gate. It prints the record count and
-  chain the organism also prints and reports recognition: a `w` whose
+  context-free language is a suite gate. The grammar includes the emitters'
+  fixed registry, unit, move, length and court-role domains, while existence,
+  ownership and order remain state-relative. The audit corpus carries 137
+  malformed rows and both hands give one verdict class on all 154 grafted
+  canonical and malformed rows. The organism also opens a biography for
+  verification with non-blocking discipline before its regular-file and
+  identity verdict, so a path swapped to a FIFO cannot trap resume. It prints
+  the record count and chain the organism also prints and reports recognition:
+  a `w` whose
   candidate digest and byte count equal a prior `s` in the supplied file is
   recognised with its multiplicity; every other `w` is external, and a
   later signature grants nothing backwards.
@@ -262,9 +269,10 @@ drop, duplicate, reorder, splice, grammar, framing, and sanitizer reds, plus
 failure-closed state and biography checks, real partial-write and SIGKILL
 publication deaths, descriptor/shore isolation, fourteen re-sealed malformed
 `s` records, and a three-signature long differential through jury, Atlas,
-reversed convoy order, and restart, plus the outside biography reader's
-bounded framing and I/O failures, twenty-seven-row `s` grammar battery,
-twenty-four-family measured `w` debt, and two-life splice limit. A
+  reversed convoy order, and restart, plus the outside biography reader's
+  bounded framing and I/O failures, twenty-seven-row `s` grammar battery,
+  twenty-four-family measured `w` debt, 137-row all-type malformed corpus,
+  154-row differential grammar battery, and two-life splice limit. A
 passing build ends with `ALL GATES PASS`.
 
 ## Start a life
