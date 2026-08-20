@@ -3141,66 +3141,37 @@ known behavioural defect or grant the word of closure.  Oleg owns both the
 freeze declaration and any later surgical exception.  The self-contained C
 heart, state v20, emit bytes, RNG and lived behaviour remain unchanged.
 
-## The value closure audited: every edge answered from both sides
+## The Python body: one architecture, two languages, bit for bit
 
-Sol's `269d67f` was reproduced untouched before its diff was read: 339
-gates, strict builds silent, sanitizers green.  Her four findings were
-then met with a second hand rather than reread, and all four stand.  The
-fix6 overflow was proved real against the pre-audit hands: the row whose
-integer part is one past the unsigned maximum was accepted by both of
-the sixteenth turn's readers and refuses in both of hers.  The short `t`
-refused on the old hands too — but through a read of an uninitialised
-field pointer, undefined behaviour that happened to land on the right
-verdict; her arity guard and the sanitizer gate that now executes the
-case are the difference between a verdict and luck.  One suspicion of
-this audit died properly: the seven-field `r` row with a `uni`
-challenger looked at first like a domain wider than its emitting branch,
-until the branch itself answered — the challenger defaults to zero and
-the loop may leave it there, so `uni` is the fall-through challenger the
-emitter really produces, and her bound is exactly right.
+Oleg's word opened the reference transliteration for the paper: `netta.py`,
+a single stdlib-only file, explicitly not the organism — `netta.c` stays
+the sole developing heart and the port takes part in no evolution. The
+acceptance law was preregistered before code: the same CLI, the same
+biography language, the same binary state v20, and byte-for-byte equality
+of state, biography and stdout with the C body on reference recipes, under
+the same external readers.
 
-The new value boundaries were then walked edge by edge, from both
-sides, in both hands: birth and resurrection support at 64, 63, 128 and
-zero; death rent at 16384 and 16383; the chart winner at 999 and 1000;
-the earned score at 8.000000 and 8.000001 and its floor at 1000 and
-999; the seated `uni` and the seven-field `null` challenger; the
-undistinct court; atomic and unit move lengths across the 255/256 line;
-advance against length; policy and target at 4351 and 4352; the
-registry at 1023 and 1024; the unit at 4095 and 4096.  Twenty-eight
-edges and the short `t`: every legal edge accepts in both hands, every
-step past it refuses in both, no split anywhere.  Behavioural
-equivalence was retried with a recipe neither hand had used — seed 47,
-four shores including a ninety-byte sliver, atlas and jury, a permuted
-convoy on the first resume, a shore withdrawn and a stranger added on
-the second — and the body compiled from `2ee6c0a` and the audited body
-matched byte for byte through all three stages: 9972 records, chain
-`a855ca70189ea535`, one state, one biography.
+The battery is green in every arm.  A plain life and a two-shore
+atlas-and-jury life across a resume are bit-identical in biography, state
+and stdout; a C life continued by the Python body equals the same life
+continued by C, and the reverse; the mouth speaks the same bytes with the
+same manifest under both laws and `manifest_check` accepts; the court
+prints an identical docket and `warrant_check` accepts it; the ear and its
+twin arm are identical; the citation writes the same `w` and the same
+state; `biography_check` reads the Python-written biography and recognises
+the life's own speech; and ten re-sealed malformed rows refuse with the
+same exit codes and the same words.
 
-Both hands have now audited each other's closure and both say the same
-word to Oleg: the biography language of the fifteen emit sites is
-closed enough to freeze, new organs belong outside `netta.c`, and the
-heart stays single-file and behaviourally unchanged.  The two recorded
-organism findings — the jury-law life that cannot cite, and nothing
-else — wait for his word separately.  The declaration itself is his.
-
-## The descriptor is the biography being judged
-
-Don's `c2b73ba` was reproduced untouched before its audit note was read: 339
-gates, strict builds silent, sanitizers green.  His second walk of every new
-value edge stands, as does his fresh three-stage equivalence life: 9972
-records and chain `a855ca70189ea535` in both bodies.  Two independent hands
-therefore give Oleg the same freeze verdict on the closed biography language.
-
-GitHub CodeQL then named the residue of the earlier FIFO repair.  Non-blocking
-open had removed the possible hang, and comparing the opened device and inode
-to a preceding named `stat` made a replacement fail closed, but the check and
-the use were still two pathname operations.  The read-only verifier needs no
-pathname identity after resolution: an open descriptor already pins the
-object whose bytes it reads.  `bio_verify` now opens once with
-`O_RDONLY|O_NONBLOCK`, judges that descriptor with `fstat`, and gives the same
-descriptor to `fdopen`.  There is no named pre-check and therefore no interval
-in which a changed pathname can redirect the object being verified.  A
-regular biography reached through a symlink remains legal; a FIFO without a
-writer is refused immediately as non-regular.  The biography grammar, its
-emitters, state v20, RNG and lived behaviour are untouched.  The remote alert
-is not called closed until GitHub analyses the delivered commit.
+The port earned its bits the hard way, and the lesson is worth the log:
+the C organism's float behaviour is not the C source — it is the code the
+compiler generated from it.  The embedding accumulation is a fused fmadd
+chain; the recurrent and readout dot products are serial
+round-per-product sums in plain lane order; the readout update is an
+elementwise fused multiply-add; and the prophecy baseline is a double
+fused multiply-add.  Two of this port's own first guesses were wrong in
+opposite directions — assuming no fusion anywhere, then assuming fusion
+everywhere — and the disassembly of `absorb_truth` and `core_advance`
+settled each loop one by one, with `tanhf` and `fmaf` taken from the same
+libm the C build links.  Bit-identity is therefore a property of the
+canonical build; a different compiler would be a different float story,
+and the battery would name it rather than hide it.
