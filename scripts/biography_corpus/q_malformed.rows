@@ -4,3 +4,7 @@ q	79	1	mv	null	00
 q	79	1	mv	null	0	0
 q	79	1	mv	null
 q	79	1	mvx	null	0
+q	79	1024	mv	null	0
+q	79	1	null	tri	0
+q	79	1	mv	mv	0
+q	79	1	tri	tri	0

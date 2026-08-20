@@ -202,6 +202,37 @@ static int bio_signature_ok(const char *line, ssize_t n) {
            memcmp(canonical, line, (size_t)n) == 0;
 }
 
+static int bio_arrival_ok(const char *line, ssize_t n, uint64_t expected) {
+    char ep_s[32] = {0}, id_s[32] = {0}, digest_s[17] = {0};
+    char witness_s[17] = {0}, len_s[32] = {0};
+    uint64_t ep, id, len, digest, witness;
+    int used = -1;
+    int got = sscanf(line,
+        "i\t%31[^\t\n]\t%31[^\t\n]\t%16[^\t\n]\t%16[^\t\n]\t"
+        "%31[^\t\n]%n",
+        ep_s, id_s, digest_s, witness_s, len_s, &used);
+    if (got != 5 || used < 0 || (ssize_t)used != n - 1 ||
+            !bio_canonical_u64(ep_s, &ep) ||
+            !bio_canonical_u64(id_s, &id) || id > 1023 ||
+            !bio_lower_hex(digest_s, 16) ||
+            !bio_lower_hex(witness_s, 16) ||
+            !bio_canonical_u64(len_s, &len) || id != expected ||
+            id >= (uint64_t)reg_count || ep > episode_no)
+        return 0;
+    digest = (uint64_t)strtoull(digest_s, NULL, 16);
+    witness = (uint64_t)strtoull(witness_s, NULL, 16);
+    if (digest != reg_digest[id] || witness != reg_witness[id] ||
+            len != reg_len[id])
+        return 0;
+    char canonical[128];
+    int cn = snprintf(canonical, sizeof canonical,
+                      "i\t%llu\t%llu\t%s\t%s\t%llu\n",
+                      (unsigned long long)ep, (unsigned long long)id,
+                      digest_s, witness_s, (unsigned long long)len);
+    return cn > 0 && (ssize_t)cn == n &&
+           memcmp(canonical, line, (size_t)n) == 0;
+}
+
 /* Grammar closure: the whole biography language of BIOGRAPHY.md, checked
    with the organism's own hands. Fields are split on exact tab bytes and
    each field must carry its canonical shape, so a run of tabs, a stray
@@ -219,27 +250,39 @@ static int bio_u64_max(const char *s, uint64_t max) {
     return bio_canonical_u64(s, &v) && v <= max;
 }
 
-static int bio_i64_shape(const char *s) {
-    if (*s == '-') {
-        return s[1] && !(s[1] == '0' && !s[2]) && bio_u64_shape(s + 1);
-    }
-    return bio_u64_shape(s);
-}
-
 static int bio_fix6_shape(const char *s) {
     const char *dot = strchr(s, '.');
     if (!dot || dot == s || strlen(dot + 1) != 6) return 0;
     for (const char *p = dot + 1; *p; ++p)
         if (*p < '0' || *p > '9') return 0;
-    if (dot - s > 20 || (s[0] == '0' && dot - s != 1)) return 0;
-    for (const char *p = s; p < dot; ++p)
-        if (*p < '0' || *p > '9') return 0;
-    return 1;
+    size_t whole_n = (size_t)(dot - s);
+    if (whole_n > 20) return 0;
+    char whole[21];
+    memcpy(whole, s, whole_n);
+    whole[whole_n] = 0;
+    return bio_u64_shape(whole);
+}
+
+static int bio_fix6_max8(const char *s) {
+    if (!bio_fix6_shape(s) || s[1] != '.') return 0;
+    return s[0] < '8' || (s[0] == '8' && !strcmp(s + 1, ".000000"));
 }
 
 static int bio_actor_word(const char *s) {
     return !strcmp(s, "uni") || !strcmp(s, "bi") || !strcmp(s, "tri") ||
            !strcmp(s, "mv") || !strcmp(s, "null");
+}
+
+static int bio_byte_actor_word(const char *s) {
+    return !strcmp(s, "uni") || !strcmp(s, "bi") || !strcmp(s, "tri");
+}
+
+static int bio_seated_word(const char *s) {
+    return bio_byte_actor_word(s) || !strcmp(s, "mv");
+}
+
+static int bio_challenger_word(const char *s) {
+    return bio_byte_actor_word(s) || !strcmp(s, "null");
 }
 
 static int bio_hexpair_shape(const char *s, uint64_t bytes) {
@@ -264,7 +307,7 @@ static int bio_grammar_ok(const char *line, ssize_t n) {
         }
     if (f[0][0] >= '0' && f[0][0] <= '9') {
         return k == 12 && bio_u64_shape(f[0]) && bio_u64_shape(f[1]) &&
-               bio_u64_shape(f[2]) && bio_u64_shape(f[3]) &&
+               bio_u64_max(f[2], 1023) && bio_u64_shape(f[3]) &&
                bio_lower_hex(f[4], 16) && bio_u64_max(f[5], 255) &&
                bio_u64_max(f[6], 255) && bio_fix6_shape(f[7]) &&
                bio_lower_hex(f[8], 16) && !strcmp(f[9], "atomic") &&
@@ -275,51 +318,80 @@ static int bio_grammar_ok(const char *line, ssize_t n) {
         return k == 3 && !f[0][1] && bio_u64_shape(f[1]) &&
                (bio_actor_word(f[2]) || !strcmp(f[2], "mvp"));
     case 'b': {
-        uint64_t len;
+        uint64_t len, support;
         return k == 6 && !f[0][1] && bio_u64_shape(f[1]) &&
                bio_u64_max(f[2], 4095) && bio_canonical_u64(f[3], &len) &&
-               bio_hexpair_shape(f[4], len) && bio_u64_shape(f[5]);
+               bio_hexpair_shape(f[4], len) &&
+               bio_canonical_u64(f[5], &support) && support >= 64 &&
+               support % 64 == 0;
     }
-    case 'u':
+    case 'u': {
+        uint64_t support;
         return k == 4 && !f[0][1] && bio_u64_shape(f[1]) &&
-               bio_u64_shape(f[2]) && bio_u64_shape(f[3]);
-    case 'd':
+               bio_u64_max(f[2], 4095) &&
+               bio_canonical_u64(f[3], &support) && support >= 64 &&
+               support % 64 == 0;
+    }
+    case 'd': {
+        uint64_t idle;
         return k == 5 && !f[0][1] && bio_u64_shape(f[1]) &&
-               bio_u64_shape(f[2]) && bio_u64_shape(f[3]) &&
-               bio_u64_shape(f[4]);
-    case 'm':
+               bio_u64_max(f[2], 4095) && bio_u64_shape(f[3]) &&
+               bio_canonical_u64(f[4], &idle) && idle >= 16384;
+    }
+    case 'm': {
+        uint64_t len;
         return k == 7 && !f[0][1] && bio_u64_shape(f[1]) &&
                bio_u64_max(f[2], 31) && bio_u64_shape(f[3]) &&
-               bio_u64_shape(f[4]) && bio_u64_shape(f[5]) &&
+               bio_u64_max(f[4], 4095) &&
+               bio_canonical_u64(f[5], &len) && len >= 2 && len <= 16 &&
                bio_fix6_shape(f[6]);
-    case 'v':
+    }
+    case 'v': {
+        uint64_t move, len, advance, target, policy;
         if ((k != 9 && k != 10) || f[0][1]) return 0;
-        if (k == 10 && !bio_i64_shape(f[9])) return 0;
-        return bio_u64_shape(f[1]) && bio_u64_shape(f[2]) &&
-               bio_u64_shape(f[3]) && bio_u64_shape(f[4]) &&
-               bio_u64_shape(f[5]) && bio_u64_shape(f[6]) &&
-               strcmp(f[6], "0") != 0 && bio_fix6_shape(f[7]) &&
-               bio_u64_shape(f[8]);
+        if (!bio_u64_shape(f[1]) || !bio_u64_max(f[2], 1023) ||
+                !bio_u64_shape(f[3]) ||
+                !bio_canonical_u64(f[4], &move) || move > 4351 ||
+                !bio_canonical_u64(f[5], &len) || len < 1 || len > 16 ||
+                (move < 256 ? len != 1 : len < 2) ||
+                !bio_canonical_u64(f[6], &advance) || advance < 1 ||
+                advance > len || !bio_fix6_shape(f[7]) ||
+                !bio_canonical_u64(f[8], &target) || target > 4351)
+            return 0;
+        return k == 9 || (bio_canonical_u64(f[9], &policy) && policy <= 4351);
+    }
     case 't':
-        if (f[0][1] || !bio_u64_shape(f[1]) || !bio_u64_shape(f[2]))
+        if (k < 3 || f[0][1] || !bio_u64_shape(f[1]) ||
+                !bio_u64_max(f[2], 1023))
             return 0;
         if (k == 4) return !strcmp(f[3], "eligible");
-        if (k == 6) return !strcmp(f[3], "chart") &&
-               bio_u64_shape(f[4]) && bio_u64_shape(f[5]);
-        if (k == 7) return !strcmp(f[3], "earned") &&
-               bio_fix6_shape(f[4]) && bio_fix6_shape(f[5]) &&
-               bio_u64_shape(f[6]);
+        if (k == 6) {
+            uint64_t lived;
+            return !strcmp(f[3], "chart") &&
+                   bio_canonical_u64(f[4], &lived) && lived < 1000 &&
+                   bio_u64_shape(f[5]);
+        }
+        if (k == 7) {
+            uint64_t lived;
+            return !strcmp(f[3], "earned") && bio_fix6_max8(f[4]) &&
+                   bio_fix6_max8(f[5]) &&
+                   bio_canonical_u64(f[6], &lived) && lived >= 1000;
+        }
         return 0;
     case 'r':
         if ((k != 7 && k != 8) || f[0][1]) return 0;
         if (k == 8 && strcmp(f[7], "8.000000") != 0) return 0;
-        return bio_u64_shape(f[1]) && bio_u64_shape(f[2]) &&
-               bio_actor_word(f[3]) && bio_actor_word(f[4]) &&
+        return bio_u64_shape(f[1]) && bio_u64_max(f[2], 1023) &&
+               strcmp(f[3], "uni") && bio_seated_word(f[3]) &&
+               (k == 7 ? bio_byte_actor_word(f[4])
+                       : bio_challenger_word(f[4])) &&
+               strcmp(f[3], f[4]) &&
                bio_fix6_shape(f[5]) && bio_fix6_shape(f[6]);
     case 'q':
         return k == 6 && !f[0][1] && bio_u64_shape(f[1]) &&
-               bio_u64_shape(f[2]) && bio_actor_word(f[3]) &&
-               bio_actor_word(f[4]) && !strcmp(f[5], "0");
+               bio_u64_max(f[2], 1023) && bio_seated_word(f[3]) &&
+               bio_challenger_word(f[4]) && strcmp(f[3], f[4]) &&
+               !strcmp(f[5], "0");
     case 'w': {
         uint64_t bytes, shores, verdicts;
         return k == 9 && !f[0][1] && bio_u64_shape(f[1]) &&
@@ -369,48 +441,40 @@ static void bio_verify(const char *path) {
                 path);
         exit(1);
     }
-    FILE *f = fopen(path, "rb");
-    if (!f) {
+    int fd = open(path, O_RDONLY | O_NONBLOCK);
+    if (fd < 0) {
         fprintf(stderr, "netta: biography %s is missing; refusing resume\n",
                 path);
         exit(1);
     }
     struct stat opened;
-    if (fstat(fileno(f), &opened) != 0 || !S_ISREG(opened.st_mode) ||
+    if (fstat(fd, &opened) != 0 || !S_ISREG(opened.st_mode) ||
             opened.st_dev != named.st_dev || opened.st_ino != named.st_ino) {
-        fclose(f);
+        close(fd);
         fprintf(stderr,
                 "netta: biography %s changed while being opened; refusing\n",
                 path);
+        exit(1);
+    }
+    FILE *f = fdopen(fd, "rb");
+    if (!f) {
+        close(fd);
+        fprintf(stderr, "netta: cannot verify biography %s\n", path);
         exit(1);
     }
     char *line = NULL;
     size_t cap = 0;
     ssize_t n;
     uint64_t chain = FNV_SEED, lines = 0;
-    int arrivals = 0, malformed = 0, unknown = 0;
+    uint64_t arrivals = 0;
+    int malformed = 0, unknown = 0;
     while ((n = getline(&line, &cap, f)) >= 0) {
         chain = fnv1a64((const uint8_t *)line, (uint64_t)n, chain);
         lines++;
         if (n == 0 || line[n - 1] != '\n') malformed = 1;
         else if (!bio_record_type_ok(line, n)) unknown = 1;
         if (n >= 2 && line[0] == 'i' && line[1] == '\t') {
-            unsigned long long ep, digest, witness, len;
-            int id, used = -1;
-            char canonical[128];
-            int cn = -1;
-            if (sscanf(line, "i\t%llu\t%d\t%16llx\t%16llx\t%llu%n",
-                       &ep, &id, &digest, &witness, &len, &used) == 5)
-                cn = snprintf(canonical, sizeof canonical,
-                              "i\t%llu\t%d\t%016llx\t%016llx\t%llu\n",
-                              ep, id, digest, witness, len);
-            if (cn <= 0 || (ssize_t)cn != n ||
-                memcmp(canonical, line, (size_t)n) != 0 ||
-                (ssize_t)used != n - 1 || id != arrivals || id < 0 ||
-                id >= reg_count || ep > episode_no ||
-                digest != reg_digest[id] ||
-                witness != reg_witness[id] || len != reg_len[id])
-                malformed = 1;
+            if (!bio_arrival_ok(line, n, arrivals)) malformed = 1;
             arrivals++;
         }
         if (n >= 2 && line[0] == 's' && line[1] == '\t' &&
@@ -432,7 +496,7 @@ static void bio_verify(const char *path) {
                 "refusing\n", path);
         exit(1);
     }
-    if (malformed || arrivals != reg_count) {
+    if (malformed || arrivals != (uint64_t)reg_count) {
         fprintf(stderr,
                 "netta: biography %s does not conserve the island registry; "
                 "refusing\n", path);

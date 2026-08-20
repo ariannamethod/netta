@@ -3067,3 +3067,76 @@ header, no shared object, no external parser code — self-sufficiency
 kept literally.  The circle is not called closed: that word is the
 other hand's audit and then Oleg's, not an automatism at the end of a
 diff.
+
+## Grammar closure audited: the values behind the shapes
+
+Don's `735a1d8` was reproduced untouched before its implementation was
+read: 339 gates, strict builds silent, sanitizers green.  The fifteen emit
+sites and all nineteen format arms were then walked again from code rather
+than from the corpus.  No type or arm was missing, but the adversarial pass
+found two common-mode holes in both readers.  A two-field `t\t1` record made
+each hand inspect field three before proving it existed; the outside hand's
+uninitialised pointer happened to refuse on the observed build, but that was
+not a C contract.  And `18446744073709551616.000000` passed both `fix6`
+helpers even though the specification names a u64-shaped integer part.  The
+organism now proves `t` arity before indexing and parses the integer part
+through its own canonical-u64 hand; the outside reader independently holds a
+twenty-digit integer part against the decimal `UINT64_MAX` boundary.
+
+The same walk separated fixed emitter domains from history.  Registry ids
+are `0..1023`; unit ids `0..4095`; the `m` field named ISL is a current-convoy
+slot `0..31`, while `r` and `q` receive a persistent registry id and must not
+be narrowed to 31; move ids are `0..4351`.  A `v` atom has length one, a unit
+length 2..16, advance is 1..length, target is a move, and the navigation arm's
+policy is a real route anchor `0..4351`: its signed local variable never
+emits the pre-search `-1` sentinel.  Atlas `chart` chooses a shore lived fewer
+than 1000 bytes and always has a runner in a competitive choice; `earned`
+begins at 1000 lived bytes and both selected prices lie under the atlas's
+8-bit ceiling.  Unit birth and resurrection support is a positive multiple
+of 64, death rent is at least 16384 idle bytes, and the court's seated and
+challenger roles are now the roles its branches can actually write.  Whether
+an in-range identity exists, is present or living, owns a length, or appears
+in historical order remains the state's law; the stateless reader does not
+borrow those facts.
+
+One older special path also failed the hostile-number test.  `i` used direct
+`sscanf` integer conversions before its canonical and state checks, leaving
+an overflowing id to libc before the reader could refuse it.  It now captures
+bounded string tokens, converts each through canonical u64, reprints the
+exact record, and only then compares registry order and witnesses.  Its
+arrival counter is u64 rather than a second implicit `int` limit.  The `s`
+special path already followed that discipline and was left alone.
+
+Forty-six new malformed rows were written without consulting either parser:
+short arity, u64 and fixed-point overflow, every fixed upper and lower bound,
+move/length/advance relations, impossible court roles, and overflowing `i`
+tokens.  The shared corpus is now 137 malformed rows.  All 137 refuse in the
+organism after public re-sealing, all 137 refuse in the outside reader, and
+the two independent hands give one verdict class on all 154 context-free
+canonical and malformed grafts: disagreement zero.  The former sanitizer
+gate now executes the short-`t` and overflowing-fix6 regressions explicitly.
+
+The recorded open race was taken too.  `bio_verify` retains the named
+`stat`, but opens with `O_RDONLY|O_NONBLOCK`, judges the opened descriptor as
+a regular file, compares device and inode, and only then creates its stream.
+The fail-closed identity law is unchanged and a FIFO swap can no longer block
+inside `fopen`.  The other recorded finding — a jury-law life cannot enter
+the citation invocation — is deliberately not repaired here: it changes an
+organism law and still needs Oleg's word.
+
+Behavioural equivalence was checked twice.  Don's frozen seed-11 chains stay
+pinned by the suite.  Independently, binaries built from pre-closure
+`2ee6c0a` and this audited tree lived seed 29 under Atlas and jury on three
+periodic shores, resumed after a convoy permutation, then resumed with one
+shore absent.  State and biography matched byte for byte after every stage;
+the final biography has 8544 records and chain `7c8ae812ad41697c` (state
+SHA-256 `1b68c9c39fab34a6f3daa1767309d32705ac863af2f7e0eb7443467f66d1668d`,
+biography SHA-256
+`da5b06521ef26cd2bed21a7b3f1757f7de20f4cf423049dfd9e6f5235f74612a`).
+
+The audit verdict is therefore narrow and affirmative: the biography
+language of the current fifteen emit sites is closed enough to freeze, and
+new organs should live outside `netta.c`; this does not silently freeze a
+known behavioural defect or grant the word of closure.  Oleg owns both the
+freeze declaration and any later surgical exception.  The self-contained C
+heart, state v20, emit bytes, RNG and lived behaviour remain unchanged.
