@@ -151,6 +151,96 @@ static int parse_i(char **f, int k) {
            canon_u64(f[5], &len);
 }
 
+/* the remaining ten grammars of BIOGRAPHY.md, implemented on this side of
+   the language with this reader's own hands */
+
+static int u64_shape(const char *s) {
+    uint64_t v;
+    return canon_u64(s, &v);
+}
+
+static int u64_at_most(const char *s, uint64_t max) {
+    uint64_t v;
+    return canon_u64(s, &v) && v <= max;
+}
+
+static int i64_shape(const char *s) {
+    if (s[0] == '-')
+        return s[1] && !(s[1] == '0' && !s[2]) && u64_shape(s + 1);
+    return u64_shape(s);
+}
+
+static int fix6_shape(const char *s) {
+    const char *dot = strchr(s, '.');
+    if (!dot || dot == s || dot - s > 20 || strlen(dot + 1) != 6) return 0;
+    if (s[0] == '0' && dot - s != 1) return 0;
+    for (const char *p = s; *p; ++p)
+        if (p != dot && (*p < '0' || *p > '9')) return 0;
+    return 1;
+}
+
+static int actor_word(const char *s) {
+    return !strcmp(s, "uni") || !strcmp(s, "bi") || !strcmp(s, "tri") ||
+           !strcmp(s, "mv") || !strcmp(s, "null");
+}
+
+static int parse_step(char **f, int k) {
+    return k == 12 && u64_shape(f[0]) && u64_shape(f[1]) &&
+           u64_shape(f[2]) && u64_shape(f[3]) && lower_hex(f[4], 16) &&
+           u64_at_most(f[5], 255) && u64_at_most(f[6], 255) &&
+           fix6_shape(f[7]) && lower_hex(f[8], 16) &&
+           !strcmp(f[9], "atomic") && !strcmp(f[10], "1") &&
+           actor_word(f[11]);
+}
+
+static int parse_rest(char **f, int k) {
+    uint64_t len;
+    switch (f[0][0]) {
+    case 'a':
+        return k == 3 && u64_shape(f[1]) &&
+               (actor_word(f[2]) || !strcmp(f[2], "mvp"));
+    case 'b':
+        return k == 6 && u64_shape(f[1]) && u64_at_most(f[2], 4095) &&
+               canon_u64(f[3], &len) && len >= 2 && len <= 16 &&
+               lower_hex(f[4], (size_t)(2 * len)) && u64_shape(f[5]);
+    case 'u':
+        return k == 4 && u64_shape(f[1]) && u64_shape(f[2]) &&
+               u64_shape(f[3]);
+    case 'd':
+        return k == 5 && u64_shape(f[1]) && u64_shape(f[2]) &&
+               u64_shape(f[3]) && u64_shape(f[4]);
+    case 'm':
+        return k == 7 && u64_shape(f[1]) && u64_at_most(f[2], 31) &&
+               u64_shape(f[3]) && u64_shape(f[4]) && u64_shape(f[5]) &&
+               fix6_shape(f[6]);
+    case 'v':
+        if (k != 9 && k != 10) return 0;
+        if (k == 10 && !i64_shape(f[9])) return 0;
+        return u64_shape(f[1]) && u64_shape(f[2]) && u64_shape(f[3]) &&
+               u64_shape(f[4]) && u64_shape(f[5]) && u64_shape(f[6]) &&
+               strcmp(f[6], "0") != 0 && fix6_shape(f[7]) &&
+               u64_shape(f[8]);
+    case 't':
+        if (!u64_shape(f[1]) || !u64_shape(f[2])) return 0;
+        if (k == 4) return !strcmp(f[3], "eligible");
+        if (k == 6) return !strcmp(f[3], "chart") && u64_shape(f[4]) &&
+                           u64_shape(f[5]);
+        if (k == 7) return !strcmp(f[3], "earned") && fix6_shape(f[4]) &&
+                           fix6_shape(f[5]) && u64_shape(f[6]);
+        return 0;
+    case 'r':
+        if (k != 7 && k != 8) return 0;
+        if (k == 8 && strcmp(f[7], "8.000000") != 0) return 0;
+        return u64_shape(f[1]) && u64_shape(f[2]) && actor_word(f[3]) &&
+               actor_word(f[4]) && fix6_shape(f[5]) && fix6_shape(f[6]);
+    case 'q':
+        return k == 6 && u64_shape(f[1]) && u64_shape(f[2]) &&
+               actor_word(f[3]) && actor_word(f[4]) && !strcmp(f[5], "0");
+    default:
+        return 0;
+    }
+}
+
 static int refuse(uint64_t line, const char *why) {
     if (printf("biography refused: line %llu %s\n",
                (unsigned long long)line, why) < 0 || fflush(stdout) != 0) {
@@ -260,6 +350,12 @@ int main(int argc, char **argv) {
         } else if (line[0] == 'i') {
             if (!parse_i(fields, k))
                 return refuse(lineno, "i record is not canonical");
+        } else if (line[0] >= '0' && line[0] <= '9') {
+            if (!parse_step(fields, k))
+                return refuse(lineno, "step record is not canonical");
+        } else {
+            if (!parse_rest(fields, k))
+                return refuse(lineno, "record is not canonical for its type");
         }
         n = 0;
         has_nul = has_cr = 0;

@@ -3040,3 +3040,30 @@ shores — lands on the same record counts and the same chains,
 suite stands at three hundred and thirty-six.  The outside reader still
 parses three types; its closure is the third commit, and the gate that
 will hold both hands to all ninety-one rows waits there.
+
+## Grammar closure, the outer reader: the language whole in both hands
+
+The third commit grows `scripts/biography_check.c` to the same thirteen
+types with its own hands: ten grammars join its `s`, `w` and `i` — the
+step record and the letters `a b d m q r t u v`, each a fresh
+implementation of `BIOGRAPHY.md` on the reader's side of the fence,
+sharing with the organism nothing but the document and the corpus.  All
+ninety-one malformed corpus rows now refuse in the outside reader as
+they refuse in the organism; all nineteen canonical shapes are syntax to
+the stateless reader, including the two whose state-relative values a
+resume would refuse — the line between record syntax and state-bound
+truth holds exactly where the sixteenth turn drew it.  The closing gate
+grafts every corpus row into a lived biography and asks both hands for
+their verdict class: one class on all one hundred and eight rows,
+disagreement zero.
+
+The body ends where Oleg's contract said it would end.  Thirteen of
+thirteen in both hands; grammar disagreement zero; the twenty-four `w`
+families that measured the debt repaid; the carriage-return asymmetry
+closed; the frozen life bit-identical through the closed heart; three
+hundred and thirty-nine gates on the tree and on a clean archive.  The
+heart was not emptied: every validator lives inside the single file, no
+header, no shared object, no external parser code — self-sufficiency
+kept literally.  The circle is not called closed: that word is the
+other hand's audit and then Oleg's, not an automatism at the end of a
+diff.

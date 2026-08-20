@@ -2791,6 +2791,53 @@ for cf in scripts/biography_corpus/*_malformed.rows; do
 done
 [ "$gcM" -eq 91 ] && [ "$gcR" -eq 91 ]
 gate "GC ninety-one re-sealed malformed corpus rows refuse in the organism ($gcR/91)" $? 0
+gcB=0
+for cf in scripts/biography_corpus/*_malformed.rows; do
+    while IFS= read -r row; do
+        printf '%s\n' "$row" > "$T/gc.b.bio"
+        "$BC" "$T/gc.b.bio" >/dev/null 2>&1 || gcB=$((gcB+1))
+    done < "$cf"
+done
+[ "$gcB" -eq 91 ]
+gate "GC the same ninety-one rows refuse in the outside reader ($gcB/91)" $? 0
+gcK=0
+while IFS= read -r row; do
+    printf '%s\n' "$row" > "$T/gc.k.bio"
+    "$BC" "$T/gc.k.bio" >/dev/null 2>&1 && gcK=$((gcK+1))
+done < scripts/biography_corpus/canonical.rows
+[ "$gcK" -eq 19 ]
+gate "GC all nineteen canonical shapes are syntax to the stateless reader ($gcK/19)" $? 0
+# two readers, the whole language: on every corpus row grafted into a lived
+# biography, the organism on resume and the outside reader return one
+# verdict class (the state-relative rows are excluded by construction)
+gcD=0; gcT=0
+gc_both() {
+    row=$1; want=$2
+    gcT=$((gcT+1))
+    cp "$T/b30.state" "$T/gc.2.state"
+    { cat "$T/b30.bio"; printf '%s\n' "$row"; } > "$T/gc.2.bio"
+    "$BF" "$T/gc.2.state" "$T/gc.2.bio" || { gcD=$((gcD+1)); return; }
+    "$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/gc.2.state" \
+        --bio "$T/gc.2.bio" >/dev/null 2>&1
+    o=$?
+    "$BC" "$T/gc.2.bio" >/dev/null 2>&1
+    r=$?
+    if [ "$want" = accept ]; then
+        { [ "$o" -eq 0 ] && [ "$r" -eq 0 ]; } || gcD=$((gcD+1))
+    else
+        { [ "$o" -ne 0 ] && [ "$r" -ne 0 ]; } || gcD=$((gcD+1))
+    fi
+}
+while IFS= read -r row; do
+    t=$(printf '%s' "$row" | cut -f1)
+    case "$t" in s|i) continue ;; esac
+    gc_both "$row" accept
+done < scripts/biography_corpus/canonical.rows
+for cf in scripts/biography_corpus/*_malformed.rows; do
+    while IFS= read -r row; do gc_both "$row" refuse; done < "$cf"
+done
+[ "$gcT" -eq 108 ] && [ "$gcD" -eq 0 ]
+gate "GC two readers, one language: one verdict class on all 108 grafted rows (disagree=$gcD)" $? 0
 # a carriage return inside a step row is no longer chained unread
 cp "$T/b30.state" "$T/gc.cr.state"
 awk 'NR==4{printf "%s\r\n",$0;next}{print}' "$T/b30.bio" > "$T/gc.cr.bio"
