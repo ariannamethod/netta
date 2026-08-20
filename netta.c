@@ -425,34 +425,26 @@ static int bio_record_type_ok(const char *line, ssize_t n) {
 }
 
 static void bio_verify(const char *path) {
-    struct stat named;
-    if (stat(path, &named) != 0) {
+    int fd = open(path, O_RDONLY | O_NONBLOCK);
+    if (fd < 0) {
         if (errno == ENOENT)
             fprintf(stderr,
                     "netta: biography %s is missing; refusing resume\n",
                     path);
         else
-            fprintf(stderr, "netta: cannot inspect biography %s\n", path);
-        exit(1);
-    }
-    if (!S_ISREG(named.st_mode)) {
-        fprintf(stderr,
-                "netta: biography %s is not a regular file; refusing\n",
-                path);
-        exit(1);
-    }
-    int fd = open(path, O_RDONLY | O_NONBLOCK);
-    if (fd < 0) {
-        fprintf(stderr, "netta: biography %s is missing; refusing resume\n",
-                path);
+            fprintf(stderr, "netta: cannot open biography %s\n", path);
         exit(1);
     }
     struct stat opened;
-    if (fstat(fd, &opened) != 0 || !S_ISREG(opened.st_mode) ||
-            opened.st_dev != named.st_dev || opened.st_ino != named.st_ino) {
+    if (fstat(fd, &opened) != 0) {
+        close(fd);
+        fprintf(stderr, "netta: cannot inspect biography %s\n", path);
+        exit(1);
+    }
+    if (!S_ISREG(opened.st_mode)) {
         close(fd);
         fprintf(stderr,
-                "netta: biography %s changed while being opened; refusing\n",
+                "netta: biography %s is not a regular file; refusing\n",
                 path);
         exit(1);
     }
