@@ -31,6 +31,7 @@
 #include <set>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include <dirent.h>
@@ -379,6 +380,7 @@ struct Mycelium {
     std::vector<std::string> corpora;   /* labels in ingest order */
     std::set<std::string> keys;         /* exact attestation witnesses eaten */
     std::set<std::string> blobs_seen;   /* speech digests referenced by G */
+    std::set<std::pair<uint64_t, uint64_t>> prefixes; /* (G meals, chain) */
     bool version_seen = false;
     uint64_t meals = 0;                 /* G events replayed or eaten */
 
@@ -447,6 +449,7 @@ struct Mycelium {
             led.chain = next;
             led.records++;
             replay(payload, lineno);
+            prefixes.insert({meals, led.chain});
         }
         if (!version_seen) die("ledger has no version record");
     }
@@ -560,13 +563,14 @@ struct Props {
     uint64_t last_after = 0;
     bool law_seen = false;
 
-    void load() {
+    void load(const std::set<std::pair<uint64_t, uint64_t>> &main_prefixes) {
         std::string raw;
         if (!read_file(PROPS_PATH, raw)) {
             struct stat st;
             if (stat(PROPS_PATH, &st) == 0) die("cannot read proposals");
             return; /* no proposals yet */
         }
+        if (raw.empty()) die("proposals has no law record");
         size_t pos = 0;
         uint64_t lineno = 0;
         while (pos < raw.size()) {
@@ -607,6 +611,8 @@ struct Props {
                     !canon_u64(f[3], &alive) || !canon_u64(f[4], &dead) ||
                     !canon_hex16(f[5], &dig))
                     die(where + ": P field grammar");
+                if (!main_prefixes.count({after, mainchain}))
+                    die(where + ": P main prefix");
                 if (after < last_after)
                     die(where + ": P after-meals is not monotonic");
                 last_after = after;
@@ -895,9 +901,9 @@ static void cmd_ablate(Mycelium &m) {
    seals one receipt per run. It grants nothing: the field, the mouthly
    organs and the main ledger are untouched by its existence. */
 static void cmd_propose(Mycelium &m) {
-    if (m.frags.empty()) die("the mycelium is empty; ingest something first");
+    if (m.meals == 0) die("the mycelium is empty; ingest something first");
     Props pr;
-    pr.load();
+    pr.load(m.prefixes);
     std::map<std::string, std::set<uint64_t>> shapes;
     for (const auto &f : m.frags)
         for (size_t i = 0; i + 1 < f.toks.size(); ++i) {

@@ -220,7 +220,10 @@ are closed and untouched.
   `P \t after-meals \t main-chain \t alive \t dead \t snapshot-digest`
   per propose run. The snapshot digest is the FNV-1a-64 of the printed
   proposal block, which is re-derivable from the main ledger prefix the
-  receipt pins. The reader verifies grammar, chain and monotonic
+  receipt pins. Both hands require each `(after-meals, main-chain)` pair
+  to name a real prefix of the supplied main ledger; the two files may
+  end honestly at record boundaries, but they may not describe different
+  histories. The reader verifies grammar, both chains and monotonic
   after-meals; re-deriving a historical snapshot is the examiner's work
   in body 3 and is not claimed here.
 - Red hands, sealed before the first run: a one-meal echo proposes

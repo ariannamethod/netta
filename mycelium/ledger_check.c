@@ -228,6 +228,29 @@ static int sources_valid(const char *s, size_t n, uint64_t touched) {
    file, their own chain, their own law string; absence is not a fault. */
 static const char *props_path = ".mycelium.proposals";
 
+typedef struct { uint64_t meals, chain; } MainPrefix;
+static MainPrefix *prefixes;
+static size_t prefix_n, prefix_cap;
+
+static int prefix_add(uint64_t meals, uint64_t chain) {
+    if (prefix_n == prefix_cap) {
+        size_t next = prefix_cap ? prefix_cap * 2 : 32;
+        MainPrefix *grown = realloc(prefixes, next * sizeof(*grown));
+        if (!grown) return 0;
+        prefixes = grown;
+        prefix_cap = next;
+    }
+    prefixes[prefix_n++] = (MainPrefix){meals, chain};
+    return 1;
+}
+
+static int prefix_has(uint64_t meals, uint64_t chain) {
+    size_t i;
+    for (i = 0; i < prefix_n; ++i)
+        if (prefixes[i].meals == meals && prefixes[i].chain == chain) return 1;
+    return 0;
+}
+
 static void refuse_props(unsigned long long line, const char *what) {
     fprintf(stderr, "ledger_check: proposals line %llu: %s\n", line, what);
     exit(1);
@@ -276,15 +299,17 @@ static void check_proposals(void) {
                 refuse_props(lineno, "props law record");
             w_count++;
         } else if (fl[0][0] == 'P') {
-            uint64_t after, d, alive, dead;
+            uint64_t after, main_chain, d, alive, dead;
             if (!w_count) refuse_props(lineno, "P before props law record");
             if (nf != 6) refuse_props(lineno, "P arity");
             if (!parse_u64(fl[1], fn[1], &after) || after == 0)
                 refuse_props(lineno, "P after-meals");
-            if (!parse_hex16(fl[2], fn[2], &d)) refuse_props(lineno, "P main chain");
+            if (!parse_hex16(fl[2], fn[2], &main_chain))
+                refuse_props(lineno, "P main chain");
             if (!parse_u64(fl[3], fn[3], &alive)) refuse_props(lineno, "P alive count");
             if (!parse_u64(fl[4], fn[4], &dead)) refuse_props(lineno, "P dead count");
             if (!parse_hex16(fl[5], fn[5], &d)) refuse_props(lineno, "P snapshot digest");
+            if (!prefix_has(after, main_chain)) refuse_props(lineno, "P main prefix");
             if (after < last_after) refuse_props(lineno, "P after-meals is not monotonic");
             last_after = after;
             p_count++;
@@ -292,6 +317,7 @@ static void check_proposals(void) {
             refuse_props(lineno, "unknown proposals record type");
         }
     }
+    if (ferror(pf)) refuse_props(lineno + 1, "cannot read proposals");
     fclose(pf);
     free(line);
     if (!w_count) refuse_props(lineno, "proposals has no law record");
@@ -416,6 +442,7 @@ int main(int argc, char **argv) {
         } else {
             refuse(lineno, "unknown record type");
         }
+        if (!prefix_add((uint64_t)g_count, chain)) refuse(lineno, "memory");
     }
     fclose(lf);
     if (!v_count) refuse(lineno, "ledger has no version record");
@@ -429,6 +456,7 @@ int main(int argc, char **argv) {
     for (i = 0; i < witness_n; ++i) free(witnesses[i].sline);
     free(witnesses);
     free(labels);
+    free(prefixes);
     free(line);
     return 0;
 }
