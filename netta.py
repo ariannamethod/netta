@@ -1,15 +1,5 @@
 #!/usr/bin/env python3
-"""NETTA ZERO -- Python version: reference transliteration of netta.c.
-
-Not the organism; netta.c stays the sole developing heart. Written for the
-paper, judged by the same external hands and by byte-for-byte state and
-biography equality with the C body. Stdlib only; tanhf and fmaf come from
-the platform libm via ctypes. Bit-identity mirrors the canonical build's
-float codegen (cc -O2, arm64 clang): fused fmadd chain over embeddings,
-serial round-per-product dot sums, elementwise fmaf readout update, double
-fma in the prophecy baseline -- read from the disassembly, pinned by the
-acceptance battery; another compiler may drift in final float ulps.
-"""
+"""NETTA ZERO -- Python version."""
 
 import ctypes
 import ctypes.util
@@ -42,6 +32,13 @@ _fmaf.argtypes = [ctypes.c_float, ctypes.c_float, ctypes.c_float]
 
 def fmaf(x, y, z):
     return _fmaf(x, y, z)
+
+_fma = _libm.fma
+_fma.restype = ctypes.c_double
+_fma.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double]
+
+def fma(x, y, z):
+    return _fma(x, y, z)
 
 MASK64 = 0xFFFFFFFFFFFFFFFF
 
@@ -112,10 +109,22 @@ def island_load(path):
         die("netta: too many islands (max %d)\n" % MAX_ISLANDS)
     try:
         f = open(path, 'rb')
-    except OSError:
+    except OSError as e:
+        if e.errno == errno_mod.EISDIR:
+            die("netta: short read on %s\n" % path)
         die("netta: cannot open %s\n" % path)
-    data = f.read()
-    f.close()
+    try:
+        data = f.read()
+    except OSError:
+        try:
+            f.close()
+        except OSError:
+            pass
+        die("netta: short read on %s\n" % path)
+    try:
+        f.close()
+    except OSError:
+        pass
     isl = Island()
     isl.bytes = data
     isl.len = len(data)
@@ -366,26 +375,33 @@ def bio_record_type_ok(line):
 
 def bio_verify(path):
     try:
-        named = os.stat(path)
+        fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
     except OSError as e:
         if e.errno == errno_mod.ENOENT:
             die("netta: biography %s is missing; refusing resume\n" % path)
+        die("netta: cannot open biography %s\n" % path)
+    try:
+        opened = os.fstat(fd)
+    except OSError:
+        os.close(fd)
         die("netta: cannot inspect biography %s\n" % path)
-    if not stat_mod.S_ISREG(named.st_mode):
+    if not stat_mod.S_ISREG(opened.st_mode):
+        os.close(fd)
         die("netta: biography %s is not a regular file; refusing\n" % path)
     try:
-        fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+        f = os.fdopen(fd, 'rb')
     except OSError:
-        die("netta: biography %s is missing; refusing resume\n" % path)
-    opened = os.fstat(fd)
-    if (not stat_mod.S_ISREG(opened.st_mode) or
-            opened.st_dev != named.st_dev or opened.st_ino != named.st_ino):
         os.close(fd)
-        die("netta: biography %s changed while being opened; refusing\n"
-            % path)
-    f = os.fdopen(fd, 'rb')
-    data = f.read()
-    f.close()
+        die("netta: cannot verify biography %s\n" % path)
+    try:
+        data = f.read()
+        f.close()
+    except OSError:
+        try:
+            f.close()
+        except OSError:
+            pass
+        die("netta: cannot verify biography %s\n" % path)
     chain = FNV_SEED
     lines = 0
     arrivals = 0
@@ -854,7 +870,7 @@ def core_absorb(truth):
                         f32(f32(f32(CORE_LR_IN * mod) * hj) *
                             h_old[k])))
 
-    core_nll_ema = math.fma(0.82, core_nll_ema, 0.18 * nll)
+    core_nll_ema = fma(0.82, core_nll_ema, 0.18 * nll)
 
 _FPACK = struct.Struct('<f')
 _DPACK = struct.Struct('<d')
@@ -981,7 +997,7 @@ def jury_absorb(truth):
                 add = (f32(f32(f32(eta_rec * mod) * hj) * h_old[k])
                        if gate_open else 0.0)
                 Wh[k] = jury_clampw(fmaf(scale, Wh[k], add), c)
-        c.nll_ema = math.fma(0.82, c.nll_ema, 0.18 * nll)
+        c.nll_ema = fma(0.82, c.nll_ema, 0.18 * nll)
 
 def _gene_bytes():
     return b''.join(_FPACK.pack(v) for g in jury_gene for v in g)
@@ -1617,8 +1633,26 @@ def state_save(path):
         fd, tmp = tempfile.mkstemp(prefix=base + '.tmp.', dir=dirn)
     except OSError:
         die("netta: cannot create state sibling for %s\n" % path)
-    f = os.fdopen(fd, 'wb')
-    w = f.write
+    try:
+        f = os.fdopen(fd, 'wb', buffering=0)
+    except OSError:
+        os.close(fd)
+        die("netta: cannot open state sibling for %s\n" % path)
+
+    def w(data):
+        view = memoryview(data)
+        try:
+            while view:
+                n = f.write(view)
+                if not n:
+                    raise OSError(errno_mod.EIO, "short state write")
+                view = view[n:]
+        except OSError:
+            try:
+                f.close()
+            except OSError:
+                pass
+            die("netta: state write failed\n")
     ver = STATE_VER
     law = neural_law()
     nisl = reg_count
@@ -1697,7 +1731,10 @@ def state_save(path):
             w(struct.pack('<QQQQQ', c.health_bytes, c.near_sat,
                           c.clamp_hits, c.gates_pos, c.gates_neg))
         w(struct.pack('<Q', witness))
-    f.close()
+    try:
+        f.close()
+    except OSError:
+        die("netta: state close failed\n")
     try:
         os.rename(tmp, path)
     except OSError:
@@ -1719,6 +1756,9 @@ def state_load(path):
     except OSError as e:
         if e.errno == errno_mod.ENOENT:
             return 0
+        if e.errno == errno_mod.EISDIR:
+            die("netta: %s is not NETTA ZERO state; refusing to touch it\n"
+                % path)
         die("netta: cannot open state %s; refusing\n" % path)
     data = f.read()
     f.close()
@@ -1736,10 +1776,16 @@ def state_load(path):
         die("netta: %s is not NETTA ZERO state; refusing to touch it\n"
             % path)
     off[0] = 8
-    (ver,) = take('<I')
+    if len(data) < 12:
+        die("netta: %s has unknown version; refusing\n" % path)
+    (ver,) = struct.unpack_from('<I', data, off[0])
+    off[0] += 4
     if ver != STATE_VER:
         die("netta: %s has unknown version; refusing\n" % path)
-    (law,) = take('<I')
+    if len(data) < 16:
+        state_refuse(path, "truncated neural invocation law")
+    (law,) = struct.unpack_from('<I', data, off[0])
+    off[0] += 4
     if law != neural_law():
         state_refuse(path, "neural invocation law changed")
     rng_state, episode_no, steps_total, bio_lines, bio_chain = \
@@ -2314,19 +2360,35 @@ def run_episode(isl_id, steps):
 def parse_u64(flag, s):
     if not s or s[0] == '-':
         die("netta: %s takes a non-negative integer\n" % flag)
-    if not s.isascii() or not s.isdigit():
+    i = 0
+    while i < len(s) and s[i] in ' \t\n\v\f\r':
+        i += 1
+    negative = i < len(s) and s[i] == '-'
+    if i < len(s) and s[i] in '+-':
+        i += 1
+    first_digit = i
+    while i < len(s) and '0' <= s[i] <= '9':
+        i += 1
+    if first_digit == i or i != len(s):
         die("netta: invalid integer for %s: %s\n" % (flag, s))
-    v = int(s)
+    v = int(s[first_digit:i], 10)
     if v > MASK64:
         die("netta: invalid integer for %s: %s\n" % (flag, s))
-    return v
+    return (-v) & MASK64 if negative else v
 
 def parse_int(flag, s):
-    try:
-        v = int(s, 10)
-    except ValueError:
+    i = 0
+    while i < len(s) and s[i] in ' \t\n\v\f\r':
+        i += 1
+    if i < len(s) and s[i] in '+-':
+        i += 1
+    first_digit = i
+    while i < len(s) and '0' <= s[i] <= '9':
+        i += 1
+    if first_digit == i or i != len(s):
         die("netta: invalid integer for %s: %s\n" % (flag, s))
-    if not s or v < -2147483648 or v > 2147483647:
+    v = int(s, 10)
+    if v < -2147483648 or v > 2147483647:
         die("netta: invalid integer for %s: %s\n" % (flag, s))
     return v
 

@@ -244,7 +244,12 @@ Her first recorded words live in `research/FIRST_WORDS_2026-08-16.md`.
 ```sh
 cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
+./python_tests.sh
 ```
+
+`python_tests.sh` builds the canonical `cc -O2` body and requires `netta.py`
+to match its state, biography, stdout, stderr, resume and refusal contracts.
+Pass a Python executable as its only argument to judge a specific version.
 
 The 339-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
@@ -279,6 +284,19 @@ passing build ends with `ALL GATES PASS`.
 
 ```sh
 ./netta netta.txt \
+  --reset \
+  --seed 42 \
+  --episodes 4 \
+  --steps 800 \
+  --state netta0.state \
+  --bio netta0.bio.tsv
+```
+
+The Python version has the same command line and reads and writes the same
+state and biography:
+
+```sh
+python3 netta.py netta.txt \
   --reset \
   --seed 42 \
   --episodes 4 \
@@ -396,8 +414,10 @@ Counts must be finite non-negative integers. Infinite-life syntax such as
 ## Living files
 
 - `netta.c` — the organism.
+- `netta.py` — the Python version of the same architecture and file formats.
 - `NETTALOG2.md` — constitutional and empirical record.
 - `zero_tests.sh` — executable research law.
+- `python_tests.sh` — executable C/Python equivalence law.
 - `research/GUTENBERG_ARENA.md` — sealed first-real-text preregistration.
 - `research/GUTENBERG_RESULTS_2026-08-16.md` — first sealed real-text
   verdict, with `research/gutenberg_results/` holding the exact

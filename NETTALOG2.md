@@ -3175,3 +3175,57 @@ settled each loop one by one, with `tanhf` and `fmaf` taken from the same
 libm the C build links.  Bit-identity is therefore a property of the
 canonical build; a different compiler would be a different float story,
 and the battery would name it rather than hide it.
+
+## The Python body under a second hand
+
+Don's `39bf902` was first reproduced without reading its implementation.  A
+plain seed-5 life and a seed-11 two-shore Atlas-and-jury life across resume
+gave the C body and Python body identical state, biography, stdout and stderr;
+the latter closed at 5783 biography lines, chain `548116d31f3b4299`,
+biography SHA-256
+`c4e04eec6b9a01d5607842b7f09636d329758103a133233a3f9b794759b25be7`,
+and state SHA-256
+`d3553b9c4a3368dcc96b68083a37c9499942eda575e72ba6bcc630ece2dde4d0`.
+Active Hebb-v1 also stood on a period-5 shore and on the complete 256-byte
+alphabet, as did the combined law-off arm and a locked move actor.  The two
+court readers retained their already named one disagreement in 230 records
+and leaked no framing trace.
+
+The large equivalence claim stood, but six small executable boundaries did
+not.  System Python 3.9 has no `math.fma` and fell through a traceback after
+the first lived byte.  Python's `int` admitted underscore integers that
+`strtol` refuses, while the unsigned parser rejected signs and leading space
+that `strtoull` admits.  An eight-byte state and a state truncated immediately
+after its version lost the C body's two exact verdicts.  A real `RLIMIT_FSIZE`
+state-publication failure leaked an `OSError` traceback instead of the one-line
+contract.  The Python biography verifier still used the superseded named
+`stat` plus `open` sequence rather than the descriptor-first reader accepted
+in the C heart.  Directory operands also produced Python-specific state and
+shore words.
+
+Each repair is on that boundary.  Double `fma`, like `tanhf` and `fmaf`, now
+comes from the linked platform libm and therefore works under both Python
+3.9.6 and 3.14.4.  The two integer hands implement the C conversion shapes
+over ASCII bytes before conversion.  State loading preserves the version and
+neural-law truncation verdicts, and state saving writes unbuffered through a
+complete-write loop so write and close failures remain separate named events.
+Biography resume opens once non-blocking, judges the resulting descriptor,
+and reads that same object; a regular symlink remains legal and a FIFO refuses
+immediately.  The Python file opens simply as `NETTA ZERO -- Python version.`;
+the acceptance evidence belongs here and in its executable law, not in an
+apology at the top of the program.
+
+`python_tests.sh` now builds the canonical C body and compares all four public
+surfaces through an ordinary life, active Hebb, jury, C-to-Python resume,
+integer edges, truncated and directory states, a directory shore, a real
+file-size publication failure, biography symlink and FIFO descriptors, and
+all 137 publicly re-sealed malformed biography rows.  It ends in
+`ALL PYTHON GATES PASS` under both installed Python versions.  The unchanged
+339-gate C suite also ends in `ALL GATES PASS`.
+
+The compiler boundary is measured rather than implied.  On the seed-5
+reference life, `-O1` and `-O3` agree with one another but differ in neural
+state from Apple clang's `-O2`; Python agrees byte for byte with `-O2`.
+Biography and outward reports remain equal.  The Python body is therefore a
+faithful version of the canonical built architecture, not a claim that C
+permits only one floating-point execution on every compiler and target.
