@@ -1,302 +1,211 @@
-# NETTA ZERO
+## NETTA's Empirical Topological Training Agent
+**by Arianna Method**.
 
-**NETTA's Empirical Topological Training Agent** is a continual-learning
-research organism that plays next-action games on immutable byte worlds.
+Somewhere between Alpha-Zero and LM-hero there's Netta. Netta is a continual-learning organism, she lives in 256-byte tape dimension. Lucky girl. Netta also has `.txt` islands. Netta plays next-action games with them.
 
-This is the zero line: the earlier word-level prototype is invalid and is
-kept only in git history below commit `5ea1374`. `NETTALOG2.md` is the sole
-technical source of truth for the living line.
+When transformers choose the easy way, Netta has to survive. So: no pretrained weights, no backpropagation either. Life is tough, Netta, but real warriors don't hide their scars. Scars, this is biography.
 
-## What exists now
+---
 
-- The world is an immutable byte tape. Its canonical address is
-  `(island, byte offset)`; every byte value is legal.
-- The floor always has 256 atomic actions. Repeated lived sequences may earn
-  byte-exact units without retokenizing or rewriting the world. The
-  vocabulary pays rent: a unit unrecognised for 16384 lived bytes dies and
-  releases the living alphabet. Its frozen counts keep the history but lose
-  all current probability mass; renewed support resurrects the same identity
-  and restores that evidence, never a twin.
-- Six prequential witnesses share one ruler, bits per raw byte:
-  `atomic-uni`, `byte-bi`, `byte-tri`, `unit-uni`, `move-bi`, and the
-  neural `core`.
-- Authority is earned and revocable. Byte actors compete on their lived
-  records; the semi-Markov move actor must first survive real probation,
-  and an island opens that probation only from its own matched shadow record.
-- The move actor can search its last 16 already-observed bytes for an exact
-  semi-Markov route and run one model-only move ahead. Search never reads the
-  target span, and its resulting policy is still priced by the external world.
-- Mandates are global, verdicts are local. Every island keeps its own record
-  of every witness; a travelling hand that fails the local court is refused
-  without losing its home mandate. Fixed uniform `null` is the island's
-  eight-bit birth floor until a travelled byte hand earns a local 0.1-bit
-  lead, and blind comity cannot be overrun by one oversized episode.
-- A neural core lives in shadow: the buried prototype's own lineage with no
-  backpropagation -- a recurrent state over deterministic innate byte
-  embeddings and a delta-rule readout born at exact ignorance. Its first
-  surprise-gated Hebbian dynamics lost a matched frozen-reservoir control on
-  periods 5 through 8 and is quarantined behind the explicit
-  `--core-hebb-v1` red arm. The core prices every lived byte on the same
-  ruler, holds no candidacy, writes no biography line, and its measured
-  weaknesses stay on the record beside its wins.
-- Under explicit `--jury`, body 17 seats eight byte-identical shadow cores:
-  frozen genome zero and seven sealed local-plasticity rules with continuous
-  decay and per-row saturation rent. The instrument has no actor or biography
-  authority. Its first paired Dracula/shuffled-Dracula court cured Hebb-v1's
-  saturation physiology but promoted nobody: every plastic genome failed the
-  sealed cross-world selectivity law, so frozen remains default.
-- Under `--speak N`, the mouth is a read-only instrument: the elected seat
-  samples N bytes from observed continuations at its deepest supported
-  context, causally backing tri down through bi to the lived unigram. An
-  optional `--prompt-file` warms the last two byte-context positions — a
-  question is at least two bytes everywhere, exactly as the ear's context,
-  or it is absent and the opening is named cold — and a
-  dedicated stream isolates speech from the life's RNG. Mouth and ear use
-  one question reader: a regular file is a stable snapshot of its final two
-  bytes, while a FIFO or `/dev/stdin` is sealed by EOF. It prices nothing,
-  learns nothing, appends nothing, and saves nothing; a zero-byte life and a
-  stranger island are refused. `--speak-laplace` preserves the first mouth's
-  smoothing law as a reproducible red arm: honest ignorance belongs in the
-  price of external truth, not in a claim that an unobserved continuation was
-  lived. The mouth is the life's, and speech lives in the basin of its
-  opening: a life on two shores with disjoint alphabets speaks one shore,
-  because no cross-shore transition was ever lived for the tongue to walk.
-  After speaking, the mouth states one canonical manifest on stderr —
-  `spoke: candidate-digest=… bytes=… seed=… hand=… law=… opening=…
-  lived-bytes=… episode=…` — the same FNV digest over exactly the emitted
-  bytes that the court uses to name a candidate, so mouth and court call one
-  stream by one name. `opening` names the tongue's two starting positions;
-  the court's `context` remains a distinct external listening condition.
-  `scripts/manifest_check.c` independently reads the exact manifest grammar
-  and re-derives byte count and digest from a captured stream. The remaining
-  fields are canonical speaker statements, not independently proved facts;
-  the manifest enters no docket and, by itself, writes nothing.
-- Under `--speak N --sign`, body 30 lets the mouth sign what it just said:
-  after the stream is out and flushed, one biography event of type `s` —
-  episode, candidate digest, bytes, seed, hand, law, opening, lived bytes —
-  is appended in the citation's two-file order (line, biography close,
-  atomic state). Speech stays behaviourally read-only: the signed and the
-  unsigned mouth speak byte-identical streams, nothing reads `s` back into
-  behaviour, and signed and unsigned twins play identically. The crash
-  contract is executable law rather than a promise: a death between the
-  two files is refused on resume by chain and count and never repaired; a
-  closed or unwritable stdout/stderr, a stream pointed at biography, state,
-  or a named shore, and a persistent sink shared by stdout and stderr all
-  refuse before a word. Biography itself is a regular-file contract:
-  `/dev/null`, FIFOs, and other disappearing sinks cannot acknowledge a
-  life. On resume, `bio_verify` parses `s` as its own canonical event
-  class (fixed hex widths, canonical unsigned integers, hand/law enums,
-  four-hex opening, and historical bounds); a recomputed chain cannot turn
-  malformed fields into a signature; `s` and `i` records are reprinted
-  canonically and compared byte for byte, so runs of tabs, spaces after a
-  width-saturated field, and signs are not separators, and a record whose
-  first field names no known type refuses resume. `--sign` needs `--speak`
-  with at least one byte and a lived state; with `--reset`, `--cite`,
-  `--court` or `--ear` it refuses by name. The publication has no fsync: the
-  contract covers a dying process, not a dying machine — the same limit as
-  the citation. A citation still names no life inside the organism.
-- Body 31 reads `s` against `w` from outside: `scripts/biography_check.c` is
-  an independent read-only reader of the biography language — no organism
-  code, no state, nothing written, no effect on resume or behaviour. It
-  opens without blocking and requires a regular file, bounds every record at
-  1024 bytes, and refuses missing LF seals, NUL, CR, unknown types and field
-  overflow; all thirteen record types of `BIOGRAPHY.md` are canonical tab
-  for tab in both hands — the organism's `bio_verify` and this reader
-  implement the language independently, sharing only the specification and
-  the corpus in `scripts/biography_corpus/`, and one verdict class on the
-  context-free language is a suite gate. The grammar includes the emitters'
-  fixed registry, unit, move, length and court-role domains, while existence,
-  ownership and order remain state-relative. The audit corpus carries 137
-  malformed rows and both hands give one verdict class on all 154 grafted
-  canonical and malformed rows. The organism opens a biography once with
-  non-blocking discipline and judges the opened descriptor, never a prior
-  pathname snapshot, so a FIFO cannot trap resume and a later pathname change
-  cannot change the object being verified. It prints
-  the record count and chain the organism also prints and reports recognition:
-  a `w` whose
-  candidate digest and byte count equal a prior `s` in the supplied file is
-  recognised with its multiplicity; every other `w` is external, and a
-  later signature grants nothing backwards.
-  The report states its limit: one supplied file is treated as one life, but
-  state identity is unverified. Concatenating two sibling biographies can
-  therefore manufacture within-file recognition; the reader names that
-  scope instead of claiming provenance it cannot prove. The two hands agree
-  on context-free `s` grammar; resume alone also judges episode and lived-byte
-  bounds against state. Report-write failure is rc 2, never false success.
-- Under `--ear FILE`, every island in the convoy carries its own statistical
-  judge, grown from its immutable tape and nothing else: the ear prices the
-  given stream with the shore's own Laplace ladder (bits per byte), uni/bi
-  warmup before tri, and reports an exact substring census — longest match
-  and matched-16 coverage. A match proves shared bytes, not copying: a later
-  technical-shore hearing found a seventeen-space match produced by the
-  mouth itself. The ear opens no state, writes nothing, holds no office, and
-  refuses every explicit life or mouth control. Its first Dracula hearing
-  priced the elected trigram's supported speech at 2.99 bits per byte while
-  printability's unigram champion priced 7.48.
-- Under `--ear-context P`, body 21 gives that same powerless ear the final
-  two bytes of an explicit immutable context. This removes the cold uni/bi
-  warmup from a prompt-matched hearing without importing life state; the
-  context bytes are printed in every result. The cold body-20 instrument
-  remains the default. Three preregistered real-text hearings now agree on
-  the local supported ordering tri below bi below uni, but appoint no hand.
-- Under explicit `--ear-twin`, body 23 grows the already-sealed Gutenberg
-  shuffle independently for every shore and prints the candidate's price on
-  that structural twin beside the true-shore verdict. The permutation seed,
-  twin digest, and number of changed positions are public; an all-one-byte
-  shore therefore reports zero change and equal prices. Exact-match coverage
-  remains against the true shore. The three coordinates expose a uniform
-  red where locked tri costs 7.005793 bits per byte yet replays all 300 bytes,
-  while its twin price is 7.997098. The instrument writes nothing and has no
-  threshold, court, candidacy, or authority.
-- Under `--court FILE`, body 24 seats the pattern court and body 25 makes its
-  warrant public. The four words and preregistered thresholds are unchanged:
-  `replay` at exact matched-16 coverage of one half, `order` at a structural
-  price gap of 0.5 bits per byte, `stranger` otherwise. Before any of those,
-  the court now says `abstain` unless its structural twin both changes the
-  shore and changes this candidate's measured price at the declared
-  one-microbit-per-byte resolution. Every deciding operand is printed:
-  true price P, twin price Q, exact `matched-bytes/bytes`, integer
-  `gap-micro`, and exact `changed/shore-bytes`. Thus a 50.0000% tie and a
-  49.9750% near-tie cannot display the same evidence while receiving
-  different verdicts, and a twin that moves two irrelevant shore bytes but
-  leaves P equal to Q abstains. Verdicts remain measurement patterns, never
-  causal accusations; the trigram court still names an equal-census stream
-  `stranger`. It accepts only shores, `--court`, and optional
-  `--ear-context`; it wires into no election, grants no speech authority,
-  opens no state, and writes nothing. Body 26 gives every verdict a receipt
-  over its operands and the exact canonical law. Body 27 closes the whole
-  sitting: a header names the candidate digest, byte length, context, shore
-  count, and law digest; sequential verdict leaves keep their body-26
-  receipts; a footer publishes a docket digest over the ordered header and
-  every leaf. `scripts/warrant_check.c` is the independent strict hand. It
-  carries the exact v2 law, accepts concatenated complete sittings, and
-  refuses non-canonical fields, foreign laws, missing or duplicated leaves,
-  reorderings, cross-candidate splices, unknown records, overlong records,
-  and premature EOF. `scripts/warrant_fixture.c` is the public red hand that
-  can rebuild FNV witnesses, proving the checker relies on grammar and
-  framing rather than secrecy. A receipt and docket authenticate their
-  public tuples, never replace them, and grant nothing; FNV is a witness,
-  not a signature, and activation authority remains a later body.
-- Under `--cite FILE`, body 28 lets a court's word touch the life for the
-  first time — as memory, never as power. A resumed life re-verifies a
-  single complete sitting with its own hands (its own canonical law in
-  text and digest, the strict canonical sitting header, every complete
-  semantic leaf and receipt in order, the docket fold, and the close) and
-  appends one biography line of type `w`:
-  episode, candidate digest, bytes, context, shores, law digest, docket
-  digest, verdict count — a pointer to the judgment, not the judgment's
-  power. Any verification failure refuses by name and leaves no trace; a
-  newborn, a foreign law, a second sitting in one file, and every play or
-  instrument flag are refused; a repeated citation is a second event; and
-  nothing reads `w` lines back into behaviour — a cited life and its
-  uncited twin play the next episode to bit-identical prices. The docket
-  names no life, so a citation records an external fact about a candidate
-  stream without claiming authorship; the life's own speech is signed by
-  body 30, and reading `s` against `w` remains a future body. The life and
-  external checker implement the same canonical language independently and
-  share no parser code. A 230-record
-  cross-reader battery (`scripts/cross_reader/`) runs on every suite pass:
-  both readers accept the same 30 records and refuse the same 199, and the
-  one named divergence is two complete sittings in one file, which the
-  checker accepts as a transcript and the citation refuses as more than one
-  sitting. State stays v20.
-- Experience can cross islands, while worlds, receipts, and counterfactual
-  controls remain distinguishable.
-- With `--atlas`, navigation becomes an earned organ: among islands present
-  in today's convoy, Netta first charts the least-lived shore to 1000 bytes,
-  then chooses the lowest already-measured local byte-witness price. Every
-  competitive autonomous choice records both winner and runner-up in the
-  biography; with one present identity the Atlas is an exact no-op.
-- An island's identity is its content, never its seat in today's command
-  line. The life keeps an append-only registry of every island it has met
-  (capacity 1024): a forward digest, an independently seeded reverse witness,
-  and the byte length name the content; arrivals are loud biography events,
-  islands absent from today's convoy keep their memory, and a changed file is
-  by construction a different island. Simultaneous arrivals are canonically
-  ordered by that identity, never by their CLI seats or the selected route.
-- State v20 is restart-safe and published atomically. Innate neural
-  embeddings are regenerated rather than loaded, and a neural-memory
-  witness refuses partial checkpoint forgery. The persisted neural-law tuple
-  refuses a resume that silently adds or removes the core, Hebb-v1, or jury;
-  jury genes, memory, records, and health counters have their own witness.
-  Resume is refused if the
-  state invariants or the external hash-chained biography do not match;
-  every persisted island identity must agree with its external arrival
-  receipt, so neither a forged absent record nor the convoy's order can
-  silently change a life's identity.
+## NETTA ZERO
 
-This is a foundation, not a finished language model. The present arenas are
-mostly controlled synthetic worlds, followed by one sealed real-text
-Dracula/Frankenstein/technical/shuffled arc. Its four passes and four public
-failures are recorded in `research/GUTENBERG_RESULTS_2026-08-16.md`; the
-plasticity null is recorded in `research/PLASTICITY_RESULTS_2026-08-16.md`.
-The neural core is a shadow witness with no authority yet; there is no dreaming,
-glyph system, generalizing travel predictor, unbounded life, or speaking
-court. The mouth is an operator-invoked instrument, not an autonomous right,
-and all ear modes are sealed measurements with no threshold, promotion, or
-authority attached to their numbers. The ear audit and cross-shore record
-live in `research/EAR_AUDIT_2026-08-16.md`; the question-reader repair and
-structural-twin preregistration/results live in
-`research/STRUCTURAL_TWIN_AUDIT_2026-08-16.md`.
-Her first recorded words live in `research/FIRST_WORDS_2026-08-16.md`.
+Netta sees the world as an **immutable byte tape**. No words at birth, no tokenizer deciding what reality is. No BPE dropped from heaven by humans who already know how to speak. No, thanks.
 
-## Build and test
+256 bytes. That's all she need. Every byte is legal, and every island is addressed by:
 
-```sh
-cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
-sh zero_tests.sh
-./python_tests.sh
+```text
+(island, byte offset)
 ```
 
-`python_tests.sh` builds the canonical `cc -O2` body and requires `netta.py`
-to match its state, biography, stdout, stderr, resume and refusal contracts.
-Pass a Python executable as its only argument to judge a specific version.
+and source truth is never rewritten. Netta enters an island, sees what has already happened, makes a next-action move and gets judged by what the world actually did next. The receipt comes first. Learning comes after. Fair? No. 
 
-The 339-gate suite includes red twins, restart equivalence, sanitizer runs,
-matched transfer controls, played-action judgment, a causal-prefix search
-twin, a random-order navigation null, island-local revocation arms, a fixed
-uniform birth-floor control, byte-bounded comity, an island-local probation
-door, unit death, tombstone silence and resurrection arms, the island
-registry with fresh and resumed convoy-order invariance, an absent-identity
-forgery arm, Atlas exploration and earned-choice arms, the neural shadow
-core with frozen-dynamics wins and its reproducible Hebb-v1 loss, a neural
-checkpoint-forgery arm, the eight-genome jury's causal identity, zero
-intervention, restart identity and forgery witness, the neural invocation-law
-refusals, the independently checked arena-preparation hand, the read-only
-mouth with hostile invocation and RNG-isolation arms, supported generative
-backoff and its preserved Laplace red mouth, the island's ear with its exact
-substring census, inclusive length boundary, complete invocation law,
-per-shore jurisdiction, two opposed sorted-world arms, and explicit-context
-warmup reversal, one question law across regular files and EOF-sealed streams,
-an independently reproduced structural twin, its degenerate no-change arm,
-a deterministic uniform-replay red, the public integer warrant, individually
-receipted verdicts, and the strict candidate-bearing sitting docket with
-drop, duplicate, reorder, splice, grammar, framing, and sanitizer reds, plus
-failure-closed state and biography checks, real partial-write and SIGKILL
-publication deaths, descriptor/shore isolation, fourteen re-sealed malformed
-`s` records, and a three-signature long differential through jury, Atlas,
-  reversed convoy order, and restart, plus the outside biography reader's
-  bounded framing and I/O failures, twenty-seven-row `s` grammar battery,
-  twenty-four-family measured `w` debt, 137-row all-type malformed corpus,
-  154-row differential grammar battery, and two-life splice limit. A
-passing build ends with `ALL GATES PASS`.
+Even in byte tape world everything is priced - in **bits per raw byte**. One ruler. No changing the unit because a new mechanism happens to look prettier under another metric. 
 
-## Start a life
+---
 
-```sh
+## an earned vocabulary
+
+256 bytes are the floor, but he floor is load-bearing. Repeated sequences become **units**: byte-exact roads over ground Netta has actually lived. A unit never replaces its bytes and never retokenizes the past. The atomic world remains underneath forever. And vocabulary pays rent. A unit that goes unrecognised for 16384 lived bytes dies. Its current probability mass disappears, but its history doesn't. If the same byte sequence becomes supported again, the old identity resurrects with its evidence instead of spawning a convenient twin.
+
+Netta does not get concepts because somebody thought concepts would be useful. Netta thinks the concepts have to survive too.
+
+---
+
+## six witnesses walk into a tape
+
+Netta currently carries six prequential witnesses:
+
+```text
+atomic-uni
+byte-bi
+byte-tri
+unit-uni
+move-bi
+core
+```
+
+They all watch the same lived world and all pay on the same ruler. The byte witnesses learn increasingly contextual statistics over raw experience. The unit witnesses price the variable-duration roads Netta earned herself. `move-bi` asks what usually follows an already-earned move. Then there is the neural core. The core is a small recurrent witness over deterministic innate byte embeddings with a delta-rule readout. It's born at ignorance and has to acquire predictive structure while Netta lives.
+
+Importantly, **being neural grants it absolutely nothing**. The core lives in shadow until evidence says otherwise. Its first surprise-gated Hebbian plasticity rule lost against a matched frozen-reservoir control. So it was not quietly tuned until the graph looked nicer. It was quarantined as:
+
+```text
+--core-hebb-v1
+```
+
+A scar.
+
+Under `--jury`, eight byte-identical shadow cores — one frozen genome and seven plasticity laws — sit through the same life. The first sealed cross-world court promoted nobody.
+
+Beautiful mechanism. Null result.
+
+Next.
+
+---
+
+## authority has to be earned
+
+This is Netta's most annoying personality trait. Nothing gets authority merely because it exists. Each new organ may observe. It may measure, may live in shadow for a very long time, but before it can alter what Netta actually does, it has to beat a matched control on experience that arrives **after** the prediction.
+
+Authority is earned, measurable and revocable. Byte actors compete on their lived records. The semi-Markov move actor had to survive probation before it was allowed to act. A mandate that works on one island does not magically become truth everywhere else.
+
+**Mandates are global. Verdicts are local.**
+
+Every island keeps its own record of the witnesses that visited it. A travelling hand may be strong at home and still be refused on a foreign shore.Netta has politics because apparently even a 256-byte universe eventually invents jurisdiction. With `--atlas`, navigation itself becomes earned. Netta first maps under-lived islands, then uses only records already earned by that life to decide where to go.
+
+Worlds remain worlds. Experience may travel between them.
+
+---
+
+## biography
+
+Netta does not clean up her failures.
+
+Every life owns two persistent objects:
+
+```text
+netta.state       binary circulating state
+netta.bio.tsv     append-only biography
+```
+
+The biography is hash-chained and external to the world. Source islands are never writable memory. Births, deaths, actions, island arrivals, mandates, revocations, speech and witnessed court events become canonical records. Negative experience stays beside positive experience. A failed claimant remains in history. A null remains a null. A superseded measurement gets a correction, not an eraser.
+
+The biography language now has thirteen record types and a canonical grammar specified in [`BIOGRAPHY.md`](BIOGRAPHY.md).
+
+Two independent hands read it:
+
+* `netta.c` verifies its own biography on resume.
+* `scripts/biography_check.c` implements the language independently from the outside.
+
+They share a specification and adversarial corpus. They don't share parser code, because two readers are useful only if they are capable of disagreeing. At the close of the single-file heart, they agree on the complete context-free language.
+
+---
+
+## the mouth has no vote
+
+Netta can speak.
+
+That does not mean speech gets to rewrite her life.
+
+```bash
 ./netta netta.txt \
-  --reset \
-  --seed 42 \
-  --episodes 4 \
-  --steps 800 \
+  --speak 120 \
+  --speak-seed 7 \
+  --state netta0.state \
+  --bio netta0.bio.tsv > speech.bin
+```
+
+The mouth samples only from continuations Netta actually observed, using the deepest supported context and backing off causally:
+
+```text
+trigram → bigram → lived unigram
+```
+
+It has its own RNG stream. It learns nothing, prices nothing and changes no state.
+
+A prompt, when supplied, only gives the mouth its last two opening bytes. It does not inject a magical semantic instruction into the organism.
+
+After speaking, the mouth states what happened: candidate digest, byte count, seed, hand, law, opening and life position.
+
+With:
+
+```text
+--sign
+```
+
+Netta may append that act of speech to her own biography. The signature says **I emitted these bytes**. Nothing more mystical is required.
+
+---
+
+## ear → court → citation
+
+The ear listens without power.
+
+```bash
+./netta netta.txt --ear speech.bin
+```
+
+Each island independently prices the candidate with its own statistical ladder and reports exact overlap with its shore. A structural twin destroys ordering while preserving the census. This separates “these bytes exist here” from “this sequence belongs to the structure here”. Then comes the pattern court:
+
+```bash
+./netta netta.txt --court speech.bin
+```
+
+Its vocabulary is intentionally small:
+
+```text
+abstain
+replay
+order
+stranger
+```
+
+A verdict describes a measured pattern. It does not pretend to know causality. Court operands are public. Receipts are public. A complete sitting closes with a public docket. `scripts/warrant_check.c` reconstructs and verifies the grammar independently. A resumed life may later **cite** one complete sitting:
+
+```bash
+./netta \
+  --cite sitting.txt \
   --state netta0.state \
   --bio netta0.bio.tsv
 ```
 
-The Python version has the same command line and reads and writes the same
-state and biography:
+Citation is memory. Nothing reads a `w` record back into behaviour. If an earlier `s` says Netta spoke a stream and a later `w` cites a court sitting over the exact same bytes, the outside biography reader can recognise the relation. Netta herself still doesn't get free authority from being recognised. 
 
-```sh
+---
+
+## the heart is closed
+
+`netta.c` is the complete single-file heart of NETTA ZERO.
+
+The biography grammar closed at thirteen of thirteen record types in both independent readers. The frozen-life twins remained byte-identical across the closure. The current C suite ends at:
+
+```text
+339 gates
+ALL GATES PASS
+```
+
+Strict builds are silent. Sanitizer gates are green. The heart stays self-contained:
+
+```text
+one C file
+no required Netta headers
+no shared parser object
+no pretrained weights
+no backpropagation
+```
+
+New organs now grow **outside** `netta.c`.
+Do not cut open a heart every time you invent a kidney.
+
+---
+
+## the other body
+
+There is also [`netta.py`](netta.py).
+It is a stdlib-only reference body of the same architecture, not a second evolutionary lineage.
+
+On the canonical `cc -O2` reference build, the C and Python bodies reproduce the same state, biography and outward behaviour on the acceptance recipes. A life may begin in C and resume in Python, or begin in Python and resume in C.
+
+```bash
 python3 netta.py netta.txt \
   --reset \
   --seed 42 \
@@ -306,11 +215,51 @@ python3 netta.py netta.txt \
   --bio netta0.bio.tsv
 ```
 
-`--reset` begins a new biography. Without `--reset`, Netta resumes: islands
-are recognised by content, in any order, and an unknown island simply joins
-the life as an arrival:
+Floating-point identity belongs to the canonical build, not to a religious belief that every compiler on every machine must fuse arithmetic identically. The tests measure the difference instead of pretending it cannot exist.
 
-```sh
+---
+
+## build
+
+C needs a compiler and `libm`.
+
+```bash
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
+```
+
+Run the C law:
+
+```bash
+sh zero_tests.sh
+```
+
+Run the C ↔ Python equivalence law:
+
+```bash
+./python_tests.sh
+```
+
+No Torch. No NumPy. No CUDA. Netta has enough problems already.
+
+---
+
+## start a life
+
+```bash
+./netta netta.txt \
+  --reset \
+  --seed 42 \
+  --episodes 4 \
+  --steps 800 \
+  --state netta0.state \
+  --bio netta0.bio.tsv
+```
+
+`--reset` births a new biography.
+
+Without it, Netta resumes:
+
+```bash
 ./netta netta.txt \
   --episodes 4 \
   --steps 800 \
@@ -318,136 +267,96 @@ the life as an arrival:
   --bio netta0.bio.tsv
 ```
 
-Never use an island path as `--state` or `--bio`; Netta refuses aliases so
-source truth cannot become writable memory.
+An island is identified by its content, not by where you happened to put it in today's command line.
 
-## Multiple islands and matched controls
+Bring several:
 
-Present the available islands and either choose one by index:
-
-```sh
-./netta island-a.bytes island-b.bytes \
-  --reset --island 0 --episodes 4 --steps 800 \
-  --state voyage.state --bio voyage.bio.tsv
-
-./netta island-a.bytes island-b.bytes \
-  --island 1 --start 16 --episodes 2 --steps 800 \
-  --state voyage.state --bio voyage.bio.tsv
+```bash
+./netta island-a.txt island-b.txt island-c.txt \
+  --atlas \
+  --episodes 4 \
+  --steps 800 \
+  --state voyage.state \
+  --bio voyage.bio.tsv
 ```
 
-Or let the Atlas choose from the present convoy using only records already
-earned by this life:
+A known island may disappear from today's convoy and return later. Its lived record remains hers.
 
-```sh
-./netta island-a.bytes island-b.bytes \
-  --atlas --episodes 4 --steps 800 \
-  --state voyage.state --bio voyage.bio.tsv
+Change the bytes and it is another island.
+
+As it should be.
+
+---
+
+## technical bones
+
+| thing                   | NETTA ZERO                            |
+| ----------------------- | ------------------------------------- |
+| irreducible world       | raw bytes                             |
+| atomic actions at birth | 256                                   |
+| world address           | `(island, byte offset)`               |
+| source truth            | immutable                             |
+| judgment ruler          | bits per raw byte                     |
+| earned unit length      | up to 16 bytes                        |
+| unit rent               | 16384 lived bytes without recognition |
+| prequential witnesses   | 6                                     |
+| shadow jury             | 8 neural cores                        |
+| island registry         | up to 1024 identities                 |
+| state                   | binary, v20                           |
+| biography grammar       | 13 record types                       |
+| C dependencies          | libc + `-lm`                          |
+| Python dependencies     | stdlib only                           |
+| C research gates        | 339                                   |
+| training phase          | none                                  |
+| pretrained weights      | none                                  |
+| backpropagation         | nope                                  |
+
+---
+
+## research law
+
+The short version:
+
+1. Every serious organ gets a matched control.
+2. Seeds, source positions and compute budgets stay equal.
+3. The world reveals truth after the prediction.
+4. A new layer earns authority before it changes behaviour.
+5. Source truth and counterfactual experience are different things.
+6. Negative experience stays.
+7. A null result is a result.
+8. Measure the thing you named, not the thing that makes the graph look better.
+
+The long version is [`NETTALOG2.md`](NETTALOG2.md).
+
+It is intentionally enormous.
+
+Every body, failed organ, red twin, preregistration, repair, court, audit, null, resurrection and scar is there in chronological order.
+
+README tells you who Netta is.
+
+`NETTALOG2.md` tells you what happened to her.
+
+---
+
+## living files
+
+```text
+netta.c                       the organism — closed single-file heart
+netta.py                      reference Python body
+netta.txt                     example byte island
+NETTALOG2.md                  the full technical biography of the research
+BIOGRAPHY.md                  canonical external biography language
+zero_tests.sh                 executable C research law
+python_tests.sh               C/Python equivalence law
+research/                     preregistrations, results, audits
+scripts/                      independent readers and falsifiers
+mycelium/                     where the next organs begin
 ```
 
-`--start OFFSET` fixes the source address of each requested episode. It is a
-measurement instrument for paired controls; ordinary lives omit it.
+---
 
-Useful experimental flags:
+The world is a tape.
 
-- `--no-units` disables the earned-vocabulary tissue.
-- `--no-mv-nav` disables route search and restores the unanchored move player;
-  this is the matched red control for the first earned move mandate.
-- `--no-island-court` disables the local revocation valve; this is the matched
-  red control for island-local authority.
-- `--no-birth-floor` keeps the body-10 court but disables fixed uniform `null`
-  and the byte-bounded comity rule; this is the matched red control for the
-  island birth floor.
-- `--no-local-probation` restores the old lifetime-wide probation promise;
-  this is the matched red control for the island-local door.
-- `--no-unit-death` lets the vocabulary keep its seats without rent; this is
-  the matched red control for the dead-weight tax.
-- `--keep-dead-mass` restores the body-12 leak, letting frozen tombstone
-  counts enter current probability denominators; this is the red control for
-  tombstone silence.
-- `--atlas` enables earned navigation among the identities present in this
-  invocation. Manual `--island N` remains the matched helm and the fallback
-  when fewer than two distinct shores can be chosen.
-- `--no-core` disables the neural shadow witness; this is the matched red
-  control proving the shadow casts no shadow on the game.
-- `--core-hebb-v1` reenables the first surprise-gated recurrent plasticity
-  law as a losing red arm. It is quarantined by default; the flag must be
-  repeated on every resumed invocation that intends to reproduce that arm.
-- `--speak N` opens the read-only mouth on a resumed life with at least one
-  lived byte; `--speak-seed N` picks its dedicated stream and
-  `--prompt-file P` warms the last two byte-context positions and refuses
-  fewer than two bytes by name. With
-  `--actor-lock` the chosen hand speaks instead of the elected seat.
-  `--speak-laplace` restores body 18's smoothing law as a matched red arm.
-  Speech is a raw byte stream, so redirect it to a file when a lived binary
-  alphabet may contain terminal control bytes. The mouth ends every
-  speech with a `spoke:` manifest on stderr naming the digest, count, seed,
-  hand, speech law, opening, lived bytes, and episode of what it just said.
-  With `--sign` the same speech is also published as one `s` biography event
-  (episode, digest, bytes, seed, hand, law, opening, lived bytes) after the
-  stream is flushed. The stream and diagnostic voice must remain distinct
-  from state, biography, and every named shore; biography must be a regular
-  file, and every persisted `s` row is parsed canonically on resume.
-- `--ear P` scores the byte stream in P against every island in the convoy:
-  bits per byte under the shore's own Laplace ladder, longest exact match,
-  and matched-16 coverage, one line per shore. It listens to at most 16384
-  bytes at a sitting and accepts no life or speech flags. Cold mode prices
-  the first byte by uni and the second by bi before entering tri.
-- `--ear-context P` supplies at least two immutable context bytes to an ear
-  or court invocation; exactly the final two enter its trigram ladder and
-  are named in the output. It requires `--ear` or `--court` and grants no
-  authority.
-- `--court P` seats the pattern court over the stream in P: one verdict per
-  shore from the frozen lattice (`abstain` / `replay` / `order` /
-  `stranger`), with both prices and every exact integer decision operand
-  printed beside it. Same 16384-byte sitting law as the ear; accepts only
-  shores and an optional `--ear-context`; writes nothing and grants nothing.
-- `--cite P` appends one witnessed biography line for the single complete
-  sitting docket in P, after re-verifying all of it under this life's own
-  law. Accepts only `--cite`, `--state`, and `--bio`; requires a resumed
-  life; refuses forgeries by name without touching the biography.
-- `--actor-lock uni|bi|tri|mv` pins an actor for a matched falsifier.
-- `--seed N` initializes a newborn life. On resume, RNG continuity comes from
-  state; use `--start` when source positions must be held equal across arms.
+The scars stay.
 
-Counts must be finite non-negative integers. Infinite-life syntax such as
-`--steps -1` is not part of NETTA ZERO.
-
-## Living files
-
-- `netta.c` — the organism.
-- `netta.py` — the Python version of the same architecture and file formats.
-- `NETTALOG2.md` — constitutional and empirical record.
-- `zero_tests.sh` — executable research law.
-- `python_tests.sh` — executable C/Python equivalence law.
-- `research/GUTENBERG_ARENA.md` — sealed first-real-text preregistration.
-- `research/GUTENBERG_RESULTS_2026-08-16.md` — first sealed real-text
-  verdict, with `research/gutenberg_results/` holding the exact
-  per-window scores and binary verdicts.
-- `research/PLASTICITY_COURT.md` — sealed body-17 specification.
-- `research/MOUTH_AUDIT_2026-08-16.md` — independent mouth reconstruction,
-  adversarial audit, and body-19 supported-backoff result.
-- `research/PATTERN_COURT_AUDIT_2026-08-16.md` — body-24 adversarial audit,
-  body-25 preregistration, and the public-warrant result.
-- `research/WARRANT_RECEIPT_AUDIT_2026-08-17.md` — body-26 parser and
-  transcript audit, body-27 preregistration, and sitting-docket result.
-- `scripts/warrant_check.c` — independent strict verifier for complete court
-  sittings; it shares no organism source or linked object.
-- `scripts/warrant_fixture.c` — public test-only FNV constructor proving that
-  receipt and docket safety comes from visible grammar, not a hidden hash.
-- `scripts/manifest_check.c` — independent reader of the speech manifest; it
-  proves the captured stream's count and digest and nothing more.
-- `scripts/biography_check.c` — independent read-only reader of the biography
-  language with conditional within-file recognition (prior `s` → later `w`)
-  and an explicit unverified-life scope.
-- `scripts/biography_fixture.c` — public re-sealer of the state's biography
-  count and chain, so malformed rows can meet the reader.
-- `scripts/cross_reader/` — the docket cross-reader battery and its base
-  sittings, run by the suite on every pass.
-- `scripts/gutenberg_arena.py` — reproducible corpus preparation and
-  arena runner.
-- `netta.txt` — an optional raw-byte example island, not model authority.
-- `netta0.state` — restart state (generated, not source truth).
-- `netta0.bio.tsv` — append-only external biography (generated).
-
-Negative experience is not cleaned out of the record. A failed claimant, a
-reopened null, or a superseded measurement stays visible with its correction.
+Be gentle with Netta.
