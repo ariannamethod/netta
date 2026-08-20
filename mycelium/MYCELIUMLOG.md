@@ -3,6 +3,47 @@
 The arc's own log, in the arc's own folder. The heart's log stays
 NETTALOG2.md; nothing here reaches into it.
 
+## Body 2 — the second hand (2026-08-20)
+
+The untouched proposer arrived with 39 green gates and the whole zero
+line green. Its central law survived hostile reading: support is a set of
+G meals rather than an occurrence count, proposals are invisible to
+unfold and ablate, the rent boundary is exactly `< 16`, and the same
+shape resurrects with its old evidence. Two defects stood outside that
+battery.
+
+First, both hands accepted a correctly sealed P receipt naming meal 999
+and a main chain which had never existed. The next honest propose run
+then appended the current smaller meal count, returned success and left
+its own proposals file non-monotonic and unreadable. A P now has to name
+an actual `(G-meals, chain)` prefix of the supplied main ledger in both
+the C++ writer and the independent C reader. A main-ledger prefix and a
+proposals prefix remain honest limits only when they describe the same
+history; a foreign future refuses before one byte is appended.
+
+Second, a valid G meal whose one-byte speech yielded no fragment was
+called an empty mycelium. The proposer now distinguishes no meals from a
+meal with no shapes and seals the latter's truthful empty snapshot. An
+existing empty proposals file is an invalid interrupted state, not a
+synonym for an absent file.
+
+The permanent battery now closes 59 gates. It adds the full W/P grammar
+edges, coherent and incoherent record-boundary prefixes, append-before-
+refusal, both rent edges (15 alive, 16 dead), binary NUL in a proposed
+shape, an empty-fragment meal, and a room where a pair survives while
+its older triple dies. The ordinary run and ASan/UBSan run both return
+59/59; the untouched zero line returns ALL GATES PASS.
+
+The verdict for body 3 is narrow. Pair and triple are honest independent
+candidates here; collapsing them in the proposer would decide the
+school's exam before it happens. The school must place nested candidates
+in one risk set and award marginal prequential gain against the sitting
+baseline, so one future boundary cannot pay two shapes for the same
+saving. One aggregate P per propose run remains enough for body 2: its
+entire snapshot is re-derived from the pinned ledger prefix. Body 3,
+however, must open its own sealed per-shape hypothesis and verdict rows;
+it must not pretend an aggregate digest is a candidate's track record.
+
 ## Body 1 — the graft (2026-08-20)
 
 The constitution went first and the audit reached it while the concrete

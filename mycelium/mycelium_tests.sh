@@ -99,6 +99,10 @@ case("ascii-vt", vt)
 nul = (b"alpha\x00hidden memory speaks through the silent byte and continues forever. "
        b"another ordinary fragment carries enough visible tokens to enter the grave.")
 case("nul", nul)
+nul2 = (b"alpha\x00hidden memory speaks through the silent byte and changes slowly. "
+        b"another ordinary fragment carries enough visible tokens to enter the grave.")
+case("nul2", nul2, sig(nul2, 14))
+case("tiny", b"x", sig(b"x", 15))
 
 dup_a = (b"luminous archive remembers every winter river and carries the patient signal.\n\n") * 12
 dup_b = (b"copper engine follows every summer road and measures the turning voltage.\n\n") * 12
@@ -115,6 +119,9 @@ bio = []
 for i in range(1, 20):
     if i in (1, 2, 19):
         text = (f"The crimson lantern flickers beside the granite tower on evening {i:02d}. "
+                "Another calm sentence carries enough plain tokens for the grave tonight.")
+    elif i == 17:
+        text = ("The crimson lantern glows beside the granite tower on evening 17. "
                 "Another calm sentence carries enough plain tokens for the grave tonight.")
     else:
         text = (f"A numbered courier route {i:02d} delivers the evening ledger across town. "
@@ -358,17 +365,52 @@ mkdir "$T/echo-field"
         pass "a one-meal echo proposes nothing" || fail "one-meal echo"
 )
 
+mkdir "$T/tiny-field"
+(
+    cd "$T/tiny-field"
+    "$MYC" ingest tiny "$T/tiny/speech" "$T/tiny/bio" >/dev/null
+    "$MYC" propose >out
+    grep -F "(nothing recurs across meals yet)" out >/dev/null &&
+        pass "a valid meal without fragments seals an empty snapshot" ||
+        fail "empty-fragment meal"
+    "$CHECK" >/dev/null
+)
+
+mkdir "$T/nul-props-field"
+(
+    cd "$T/nul-props-field"
+    "$MYC" ingest nul-one "$T/nul/speech" "$T/nul/bio" >/dev/null
+    "$MYC" ingest nul-two "$T/nul2/speech" "$T/nul2/bio" >/dev/null
+    "$MYC" propose >out
+    python3 - out <<'PY'
+import sys
+data = open(sys.argv[1], "rb").read()
+raise SystemExit(0 if b"alive alpha\0hidden memory" in data else 1)
+PY
+    pass "NUL survives a proposed shape and its snapshot digest"
+    "$CHECK" >/dev/null
+)
+
 mkdir "$T/rent-field"
 (
     cd "$T/rent-field"
     i=1
-    while [ $i -le 18 ]; do
+    while [ $i -le 17 ]; do
         "$MYC" ingest renter "$T/renter/speech-$i" "$T/renter/bio" >/dev/null
         i=$((i + 1))
     done
+    "$MYC" propose >rent17.out
+    grep -F "alive crimson lantern flickers support=2 meals=1,2" rent17.out >/dev/null &&
+        pass "rent keeps a shape alive fifteen meals after its witness" ||
+        fail "rent living edge"
+    "$MYC" ingest renter "$T/renter/speech-18" "$T/renter/bio" >/dev/null
     "$MYC" propose >rent18.out
     grep -F "dead crimson lantern flickers support=2 meals=1,2 last=2" rent18.out >/dev/null &&
         pass "rent starves an unwitnessed shape after sixteen meals" || fail "rent death"
+    grep -F "alive crimson lantern support=3 meals=1,2,17" rent18.out >/dev/null &&
+        grep -F "dead crimson lantern flickers support=2 meals=1,2 last=2" rent18.out >/dev/null &&
+        pass "pair survival and triple death are independent proposals" ||
+        fail "pair and triple independence"
     "$MYC" ingest renter "$T/renter/speech-19" "$T/renter/bio" >/dev/null
     "$MYC" propose >rent19.out
     grep -F "alive crimson lantern flickers support=3 meals=1,2,19" rent19.out >/dev/null &&
@@ -398,7 +440,12 @@ def seal(payloads):
 honest = os.path.join(root, "honest")
 raw = open(os.path.join(honest, ".mycelium.proposals"), "rb").read()
 payloads = [line[:-17] for line in raw.splitlines()]
-for name in ("props-flip", "props-trunc", "props-mono"):
+names = (
+    "props-flip", "props-trunc", "props-mono", "props-empty",
+    "props-law", "props-before-w", "props-arity", "props-canon",
+    "props-future", "props-main-prefix", "props-prefix-w", "props-prefix-p",
+)
+for name in names:
     path = os.path.join(root, name)
     os.makedirs(path)
     shutil.copytree(os.path.join(honest, ".mycelium.grave"),
@@ -414,13 +461,70 @@ open(os.path.join(root, "props-trunc", ".mycelium.proposals"), "wb").write(raw[:
 last_p = [p for p in payloads if p.startswith(b"P\t")][-1]
 fields = last_p.split(b"\t")
 fields[1] = b"1"
+main_lines = open(os.path.join(honest, ".mycelium.ledger"), "rb").read().splitlines()
+meals = 0
+chain_at_one = None
+for line in main_lines:
+    payload = line[:-17]
+    if payload.startswith(b"G\t"):
+        meals += 1
+    if meals == 1 and chain_at_one is None:
+        chain_at_one = line[-16:]
+assert chain_at_one is not None
+fields[2] = chain_at_one
 open(os.path.join(root, "props-mono", ".mycelium.proposals"), "wb").write(
     seal(payloads + [b"\t".join(fields)]))
+
+open(os.path.join(root, "props-empty", ".mycelium.proposals"), "wb").write(b"")
+
+p = payloads.copy()
+law = p[0].split(b"\t")
+law[2] = b"body2-props-v2"
+p[0] = b"\t".join(law)
+open(os.path.join(root, "props-law", ".mycelium.proposals"), "wb").write(seal(p))
+
+open(os.path.join(root, "props-before-w", ".mycelium.proposals"), "wb").write(
+    seal(payloads[1:]))
+
+short = payloads[1].split(b"\t")[:-1]
+open(os.path.join(root, "props-arity", ".mycelium.proposals"), "wb").write(
+    seal([payloads[0], b"\t".join(short)]))
+
+noncanon = payloads[1].split(b"\t")
+noncanon[1] = b"02"
+open(os.path.join(root, "props-canon", ".mycelium.proposals"), "wb").write(
+    seal([payloads[0], b"\t".join(noncanon)]))
+
+future = payloads[-1].split(b"\t")
+future[1] = b"999"
+future[2] = b"0000000000000000"
+future_raw = seal(payloads + [b"\t".join(future)])
+future_dir = os.path.join(root, "props-future")
+open(os.path.join(future_dir, ".mycelium.proposals"), "wb").write(future_raw)
+open(os.path.join(future_dir, "proposals.before"), "wb").write(future_raw)
+
+main_prefix = os.path.join(root, "props-main-prefix")
+open(os.path.join(main_prefix, ".mycelium.ledger"), "wb").write(
+    b"\n".join(main_lines[:2]) + b"\n")
+open(os.path.join(main_prefix, ".mycelium.proposals"), "wb").write(
+    b"\n".join(raw.splitlines()[:2]) + b"\n")
+
+open(os.path.join(root, "props-prefix-w", ".mycelium.proposals"), "wb").write(
+    b"\n".join(raw.splitlines()[:1]) + b"\n")
+open(os.path.join(root, "props-prefix-p", ".mycelium.proposals"), "wb").write(
+    b"\n".join(raw.splitlines()[:2]) + b"\n")
 PY
 
 for spec in "props-flip:proposals chain broken:chain does not fold" \
             "props-trunc:unsealed:unsealed" \
-            "props-mono:not monotonic:not monotonic"; do
+            "props-mono:not monotonic:not monotonic" \
+            "props-empty:no law record:no law record" \
+            "props-law:props law record:props law record" \
+            "props-before-w:P before props law record:P before props law record" \
+            "props-arity:P arity:P arity" \
+            "props-canon:P field grammar:P after-meals" \
+            "props-future:P main prefix:P main prefix" \
+            "props-main-prefix:P main prefix:P main prefix"; do
     name=${spec%%:*}; rest=${spec#*:}; writer=${rest%%:*}; reader=${rest#*:}
     (
         cd "$T/$name"
@@ -428,6 +532,20 @@ for spec in "props-flip:proposals chain broken:chain does not fold" \
         expect_fail "$name reader refusal" "$reader" "$CHECK"
     )
 done
+
+cmp "$T/props-future/.mycelium.proposals" "$T/props-future/proposals.before" &&
+    pass "a foreign future prefix refuses before the writer appends" ||
+    fail "future prefix append"
+
+for name in props-prefix-w props-prefix-p; do
+    (
+        cd "$T/$name"
+        "$CHECK" >/dev/null
+        "$MYC" propose >/dev/null
+        "$CHECK" >/dev/null
+    )
+done
+pass "W-only and complete-P record-boundary prefixes resume honestly"
 
 if [ ! -e "$T/.failed" ]; then
     printf '%s\n' '----' 'ALL MYCELIUM GATES PASS'
