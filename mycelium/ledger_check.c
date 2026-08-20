@@ -325,6 +325,170 @@ static void check_proposals(void) {
            lineno, w_count, p_count, (unsigned long long)chain);
 }
 
+/* body 3: the school chain, judged by the second hand. Grammar, chain,
+   order and arithmetic only; re-deriving bits from the field is the
+   examiner's work. Absence of the file is not a fault. */
+static const char *school_path = ".mycelium.school";
+
+_Noreturn static void refuse_school(unsigned long long line, const char *what) {
+    fprintf(stderr, "ledger_check: school line %llu: %s\n", line, what);
+    exit(1);
+}
+
+typedef struct {
+    uint64_t after, last_meal, base_total, cand_total;
+    int verdicted, passed;
+} SchoolHyp;
+
+static const char *school_verdict(uint64_t base_total, uint64_t cand_total) {
+    if (base_total >= cand_total + 8000000ULL) return "pass";
+    if (base_total > cand_total) return "weak";
+    return "fail";
+}
+
+static void check_school(void) {
+    FILE *sf = fopen(school_path, "rb");
+    if (!sf) return;
+    uint64_t chain = 0xcbf29ce484222325ULL;
+    unsigned long long lineno = 0, h_count = 0, r_count = 0, o_count = 0,
+                       v_count = 0, l_count = 0;
+    int law_seen = 0;
+    SchoolHyp *hyps = NULL;
+    size_t hyp_cap = 0;
+    char *line = NULL;
+    size_t cap = 0;
+    for (;;) {
+        size_t len = 0;
+        int c, sealed = 0;
+        while ((c = fgetc(sf)) != EOF) {
+            if (c == '\n') { sealed = 1; break; }
+            if (len + 2 > cap) {
+                cap = cap ? cap * 2 : 256;
+                line = realloc(line, cap);
+                if (!line) { fprintf(stderr, "ledger_check: memory\n"); exit(1); }
+            }
+            line[len++] = (char)c;
+        }
+        if (len == 0 && !sealed) break;
+        lineno++;
+        if (!sealed) refuse_school(lineno, "record is unsealed (no newline)");
+        if (len + 1 >= RECORD_MAX) refuse_school(lineno, "record exceeds 4096-byte law");
+        if (len < 18) refuse_school(lineno, "record too short for a chain field");
+        if (line[len - 17] != '\t') refuse_school(lineno, "no tab before the chain field");
+        uint64_t claimed;
+        if (!parse_hex16(line + len - 16, 16, &claimed))
+            refuse_school(lineno, "chain field is not lowercase hex16");
+        size_t plen = len - 17;
+        chain = hash_fold((unsigned char *)line, plen, chain);
+        if (chain != claimed) refuse_school(lineno, "chain does not fold");
+
+        const char *fl[10];
+        size_t fn[10];
+        int nf = fields_split(line, plen, fl, fn, 10);
+        if (nf < 1 || fn[0] != 1) refuse_school(lineno, "no record type");
+        char type = fl[0][0];
+        if (type == 'S') {
+            if (lineno != 1 || nf != 3 || !field_eq(fl[1], fn[1], "1") ||
+                    !field_eq(fl[2], fn[2], "body3-school-v1"))
+                refuse_school(lineno, "school law record");
+            law_seen = 1;
+            continue;
+        }
+        if (!law_seen) refuse_school(lineno, "record before school law");
+        if (type == 'H') {
+            uint64_t id, arity, slen, after, mc;
+            if (nf != 9) refuse_school(lineno, "H arity");
+            if (!parse_u64(fl[1], fn[1], &id) || id != h_count + 1)
+                refuse_school(lineno, "H id is not sequential");
+            if (!parse_u64(fl[2], fn[2], &arity) || (arity != 2 && arity != 3))
+                refuse_school(lineno, "H shape arity");
+            if (!parse_u64(fl[3], fn[3], &slen) || fn[4] != slen || slen == 0)
+                refuse_school(lineno, "H shape length");
+            if (!parse_u64(fl[5], fn[5], &after)) refuse_school(lineno, "H after-meals");
+            if (!parse_hex16(fl[6], fn[6], &mc)) refuse_school(lineno, "H main chain");
+            if (!field_eq(fl[7], fn[7], "8") ||
+                    !field_eq(fl[8], fn[8], "laplace-unigram-lmf"))
+                refuse_school(lineno, "H window or baseline law");
+            if (h_count == hyp_cap) {
+                size_t next = hyp_cap ? hyp_cap * 2 : 16;
+                SchoolHyp *p = realloc(hyps, next * sizeof *p);
+                if (!p) { fprintf(stderr, "ledger_check: memory\n"); exit(1); }
+                hyps = p;
+                hyp_cap = next;
+            }
+            hyps[h_count] = (SchoolHyp){after, 0, 0, 0, 0, 0};
+            h_count++;
+        } else if (type == 'R') {
+            uint64_t slen;
+            if (nf != 4) refuse_school(lineno, "R arity");
+            if (!field_eq(fl[1], fn[1], "not-proposed") &&
+                    !field_eq(fl[1], fn[1], "already-enrolled") &&
+                    !field_eq(fl[1], fn[1], "already-legalised"))
+                refuse_school(lineno, "R reason");
+            if (!parse_u64(fl[2], fn[2], &slen) || fn[3] != slen || slen == 0)
+                refuse_school(lineno, "R shape length");
+            r_count++;
+        } else if (type == 'O') {
+            uint64_t id, meal, frags, base_mb, cand_mb, expect;
+            if (nf != 6) refuse_school(lineno, "O arity");
+            if (!parse_u64(fl[1], fn[1], &id) || id == 0 || id > h_count)
+                refuse_school(lineno, "O names no hypothesis");
+            if (!parse_u64(fl[2], fn[2], &meal) ||
+                    !parse_u64(fl[3], fn[3], &frags) ||
+                    !parse_u64(fl[4], fn[4], &base_mb) ||
+                    !parse_u64(fl[5], fn[5], &cand_mb))
+                refuse_school(lineno, "O field grammar");
+            expect = hyps[id - 1].last_meal ? hyps[id - 1].last_meal + 1
+                                            : hyps[id - 1].after + 1;
+            if (hyps[id - 1].verdicted || meal != expect ||
+                    meal > hyps[id - 1].after + 8)
+                refuse_school(lineno, "O outside the window's order");
+            hyps[id - 1].last_meal = meal;
+            hyps[id - 1].base_total += base_mb;
+            hyps[id - 1].cand_total += cand_mb;
+            o_count++;
+        } else if (type == 'V') {
+            uint64_t id, bt, ct;
+            if (nf != 5) refuse_school(lineno, "V arity");
+            if (!parse_u64(fl[1], fn[1], &id) || id == 0 || id > h_count)
+                refuse_school(lineno, "V names no hypothesis");
+            if (!parse_u64(fl[3], fn[3], &bt) || !parse_u64(fl[4], fn[4], &ct))
+                refuse_school(lineno, "V field grammar");
+            if (hyps[id - 1].verdicted ||
+                    hyps[id - 1].last_meal != hyps[id - 1].after + 8)
+                refuse_school(lineno, "V before the window closed");
+            if (bt != hyps[id - 1].base_total || ct != hyps[id - 1].cand_total)
+                refuse_school(lineno, "V totals do not match the observations");
+            if (!field_eq(fl[2], fn[2], school_verdict(bt, ct)))
+                refuse_school(lineno, "V verdict class");
+            hyps[id - 1].verdicted = 1;
+            hyps[id - 1].passed = field_eq(fl[2], fn[2], "pass");
+            v_count++;
+        } else if (type == 'L') {
+            uint64_t id, glyph;
+            if (nf != 3) refuse_school(lineno, "L arity");
+            if (!parse_u64(fl[1], fn[1], &id) || id == 0 || id > h_count)
+                refuse_school(lineno, "L names no hypothesis");
+            if (!parse_u64(fl[2], fn[2], &glyph) || glyph != l_count + 1)
+                refuse_school(lineno, "L glyph is not sequential");
+            if (!hyps[id - 1].verdicted || hyps[id - 1].passed != 1)
+                refuse_school(lineno, "L without a pass");
+            hyps[id - 1].passed = 2; /* legalised; a second L must refuse */
+            l_count++;
+        } else {
+            refuse_school(lineno, "unknown school record type");
+        }
+    }
+    fclose(sf);
+    free(line);
+    free(hyps);
+    if (!law_seen) refuse_school(lineno, "school has no law record");
+    printf("school: %llu records (S 1, H %llu, R %llu, O %llu, V %llu, L %llu), "
+           "chain %016llx\n",
+           lineno, h_count, r_count, o_count, v_count, l_count,
+           (unsigned long long)chain);
+}
+
 int main(int argc, char **argv) {
     if (argc > 3) {
         fprintf(stderr, "usage: ledger_check [ledger [grave-dir]]\n");
@@ -450,6 +614,7 @@ int main(int argc, char **argv) {
     printf("ledger_check: %llu records (V %llu, G %llu, U %llu), chain %016llx\n",
            lineno, v_count, g_count, u_count, (unsigned long long)chain);
     check_proposals();
+    check_school();
     printf("scope: internal consistency of the supplied file; a prefix cut at "
            "a record boundary needs an external witness\n");
     size_t i;
