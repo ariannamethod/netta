@@ -130,6 +130,34 @@ for i in range(1, 20):
     open(os.path.join(rent, f"speech-{i}"), "wb").write(data)
     bio.append(sig(data, 40 + i))
 open(os.path.join(rent, "bio"), "wb").write(("\n".join(bio) + "\n").encode())
+
+def room_meals(name, texts, seed0):
+    path = os.path.join(T, name)
+    os.makedirs(path)
+    rows = []
+    for i, t in enumerate(texts, 1):
+        data = t.encode()
+        open(os.path.join(path, f"speech-{i}"), "wb").write(data)
+        rows.append(sig(data, seed0 + i))
+    open(os.path.join(path, "bio"), "wb").write(("\n".join(rows) + "\n").encode())
+
+school = []
+for i in range(1, 19):
+    if i <= 2:
+        school.append(f"The quiet raven counts the copper coins tonight before dawn {i:02d}.")
+    else:
+        school.append(f"The quiet raven counts the copper coins on evening {i:02d}. "
+                      f"The quiet raven counts the silver ledger on evening {i:02d} once more.")
+room_meals("school-field", school, 70)
+
+glory = []
+for i in range(1, 11):
+    if i <= 2:
+        glory.append(f"The amber wolf sings beside the frozen river tonight {i:02d}. "
+                     f"The amber wolf sings beside the silver bridge tonight {i:02d} as well.")
+    else:
+        glory.append(f"A numbered courier route {i:02d} delivers the quiet evening ledger across town.")
+room_meals("glory-field", glory, 90)
 PY
 
 mkdir "$T/honest"
@@ -546,6 +574,165 @@ for name in props-prefix-w props-prefix-p; do
     )
 done
 pass "W-only and complete-P record-boundary prefixes resume honestly"
+
+# ---- body 3: the school ----
+mkdir "$T/school"
+(
+    cd "$T/school"
+    i=1
+    while [ $i -le 2 ]; do
+        "$MYC" ingest scholar "$T/school-field/speech-$i" "$T/school-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" enroll 3 quiet raven counts >enroll1.out
+    grep -F 'enrolled hyp 1 arity 3' enroll1.out >/dev/null &&
+        pass "an alive proposal enrolls as a hypothesis" || fail "enroll"
+    expect_fail "a twice-enrolled shape refuses by name" "already-enrolled" \
+        "$MYC" enroll 3 quiet raven counts
+    expect_fail "an unproposed shape refuses by name" "not-proposed" \
+        "$MYC" enroll 2 velvet moon
+    i=3
+    while [ $i -le 5 ]; do
+        "$MYC" ingest scholar "$T/school-field/speech-$i" "$T/school-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" examine >ex1.out
+    [ "$(grep -c "$(printf 'V\t')" .mycelium.school)" -eq 0 ] &&
+        pass "no verdict before the window closes" || fail "early verdict"
+    i=6
+    while [ $i -le 10 ]; do
+        "$MYC" ingest scholar "$T/school-field/speech-$i" "$T/school-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" examine >ex2.out
+    grep -F 'verdict: hyp 1 pass' ex2.out >/dev/null &&
+        grep -F 'glyph 1 minted for hyp 1' ex2.out >/dev/null &&
+        pass "a recurring shape earns its glyph on the future stream" || fail "honest pass"
+    expect_fail "a legalised shape refuses re-enrollment" "already-legalised" \
+        "$MYC" enroll 3 quiet raven counts
+    "$MYC" enroll 2 quiet raven >enroll2.out
+    i=11
+    while [ $i -le 18 ]; do
+        "$MYC" ingest scholar "$T/school-field/speech-$i" "$T/school-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" examine >ex3.out
+    grep -F 'verdict: hyp 2 fail' ex3.out >/dev/null &&
+        pass "the legalised triple starves its own pair" || fail "marginal law"
+    "$CHECK" >check.out
+    grep -F '(S 1, H 2, R 3, O 16, V 2, L 1)' check.out >/dev/null &&
+        pass "the school chain is read by the independent hand" ||
+        fail "school counts: $(tail -2 check.out | tr '\n' ' ')"
+)
+
+mkdir "$T/glory-room"
+(
+    cd "$T/glory-room"
+    i=1
+    while [ $i -le 2 ]; do
+        "$MYC" ingest wolf "$T/glory-field/speech-$i" "$T/glory-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" enroll 3 amber wolf sings >/dev/null
+    i=3
+    while [ $i -le 10 ]; do
+        "$MYC" ingest wolf "$T/glory-field/speech-$i" "$T/glory-field/bio" >/dev/null
+        i=$((i + 1))
+    done
+    "$MYC" examine >ex.out
+    grep -F 'verdict: hyp 1 fail' ex.out >/dev/null &&
+        pass "past glory buys nothing after the bell" || fail "past glory"
+)
+
+python3 - "$T" <<'PY'
+import os, shutil, sys
+
+root = sys.argv[1]
+SEED = 0xcbf29ce484222325
+PRIME = 0x100000001b3
+
+def fnv(data, h):
+    for byte in data:
+        h ^= byte
+        h = (h * PRIME) & 0xffffffffffffffff
+    return h
+
+def seal(payloads):
+    out, h = bytearray(), SEED
+    for payload in payloads:
+        h = fnv(payload, h)
+        out += payload + b"\t" + f"{h:016x}".encode() + b"\n"
+    return bytes(out)
+
+school = os.path.join(root, "school")
+raw = open(os.path.join(school, ".mycelium.school"), "rb").read()
+payloads = [line[:-17] for line in raw.splitlines()]
+for name in ("school-flip", "school-trunc", "school-vtot"):
+    path = os.path.join(root, name)
+    os.makedirs(path)
+    shutil.copytree(os.path.join(school, ".mycelium.grave"),
+                    os.path.join(path, ".mycelium.grave"))
+    shutil.copy(os.path.join(school, ".mycelium.ledger"),
+                os.path.join(path, ".mycelium.ledger"))
+
+flipped = bytearray(raw)
+flipped[3] ^= 1
+open(os.path.join(root, "school-flip", ".mycelium.school"), "wb").write(bytes(flipped))
+open(os.path.join(root, "school-trunc", ".mycelium.school"), "wb").write(raw[:-1])
+
+p = payloads.copy()
+for i, row in enumerate(p):
+    if row.startswith(b"V\t"):
+        fields = row.split(b"\t")
+        fields[3] = str(int(fields[3]) + 1).encode()
+        p[i] = b"\t".join(fields)
+        break
+open(os.path.join(root, "school-vtot", ".mycelium.school"), "wb").write(seal(p))
+PY
+
+for spec in "school-flip:school chain broken:chain does not fold" \
+            "school-trunc:unsealed:unsealed" \
+            "school-vtot:V totals:V totals"; do
+    name=${spec%%:*}; rest=${spec#*:}; writer=${rest%%:*}; reader=${rest#*:}
+    (
+        cd "$T/$name"
+        expect_fail "$name writer refusal" "$writer" "$MYC" examine
+        expect_fail "$name reader refusal" "$reader" "$CHECK"
+    )
+done
+
+for n in one two; do
+    mkdir "$T/school-det-$n"
+    (
+        cd "$T/school-det-$n"
+        i=1
+        while [ $i -le 2 ]; do
+            "$MYC" ingest scholar "$T/school-field/speech-$i" "$T/school-field/bio"
+            i=$((i + 1))
+        done
+        "$MYC" enroll 3 quiet raven counts
+        i=3
+        while [ $i -le 10 ]; do
+            "$MYC" ingest scholar "$T/school-field/speech-$i" "$T/school-field/bio"
+            i=$((i + 1))
+        done
+        "$MYC" examine
+        "$MYC" enroll 2 quiet raven
+        i=11
+        while [ $i -le 18 ]; do
+            "$MYC" ingest scholar "$T/school-field/speech-$i" "$T/school-field/bio"
+            i=$((i + 1))
+        done
+        "$MYC" examine
+    ) >"$T/school-det-$n/stdout" 2>"$T/school-det-$n/stderr"
+done
+if cmp "$T/school-det-one/.mycelium.school" "$T/school-det-two/.mycelium.school" &&
+        cmp "$T/school-det-one/.mycelium.ledger" "$T/school-det-two/.mycelium.ledger" &&
+        cmp "$T/school-det-one/stdout" "$T/school-det-two/stdout"; then
+    pass "clean-room school chain and stdout are byte-identical"
+else
+    fail "school clean-room determinism"
+fi
 
 if [ ! -e "$T/.failed" ]; then
     printf '%s\n' '----' 'ALL MYCELIUM GATES PASS'

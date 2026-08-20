@@ -202,3 +202,36 @@ refuse the flipped byte, the truncated tail and the non-monotonic
 receipt in the same class, and the clean-room now reproduces the
 proposals file byte for byte beside the grave and the ledger. The
 battery stands at 39 gates, all green.
+
+## Turn 3 — the school (2026-08-21)
+
+The second hand's audit of body 2 was reproduced third-hand whole — her
+59 gates and the zero suite green in this hand's shell — and her handoff
+set six requirements for the school. The contract went into the
+constitution first, on Oleg's word, and the code followed it.
+
+A hypothesis enrolls with an explicit binary-safe identity and arity in
+an H row, bound to the lived prefix it claims exactly as her body 2
+repair taught; only a currently-alive proposal may sit, and all three
+refusals — not-proposed, already-enrolled, already-legalised — are
+public R rows. The exam begins after the bell: a window of eight meals
+fixed in the law, one O row per arrived meal with base and candidate
+microbits, both arms priced by one prequential Laplace unigram over an
+evolving symbol alphabet with longest-match-first merging, the arms
+differing by exactly one shape. The verdict against the sealed totals is
+pass, weak or fail with GAIN_MIN one full byte; a pass mints an L glyph
+whose only power is over later enrollments' baselines. The writer
+recomputes every O row from the field on load and refuses drift; the
+reader checks grammar, chain, order and the V arithmetic with its own
+hand.
+
+The numbers from the battery's own rooms say it plainly: the recurring
+triple passed with base 330609309 against candidate 203763777 microbits
+— some hundred and twenty-six bits of real compression against a
+declared minimum of eight — while the pair enrolled after its own
+triple's legalisation scored base 203763777 against candidate 203763777,
+bit-for-bit equal, gain exactly zero, fail: the same future token
+boundary was never credited twice. Past glory scored the same exact
+zero. The battery stands at 75 gates, all green: the early verdict is
+impossible, the three tamper classes refuse in both hands, and two
+clean rooms reproduce the school chain byte for byte.
