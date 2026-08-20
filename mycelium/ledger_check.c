@@ -224,6 +224,81 @@ static int sources_valid(const char *s, size_t n, uint64_t touched) {
     return count == touched;
 }
 
+/* body 2: the proposer's receipts, judged by the second hand. Their own
+   file, their own chain, their own law string; absence is not a fault. */
+static const char *props_path = ".mycelium.proposals";
+
+static void refuse_props(unsigned long long line, const char *what) {
+    fprintf(stderr, "ledger_check: proposals line %llu: %s\n", line, what);
+    exit(1);
+}
+
+static void check_proposals(void) {
+    FILE *pf = fopen(props_path, "rb");
+    if (!pf) return;
+    uint64_t chain = 0xcbf29ce484222325ULL;
+    uint64_t last_after = 0;
+    unsigned long long lineno = 0, w_count = 0, p_count = 0;
+    char *line = NULL;
+    size_t cap = 0;
+    for (;;) {
+        size_t len = 0;
+        int c, sealed = 0;
+        while ((c = fgetc(pf)) != EOF) {
+            if (c == '\n') { sealed = 1; break; }
+            if (len + 2 > cap) {
+                cap = cap ? cap * 2 : 256;
+                line = realloc(line, cap);
+                if (!line) { fprintf(stderr, "ledger_check: memory\n"); exit(1); }
+            }
+            line[len++] = (char)c;
+        }
+        if (len == 0 && !sealed) break;
+        lineno++;
+        if (!sealed) refuse_props(lineno, "record is unsealed (no newline)");
+        if (len + 1 >= RECORD_MAX) refuse_props(lineno, "record exceeds 4096-byte law");
+        if (len < 18) refuse_props(lineno, "record too short for a chain field");
+        if (line[len - 17] != '\t') refuse_props(lineno, "no tab before the chain field");
+        uint64_t claimed;
+        if (!parse_hex16(line + len - 16, 16, &claimed))
+            refuse_props(lineno, "chain field is not lowercase hex16");
+        size_t plen = len - 17;
+        chain = hash_fold((unsigned char *)line, plen, chain);
+        if (chain != claimed) refuse_props(lineno, "chain does not fold");
+
+        const char *fl[8];
+        size_t fn[8];
+        int nf = fields_split(line, plen, fl, fn, 8);
+        if (nf < 1 || fn[0] != 1) refuse_props(lineno, "no record type");
+        if (fl[0][0] == 'W') {
+            if (lineno != 1 || nf != 3 || !field_eq(fl[1], fn[1], "1") ||
+                    !field_eq(fl[2], fn[2], "body2-props-v1"))
+                refuse_props(lineno, "props law record");
+            w_count++;
+        } else if (fl[0][0] == 'P') {
+            uint64_t after, d, alive, dead;
+            if (!w_count) refuse_props(lineno, "P before props law record");
+            if (nf != 6) refuse_props(lineno, "P arity");
+            if (!parse_u64(fl[1], fn[1], &after) || after == 0)
+                refuse_props(lineno, "P after-meals");
+            if (!parse_hex16(fl[2], fn[2], &d)) refuse_props(lineno, "P main chain");
+            if (!parse_u64(fl[3], fn[3], &alive)) refuse_props(lineno, "P alive count");
+            if (!parse_u64(fl[4], fn[4], &dead)) refuse_props(lineno, "P dead count");
+            if (!parse_hex16(fl[5], fn[5], &d)) refuse_props(lineno, "P snapshot digest");
+            if (after < last_after) refuse_props(lineno, "P after-meals is not monotonic");
+            last_after = after;
+            p_count++;
+        } else {
+            refuse_props(lineno, "unknown proposals record type");
+        }
+    }
+    fclose(pf);
+    free(line);
+    if (!w_count) refuse_props(lineno, "proposals has no law record");
+    printf("proposals: %llu records (W %llu, P %llu), chain %016llx\n",
+           lineno, w_count, p_count, (unsigned long long)chain);
+}
+
 int main(int argc, char **argv) {
     if (argc > 3) {
         fprintf(stderr, "usage: ledger_check [ledger [grave-dir]]\n");
@@ -347,6 +422,7 @@ int main(int argc, char **argv) {
 
     printf("ledger_check: %llu records (V %llu, G %llu, U %llu), chain %016llx\n",
            lineno, v_count, g_count, u_count, (unsigned long long)chain);
+    check_proposals();
     printf("scope: internal consistency of the supplied file; a prefix cut at "
            "a record boundary needs an external witness\n");
     size_t i;

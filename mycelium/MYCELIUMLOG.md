@@ -137,3 +137,27 @@ species the second hand filed against the first implementation — one
 hand accepting what the other refuses — has a mirror form, both hands
 accepting what neither writes, and it is now part of the ledger
 language's law.
+
+### Body 2 — the proposer (same turn)
+
+The contract went first, frozen in the constitution before code. The
+proposer is the evolving tokenizer's first floor and holds exactly one
+right: to notice. Adjacent token pairs and triples inside one fragment
+become proposals only when witnessed by at least two distinct meals; one
+meal echoing itself twelve times proposes nothing, and the battery
+watches it fail to. Rent runs over a sixteen-meal window: the crimson
+lantern of the renter's life, witnessed in meals one and two, is
+reported dead with its history intact after sixteen hungry meals, and a
+nineteenth meal resurrects the same identity with its meal list grown to
+1,2,19 — no convenient twin. Receipts live in .mycelium.proposals under
+their own chain and their own body2-props-v1 law: one W, then one P per
+run carrying the after-meals position, the pinned main chain, the
+alive and dead counts and a snapshot digest that two consecutive runs
+prove to be a pure function of the field. Authority is the organ's
+loudest absence: unfold and ablate answer byte-for-byte the same in a
+room with proposals and in a clone without them, because legalisation
+belongs to body 3's prequential exam and to nothing else. Both hands
+refuse the flipped byte, the truncated tail and the non-monotonic
+receipt in the same class, and the clean-room now reproduces the
+proposals file byte for byte beside the grave and the ledger. The
+battery stands at 39 gates, all green.

@@ -27,6 +27,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <map>
 #include <set>
 #include <string>
 #include <unordered_map>
@@ -44,6 +45,9 @@ static const char *LEDGER_PATH = ".mycelium.ledger";
 static const char *GRAVE_DIR = ".mycelium.grave";
 static const char *LEDGER_LAW = "body1-byte-v1";
 static const size_t LEDGER_RECORD_MAX = 4096;
+static const char *PROPS_PATH = ".mycelium.proposals";
+static const char *PROPS_LAW = "body2-props-v1";
+static const uint64_t RENT_WINDOW = 16;
 
 static uint64_t fnv64(const void *p, size_t n, uint64_t h) {
     const uint8_t *b = (const uint8_t *)p;
@@ -364,6 +368,7 @@ struct Frag {
     std::string text;
     std::string source; /* operator-supplied source label */
     std::string sref;   /* "label s#N" */
+    uint64_t meal = 0;  /* which G event fed it, 1-based */
     std::vector<std::string> toks;
     std::vector<double> emb;
 };
@@ -375,6 +380,7 @@ struct Mycelium {
     std::set<std::string> keys;         /* exact attestation witnesses eaten */
     std::set<std::string> blobs_seen;   /* speech digests referenced by G */
     bool version_seen = false;
+    uint64_t meals = 0;                 /* G events replayed or eaten */
 
     static std::string make_key(uint64_t prior, uint64_t ord,
                                 const std::string &sline) {
@@ -384,6 +390,7 @@ struct Mycelium {
     void add_fragments(const GraveEvent &g, const std::string &speech,
                        uint64_t *out_frags, uint64_t *out_toks) {
         uint64_t nf = 0, nt = 0;
+        meals++;
         std::string sref = g.label + "@" + hex16(g.prior_digest) +
                            " s#" + std::to_string(g.ordinal);
         for (const auto &entry : segment(speech)) {
@@ -393,6 +400,7 @@ struct Mycelium {
             f.text = entry;
             f.source = g.label;
             f.sref = sref;
+            f.meal = meals;
             f.emb = mean_embed(toks);
             nt += toks.size();
             f.toks = std::move(toks);
@@ -541,6 +549,85 @@ struct Mycelium {
         std::sort(names.begin(), names.end());
         for (const auto &name : names)
             fprintf(stderr, "mycelium: orphan grave blob %s (ignored)\n", name.c_str());
+    }
+};
+
+/* body 2: the proposer's receipts. Their own chain under their own law;
+   the main ledger and its closed body1-byte-v1 law are never touched. */
+struct Props {
+    uint64_t chain = FNV_SEED;
+    uint64_t records = 0;
+    uint64_t last_after = 0;
+    bool law_seen = false;
+
+    void load() {
+        std::string raw;
+        if (!read_file(PROPS_PATH, raw)) {
+            struct stat st;
+            if (stat(PROPS_PATH, &st) == 0) die("cannot read proposals");
+            return; /* no proposals yet */
+        }
+        size_t pos = 0;
+        uint64_t lineno = 0;
+        while (pos < raw.size()) {
+            size_t nl = raw.find('\n', pos);
+            if (nl == std::string::npos)
+                die("proposals line " + std::to_string(lineno + 1) + " is unsealed");
+            std::string line = raw.substr(pos, nl - pos);
+            if (line.size() + 1 > LEDGER_RECORD_MAX)
+                die("proposals line " + std::to_string(lineno + 1) +
+                    " exceeds 4096-byte law");
+            pos = nl + 1;
+            lineno++;
+            size_t tab = line.rfind('\t');
+            if (tab == std::string::npos || line.size() - tab - 1 != 16)
+                die("proposals line " + std::to_string(lineno) + " has no chain field");
+            uint64_t claimed;
+            if (!canon_hex16(line.substr(tab + 1), &claimed))
+                die("proposals line " + std::to_string(lineno) + " chain is not hex16");
+            std::string payload = line.substr(0, tab);
+            uint64_t next = fnv64(payload.data(), payload.size(), chain);
+            if (next != claimed)
+                die("proposals chain broken at line " + std::to_string(lineno));
+            chain = next;
+            records++;
+            auto f = split_tabs(payload);
+            const std::string where = "proposals line " + std::to_string(lineno);
+            if (f.empty()) die(where + " is empty");
+            if (f[0] == "W") {
+                if (lineno != 1 || f.size() != 3 || f[1] != "1" || f[2] != PROPS_LAW)
+                    die(where + ": props law record");
+                law_seen = true;
+            } else if (f[0] == "P") {
+                if (!law_seen) die(where + ": P before props law record");
+                if (f.size() != 6) die(where + ": P arity");
+                uint64_t after, mainchain, alive, dead, dig;
+                if (!canon_u64(f[1], &after) || after == 0 ||
+                    !canon_hex16(f[2], &mainchain) ||
+                    !canon_u64(f[3], &alive) || !canon_u64(f[4], &dead) ||
+                    !canon_hex16(f[5], &dig))
+                    die(where + ": P field grammar");
+                if (after < last_after)
+                    die(where + ": P after-meals is not monotonic");
+                last_after = after;
+            } else {
+                die(where + ": unknown proposals record type");
+            }
+        }
+        if (records && !law_seen) die("proposals has no law record");
+    }
+
+    void append(const std::string &payload) {
+        if (payload.size() + 18 > LEDGER_RECORD_MAX)
+            die("proposals record exceeds 4096-byte law");
+        chain = fnv64(payload.data(), payload.size(), chain);
+        std::string line = payload + "\t" + hex16(chain) + "\n";
+        int fd = open(PROPS_PATH, O_WRONLY | O_APPEND | O_CREAT, 0644);
+        if (fd < 0) die("cannot open proposals for append");
+        ssize_t w = write(fd, line.data(), line.size());
+        if (w < 0 || (size_t)w != line.size() || close(fd) != 0)
+            die("proposals append failed");
+        records++;
     }
 };
 
@@ -802,12 +889,77 @@ static void cmd_ablate(Mycelium &m) {
     if (!pass) exit(1);
 }
 
+/* body 2: the proposer. It NOTICES recurring shapes -- adjacent token
+   pairs and triples inside one fragment -- supported by at least two
+   distinct meals, prices their rent over a sixteen-meal window, and
+   seals one receipt per run. It grants nothing: the field, the mouthly
+   organs and the main ledger are untouched by its existence. */
+static void cmd_propose(Mycelium &m) {
+    if (m.frags.empty()) die("the mycelium is empty; ingest something first");
+    Props pr;
+    pr.load();
+    std::map<std::string, std::set<uint64_t>> shapes;
+    for (const auto &f : m.frags)
+        for (size_t i = 0; i + 1 < f.toks.size(); ++i) {
+            shapes[f.toks[i] + " " + f.toks[i + 1]].insert(f.meal);
+            if (i + 2 < f.toks.size())
+                shapes[f.toks[i] + " " + f.toks[i + 1] + " " + f.toks[i + 2]]
+                    .insert(f.meal);
+        }
+    struct Prop { const std::string *shape; const std::set<uint64_t> *meals; };
+    std::vector<Prop> props;
+    for (const auto &kv : shapes)
+        if (kv.second.size() >= 2) props.push_back({&kv.first, &kv.second});
+    std::stable_sort(props.begin(), props.end(), [](const Prop &a, const Prop &b) {
+        if (a.meals->size() != b.meals->size())
+            return a.meals->size() > b.meals->size();
+        return *a.shape < *b.shape;
+    });
+    std::string block = "proposals after meal " + std::to_string(m.meals) +
+                        " (main chain " + hex16(m.led.chain) + "):\n";
+    uint64_t alive = 0, dead = 0;
+    for (const auto &p : props) {
+        uint64_t last = *p.meals->rbegin();
+        bool live = m.meals - last < RENT_WINDOW;
+        std::string csv;
+        for (uint64_t meal : *p.meals) {
+            if (!csv.empty()) csv += ",";
+            csv += std::to_string(meal);
+        }
+        if (live) {
+            alive++;
+            block += "  alive " + *p.shape + " support=" +
+                     std::to_string(p.meals->size()) + " meals=" + csv + "\n";
+        } else {
+            dead++;
+            block += "  dead " + *p.shape + " support=" +
+                     std::to_string(p.meals->size()) + " meals=" + csv +
+                     " last=" + std::to_string(last) + "\n";
+        }
+    }
+    if (props.empty()) block += "  (nothing recurs across meals yet)\n";
+    write_bytes(stdout, block);
+    uint64_t dig = fnv64(block.data(), block.size(), FNV_SEED);
+    if (!pr.law_seen) {
+        pr.append(std::string("W\t1\t") + PROPS_LAW);
+        pr.law_seen = true;
+    }
+    std::string payload = "P\t" + std::to_string(m.meals) + "\t" +
+                          hex16(m.led.chain) + "\t" + std::to_string(alive) +
+                          "\t" + std::to_string(dead) + "\t" + hex16(dig);
+    pr.append(payload);
+    printf("  receipt: snapshot %s | proposals %llu records chain %s\n",
+           hex16(dig).c_str(), (unsigned long long)pr.records,
+           hex16(pr.chain).c_str());
+}
+
 int main(int argc, char **argv) {
     const char *usage =
         "usage: mycelium ingest <label> <speech> <biography>\n"
         "       mycelium unfold <prompt words...>\n"
         "       mycelium field\n"
-        "       mycelium ablate\n";
+        "       mycelium ablate\n"
+        "       mycelium propose\n";
     if (argc < 2) { fputs(usage, stderr); return 1; }
     Mycelium m;
     m.load();
@@ -828,6 +980,8 @@ int main(int argc, char **argv) {
         cmd_field(m);
     } else if (cmd == "ablate") {
         cmd_ablate(m);
+    } else if (cmd == "propose") {
+        cmd_propose(m);
     } else {
         fputs(usage, stderr);
         return 1;
