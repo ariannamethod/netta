@@ -11,7 +11,7 @@ When transformers choose the easy way, Netta has to survive. So: no pretrained w
 
 Netta sees the world as an **immutable byte tape**. No words at birth, no tokenizer deciding what reality is. No BPE dropped from heaven by humans who already know how to speak. No, thanks.
 
-256 bytes. That's all she need. Every byte is legal, and every island is addressed by:
+256 bytes. That's all she needs. Every byte is legal, and every island is addressed by:
 
 ```text
 (island, byte offset)
@@ -25,7 +25,7 @@ Even in byte tape world everything is priced - in **bits per raw byte**. One rul
 
 ## an earned vocabulary
 
-256 bytes are the floor, but he floor is load-bearing. Repeated sequences become **units**: byte-exact roads over ground Netta has actually lived. A unit never replaces its bytes and never retokenizes the past. The atomic world remains underneath forever. And vocabulary pays rent. A unit that goes unrecognised for 16384 lived bytes dies. Its current probability mass disappears, but its history doesn't. If the same byte sequence becomes supported again, the old identity resurrects with its evidence instead of spawning a convenient twin.
+256 bytes are the floor, but the floor is load-bearing. Repeated sequences become **units**: byte-exact roads over ground Netta has actually lived. A unit never replaces its bytes and never retokenizes the past. The atomic world remains underneath forever. And vocabulary pays rent. A unit that goes unrecognised for 16384 lived bytes dies. Its current probability mass disappears, but its history doesn't. If the same byte sequence becomes supported again, the old identity resurrects with its evidence instead of spawning a convenient twin.
 
 Netta does not get concepts because somebody thought concepts would be useful. Netta thinks the concepts have to survive too.
 
@@ -70,7 +70,7 @@ Authority is earned, measurable and revocable. Byte actors compete on their live
 
 **Mandates are global. Verdicts are local.**
 
-Every island keeps its own record of the witnesses that visited it. A travelling hand may be strong at home and still be refused on a foreign shore.Netta has politics because apparently even a 256-byte universe eventually invents jurisdiction. With `--atlas`, navigation itself becomes earned. Netta first maps under-lived islands, then uses only records already earned by that life to decide where to go.
+Every island keeps its own record of the witnesses that visited it. A travelling hand may be strong at home and still be refused on a foreign shore. Netta has politics because apparently even a 256-byte universe eventually invents jurisdiction. With `--atlas`, navigation itself becomes earned. Netta first maps under-lived islands, then uses only records already earned by that life to decide where to go.
 
 Worlds remain worlds. Experience may travel between them.
 
