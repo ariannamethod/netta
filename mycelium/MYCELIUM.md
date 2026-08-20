@@ -110,13 +110,13 @@ conversations with Yent as a third hand on large changes; the GTA
 disciplines (streaming of note-zones, heat, missions-before-sandbox)
 wherever the scale demands them.
 
-## Body 1 contract (frozen before code)
+## Body 1 contract (frozen before code, repaired by the second hand)
 
 - `mycelium/mycelium.cpp` — single file, C++17, standard library only,
   built strict (`-Wall -Wextra -Wpedantic`), no dependency on netta.c.
 - `mycelium/ledger_check.c` — the independent reader of the ledger,
   plain C, shares no code with the writer.
-- **The byte law.** Netta's speech is a byte stream, so body 1 speaks
+- **The byte law.** Netta's speech is a byte stream, so body 1 processes
   bytes: hashing, lowering and token cuts are defined over bytes with
   ASCII semantics. On pure-ASCII input this matches `mycelium.py`
   exactly; beyond ASCII the C++ behaviour is its own declared law — the
@@ -125,48 +125,66 @@ wherever the scale demands them.
   (DIM 96, the FNV-32 vector generator, per-source cap 3, the clause
   cut) under the byte law.
 - **Grave and ledger are the state; the field is derived.** Eaten speech
-  is archived verbatim under `mycelium/.grave/`, content-interned by
+  is archived verbatim under `.mycelium.grave/` in the run's working
+  directory, content-interned by
   digest. `.mycelium.ledger` is the append-only chain — FNV-1a-64 over
   each record's raw bytes folded into a running chain, seed
-  `cbf29ce484222325` — of three record types: `G` grave event (life
-  label, biography digest, the matching `s` line verbatim with its line
-  ordinal, speech digest and byte count), `F` fragments cut from that
-  speech (fragment and token counts), `U` unfold receipt (prompt digest,
-  corpse digest, sources touched). Every run rebuilds the field by
+  `cbf29ce484222325` — of three record types: `V` fixes the replay law
+  (`body1-byte-v1`), `G` is one complete grave event (source label,
+  biography-prefix digest, the matching `s` line verbatim with its line
+  ordinal, speech digest and byte count), and `U` is an unfold receipt
+  (prompt digest, corpse digest, sources touched). Every run rebuilds the field by
   replaying the ledger against the grave; nothing else persists, so
   there is no snapshot to drift and a restart proves the ledger holds
   enough truth. Crash order: blob first (temp then rename), ledger line
-  second; a ledger line whose blob is missing refuses by name; a blob no
-  line names is reported as an orphan and never enters the field.
+  second. One meal is one `G`, not a two-record transaction: a ledger
+  line whose blob is missing refuses by name; a blob no line names is
+  reported as an orphan and never enters the field. Records are bounded
+  at 4096 bytes. A process crash is covered; there is no machine-crash
+  durability claim and no `fsync`.
 - **The attestation gate.** `ingest(label, speech, biography)`
-  recomputes the speech file's FNV-1a-64 digest and requires an `s`
-  event in the supplied biography whose candidate digest and byte count
-  match; refusal by name, nothing eaten, nothing written. Per law 5 this
-  attests the pair, not authorship.
-- **Dedup by witness, not by content.** The grave key is the digest of
-  (biography digest ‖ s-line ordinal ‖ s line bytes). Re-ingesting an
-  already-eaten pair refuses by name; the same bytes spoken by a
-  different life is a NEW event whose content interns into the same
-  blob — two witnesses, one body.
+  recomputes the speech file's FNV-1a-64 digest and requires a complete,
+  canonical, newline-sealed `s` event in the supplied biography whose
+  candidate digest and byte count match. All nine fields obey the public
+  biography grammar; an s-shaped row is not an event. Refusal is by
+  name, with nothing eaten and nothing written. Per law 5 this attests
+  the pair, not authorship.
+- **Dedup by witness, not by content.** The grave key is the exact tuple
+  (biography-prefix digest ‖ s-line ordinal ‖ s line bytes), not another
+  lossy hash. Re-ingesting an already-eaten witness refuses by name; a
+  later matching `s` event remains independently edible. The same bytes
+  spoken under a distinct witness are a NEW event whose content interns
+  into the same blob — two witnesses, one body. Perfect clones with the
+  same attestation prefix are indistinguishable evidence and therefore
+  one witness; the caller's label cannot manufacture multiplicity.
 - Resonance mechanics ported under the byte law: char-trigram hash
   embedding into DIM 96, mean-embed of a fragment's tokens, cosine of
   the prompt field against every fragment, per-source cap 3, clause
-  cut, lineage naming the life label and its s line for every clause.
+  cut, lineage naming the source label, prefix digest and `s` ordinal for
+  every clause. Until the state-witness exists, `label` is an
+  operator-supplied grouping for the cap, not authenticated life identity.
+- **A corpse is not yet speech.** Body 1's `unfold` is a binary-safe
+  diagnostic manifestation of the resonance mechanism. It may expose
+  byte soup when the attested mouths supply byte soup. No `speak` command
+  exists, and law 3 is not claimed until a later body preregisters and
+  passes a readable-coherence gate.
 - Determinism: same inputs from an empty grave, byte-identical grave,
   ledger and stdout.
 - **Red hands, sealed before the first run:**
   1. a census-preserving shuffle of a signed speech, offered beside the
      honest biography, refuses: its digest matches no `s` line;
   2. the same speech with one byte flipped refuses the same way;
-  3. re-ingest of an already-eaten pair refuses by name;
+  3. re-ingest of an already-eaten witness refuses by name;
   4. named non-claim: an invalid pair invented whole, canonically shaped (speech,
      biography) pair PASSES this gate by construction — the gate
      attests pairing; the pinned digests in the ledger are what the
      future state-witness will judge;
   5. mechanism ablation, metric declared here: prompts are clauses cut
      from each life's ingested speech; metric A — the fraction of
-     prompts whose top-1 fragment comes from the life the clause was
-     cut from; metric B — mean top-k resonance score; control — the
+     prompts whose top-1 fragment comes from the source the clause was
+     cut from; every fragment with the same cut clause is held out from
+     both arms, so an exact duplicate cannot sit the exam for its twin;
+     metric B — mean top-k resonance score; control — the
      same field with every fragment embedding replaced by a
      deterministic hash-seeded unit vector, k and per-source cap
      unchanged. Sealed prediction: the real field beats the control on
