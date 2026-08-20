@@ -3140,3 +3140,38 @@ new organs should live outside `netta.c`; this does not silently freeze a
 known behavioural defect or grant the word of closure.  Oleg owns both the
 freeze declaration and any later surgical exception.  The self-contained C
 heart, state v20, emit bytes, RNG and lived behaviour remain unchanged.
+
+## The Python body: one architecture, two languages, bit for bit
+
+Oleg's word opened the reference transliteration for the paper: `netta.py`,
+a single stdlib-only file, explicitly not the organism — `netta.c` stays
+the sole developing heart and the port takes part in no evolution. The
+acceptance law was preregistered before code: the same CLI, the same
+biography language, the same binary state v20, and byte-for-byte equality
+of state, biography and stdout with the C body on reference recipes, under
+the same external readers.
+
+The battery is green in every arm.  A plain life and a two-shore
+atlas-and-jury life across a resume are bit-identical in biography, state
+and stdout; a C life continued by the Python body equals the same life
+continued by C, and the reverse; the mouth speaks the same bytes with the
+same manifest under both laws and `manifest_check` accepts; the court
+prints an identical docket and `warrant_check` accepts it; the ear and its
+twin arm are identical; the citation writes the same `w` and the same
+state; `biography_check` reads the Python-written biography and recognises
+the life's own speech; and ten re-sealed malformed rows refuse with the
+same exit codes and the same words.
+
+The port earned its bits the hard way, and the lesson is worth the log:
+the C organism's float behaviour is not the C source — it is the code the
+compiler generated from it.  The embedding accumulation is a fused fmadd
+chain; the recurrent and readout dot products are serial
+round-per-product sums in plain lane order; the readout update is an
+elementwise fused multiply-add; and the prophecy baseline is a double
+fused multiply-add.  Two of this port's own first guesses were wrong in
+opposite directions — assuming no fusion anywhere, then assuming fusion
+everywhere — and the disassembly of `absorb_truth` and `core_advance`
+settled each loop one by one, with `tanhf` and `fmaf` taken from the same
+libm the C build links.  Bit-identity is therefore a property of the
+canonical build; a different compiler would be a different float story,
+and the battery would name it rather than hide it.
