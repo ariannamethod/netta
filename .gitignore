@@ -1,3 +1,4 @@
 /netta
 *.state
 *.bio.tsv
+__pycache__/
