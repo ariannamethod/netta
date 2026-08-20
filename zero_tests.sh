@@ -1,5 +1,5 @@
 #!/bin/sh
-# NETTA ZERO gates Z0-B30. Machine verdicts only; rc=0 means every gate
+# NETTA ZERO gates Z0-B31. Machine verdicts only; rc=0 means every gate
 # passed. Run from the repo root. Each gate that can be faked carries a
 # red counterpart proving the check can fail.
 set -u
@@ -2580,13 +2580,34 @@ gate "B31 multiplicity is reported, not resolved: two signatures, two citations"
 sed 's/^\(s	[0-9]*	[0-9a-f]*	\)60	/\161	/' "$T/b31.bio" > "$T/b31b.bio"
 "$BC" "$T/b31b.bio" | grep -q '^recognition: s=1 w=1 recognised=0 external=1$'
 gate "B31 recognition needs the byte count as well as the digest" $? 0
+# The reader accepts the empty sequence and a single canonical event as
+# syntax. A blank row is not an empty biography: it is an untyped record.
+: > "$T/b31.empty.bio"
+"$BC" "$T/b31.empty.bio" > "$T/b31.empty.out"
+b31shape=$?
+grep -q '^scope: one supplied file is treated as one life; state identity unverified$' "$T/b31.empty.out" || b31shape=98
+grep -q '^recognition: s=0 w=0 recognised=0 external=0$' "$T/b31.empty.out" || b31shape=98
+grep -q '^biography: 0 records, chain cbf29ce484222325$' "$T/b31.empty.out" || b31shape=98
+grep "^s	" "$T/b31.bio" | head -1 > "$T/b31.single.bio"
+"$BC" "$T/b31.single.bio" > "$T/b31.single.out" || b31shape=98
+grep -q '^recognition: s=1 w=0 recognised=0 external=0$' "$T/b31.single.out" || b31shape=98
+printf '\n' > "$T/b31.blank.bio"
+"$BC" "$T/b31.blank.bio" > "$T/b31.blank.out"
+[ $? -eq 1 ] && grep -q 'opens with no known record type' "$T/b31.blank.out" || b31shape=98
+gate "B31 empty, single-event and blank-row biographies have distinct syntax" $b31shape 0
 # refusals by name: the language, not just the pairing
 b31r=0
 b31_refuse_case() {
     name=$1; want=$2; shift 2
     awk -F '\t' -v OFS='\t' "$@" "$T/b31.bio" > "$T/b31.x-$name.bio"
     "$BC" "$T/b31.x-$name.bio" > "$T/b31.x-$name.out"
-    [ $? -eq 1 ] && grep -q "^biography refused: line [0-9]* $want" "$T/b31.x-$name.out"
+    rc=$?
+    if [ "$rc" -eq 1 ] &&
+       grep -q "^biography refused: line [0-9]* $want" "$T/b31.x-$name.out"; then
+        return 0
+    fi
+    printf 'B31 refuse case failed: %s (rc=%s, want=%s)\n' "$name" "$rc" "$want" >&2
+    return 1
 }
 b31_refuse_case s-space 's record' '$1=="s" {$0=$1 "\t" $2 "\t" $3 " " $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9} {print}' || b31r=98
 b31_refuse_case s-digest15 's record' '$1=="s" {$3=substr($3,1,15)} {print}' || b31r=98
@@ -2594,15 +2615,50 @@ b31_refuse_case s-hand 's record' '$1=="s" {$6="mv"} {print}' || b31r=98
 b31_refuse_case w-verdicts 'w record' '$1=="w" {$9=$9+1} {print}' || b31r=98
 b31_refuse_case w-context 'w record' '$1=="w" {$5="COLD"} {print}' || b31r=98
 b31_refuse_case w-shores0 'w record' '$1=="w" {$6=0; $9=0} {print}' || b31r=98
+b31_refuse_case w-bytes1 'w record' '$1=="w" {$4=1} {print}' || b31r=98
+b31_refuse_case w-bytes16385 'w record' '$1=="w" {$4=16385} {print}' || b31r=98
+b31_refuse_case w-shores33 'w record' '$1=="w" {$6=33; $9=33} {print}' || b31r=98
 b31_refuse_case i-plus 'i record' 'NR==1 && $1=="i" {$2="+" $2} {print}' || b31r=98
 b31_refuse_case type-S 'opens with no known' '$1=="s" {$1="S"} {print}' || b31r=98
 b31_refuse_case type-x 'opens with no known' 'NR==2 {$1="x"} {print}' || b31r=98
+b31_refuse_case cr-s 'carries a carriage return' '$1=="s" {printf "%s\r\n",$0; next} {print}' || b31r=98
+b31_refuse_case cr-w 'carries a carriage return' '$1=="w" {printf "%s\r\n",$0; next} {print}' || b31r=98
+b31_refuse_case cr-i 'carries a carriage return' 'NR==1 && $1=="i" {printf "%s\r\n",$0; next} {print}' || b31r=98
+b31_refuse_case cr-a 'carries a carriage return' '$1=="a" {printf "%s\r\n",$0; next} {print}' || b31r=98
+b31_refuse_case tabs16 'has too many fields' '$1=="w" {$0="w"; for(j=0;j<16;j++) $0=$0 "\t"} {print}' || b31r=98
+b31_refuse_case overlong 'exceeds 1024 bytes' '$1=="a" {printf "a\t"; for(j=0;j<1022;j++) printf "x"; printf "\n"; next} {print}' || b31r=98
 { head -c 100 "$T/b31.bio"; printf '\0'; tail -c +101 "$T/b31.bio"; } > "$T/b31.x-nul.bio"
 "$BC" "$T/b31.x-nul.bio" > "$T/b31.x-nul.out"; [ $? -eq 1 ] && grep -q 'NUL' "$T/b31.x-nul.out" || b31r=98
 head -c $(( $(wc -c < "$T/b31.bio") - 1 )) "$T/b31.bio" > "$T/b31.x-unsealed.bio"
 "$BC" "$T/b31.x-unsealed.bio" > "$T/b31.x-unsealed.out"; [ $? -eq 1 ] && grep -q 'not newline-sealed' "$T/b31.x-unsealed.out" || b31r=98
-gate "B31 the reader refuses malformed s, w and i records, unknown types, NUL and unsealed rows by name" $b31r 0
-# two readers, one language: the organism on resume and the reader agree on s rows
+gate "B31 malformed fields, framing, controls and oversized records are refused by name" $b31r 0
+b31_accept_case() {
+    name=$1; shift
+    awk -F '\t' -v OFS='\t' "$@" "$T/b31.bio" > "$T/b31.ok-$name.bio"
+    "$BC" "$T/b31.ok-$name.bio" >/dev/null
+}
+b31bounds=0
+b31_accept_case bytes2 '$1=="w" {$4=2} {print}' || b31bounds=98
+b31_accept_case bytes16384 '$1=="w" {$4=16384} {print}' || b31bounds=98
+b31_accept_case shores1 '$1=="w" {$6=1; $9=1} {print}' || b31bounds=98
+b31_accept_case shores32 '$1=="w" {$6=32; $9=32} {print}' || b31bounds=98
+gate "B31 citation byte and shore bounds are inclusive at 2/16384 and 1/32" $b31bounds 0
+# Opening must not block before the promised regular-file verdict. A delayed
+# guard makes the old fopen-before-fstat hand fail rather than hang the suite.
+mkfifo "$T/b31.reader.fifo"
+"$BC" "$T/b31.reader.fifo" > "$T/b31.fifo.out" 2> "$T/b31.fifo.err" & b31pid=$!
+( sleep 2; kill "$b31pid" 2>/dev/null ) & b31guard=$!
+wait "$b31pid"; b31fifo=$?
+kill "$b31guard" 2>/dev/null || true
+wait "$b31guard" 2>/dev/null || true
+[ "$b31fifo" -eq 2 ] && grep -q 'not a regular file' "$T/b31.fifo.err"
+gate "B31 a FIFO is refused as a regular biography without blocking" $? 0
+# rc 2 names I/O failure on both sides of the reader; losing the report at
+# flush cannot be acknowledged as a successful reading.
+"$FL" 1 ignore "$BC" "$T/b31.empty.bio" > "$T/b31.short-report" 2> "$T/b31.short-report.err"
+gate "B31 a failed report sink is an I/O failure" $? 2
+# With state-relative bounds held inside the life, the two independent hands
+# agree on the context-free grammar of s.
 b31x=0
 b31_agree_case() {
     name=$1; shift
@@ -2624,7 +2680,203 @@ b31_agree_case bytes0 '$1=="s" {$4=0} {print}' || b31x=98
 b31_agree_case seed-plus '$1=="s" {$5="+7"} {print}' || b31x=98
 b31_agree_case open-upper '$1=="s" {$8="6A62"} {print}' || b31x=98
 b31_agree_case type-ss '$1=="s" {$1="ss"} {print}' || b31x=98
-gate "B31 two readers, one language: organism and reader agree on nine s rows" $b31x 0
+b31_agree_case ep0 '$1=="s" {$2=0} {print}' || b31x=98
+b31_agree_case ep-leading '$1=="s" {$2="0" $2} {print}' || b31x=98
+b31_agree_case ep-plus '$1=="s" {$2="+" $2} {print}' || b31x=98
+b31_agree_case digest-upper '$1=="s" {$3=toupper($3)} {print}' || b31x=98
+b31_agree_case digest15 '$1=="s" {$3=substr($3,1,15)} {print}' || b31x=98
+b31_agree_case digest17 '$1=="s" {$3=$3 "0"} {print}' || b31x=98
+b31_agree_case bytes1 '$1=="s" {$4=1} {print}' || b31x=98
+b31_agree_case bytes-max '$1=="s" {$4="18446744073709551615"} {print}' || b31x=98
+b31_agree_case seed-max '$1=="s" {$5="18446744073709551615"} {print}' || b31x=98
+b31_agree_case hand-uni '$1=="s" {$6="uni"} {print}' || b31x=98
+b31_agree_case hand-tri '$1=="s" {$6="tri"} {print}' || b31x=98
+b31_agree_case law-supported '$1=="s" {$7="supported-backoff"} {print}' || b31x=98
+b31_agree_case open-short '$1=="s" {$8=substr($8,1,3)} {print}' || b31x=98
+b31_agree_case open-long '$1=="s" {$8=$8 "0"} {print}' || b31x=98
+b31_agree_case lived1 '$1=="s" {$9=1} {print}' || b31x=98
+b31_agree_case extra '$1=="s" {$10="extra"} {print}' || b31x=98
+b31_agree_case missing '$1=="s" {NF=8} {print}' || b31x=98
+b31_agree_case trailing-tab '$1=="s" {$0=$0 "\t"} {print}' || b31x=98
+gate "B31 two readers agree on twenty-seven context-free s grammar rows" $b31x 0
+# The outside hand has no state by design. Future episode/lived values are
+# canonical record syntax, but not valid history for this resumed life. That
+# disagreement is contextual validity, not a grammar split.
+b31_context_case() {
+    name=$1; shift
+    cp "$T/b31.state" "$T/b31.c-$name.state"
+    awk -F '\t' -v OFS='\t' "$@" "$T/b31.bio" > "$T/b31.c-$name.bio"
+    "$BF" "$T/b31.c-$name.state" "$T/b31.c-$name.bio" || return 98
+    "$N" "$T/p3.bytes" --episodes 0 --state "$T/b31.c-$name.state" \
+        --bio "$T/b31.c-$name.bio" >/dev/null 2>&1
+    o=$?
+    "$BC" "$T/b31.c-$name.bio" >/dev/null; r=$?
+    [ "$o" -eq 1 ] && [ "$r" -eq 0 ]
+}
+b31ctx=0
+b31_context_case episode-future '$1=="s" {$2="18446744073709551615"} {print}' || b31ctx=98
+b31_context_case lived-future '$1=="s" {$9="18446744073709551615"} {print}' || b31ctx=98
+gate "B31 syntax and stateful history differ on bounds the missing state must judge" $b31ctx 0
+# The organism still chains w without parsing it. Re-seal one malformed row at
+# a time: resume accepts each, while the outside grammar hand refuses. This is
+# a measured debt corpus, not a claim that malformed strings are finite.
+b31_w_debt_case() {
+    name=$1; shift
+    cp "$T/b31.state" "$T/b31.wd-$name.state"
+    awk -F '\t' -v OFS='\t' "$@" "$T/b31.bio" > "$T/b31.wd-$name.bio"
+    "$BF" "$T/b31.wd-$name.state" "$T/b31.wd-$name.bio" || return 98
+    "$N" "$T/p3.bytes" --episodes 0 --state "$T/b31.wd-$name.state" \
+        --bio "$T/b31.wd-$name.bio" >/dev/null 2>&1
+    o=$?
+    "$BC" "$T/b31.wd-$name.bio" >/dev/null; r=$?
+    [ "$o" -eq 1 ] && [ "$r" -eq 1 ]
+}
+b31wd=0
+b31_w_debt_case ep-plus '$1=="w" {$2="+" $2} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case ep-leading '$1=="w" {$2="0" $2} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case digest-upper '$1=="w" {$3="A" substr($3,2)} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case digest-short '$1=="w" {$3=substr($3,1,15)} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case digest-long '$1=="w" {$3=$3 "0"} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case bytes1 '$1=="w" {$4=1} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case bytes16385 '$1=="w" {$4=16385} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case bytes-plus '$1=="w" {$4="+" $4} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case context-upper '$1=="w" {$5="COLD"} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case context-short '$1=="w" {$5="abc"} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case shores0 '$1=="w" {$6=0; $9=0} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case shores33 '$1=="w" {$6=33; $9=33} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case shores-plus '$1=="w" {$6="+" $6; $9="+" $9} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case law-short '$1=="w" {$7=substr($7,1,15)} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case law-upper '$1=="w" {$7="A" substr($7,2)} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case docket-short '$1=="w" {$8=substr($8,1,15)} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case docket-upper '$1=="w" {$8="A" substr($8,2)} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case verdict-mismatch '$1=="w" {$9=$9+1} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case extra '$1=="w" {$10="extra"} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case missing '$1=="w" {NF=8} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case double-tab '$1=="w" {$0=$1 "\t\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case crlf '$1=="w" {printf "%s\r\n",$0; next} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case tabs16 '$1=="w" {$0="w"; for(j=0;j<16;j++) $0=$0 "\t"} {print}' && b31wd=$((b31wd+1))
+b31_w_debt_case overlong '$1=="w" {printf "w\t"; for(j=0;j<1022;j++) printf "x"; printf "\n"; next} {print}' && b31wd=$((b31wd+1))
+[ "$b31wd" -eq 24 ]
+gate "GC the twenty-four w families refuse in both hands: the debt is repaid" $? 0
+
+# --- GC: grammar closure, the inner reader --------------------------------
+# bio_verify now checks the whole biography language of BIOGRAPHY.md with
+# the organism's own hands: exact tabs, canonical fields, exact counts for
+# all thirteen types. The shared corpus is data; the implementations stay
+# independent. Emission, behaviour, RNG and lived results are unchanged,
+# which a life frozen from the pre-closure binary proves bit for bit.
+gcC=0; gcN=0
+while IFS= read -r row; do
+    t=$(printf '%s' "$row" | cut -f1)
+    case "$t" in s|i) continue ;; esac
+    gcN=$((gcN+1))
+    cp "$T/b30.state" "$T/gc.c.state"
+    { cat "$T/b30.bio"; printf '%s\n' "$row"; } > "$T/gc.c.bio"
+    "$BF" "$T/gc.c.state" "$T/gc.c.bio" || continue
+    "$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/gc.c.state" \
+        --bio "$T/gc.c.bio" >/dev/null 2>&1 && gcC=$((gcC+1))
+done < scripts/biography_corpus/canonical.rows
+[ "$gcN" -eq 17 ] && [ "$gcC" -eq 17 ]
+gate "GC seventeen canonical corpus rows of every foreign type resume ($gcC/17)" $? 0
+gcM=0; gcR=0
+for cf in scripts/biography_corpus/*_malformed.rows; do
+    while IFS= read -r row; do
+        gcM=$((gcM+1))
+        cp "$T/b30.state" "$T/gc.m.state"
+        { cat "$T/b30.bio"; printf '%s\n' "$row"; } > "$T/gc.m.bio"
+        "$BF" "$T/gc.m.state" "$T/gc.m.bio" || continue
+        "$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/gc.m.state" \
+            --bio "$T/gc.m.bio" >/dev/null 2>&1 || gcR=$((gcR+1))
+    done < "$cf"
+done
+[ "$gcM" -eq 91 ] && [ "$gcR" -eq 91 ]
+gate "GC ninety-one re-sealed malformed corpus rows refuse in the organism ($gcR/91)" $? 0
+gcB=0
+for cf in scripts/biography_corpus/*_malformed.rows; do
+    while IFS= read -r row; do
+        printf '%s\n' "$row" > "$T/gc.b.bio"
+        "$BC" "$T/gc.b.bio" >/dev/null 2>&1 || gcB=$((gcB+1))
+    done < "$cf"
+done
+[ "$gcB" -eq 91 ]
+gate "GC the same ninety-one rows refuse in the outside reader ($gcB/91)" $? 0
+gcK=0
+while IFS= read -r row; do
+    printf '%s\n' "$row" > "$T/gc.k.bio"
+    "$BC" "$T/gc.k.bio" >/dev/null 2>&1 && gcK=$((gcK+1))
+done < scripts/biography_corpus/canonical.rows
+[ "$gcK" -eq 19 ]
+gate "GC all nineteen canonical shapes are syntax to the stateless reader ($gcK/19)" $? 0
+# two readers, the whole language: on every corpus row grafted into a lived
+# biography, the organism on resume and the outside reader return one
+# verdict class (the state-relative rows are excluded by construction)
+gcD=0; gcT=0
+gc_both() {
+    row=$1; want=$2
+    gcT=$((gcT+1))
+    cp "$T/b30.state" "$T/gc.2.state"
+    { cat "$T/b30.bio"; printf '%s\n' "$row"; } > "$T/gc.2.bio"
+    "$BF" "$T/gc.2.state" "$T/gc.2.bio" || { gcD=$((gcD+1)); return; }
+    "$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/gc.2.state" \
+        --bio "$T/gc.2.bio" >/dev/null 2>&1
+    o=$?
+    "$BC" "$T/gc.2.bio" >/dev/null 2>&1
+    r=$?
+    if [ "$want" = accept ]; then
+        { [ "$o" -eq 0 ] && [ "$r" -eq 0 ]; } || gcD=$((gcD+1))
+    else
+        { [ "$o" -ne 0 ] && [ "$r" -ne 0 ]; } || gcD=$((gcD+1))
+    fi
+}
+while IFS= read -r row; do
+    t=$(printf '%s' "$row" | cut -f1)
+    case "$t" in s|i) continue ;; esac
+    gc_both "$row" accept
+done < scripts/biography_corpus/canonical.rows
+for cf in scripts/biography_corpus/*_malformed.rows; do
+    while IFS= read -r row; do gc_both "$row" refuse; done < "$cf"
+done
+[ "$gcT" -eq 108 ] && [ "$gcD" -eq 0 ]
+gate "GC two readers, one language: one verdict class on all 108 grafted rows (disagree=$gcD)" $? 0
+# a carriage return inside a step row is no longer chained unread
+cp "$T/b30.state" "$T/gc.cr.state"
+awk 'NR==4{printf "%s\r\n",$0;next}{print}' "$T/b30.bio" > "$T/gc.cr.bio"
+"$BF" "$T/gc.cr.state" "$T/gc.cr.bio"
+"$N" "$T/p3.bytes" --episodes 1 --steps 60 --state "$T/gc.cr.state" \
+    --bio "$T/gc.cr.bio" >/dev/null 2>&1
+gate "GC a carriage return inside a step row refuses resume (asymmetry closed)" $? 1
+# bit equivalence with the pre-closure organism, frozen before the change:
+# the same two-stage life must land on the same chains, byte for byte
+printf 'abcacb%.0s' $(seq 1 300) > "$T/gc.p3"
+printf 'xyzxzy%.0s' $(seq 1 300) > "$T/gc.p5"
+"$N" "$T/gc.p3" "$T/gc.p5" --reset --seed 11 --atlas --jury --episodes 6 \
+    --steps 600 --state "$T/gc.fz.state" --bio "$T/gc.fz.bio" > "$T/gc.fz1" 2>&1
+"$N" "$T/gc.p5" "$T/gc.p3" --seed 11 --atlas --jury --episodes 4 \
+    --steps 400 --state "$T/gc.fz.state" --bio "$T/gc.fz.bio" > "$T/gc.fz2" 2>&1
+grep -q '^biography: 4421 lines, chain 18c67d0e0ca68401$' "$T/gc.fz1" && \
+    grep -q '^biography: 5829 lines, chain 1fc3f4127170a2f9$' "$T/gc.fz2"
+gate "GC the closed reader leaves the lived world bit-identical (frozen chains)" $? 0
+# No state witness means the file boundary is an explicit assumption. Two
+# sibling lives share a past, then diverge: A signs, B cites A's stream. Each
+# file is honest alone; concatenating A before B manufactures within-file
+# recognition, which the report must label with unverified identity.
+cp "$T/b18.state.ref" "$T/b31life-a.state"; cp "$T/b18.bio.ref" "$T/b31life-a.bio"
+"$N" --speak 60 --speak-seed 7 --sign --state "$T/b31life-a.state" \
+    --bio "$T/b31life-a.bio" > "$T/b31life-a.words" 2>/dev/null
+"$N" "$T/p3.bytes" --court "$T/b31life-a.words" > "$T/b31life-a.docket" 2>/dev/null
+cp "$T/b18.state.ref" "$T/b31life-b.state"; cp "$T/b18.bio.ref" "$T/b31life-b.bio"
+"$N" --state "$T/b31life-b.state" --bio "$T/b31life-b.bio" \
+    --cite "$T/b31life-a.docket" >/dev/null 2>&1
+"$BC" "$T/b31life-a.bio" > "$T/b31life-a.rec"
+"$BC" "$T/b31life-b.bio" > "$T/b31life-b.rec"
+cat "$T/b31life-a.bio" "$T/b31life-b.bio" > "$T/b31life-splice.bio"
+"$BC" "$T/b31life-splice.bio" > "$T/b31life-splice.rec"
+b31life=$?
+grep -q '^recognition: s=1 w=0 recognised=0 external=0$' "$T/b31life-a.rec" || b31life=98
+grep -q '^recognition: s=0 w=1 recognised=0 external=1$' "$T/b31life-b.rec" || b31life=98
+grep -q '^recognition: s=1 w=1 recognised=1 external=0$' "$T/b31life-splice.rec" || b31life=98
+grep -q '^scope: one supplied file is treated as one life; state identity unverified$' "$T/b31life-splice.rec" || b31life=98
+gate "B31 a spliced second life proves file scope is an assumption, not identity" $b31life 0
 cc -O1 -g -std=c11 -Wall -Wextra -Wpedantic -fsanitize=address,undefined \
    -fno-omit-frame-pointer scripts/biography_check.c -o "$T/bcheck-san" \
    > "$T/bcheck-san-build.log" 2>&1

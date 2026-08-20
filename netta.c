@@ -202,6 +202,141 @@ static int bio_signature_ok(const char *line, ssize_t n) {
            memcmp(canonical, line, (size_t)n) == 0;
 }
 
+/* Grammar closure: the whole biography language of BIOGRAPHY.md, checked
+   with the organism's own hands. Fields are split on exact tab bytes and
+   each field must carry its canonical shape, so a run of tabs, a stray
+   space, a sign, a leading zero or a carriage return has no way in; an
+   exact field count closes each record. Episode numbers and other
+   state-relative truths stay with the dedicated i and s checks. */
+
+static int bio_u64_shape(const char *s) {
+    uint64_t v;
+    return bio_canonical_u64(s, &v);
+}
+
+static int bio_u64_max(const char *s, uint64_t max) {
+    uint64_t v;
+    return bio_canonical_u64(s, &v) && v <= max;
+}
+
+static int bio_i64_shape(const char *s) {
+    if (*s == '-') {
+        return s[1] && !(s[1] == '0' && !s[2]) && bio_u64_shape(s + 1);
+    }
+    return bio_u64_shape(s);
+}
+
+static int bio_fix6_shape(const char *s) {
+    const char *dot = strchr(s, '.');
+    if (!dot || dot == s || strlen(dot + 1) != 6) return 0;
+    for (const char *p = dot + 1; *p; ++p)
+        if (*p < '0' || *p > '9') return 0;
+    if (dot - s > 20 || (s[0] == '0' && dot - s != 1)) return 0;
+    for (const char *p = s; p < dot; ++p)
+        if (*p < '0' || *p > '9') return 0;
+    return 1;
+}
+
+static int bio_actor_word(const char *s) {
+    return !strcmp(s, "uni") || !strcmp(s, "bi") || !strcmp(s, "tri") ||
+           !strcmp(s, "mv") || !strcmp(s, "null");
+}
+
+static int bio_hexpair_shape(const char *s, uint64_t bytes) {
+    return bytes >= 2 && bytes <= 16 && bio_lower_hex(s, (size_t)(2 * bytes));
+}
+
+/* the eleven record types beyond i and s, exactly as BIOGRAPHY.md
+   specifies them; returns 0 on any context-free grammar fault */
+static int bio_grammar_ok(const char *line, ssize_t n) {
+    char buf[1024];
+    if (n < 2 || n - 1 >= (ssize_t)sizeof buf) return 0;
+    memcpy(buf, line, (size_t)(n - 1));   /* the newline stays outside */
+    buf[n - 1] = 0;
+    char *f[17];
+    int k = 1;
+    f[0] = buf;
+    for (char *p = buf; *p; ++p)
+        if (*p == '\t') {
+            *p = 0;
+            if (k == 17) return 0;
+            f[k++] = p + 1;
+        }
+    if (f[0][0] >= '0' && f[0][0] <= '9') {
+        return k == 12 && bio_u64_shape(f[0]) && bio_u64_shape(f[1]) &&
+               bio_u64_shape(f[2]) && bio_u64_shape(f[3]) &&
+               bio_lower_hex(f[4], 16) && bio_u64_max(f[5], 255) &&
+               bio_u64_max(f[6], 255) && bio_fix6_shape(f[7]) &&
+               bio_lower_hex(f[8], 16) && !strcmp(f[9], "atomic") &&
+               !strcmp(f[10], "1") && bio_actor_word(f[11]);
+    }
+    switch (f[0][0]) {
+    case 'a':
+        return k == 3 && !f[0][1] && bio_u64_shape(f[1]) &&
+               (bio_actor_word(f[2]) || !strcmp(f[2], "mvp"));
+    case 'b': {
+        uint64_t len;
+        return k == 6 && !f[0][1] && bio_u64_shape(f[1]) &&
+               bio_u64_max(f[2], 4095) && bio_canonical_u64(f[3], &len) &&
+               bio_hexpair_shape(f[4], len) && bio_u64_shape(f[5]);
+    }
+    case 'u':
+        return k == 4 && !f[0][1] && bio_u64_shape(f[1]) &&
+               bio_u64_shape(f[2]) && bio_u64_shape(f[3]);
+    case 'd':
+        return k == 5 && !f[0][1] && bio_u64_shape(f[1]) &&
+               bio_u64_shape(f[2]) && bio_u64_shape(f[3]) &&
+               bio_u64_shape(f[4]);
+    case 'm':
+        return k == 7 && !f[0][1] && bio_u64_shape(f[1]) &&
+               bio_u64_max(f[2], 31) && bio_u64_shape(f[3]) &&
+               bio_u64_shape(f[4]) && bio_u64_shape(f[5]) &&
+               bio_fix6_shape(f[6]);
+    case 'v':
+        if ((k != 9 && k != 10) || f[0][1]) return 0;
+        if (k == 10 && !bio_i64_shape(f[9])) return 0;
+        return bio_u64_shape(f[1]) && bio_u64_shape(f[2]) &&
+               bio_u64_shape(f[3]) && bio_u64_shape(f[4]) &&
+               bio_u64_shape(f[5]) && bio_u64_shape(f[6]) &&
+               strcmp(f[6], "0") != 0 && bio_fix6_shape(f[7]) &&
+               bio_u64_shape(f[8]);
+    case 't':
+        if (f[0][1] || !bio_u64_shape(f[1]) || !bio_u64_shape(f[2]))
+            return 0;
+        if (k == 4) return !strcmp(f[3], "eligible");
+        if (k == 6) return !strcmp(f[3], "chart") &&
+               bio_u64_shape(f[4]) && bio_u64_shape(f[5]);
+        if (k == 7) return !strcmp(f[3], "earned") &&
+               bio_fix6_shape(f[4]) && bio_fix6_shape(f[5]) &&
+               bio_u64_shape(f[6]);
+        return 0;
+    case 'r':
+        if ((k != 7 && k != 8) || f[0][1]) return 0;
+        if (k == 8 && strcmp(f[7], "8.000000") != 0) return 0;
+        return bio_u64_shape(f[1]) && bio_u64_shape(f[2]) &&
+               bio_actor_word(f[3]) && bio_actor_word(f[4]) &&
+               bio_fix6_shape(f[5]) && bio_fix6_shape(f[6]);
+    case 'q':
+        return k == 6 && !f[0][1] && bio_u64_shape(f[1]) &&
+               bio_u64_shape(f[2]) && bio_actor_word(f[3]) &&
+               bio_actor_word(f[4]) && !strcmp(f[5], "0");
+    case 'w': {
+        uint64_t bytes, shores, verdicts;
+        return k == 9 && !f[0][1] && bio_u64_shape(f[1]) &&
+               bio_lower_hex(f[2], 16) &&
+               bio_canonical_u64(f[3], &bytes) &&
+               bytes >= 2 && bytes <= 16384 &&
+               (!strcmp(f[4], "cold") || bio_lower_hex(f[4], 4)) &&
+               bio_canonical_u64(f[5], &shores) &&
+               shores >= 1 && shores <= 32 &&
+               bio_lower_hex(f[6], 16) && bio_lower_hex(f[7], 16) &&
+               bio_canonical_u64(f[8], &verdicts) && verdicts == shores;
+    }
+    default:
+        return 0;
+    }
+}
+
 /* every record the organism writes opens with its type: the episode number
    of a step, or one letter of the closed set; anything else is no record */
 static int bio_record_type_ok(const char *line, ssize_t n) {
@@ -280,6 +415,10 @@ static void bio_verify(const char *path) {
         }
         if (n >= 2 && line[0] == 's' && line[1] == '\t' &&
                 !bio_signature_ok(line, n))
+            malformed = 1;
+        if (n >= 2 && line[n - 1] == '\n' && line[0] != 'i' &&
+                line[0] != 's' && bio_record_type_ok(line, n) &&
+                !bio_grammar_ok(line, n))
             malformed = 1;
     }
     free(line);

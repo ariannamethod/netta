@@ -98,16 +98,23 @@ technical source of truth for the living line.
 - Body 31 reads `s` against `w` from outside: `scripts/biography_check.c` is
   an independent read-only reader of the biography language — no organism
   code, no state, nothing written, no effect on resume or behaviour. It
-  refuses records that are not newline-sealed, carry a NUL, open with no
-  known type, or, for `s`, `w` and `i`, are not canonical tab for tab (the
-  eleven other record types are admitted by type only, as the organism
-  admits them; on `w` the reader is stricter than the organism, a named
-  difference for a later turn), prints the record count and chain the
-  organism also prints, and reports recognition: a `w` whose candidate
-  digest and byte count equal a prior `s` of this life is recognised with
-  its multiplicity; every other `w` is an external fact; a signature after
-  the citation recognises nothing. Two readers, one language: the organism
-  on resume and the reader draw one verdict on re-sealed `s` rows.
+  opens without blocking and requires a regular file, bounds every record at
+  1024 bytes, and refuses missing LF seals, NUL, CR, unknown types and field
+  overflow; all thirteen record types of `BIOGRAPHY.md` are canonical tab
+  for tab in both hands — the organism's `bio_verify` and this reader
+  implement the language independently, sharing only the specification and
+  the corpus in `scripts/biography_corpus/`, and one verdict class on the
+  context-free language is a suite gate. It prints the record count and
+  chain the organism also prints and reports recognition: a `w` whose
+  candidate digest and byte count equal a prior `s` in the supplied file is
+  recognised with its multiplicity; every other `w` is external, and a
+  later signature grants nothing backwards.
+  The report states its limit: one supplied file is treated as one life, but
+  state identity is unverified. Concatenating two sibling biographies can
+  therefore manufacture within-file recognition; the reader names that
+  scope instead of claiming provenance it cannot prove. The two hands agree
+  on context-free `s` grammar; resume alone also judges episode and lived-byte
+  bounds against state. Report-write failure is rc 2, never false success.
 - Under `--ear FILE`, every island in the convoy carries its own statistical
   judge, grown from its immutable tape and nothing else: the ear prices the
   given stream with the shore's own Laplace ladder (bits per byte), uni/bi
@@ -232,7 +239,7 @@ cc -O2 -std=c11 -Wall -Wextra -Wpedantic netta.c -lm -o netta
 sh zero_tests.sh
 ```
 
-The 325-gate suite includes red twins, restart equivalence, sanitizer runs,
+The 339-gate suite includes red twins, restart equivalence, sanitizer runs,
 matched transfer controls, played-action judgment, a causal-prefix search
 twin, a random-order navigation null, island-local revocation arms, a fixed
 uniform birth-floor control, byte-bounded comity, an island-local probation
@@ -255,7 +262,9 @@ drop, duplicate, reorder, splice, grammar, framing, and sanitizer reds, plus
 failure-closed state and biography checks, real partial-write and SIGKILL
 publication deaths, descriptor/shore isolation, fourteen re-sealed malformed
 `s` records, and a three-signature long differential through jury, Atlas,
-reversed convoy order, and restart. A
+reversed convoy order, and restart, plus the outside biography reader's
+bounded framing and I/O failures, twenty-seven-row `s` grammar battery,
+twenty-four-family measured `w` debt, and two-life splice limit. A
 passing build ends with `ALL GATES PASS`.
 
 ## Start a life
@@ -399,7 +408,8 @@ Counts must be finite non-negative integers. Infinite-life syntax such as
 - `scripts/manifest_check.c` — independent reader of the speech manifest; it
   proves the captured stream's count and digest and nothing more.
 - `scripts/biography_check.c` — independent read-only reader of the biography
-  language with the recognition report (prior `s` → later `w`).
+  language with conditional within-file recognition (prior `s` → later `w`)
+  and an explicit unverified-life scope.
 - `scripts/biography_fixture.c` — public re-sealer of the state's biography
   count and chain, so malformed rows can meet the reader.
 - `scripts/cross_reader/` — the docket cross-reader battery and its base

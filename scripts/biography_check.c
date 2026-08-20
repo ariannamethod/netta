@@ -2,30 +2,37 @@
    language. It shares no organism code, takes no state, changes nothing, and
    influences no resume or behaviour: it reads one biography file and reports.
 
-   It refuses a biography whose records are not newline-sealed, carry a NUL,
-   open with no known type, or -- for the s (signature), w (citation) and i
-   (arrival) records it parses -- do not match their canonical grammar, tab
-   for tab. The eleven other record types are admitted by type only, as the
-   organism admits them today; that partial closure is named, not hidden.
+   It refuses a biography whose records exceed 1024 bytes, are not
+   newline-sealed, carry a NUL or CR, open with no known type, contain too
+   many fields, or -- for the s (signature), w (citation) and i (arrival)
+   records it parses -- do not match their canonical grammar, tab for tab.
+   The ten other record types are admitted by type only, as the organism
+   admits them today; that partial closure is named, not hidden.
    The organism does not yet parse w rows: on those this reader is stricter,
    which is a difference to be closed by a later turn, not papered over.
 
    Recognition: a w row (a citation of a court's word about a candidate
-   stream) is recognised when a PRIOR s row (this life's own signature of a
-   speech) carries the same candidate digest and the same byte count. The
-   report gives every recognised w with its multiplicity -- how many prior
-   signatures match -- and every unrecognised w as an external fact. Order is
-   causal: a signature after the citation does not recognise it.
+   stream) is recognised when a PRIOR s row in the supplied file carries the
+   same candidate digest and the same byte count. The report gives every
+   recognised w with its multiplicity -- how many prior signatures match --
+   and every unrecognised w as an external fact. Order is causal inside the
+   file: a signature after the citation does not recognise it. With no state
+   witness, one supplied file is only treated as one life; its identity is
+   explicitly reported as unverified.
 
    rc 0: the language is accepted and the report is printed; rc 1: a record
    is refused by name and line; rc 2: invocation or I/O failure. */
 #define _POSIX_C_SOURCE 200809L
 #include <errno.h>
+#include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
+
+#define BIO_RECORD_MAX 1024
 
 static uint64_t fnv_more(uint64_t h, const char *p, size_t n) {
     for (size_t i = 0; i < n; ++i) {
@@ -90,9 +97,15 @@ static size_t sig_n, sig_cap;
 static void sig_push(uint64_t line, uint64_t episode, const char *digest,
                      uint64_t bytes) {
     if (sig_n == sig_cap) {
-        sig_cap = sig_cap ? sig_cap * 2 : 64;
-        sigs = (Sig *)realloc(sigs, sig_cap * sizeof *sigs);
-        if (!sigs) { fprintf(stderr, "biography reader: oom\n"); exit(2); }
+        size_t next_cap = sig_cap ? sig_cap * 2 : 64;
+        if (next_cap < sig_cap || next_cap > SIZE_MAX / sizeof *sigs) {
+            fprintf(stderr, "biography reader: oom\n");
+            exit(2);
+        }
+        Sig *next = (Sig *)realloc(sigs, next_cap * sizeof *sigs);
+        if (!next) { fprintf(stderr, "biography reader: oom\n"); exit(2); }
+        sigs = next;
+        sig_cap = next_cap;
     }
     Sig *s = &sigs[sig_n++];
     s->line = line; s->episode = episode; s->bytes = bytes;
@@ -138,9 +151,102 @@ static int parse_i(char **f, int k) {
            canon_u64(f[5], &len);
 }
 
+/* the remaining ten grammars of BIOGRAPHY.md, implemented on this side of
+   the language with this reader's own hands */
+
+static int u64_shape(const char *s) {
+    uint64_t v;
+    return canon_u64(s, &v);
+}
+
+static int u64_at_most(const char *s, uint64_t max) {
+    uint64_t v;
+    return canon_u64(s, &v) && v <= max;
+}
+
+static int i64_shape(const char *s) {
+    if (s[0] == '-')
+        return s[1] && !(s[1] == '0' && !s[2]) && u64_shape(s + 1);
+    return u64_shape(s);
+}
+
+static int fix6_shape(const char *s) {
+    const char *dot = strchr(s, '.');
+    if (!dot || dot == s || dot - s > 20 || strlen(dot + 1) != 6) return 0;
+    if (s[0] == '0' && dot - s != 1) return 0;
+    for (const char *p = s; *p; ++p)
+        if (p != dot && (*p < '0' || *p > '9')) return 0;
+    return 1;
+}
+
+static int actor_word(const char *s) {
+    return !strcmp(s, "uni") || !strcmp(s, "bi") || !strcmp(s, "tri") ||
+           !strcmp(s, "mv") || !strcmp(s, "null");
+}
+
+static int parse_step(char **f, int k) {
+    return k == 12 && u64_shape(f[0]) && u64_shape(f[1]) &&
+           u64_shape(f[2]) && u64_shape(f[3]) && lower_hex(f[4], 16) &&
+           u64_at_most(f[5], 255) && u64_at_most(f[6], 255) &&
+           fix6_shape(f[7]) && lower_hex(f[8], 16) &&
+           !strcmp(f[9], "atomic") && !strcmp(f[10], "1") &&
+           actor_word(f[11]);
+}
+
+static int parse_rest(char **f, int k) {
+    uint64_t len;
+    switch (f[0][0]) {
+    case 'a':
+        return k == 3 && u64_shape(f[1]) &&
+               (actor_word(f[2]) || !strcmp(f[2], "mvp"));
+    case 'b':
+        return k == 6 && u64_shape(f[1]) && u64_at_most(f[2], 4095) &&
+               canon_u64(f[3], &len) && len >= 2 && len <= 16 &&
+               lower_hex(f[4], (size_t)(2 * len)) && u64_shape(f[5]);
+    case 'u':
+        return k == 4 && u64_shape(f[1]) && u64_shape(f[2]) &&
+               u64_shape(f[3]);
+    case 'd':
+        return k == 5 && u64_shape(f[1]) && u64_shape(f[2]) &&
+               u64_shape(f[3]) && u64_shape(f[4]);
+    case 'm':
+        return k == 7 && u64_shape(f[1]) && u64_at_most(f[2], 31) &&
+               u64_shape(f[3]) && u64_shape(f[4]) && u64_shape(f[5]) &&
+               fix6_shape(f[6]);
+    case 'v':
+        if (k != 9 && k != 10) return 0;
+        if (k == 10 && !i64_shape(f[9])) return 0;
+        return u64_shape(f[1]) && u64_shape(f[2]) && u64_shape(f[3]) &&
+               u64_shape(f[4]) && u64_shape(f[5]) && u64_shape(f[6]) &&
+               strcmp(f[6], "0") != 0 && fix6_shape(f[7]) &&
+               u64_shape(f[8]);
+    case 't':
+        if (!u64_shape(f[1]) || !u64_shape(f[2])) return 0;
+        if (k == 4) return !strcmp(f[3], "eligible");
+        if (k == 6) return !strcmp(f[3], "chart") && u64_shape(f[4]) &&
+                           u64_shape(f[5]);
+        if (k == 7) return !strcmp(f[3], "earned") && fix6_shape(f[4]) &&
+                           fix6_shape(f[5]) && u64_shape(f[6]);
+        return 0;
+    case 'r':
+        if (k != 7 && k != 8) return 0;
+        if (k == 8 && strcmp(f[7], "8.000000") != 0) return 0;
+        return u64_shape(f[1]) && u64_shape(f[2]) && actor_word(f[3]) &&
+               actor_word(f[4]) && fix6_shape(f[5]) && fix6_shape(f[6]);
+    case 'q':
+        return k == 6 && u64_shape(f[1]) && u64_shape(f[2]) &&
+               actor_word(f[3]) && actor_word(f[4]) && !strcmp(f[5], "0");
+    default:
+        return 0;
+    }
+}
+
 static int refuse(uint64_t line, const char *why) {
-    printf("biography refused: line %llu %s\n", (unsigned long long)line,
-           why);
+    if (printf("biography refused: line %llu %s\n",
+               (unsigned long long)line, why) < 0 || fflush(stdout) != 0) {
+        fprintf(stderr, "biography reader: cannot write report\n");
+        return 2;
+    }
     return 1;
 }
 
@@ -149,34 +255,64 @@ int main(int argc, char **argv) {
         fprintf(stderr, "usage: biography_check BIOGRAPHY\n");
         return 2;
     }
-    FILE *f = fopen(argv[1], "rb");
-    if (!f) {
+    int fd = open(argv[1], O_RDONLY | O_NONBLOCK);
+    if (fd < 0) {
         fprintf(stderr, "biography reader: cannot open %s\n", argv[1]);
         return 2;
     }
     struct stat st;
-    if (fstat(fileno(f), &st) != 0 || !S_ISREG(st.st_mode)) {
+    if (fstat(fd, &st) != 0 || !S_ISREG(st.st_mode)) {
+        close(fd);
         fprintf(stderr, "biography reader: %s is not a regular file\n",
                 argv[1]);
         return 2;
     }
-    char *line = NULL;
-    size_t cap = 0;
-    ssize_t n;
+    FILE *f = fdopen(fd, "rb");
+    if (!f) {
+        close(fd);
+        fprintf(stderr, "biography reader: cannot open %s\n", argv[1]);
+        return 2;
+    }
+    char line[BIO_RECORD_MAX + 1];
+    size_t n = 0;
+    int has_nul = 0, has_cr = 0;
     uint64_t lineno = 0, chain = 0xcbf29ce484222325ULL;
     uint64_t n_s = 0, n_w = 0, recognised = 0, external = 0;
-    while ((n = getline(&line, &cap, f)) >= 0) {
+    if (printf("scope: one supplied file is treated as one life; "
+               "state identity unverified\n") < 0) {
+        fprintf(stderr, "biography reader: cannot write report\n");
+        return 2;
+    }
+    for (;;) {
+        int c = fgetc(f);
+        if (c == EOF) {
+            if (ferror(f)) {
+                fclose(f);
+                fprintf(stderr, "biography reader: cannot read %s\n",
+                        argv[1]);
+                return 2;
+            }
+            if (n) return refuse(lineno + 1, "is not newline-sealed");
+            break;
+        }
+        if (n == BIO_RECORD_MAX)
+            return refuse(lineno + 1, "exceeds 1024 bytes");
+        line[n++] = (char)c;
+        if (c == 0) has_nul = 1;
+        if (c == '\r') has_cr = 1;
+        if (c != '\n') continue;
         lineno++;
-        chain = fnv_more(chain, line, (size_t)n);
-        if (n == 0 || line[n - 1] != '\n')
-            return refuse(lineno, "is not newline-sealed");
-        if (strlen(line) != (size_t)n)
+        chain = fnv_more(chain, line, n);
+        if (has_nul)
             return refuse(lineno, "carries a NUL byte");
+        if (has_cr)
+            return refuse(lineno, "carries a carriage return");
         line[n - 1] = 0;
         if (!record_type_ok(line))
             return refuse(lineno, "opens with no known record type");
         char *fields[16];
         int k = split_tabs(line, fields, 16);
+        if (k < 0) return refuse(lineno, "has too many fields");
         uint64_t ep, bytes;
         char digest[17];
         if (line[0] == 's') {
@@ -214,10 +350,17 @@ int main(int argc, char **argv) {
         } else if (line[0] == 'i') {
             if (!parse_i(fields, k))
                 return refuse(lineno, "i record is not canonical");
+        } else if (line[0] >= '0' && line[0] <= '9') {
+            if (!parse_step(fields, k))
+                return refuse(lineno, "step record is not canonical");
+        } else {
+            if (!parse_rest(fields, k))
+                return refuse(lineno, "record is not canonical for its type");
         }
+        n = 0;
+        has_nul = has_cr = 0;
     }
-    free(line);
-    if (ferror(f) || fclose(f) != 0) {
+    if (fclose(f) != 0) {
         fprintf(stderr, "biography reader: cannot read %s\n", argv[1]);
         return 2;
     }
@@ -226,6 +369,11 @@ int main(int argc, char **argv) {
            (unsigned long long)recognised, (unsigned long long)external);
     printf("biography: %llu records, chain %016llx\n",
            (unsigned long long)lineno, (unsigned long long)chain);
+    if (fflush(stdout) != 0 || ferror(stdout)) {
+        fprintf(stderr, "biography reader: cannot write report\n");
+        free(sigs);
+        return 2;
+    }
     free(sigs);
     return 0;
 }

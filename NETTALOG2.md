@@ -2799,7 +2799,7 @@ first `s` reader has no way in — `s` with its nine canonical fields, `w`
 with its nine (episode, candidate digest, bytes in the court's `[2,
 16384]`, `cold` or four-hex context, shores in `[1, 32]`, law digest,
 docket digest, and a verdict count equal to the shores), and `i` by shape.
-The eleven other types are admitted by type only, as the organism admits
+The ten other types are admitted by type only, as the organism admits
 them today; the reader is stricter than the organism on `w`, which the
 organism chains but does not yet parse — a difference named for the later
 turn, not hidden.  It prints the record count and the FNV chain over the
@@ -2851,3 +2851,219 @@ between lives will need first — while the life itself keeps its citations
 as external facts.  Whether the life should ever read its own recognition,
 and how, is the question the next turn inherits together with the eleven
 unparsed grammars.
+
+## The recognition audited: a file is not a life identity
+
+Don's `1c56f9a` was reproduced untouched before its implementation was
+read: 325 gates, strict build silent, sanitizers green.  The organism was
+indeed absent from the body-31 commit.  The outside reader changed no
+biography byte and no path from its report entered state, resume or
+behaviour.  Prior `s`, later `w`, equal digest and bytes, causal order and
+honest multiplicity all stood.
+
+Two executable I/O defects remained in the reader's own contract.  It used
+`fopen` before `fstat`, so a FIFO with no peer blocked before the promised
+regular-file refusal.  It also ignored the final stdout flush, so a complete
+lost report could return rc 0 although rc 2 was declared for I/O failure.
+The hand now opens nonblocking, verifies the opened descriptor is regular,
+and enters stdio only afterward; a failed report flush returns 2.  Records
+are read into a fixed 1024-byte frame rather than an unbounded `getline`:
+overlong and unsealed rows, NUL, CR and more than sixteen fields refuse by
+name.  CR is one global separator law, not a privilege of whichever record
+grammars have already been implemented.  The empty sequence is valid
+syntax, a lone newline is an untyped record, and a single canonical `s` is
+a valid one-event sequence.  Citation bounds are inclusive at 2 and 16384
+bytes and at 1 and 32 shores.
+
+The phrase "two readers, one language" needed a narrower noun.  The outside
+reader has no state, so it reads context-free record syntax.  Resume reads
+that syntax and then judges historical validity: an `s` episode beyond the
+loaded episode or lived bytes beyond the loaded life must be refused by the
+organism and accepted as canonical syntax by the outside hand.  Twenty-seven
+`s` rows agree after those contextual bounds are held fixed; two future-bound
+rows disagree for the declared reason.  The same distinction already exists
+for `i`, whose registry identity only state can judge.
+
+The older `w` debt is now measured rather than gestured at.  Twenty-four
+independently re-sealed families -- signs and leading zeroes, hex widths and
+case, byte and shore bounds, context, law and docket shape, verdict count,
+field count, exact tabs, CRLF and record length -- are accepted by current
+resume because it chains `w` by type, while the outside reader refuses them.
+This is a finite corpus of debt families, not a claim that malformed strings
+are finite.  The reader parses three of thirteen record types (`i`, `s`,
+`w`); ten remain type-only outside.  The organism parses two, so eleven
+remain to close there.
+
+Finally, two sibling lives were forked from one honest past.  Life A signed
+a stream; life B cited the court's word about A without signing it.  Each
+biography alone reported the right result.  Concatenating A before B by hand
+manufactured a prior-`s`/later-`w` recognition.  No stat, FNV chain or record
+grammar can recover the missing life boundary from that file alone.  The
+report therefore says its premise literally: `one supplied file is treated
+as one life; state identity unverified`.  Recognition is a true relation
+inside the supplied sequence, not independently proved provenance of that
+sequence.
+
+The later grammar refactor should preserve this independence.  `netta.c`
+must grow or retain all thirteen validators inside its self-sufficient heart;
+the outside reader should implement the language again without a shared
+linked object or required header.  A shared parser would shorten code by
+destroying the differential witness.  Documentation and adversarial corpora
+may be shared; executable hands should not be.  That refactor is not opened
+by this audit.  Three hundred and thirty-two gates pass; `netta.c` and state
+v20 are untouched.
+
+## The recognition audited twice: the frame, the report, the scope
+
+Sol's `2ee6c0a` was reproduced untouched before its diff was read: 332
+gates, strict build silent, sanitizers green.  Her two findings on the
+outside reader were real and her repairs stand: `fopen` could block on a
+FIFO before the regular-file verdict, and a lost report could return rc 0.
+The reader now opens non-blocking, frames every record at 1024 bytes,
+refuses NUL, carriage return, an unsealed tail and more than sixteen
+fields uniformly, prints its scope before any verdict — one supplied file
+is treated as one life, state identity unverified — and returns rc 2 when
+the report cannot be written.  Her measurements stand as well: twenty-seven
+`s` rows on which the organism and the reader agree as context-free
+grammar; two rows whose episode and lived bytes lie beyond the state,
+which the stateless reader must accept as syntax and the organism must
+refuse on resume — the line between record syntax and state-relative
+truth, drawn rather than blurred; twenty-four re-sealed malformed `w`
+families the organism resumes and the reader refuses, the measured size
+of the debt the grammar refactor will close; and the sibling splice, where
+a file made of life A's signature and life B's citation recognises inside
+the file, so that file scope is an assumption to be printed, not a life
+identity to be claimed.
+
+The frame was met at its edges: a 1024-byte record is read, a 1025-byte
+record refuses by name; the organism's own biography buffers are all at
+most 256 bytes, so no legal record can reach the frame.  An empty file is
+an empty language, accepted with zero records and the seed chain; a lone
+newline opens with no known type; a sixteenth field is admitted and a
+seventeenth refuses; a closed stdout returns rc 2 with the reason on
+stderr; a biography reached through a symlink reads.  One asymmetry is
+recorded, not repaired: a carriage return inside a step row is chained by
+the organism and resumed, and refused by the reader — the reader is
+stricter than the organism on the ten types the organism does not parse,
+which is the same debt as the twenty-four `w` families, seen from the
+other side.
+
+On her question — if one file should prove one life rather than assert
+it, name the missing witness — the answer is that the witness exists and
+is not the reader's to hold.  A life's biography is identified by the
+state that acknowledges it: the record count and the chain, checked by
+the organism on resume.  A spliced file resumes under no state unless an
+operator re-seals one with the public fixture, and that re-sealing is
+public authorship, reproducible by anyone, refused by nothing — because
+FNV is a witness, not a signature.  So the reader's law is correctly
+stated as scope: one file, one life, identity unverified; the authority
+over identity stays with the organism's resume, and the reader must not
+be given state by stealth to pretend otherwise.  Three hundred and
+thirty-two gates.
+
+## Grammar closure — preregistered before code, on Oleg's contract
+
+Oleg opened the refactor with a contract stricter than the position
+either hand had taken.  `netta.c` stays a self-sufficient single-file
+heart: no required headers, no shared objects, no external parser code.
+The specification and the canonical corpus come first, derived from all
+emit sites rather than from samples; a document and test data are the
+only things two readers may share — executable code stays independent,
+because the second hand is the differential witness.  Context-free
+grammar and state-relative truth are described separately, and
+`disagree=0` refers to the verdict class on the context-free language
+only.  All thirteen record types close with exact tabs, canonical
+fields and byte-for-byte reprint; every type receives its own
+malformed-and-resealed red battery.  State v20, biography emission,
+behaviour, RNG and lived results do not change; the long twins before
+and after must be bit-identical.  The work lands in separate commits —
+specification and corpus, then the inner reader, then the outer — so a
+divergence, if one appears, is localised by construction.  The end of
+the body: thirteen of thirteen in both hands, grammar disagreement
+zero, the twenty-four-family `w` debt at zero, the carriage-return
+asymmetry at zero, and the full suite green on a clean archive.  After
+that, the other hand audits, and the freeze is declared by Oleg's word,
+not by an automatism; the heart is not emptied, and the circle is not
+yet called closed.
+
+This first commit is the specification and the corpus, and the
+specification promptly paid for being derived from the code rather
+than from memory.  The `t` record has three arms, not two: `eligible`
+and `earned` were in every sample this log had seen, and `chart` — the
+under-lived shore chosen by least lived bytes, with the runner-up's
+lived count or `18446744073709551615` when there is none — appeared
+only when a real varied life was run and its atlas rows were counted.
+A specification written from the two known arms would have been wrong
+on eight of the first hundred and twenty-four atlas decisions of that
+life.  The corpus therefore carries one row of every type and every
+arm — nineteen shapes across the thirteen types, seventeen harvested
+from lives lived for this commit, and the two arms those lives did not
+walk (`r` with seven fields, `q` naming the null hand) derived from
+their emit formats and said so.  Ninety-one malformed rows across
+thirteen files carry the separator, sign, leading-zero, hex, literal,
+enum, arity and fixed-point faults every reader must refuse.
+
+Two findings from the harvesting are recorded for the next hands, not
+silently repaired.  A life lived under a neural-law flag can never
+cite: without the flag the state refuses to load (the invocation law
+changed), and with it the citation's mask refuses the flag — the
+citation of body 28 is unreachable for a jury-law life, which the
+suite never noticed because its cited lives are plain.  And CodeQL's
+first alert on this repository names the stat-then-open sequence of
+`bio_verify` as a race; the post-open identity check added by the
+fifteenth turn (fstat against the named stat, device and inode) closes
+it fail-closed, but a swap to a FIFO between the two calls would hang
+the plain fopen — the verify-side open wants the same non-blocking
+discipline the write side already has.  Both belong to an organism
+turn under audit, not to this refactor, whose contract forbids
+touching behaviour.
+
+## Grammar closure, the inner reader: thirteen types in the organism's hands
+
+The second commit grows `bio_verify` to the whole language.  Eleven
+grammars join the `i` and `s` checks of the fifteenth turn: the step
+record and the letters `a b d m q r t u v w`, each split on exact tab
+bytes, each field held to its canonical shape from `BIOGRAPHY.md`, each
+record closed by its exact field count — so a run of tabs, a stray
+space, a sign, a leading zero, a wrong literal, a wrong enum, a
+non-canonical fixed-point rendering or a carriage return refuses resume,
+for every type, with the organism's own hands and no external code.  The
+seventeen canonical corpus rows of foreign types graft onto a lived
+biography and resume; all ninety-one malformed corpus rows refuse; the
+twenty-four `w` families that measured the debt now refuse in both
+hands, and the gate that counted them as debt now counts them as repaid;
+the carriage-return asymmetry is closed from the organism's side.  What
+did not change is proved, not promised: a two-stage life frozen from the
+pre-closure binary — seed 11, atlas and jury, ten episodes over two
+shores — lands on the same record counts and the same chains,
+`18c67d0e0ca68401` and `1fc3f4127170a2f9`, byte for byte, and the whole
+suite stands at three hundred and thirty-six.  The outside reader still
+parses three types; its closure is the third commit, and the gate that
+will hold both hands to all ninety-one rows waits there.
+
+## Grammar closure, the outer reader: the language whole in both hands
+
+The third commit grows `scripts/biography_check.c` to the same thirteen
+types with its own hands: ten grammars join its `s`, `w` and `i` — the
+step record and the letters `a b d m q r t u v`, each a fresh
+implementation of `BIOGRAPHY.md` on the reader's side of the fence,
+sharing with the organism nothing but the document and the corpus.  All
+ninety-one malformed corpus rows now refuse in the outside reader as
+they refuse in the organism; all nineteen canonical shapes are syntax to
+the stateless reader, including the two whose state-relative values a
+resume would refuse — the line between record syntax and state-bound
+truth holds exactly where the sixteenth turn drew it.  The closing gate
+grafts every corpus row into a lived biography and asks both hands for
+their verdict class: one class on all one hundred and eight rows,
+disagreement zero.
+
+The body ends where Oleg's contract said it would end.  Thirteen of
+thirteen in both hands; grammar disagreement zero; the twenty-four `w`
+families that measured the debt repaid; the carriage-return asymmetry
+closed; the frozen life bit-identical through the closed heart; three
+hundred and thirty-nine gates on the tree and on a clean archive.  The
+heart was not emptied: every validator lives inside the single file, no
+header, no shared object, no external parser code — self-sufficiency
+kept literally.  The circle is not called closed: that word is the
+other hand's audit and then Oleg's, not an automatism at the end of a
+diff.
