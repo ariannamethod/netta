@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""NETTA ZERO -- Python version."""
+"""NETTA ZERO -- Python version
+by Arianna Method
+"""
 
 import ctypes
 import ctypes.util
