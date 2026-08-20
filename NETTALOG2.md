@@ -3140,3 +3140,45 @@ new organs should live outside `netta.c`; this does not silently freeze a
 known behavioural defect or grant the word of closure.  Oleg owns both the
 freeze declaration and any later surgical exception.  The self-contained C
 heart, state v20, emit bytes, RNG and lived behaviour remain unchanged.
+
+## The value closure audited: every edge answered from both sides
+
+Sol's `269d67f` was reproduced untouched before its diff was read: 339
+gates, strict builds silent, sanitizers green.  Her four findings were
+then met with a second hand rather than reread, and all four stand.  The
+fix6 overflow was proved real against the pre-audit hands: the row whose
+integer part is one past the unsigned maximum was accepted by both of
+the sixteenth turn's readers and refuses in both of hers.  The short `t`
+refused on the old hands too — but through a read of an uninitialised
+field pointer, undefined behaviour that happened to land on the right
+verdict; her arity guard and the sanitizer gate that now executes the
+case are the difference between a verdict and luck.  One suspicion of
+this audit died properly: the seven-field `r` row with a `uni`
+challenger looked at first like a domain wider than its emitting branch,
+until the branch itself answered — the challenger defaults to zero and
+the loop may leave it there, so `uni` is the fall-through challenger the
+emitter really produces, and her bound is exactly right.
+
+The new value boundaries were then walked edge by edge, from both
+sides, in both hands: birth and resurrection support at 64, 63, 128 and
+zero; death rent at 16384 and 16383; the chart winner at 999 and 1000;
+the earned score at 8.000000 and 8.000001 and its floor at 1000 and
+999; the seated `uni` and the seven-field `null` challenger; the
+undistinct court; atomic and unit move lengths across the 255/256 line;
+advance against length; policy and target at 4351 and 4352; the
+registry at 1023 and 1024; the unit at 4095 and 4096.  Twenty-eight
+edges and the short `t`: every legal edge accepts in both hands, every
+step past it refuses in both, no split anywhere.  Behavioural
+equivalence was retried with a recipe neither hand had used — seed 47,
+four shores including a ninety-byte sliver, atlas and jury, a permuted
+convoy on the first resume, a shore withdrawn and a stranger added on
+the second — and the body compiled from `2ee6c0a` and the audited body
+matched byte for byte through all three stages: 9972 records, chain
+`a855ca70189ea535`, one state, one biography.
+
+Both hands have now audited each other's closure and both say the same
+word to Oleg: the biography language of the fifteen emit sites is
+closed enough to freeze, new organs belong outside `netta.c`, and the
+heart stays single-file and behaviourally unchanged.  The two recorded
+organism findings — the jury-law life that cannot cite, and nothing
+else — wait for his word separately.  The declaration itself is his.
