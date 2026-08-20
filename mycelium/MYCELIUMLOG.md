@@ -53,3 +53,15 @@ authorship — the state-witness is a future organ; a ledger prefix cut at
 a record boundary is self-consistent and needs an external witness; the
 ablation's verdict depends on the lives' maturity, and the uni-hand red
 run is the proof that the metric can say no.
+
+### The twin probe (same day, after the graft)
+
+The dedup-by-witness law was run, not just claimed. Two lives whose
+biographies diverge before the matching s line, speaking byte-identical
+streams (cmp-proven), land as two G events over one interned blob —
+ledger_check green, field names two lives and two attested pairs over one
+body. The road there surfaced the edge: perfect clones — identical world
+and seed, histories identical through the matching s line — refuse the
+second offering as already eaten, because prefix, ordinal and s line are
+all byte-identical. Indistinguishable evidence is one event; the position
+stands in the handoff for the second hand's verdict.
