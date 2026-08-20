@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
-"""NETTA ZERO -- Python version: reference transliteration of netta.c.
-
-Not the organism; netta.c stays the sole developing heart. Written for the
-paper, judged by the same external hands and by byte-for-byte state and
-biography equality with the C body. Stdlib only; tanhf and fmaf come from
-the platform libm via ctypes. Bit-identity mirrors the canonical build's
-float codegen (cc -O2, arm64 clang): fused fmadd chain over embeddings,
-serial round-per-product dot sums, elementwise fmaf readout update, double
-fma in the prophecy baseline -- read from the disassembly, pinned by the
-acceptance battery; another compiler may drift in final float ulps.
+"""NETTA ZERO -- Python version
+by Arianna Method
 """
 
 import ctypes
