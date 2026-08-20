@@ -65,7 +65,7 @@ Turns alternate as in the zero line: Don builds a body, Sol audits it,
 pushes on Oleg's word only. Each body lands with its own gates and red
 hands; this list is a map, not a promise of shape.
 
-- **Body 1 — the graft** (this turn): `mycelium.cpp`, a C++ port of
+- **Body 1 — the graft** (landed, audited, closed): `mycelium.cpp`, a C++ port of
   microkarpathy's resonance mechanics (trigram hash field, ingest,
   resonate with per-source cap, unfold with lineage) plus the two organs
   the prototype never had: the ledger of law 2 and the attestation gate
@@ -75,7 +75,7 @@ hands; this list is a map, not a promise of shape.
   with their own ablation. Input: attested speech of two Nettas raised
   on different texts. C++ earns its place with long-lived objects —
   Grave, Fragment, Field, Ledger — identity, ownership, lifetime.
-- **Body 2 — the evolving tokenizer.** Units over events: recurring
+- **Body 2 — the proposer** (this turn). Units over events: recurring
   event-shapes PROPOSED as provisional units by lived support, paying
   rent, dying, resurrecting — Netta's unit law lifted one floor
   (molequla's evolving BPE as the other parent). Body 2 only proposes;
@@ -189,3 +189,45 @@ wherever the scale demands them.
      deterministic hash-seeded unit vector, k and per-source cap
      unchanged. Sealed prediction: the real field beats the control on
      A and on B, or the resonance organ has failed vivisection.
+
+## Body 2 contract (frozen before code)
+
+The proposer is the evolving tokenizer's first floor: it NOTICES
+recurring shapes and seals what it noticed, and that is all. No organ of
+body 1 changes behaviour; the main ledger and its `body1-byte-v1` law
+are closed and untouched.
+
+- New command `propose`, same organism file. It derives everything from
+  the replayed field and appends one receipt to `.mycelium.proposals`;
+  it never touches `.mycelium.ledger` or the grave.
+- **The shape.** A unit proposal is an adjacent token pair or triple
+  inside one fragment, under the byte law. Its identity is its token
+  bytes; identity never resets.
+- **Support is lived, not counted twice.** A shape's support is the set
+  of distinct meals (G events) whose fragments contain it. A proposal
+  requires support from at least 2 distinct meals: one meal echoing
+  itself proposes nothing.
+- **Rent.** RENT_WINDOW = 16 meals. A shape is alive if its last
+  witness lies within the window behind the latest meal, else dead. A
+  dead shape keeps its whole history; witnessed again, the same
+  identity resurrects with its evidence — no convenient twin.
+- **No authority.** Proposals grant nothing: embeddings, resonance,
+  unfold and ablate are byte-identical with and without a proposals
+  file present. Authority waits for body 3's prequential exam.
+- **The receipts.** `.mycelium.proposals` carries its own chain (same
+  sealing discipline as the main ledger, seed `cbf29ce484222325`):
+  `W \t 1 \t body2-props-v1` once at line 1, then one
+  `P \t after-meals \t main-chain \t alive \t dead \t snapshot-digest`
+  per propose run. The snapshot digest is the FNV-1a-64 of the printed
+  proposal block, which is re-derivable from the main ledger prefix the
+  receipt pins. The reader verifies grammar, chain and monotonic
+  after-meals; re-deriving a historical snapshot is the examiner's work
+  in body 3 and is not claimed here.
+- Red hands, sealed before the first run: a one-meal echo proposes
+  nothing; unfold and ablate outputs are byte-identical before and
+  after propose; the rent story is walked in the flesh — a shape
+  witnessed early, starved past the window, is reported dead with its
+  history, and a late meal resurrects the same identity with its meal
+  list grown; a flipped byte, a truncation and a non-monotonic P in the
+  proposals file refuse by name in both hands; a clean-room repeat of
+  the full sequence reproduces the proposals file byte for byte.
