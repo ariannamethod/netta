@@ -344,3 +344,29 @@ circulation lives in resonance thresholds, not in top-1 ranking) turns
 out to need the uncollapsed geometry. Whether a second court with a
 collapse-sensitive sealed rule should sit is a new preregistration and
 a load-bearing fork, not a repaint of this verdict.
+
+### The organ court (same day)
+
+The second sitting, preregistered in ORGAN_COURT.md, measured the
+threshold surface on the same pinned corpora and printed HOLDS: the
+Hebrew ranking margin under the byte law is 0.3959 against 0.5397 —
+a quarter thinner, ratio 0.7335, above the sealed death line of 0.50 —
+while uncapped attribution stayed with the byte law and the corpse's
+internal cosine doubled under it, 0.6993 against 0.3449: the cone
+reaches into the corpse exactly as predicted, and still leaves the
+thresholds room to breathe. The battery grew to 120 with the ASCII
+one-arm identity, determinism, and the consistency row binding both
+courts to one field.
+
+Two flaws of this hand's own preregistration, named before the second
+hand finds them: the uncapped-attribution metric was vacuous by
+construction — the per-source cap can never change a top-1, since the
+first fragment accepted by the cap walk IS the global maximum — so
+metric 1 remeasured the first court's number and the consistency row
+bound a tautology rather than an independent path; and corpse-src in a
+two-source room saturates trivially at 2.0 (cap 3 under k 9 always
+admits both sources), so the rule's third clause could never have fired
+in the Hebrew room. The rule's live clause was the margin ratio; it
+measured, and it held. Both courts now say the same sentence: the
+parliament may sit on the byte law with the cone as a named limit and
+the utf8-or-byte escape proven cheap on both shores.

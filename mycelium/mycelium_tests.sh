@@ -1022,6 +1022,32 @@ else
     fail "prototype parity"
 fi
 
+# ---- the organ court (ORGAN_COURT.md) ----
+ORGAN="$T/organ_court"
+${CXX:-c++} -std=c++17 -O2 -Wall -Wextra -Wpedantic -Werror \
+    "$ROOT/mycelium/organ_court.cpp" -o "$ORGAN"
+pass "the organ court builds strict and silent"
+
+"$ORGAN" "$T/sea/speech" "$T/engine/speech" "$T/sea/speech" "$T/engine/speech" \
+    >"$T/organ-ascii.out"
+ob=$(grep 'L-byte' "$T/organ-ascii.out" | sed 's/L-[a-z0-9]* *//')
+ou=$(grep 'L-u8b' "$T/organ-ascii.out" | sed 's/L-[a-z0-9]* *//')
+[ -n "$ob" ] && [ "$ob" = "$ou" ] &&
+    pass "the organ court's two arms are one arm on pure ASCII" ||
+    fail "organ ascii identity"
+
+"$ORGAN" "$T/sea/speech" "$T/engine/speech" "$T/sea/speech" "$T/engine/speech" \
+    >"$T/organ-ascii2.out"
+cmp -s "$T/organ-ascii.out" "$T/organ-ascii2.out" &&
+    pass "the organ court is deterministic" || fail "organ determinism"
+
+uc_att=$(grep '^\[en\] L-byte' "$T/court-ascii.out" | grep -o 'att=[0-9.]*')
+oc_att=$(grep '^\[en\] L-byte' "$T/organ-ascii.out" | grep -o 'att-cap=[0-9.]*' |
+    sed 's/att-cap/att/')
+[ -n "$uc_att" ] && [ "$uc_att" = "$oc_att" ] &&
+    pass "the consistency row binds both courts to one field" ||
+    fail "court consistency: unicode '$uc_att' vs organ '$oc_att'"
+
 if [ ! -e "$T/.failed" ]; then
     printf '%s\n' '----' 'ALL MYCELIUM GATES PASS'
     exit 0
