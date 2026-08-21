@@ -1050,6 +1050,35 @@ oc_att=$(grep '^\[en\] L-byte' "$T/organ-ascii.out" | grep -o 'att-cap=[0-9.]*' 
     pass "the consistency row binds both courts to one field" ||
     fail "court consistency: unicode '$uc_att' vs organ '$oc_att'"
 
+# ---- the root court (ROOT_COURT.md) ----
+ROOTC="$T/root_court"
+${CXX:-c++} -std=c++17 -O2 -Wall -Wextra -Wpedantic -Werror \
+    "$ROOT/mycelium/root_court.cpp" -o "$ROOTC"
+pass "the root court builds strict and silent"
+
+"$ROOTC" --ascii >"$T/root-ascii.out"
+rb=$(grep '^L-byte ' "$T/root-ascii.out" | sed 's/^L-byte //')
+ru=$(grep '^L-u8b ' "$T/root-ascii.out" | sed 's/^L-u8b //')
+[ -n "$rb" ] && [ "$rb" = "$ru" ] &&
+    pass "the root court's two arms are one arm on pure ASCII" ||
+    fail "root ascii identity"
+
+t1=$("$ROOTC" --atoms e9)
+t2=$("$ROOTC" --atoms c3a9)
+NL='
+'
+[ "$t1" = "L-byte: 233${NL}L-u8b: 1114345" ] &&
+    [ "$t2" = "L-byte: 195 169${NL}L-u8b: 233" ] &&
+    pass "a tagged invalid byte cannot impersonate a lawful character" ||
+    fail "tag domain: [$t1] [$t2]"
+
+"$ROOTC" --ascii >"$T/root-ascii2.out"
+cmp -s "$T/root-ascii.out" "$T/root-ascii2.out" &&
+    pass "the root court is deterministic" || fail "root determinism"
+
+expect_fail "a foreign corpus is refusal, not a partial court" "digest mismatch" \
+    "$ROOTC" "$T/sea/speech"
+
 if [ ! -e "$T/.failed" ]; then
     printf '%s\n' '----' 'ALL MYCELIUM GATES PASS'
     exit 0

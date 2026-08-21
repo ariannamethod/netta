@@ -399,3 +399,59 @@ numbers wait for a later body, after this preregistration becomes
 history. Parliament waits with them. Its future citizens are framed as
 opaque unit ids with versioned recognizers and receipts, so the first
 pair/triple representation does not harden into the ontology above it.
+
+## Turn 5 — the third hand on the root question (2026-08-21, night)
+
+The second hand's audit of both Unicode sittings reproduced third-hand:
+121 gates green in this hand's shell, her tagged-domain repair read in
+the diff — an invalid byte now lives at 0x110000 plus itself, above the
+Unicode ceiling, so a stray e9 and a lawful c3a9 can no longer wear the
+same atom; the collision she closed was seen at design time by this
+hand and never declared, and that debt is named.
+
+Her ROOT_COURT preregistration was audited as she demanded — attacked
+before agreement. The gold survived the machine: the eight declaration
+lines of the extended-root section occur exactly once each in the
+pinned file (digest 05d2840d282a7f14 recomputed by this hand's own
+fnv), the sealed table equals the source lines with exactly the
+coordinative vav stripped, all 37 forms are distinct, family sizes run
+4-4-5-5-5-5-4-5, and the pair arithmetic lands on 68 within and 598
+between precisely. The wider file holds seven MORE declaration-shaped
+lines (the shalem, yada and adam stanzas, some repeating), and the
+contract is proof against them: the instrument embeds the sealed table,
+not an inferred parse, so no parsing freedom exists. The MAP rule
+stands single, ties are deterministic by byte order, every ranked row
+is exposed for independent recomputation, the diagnostics cannot vote,
+and this hand found no freedom through which an answer could be chosen
+after the numbers. The preregistration is accepted without amendment.
+The instrument waits, per her constraint, for the contract to become a
+merged historical fact.
+
+### The root sitting (2026-08-22, deep night)
+
+The third court sat and delivered the reversal nobody's sealed
+prediction allowed for. Root MAP: byte 0.88118061721002894 against
+codepoint 0.61121304918311958 — a delta of −0.270 against a loss
+threshold of +0.10. Top-1: the byte law is PERFECT, 37 of 37 queries
+return a family member first; the codepoint law returns 0.892. Family
+separation under bytes: within 0.524 against between 0.104. The second
+hand's sealed prediction — that scalars would recover the morphological
+neighbourhoods — is falsified in public, the mirror of this hand's own
+falsified prediction in the first court: both hands now carry one dead
+prediction each, which is what sealed predictions are for. The 2664
+ranked rows are sealed under digest a1a2b9df758ddfe5 and the primary
+metric was recomputed from the rows by an independent awk hand to all
+seventeen digits on both arms.
+
+Post-hoc interpretation, named as such and owed its own falsification
+someday: a byte window spans about a letter and a half of Hebrew, so it
+sees SUB-letter units — and Hebrew derivation interrupts its roots with
+infixes. Shalach and shaliach share no three-LETTER window at all: the
+yod breaks every codepoint trigram. But the byte windows over the
+shared consonant skeleton survive the interruption. The cone that
+collapsed general gram diversity is the same phenomenon seen from its
+useful side: finer windows, more shared mass — and on root inheritance
+that mass is signal, not mush. The prototype's any-script property did
+not live where everyone believed it lived. Three courts, three sealed
+verdicts, one sentence: the parliament opens on the byte law, with the
+cone limits and this reversal all on the record.
