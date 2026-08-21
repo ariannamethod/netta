@@ -1079,6 +1079,10 @@ cmp -s "$T/root-ascii.out" "$T/root-ascii2.out" &&
 expect_fail "a foreign corpus is refusal, not a partial court" "digest mismatch" \
     "$ROOTC" "$T/sea/speech"
 
+expect_fail "the independent root hand refuses an incomplete report" \
+    "unknown record" python3 "$ROOT/mycelium/root_court_check.py" \
+    "$T/root-ascii.out"
+
 if [ ! -e "$T/.failed" ]; then
     printf '%s\n' '----' 'ALL MYCELIUM GATES PASS'
     exit 0

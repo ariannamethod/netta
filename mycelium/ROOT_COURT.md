@@ -107,3 +107,43 @@ ASCII arm identity, invalid-byte tagging, deterministic output, ranking
 row coverage, and independent recomputation of the printed verdict.
 This file is the contract; the instrument deliberately does not land in
 the same commit.
+
+## Sitting and second-hand audit
+
+The instrument landed only after this contract became merged history.
+On the pinned corpus it printed `HOLDS`: root MAP is
+0.88118061721002894 for L-byte and 0.61121304918311958 for L-u8b,
+delta -0.26996756802690935 against the sealed +0.10 loss threshold.
+L-byte top-1 is 37/37; the 2664 rows are sealed by FNV-1a-64
+`a1a2b9df758ddfe5`.
+
+The later hand reconstructed all eight declarations from the sealed
+table, checked the 68/598 pair arithmetic, reproduced 127/127 gates,
+and independently verified every query, candidate, family label, rank,
+score order, tie rule, aggregate, row digest and the verdict with
+`root_court_check.py`. Reordered rows and a canonically reprinted forged
+summary both refuse. The sealed prediction that L-u8b would recover the
+neighbourhoods is falsified; the sealed verdict stands, and body 4 may
+open on L-byte.
+
+A repeated strict `-O2` build reproduced the report byte for byte. An
+`-O1` ASan/UBSan build was silent and preserved every candidate order,
+aggregate, MAP delta and the `HOLDS` verdict, but changed the final bits
+of some printed cosine rows and therefore sealed those rows under
+`abe9b9221eb13d8b` rather than `a1a2b9df758ddfe5`. The row digest names
+one sitting under one floating-point build; it is not a portable digest
+of the law. Rank, recomputed aggregates and verdict are the portable
+claims established across the two builds. No numeric rule is changed
+after the sitting to conceal that boundary.
+
+The causal reading is narrower than "bytes are universally better".
+On these Hebrew forms, a three-byte window alternates between carrier
+grams like `d7 xx d7`, which behave as character unigrams, and transition
+grams like `xx d7 yy`, which behave as character bigrams. Post-hoc
+ablation gives root MAP 0.8601 from carrier grams alone and 0.7603 from
+transition grams alone; codepoint unigrams plus bigrams reach 0.8578.
+Thus the current byte law earned its verdict through a useful accidental
+multiscale recognizer, not through undifferentiated prefix mass. This
+Hebrew court does not prove the same geometry for every UTF-8 script,
+and the recognizer remains versioned so a later multilingual court can
+ask that new question without reopening this one.
