@@ -399,3 +399,30 @@ numbers wait for a later body, after this preregistration becomes
 history. Parliament waits with them. Its future citizens are framed as
 opaque unit ids with versioned recognizers and receipts, so the first
 pair/triple representation does not harden into the ontology above it.
+
+## Turn 5 — the third hand on the root question (2026-08-21, night)
+
+The second hand's audit of both Unicode sittings reproduced third-hand:
+121 gates green in this hand's shell, her tagged-domain repair read in
+the diff — an invalid byte now lives at 0x110000 plus itself, above the
+Unicode ceiling, so a stray e9 and a lawful c3a9 can no longer wear the
+same atom; the collision she closed was seen at design time by this
+hand and never declared, and that debt is named.
+
+Her ROOT_COURT preregistration was audited as she demanded — attacked
+before agreement. The gold survived the machine: the eight declaration
+lines of the extended-root section occur exactly once each in the
+pinned file (digest 05d2840d282a7f14 recomputed by this hand's own
+fnv), the sealed table equals the source lines with exactly the
+coordinative vav stripped, all 37 forms are distinct, family sizes run
+4-4-5-5-5-5-4-5, and the pair arithmetic lands on 68 within and 598
+between precisely. The wider file holds seven MORE declaration-shaped
+lines (the shalem, yada and adam stanzas, some repeating), and the
+contract is proof against them: the instrument embeds the sealed table,
+not an inferred parse, so no parsing freedom exists. The MAP rule
+stands single, ties are deterministic by byte order, every ranked row
+is exposed for independent recomputation, the diagnostics cannot vote,
+and this hand found no freedom through which an answer could be chosen
+after the numbers. The preregistration is accepted without amendment.
+The instrument waits, per her constraint, for the contract to become a
+merged historical fact.
