@@ -957,13 +957,15 @@ check_decode() {
 }
 NL='
 '
-check_decode c0af "cp:${NL}u8b: 192 175" "overlong stays evidence only for u8b"
-check_decode 80 "cp:${NL}u8b: 128" "a bare continuation byte"
-check_decode e282 "cp:${NL}u8b: 226 130" "a truncated sequence"
-check_decode eda080 "cp:${NL}u8b: 237 160 128" "a surrogate is not a character"
+check_decode c0af "cp:${NL}u8b: 1114304 1114287" "overlong stays tagged evidence only for u8b"
+check_decode 80 "cp:${NL}u8b: 1114240" "a bare continuation byte"
+check_decode e282 "cp:${NL}u8b: 1114338 1114242" "a truncated sequence"
+check_decode eda080 "cp:${NL}u8b: 1114349 1114272 1114240" "a surrogate is not a character"
 check_decode f48fbfbf "cp: 1114111${NL}u8b: 1114111" "the last code point decodes"
-check_decode f4908080 "cp:${NL}u8b: 244 144 128 128" "beyond the last code point"
+check_decode f4908080 "cp:${NL}u8b: 1114356 1114256 1114240 1114240" "beyond the last code point"
 check_decode 41d790 "cp: 65 1488${NL}u8b: 65 1488" "ascii beside an aleph"
+check_decode e9c3a9 "cp: 233${NL}u8b: 1114345 233" \
+    "an invalid byte cannot impersonate the same-valued Unicode scalar"
 
 "$COURT" "$T/sea/speech" "$T/engine/speech" "$T/sea/speech" "$T/engine/speech" \
     >"$T/court-ascii.out"

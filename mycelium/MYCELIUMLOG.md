@@ -370,3 +370,32 @@ in the Hebrew room. The rule's live clause was the margin ratio; it
 measured, and it held. Both courts now say the same sentence: the
 parliament may sit on the byte law with the cone as a named limit and
 the utf8-or-byte escape proven cheap on both shores.
+
+### Turn 4, second-hand audit: what the courts did not ask
+
+Both sealed verdicts were reproduced byte for byte, then their scope was
+audited rather than retold. The first court's self-retrieval is a
+self-query and therefore almost tautological; its attribution excluded
+one ordinal rather than every fragment sharing body 1's `cut_clause`.
+The faithful exclusion gives 0.7448 for L-byte and 0.7076 for L-u8b on
+the same Hebrew room, so the repair does not reverse `HOLDS`. The organ
+court's two dead clauses are dead as its author disclosed, and its one
+live normalised margin is blind to absolute shifts and scaling of the
+cosine cone. The formal verdicts stand. Their permission to open body 4
+does not.
+
+One code defect did fall: L-u8b encoded an invalid byte by its bare
+0..255 value, so invalid `0xe9` impersonated valid U+00E9. Fallback
+bytes now live in the tagged range beginning at 0x110000; a new decoder
+gate distinguishes the two and the battery stands at 121 green gates.
+Valid UTF-8 court numbers are unchanged.
+
+The question originally asked — whether non-ASCII subword families
+remain neighbours — now has its own sealed surface in `ROOT_COURT.md`.
+Eight root declarations already present in Pitomadom's pinned
+`shoresh.txt` provide 37 forms and ground truth without importing an
+analyser. Root MAP is the sole decision metric; the instrument and its
+numbers wait for a later body, after this preregistration becomes
+history. Parliament waits with them. Its future citizens are framed as
+opaque unit ids with versioned recognizers and receipts, so the first
+pair/triple representation does not harden into the ontology above it.

@@ -181,6 +181,7 @@ static std::string cut_clause(const std::string &text) {
 
 enum Law { L_BYTE = 0, L_U8B = 1 };
 static const char *LAW_NAME[2] = {"L-byte", "L-u8b"};
+static const uint32_t INVALID_BYTE_BASE = 0x110000u;
 
 static int utf8_seq(const std::string &s, size_t i, uint32_t *cp) {
     unsigned char b0 = s[i];
@@ -231,7 +232,7 @@ static std::vector<uint32_t> atomize(const std::string &s, Law law) {
         uint32_t cp;
         int len = utf8_seq(s, i, &cp);
         if (len) { atoms.push_back(cp); i += (size_t)len; }
-        else { atoms.push_back(b); i++; }
+        else { atoms.push_back(INVALID_BYTE_BASE + b); i++; }
     }
     return atoms;
 }
