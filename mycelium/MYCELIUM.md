@@ -85,12 +85,12 @@ hands; this list is a map, not a promise of shape.
   it price the FUTURE stream better than its absence (never
   retrospective); only a passed exam legalises consolidation and coins a
   glyph. The track record of hypotheses is itself ledger material.
-- **Gate before body 4 — the root court.** The first two Unicode courts
-  honestly ruled on source ranking and threshold shape but did not test
-  the inherited any-script claim: character-trigram resemblance between
-  related word forms. `ROOT_COURT.md` preregisters that missing test on
-  eight corpus-declared Hebrew root families. Parliament waits for its
-  verdict and audit.
+- **Gate before body 4 — the root court** (landed, audited, closed). The
+  missing subword test sat on eight corpus-declared Hebrew root families.
+  L-byte held by the sealed rule and won root MAP 0.8812 against 0.6112;
+  its 2664 public rows and verdict were recomputed by an independent
+  reader. The parliament may open with the Unicode cone and the
+  Hebrew-specific multiscale mechanism both named as limits.
 - **Body 4 — the parliament.** LoRAgrad×DoE admission: a jury votes on
   what may become weight; verdicts (PASS/WEAKEN/FREEZE/SCAR/DARK/
   SILENCE-with-receipt) are ledger events with provenance. The admission

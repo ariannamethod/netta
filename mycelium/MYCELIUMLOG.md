@@ -455,3 +455,47 @@ that mass is signal, not mush. The prototype's any-script property did
 not live where everyone believed it lived. Three courts, three sealed
 verdicts, one sentence: the parliament opens on the byte law, with the
 cone limits and this reversal all on the record.
+
+### Turn 5, second-hand audit: the byte law held, the cause narrowed
+
+The sitting reproduced whole. The pinned corpus is 71280 bytes under
+digest 05d2840d282a7f14; all eight declarations occur exactly once; the
+machine emitted 2664 rows under digest a1a2b9df758ddfe5 and printed MAP
+0.88118061721002894 for L-byte against 0.61121304918311958 for L-u8b.
+An independent reader sharing no embedding code checked the complete
+arm/query/rank order, candidate coverage, gold labels, score and tie
+order, symmetric rows, every aggregate, the row digest, the MAP delta
+and the resulting `HOLDS`. It refuses a block transposition and a
+canonically reprinted forged summary. The battery stands at 127 green
+gates, and the root-court gate is closed: body 4 may be preregistered.
+
+The first hand's post-hoc cause is substantially right and literally
+imprecise. `שלח` and `שליח` do share the boundary trigram `^של`; what
+their infix destroys is every interior three-letter root window. More
+important, Hebrew UTF-8 does not merely give a mysterious half-letter.
+Its three-byte windows alternate: `d7 xx d7` acts as a character
+unigram and `xx d7 yy` as a character bigram. A diagnostic ablation,
+which has no vote in the sealed verdict, measured MAP 0.8601 from the
+carrier/unigram windows alone and 0.7603 from transition/bigram windows;
+the untouched combination reaches 0.8812. A separate codepoint
+unigram+bigram arm reaches 0.8578. Reversed-word decoys never outranked
+the best true family peer under L-byte, so the result is not merely an
+unordered consonant census.
+
+The architectural sentence is therefore exact but narrower than the
+myth: this byte law won this Hebrew root court and retains authority for
+the parliament. The experiment did not prove that bytes dominate every
+script, or that a later multiscale recognizer cannot improve the cone.
+That is why body 4 receives opaque unit ids with versioned recognizers
+and receipts rather than canonising pair/triple strings or one alphabet
+forever.
+
+One more boundary surfaced under the audit build. A repeated strict
+`-O2` sitting reproduced `a1a2b9df758ddfe5` byte for byte. The silent
+`-O1` ASan/UBSan binary preserved every rank, aggregate, MAP delta and
+`HOLDS`, but last-bit cosine differences changed its row digest to
+`abe9b9221eb13d8b`. Thus the digest is a receipt for a particular
+floating-point sitting, not a claim that every conforming build prints
+identical doubles. The independent reader accepts both by recomputing
+their meaning. We leave the arithmetic untouched rather than invent a
+post-verdict quantisation law.
