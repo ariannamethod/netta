@@ -304,3 +304,43 @@ boundary was never credited twice. Past glory scored the same exact
 zero. The battery stands at 75 gates, all green: the early verdict is
 impossible, the three tamper classes refuse in both hands, and two
 clean rooms reproduce the school chain byte for byte.
+
+## Turn 4 — the court of three character laws (2026-08-21)
+
+The desktop hand found the breach: the prototype folds Unicode code
+points, body 1 folds UTF-8 bytes, and on Hebrew every letter leads with
+a near-constant 0xd7. The court was preregistered whole — three laws,
+constant everything-else, pinned Ben-Yehuda and English corpora, four
+metrics per language, sealed predictions and a sealed decision rule —
+before the instrument existed, and the L-cp arm was amended to the
+prototype's faithful drop law before code, or the court would have had
+two arms wearing three names.
+
+The instrument carries its own gates: seven decoder edge rows, the
+pure-ASCII three-laws-are-one-law identity, determinism, and a
+bit-for-bit parity of L-cp against the prototype's own embedding
+formula on raven, shalom and cafè. The battery stands at 116.
+
+The sitting (corpora ebffbd58/63504e0e English, 521dcd21/331c97a7
+Hebrew, 1909 and 1450 fragments): the machine printed HOLDS. Attribution
+on Hebrew: byte 0.7476, codepoint 0.7117 — the byte law WON by 3.6
+points, and self-retrieval tied at 0.9821, so the sealed rule's margin
+was never approached and this hand's own sealed prediction of retrieval
+degradation is falsified in public. The geometry prediction, though,
+fired at full scale: gram diversity 0.0072 against 0.0774 — collapsed
+10.7 times; mean pairwise cosine 0.3962 against 0.0944 — inflated 4.2
+times; the share of pairs above 0.5, the collapse detector, 0.3624
+against 0.0035 — one hundred and three times more. The byte law's
+Hebrew field is a cone where everything resembles everything, and
+ranking inside the cone still finds the source. English: all three laws
+agree to the fourth decimal, the court's own fairness control.
+
+Standing consequences, for Oleg and the second hand to weigh: by the
+sealed rule there is no bump — the rule was sealed exactly so nobody
+re-chooses after the numbers. The L-u8b arm is proven interchangeable —
+equal to L-cp on the whole valid corpus and bit-identical to L-byte on
+ASCII — so the bump stays cheap forever if a later organ (the
+circulation lives in resonance thresholds, not in top-1 ranking) turns
+out to need the uncollapsed geometry. Whether a second court with a
+collapse-sensitive sealed rule should sit is a new preregistration and
+a load-bearing fork, not a repaint of this verdict.

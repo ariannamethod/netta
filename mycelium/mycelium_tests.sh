@@ -945,6 +945,83 @@ else
     fail "school clean-room determinism"
 fi
 
+# ---- the court of three character laws (UNICODE_COURT.md) ----
+COURT="$T/unicode_court"
+${CXX:-c++} -std=c++17 -O2 -Wall -Wextra -Wpedantic -Werror \
+    "$ROOT/mycelium/unicode_court.cpp" -o "$COURT"
+pass "the court builds strict and silent"
+
+check_decode() {
+    got=$("$COURT" --decode "$1")
+    [ "$got" = "$2" ] && pass "decoder: $3" || fail "decoder: $3"
+}
+NL='
+'
+check_decode c0af "cp:${NL}u8b: 192 175" "overlong stays evidence only for u8b"
+check_decode 80 "cp:${NL}u8b: 128" "a bare continuation byte"
+check_decode e282 "cp:${NL}u8b: 226 130" "a truncated sequence"
+check_decode eda080 "cp:${NL}u8b: 237 160 128" "a surrogate is not a character"
+check_decode f48fbfbf "cp: 1114111${NL}u8b: 1114111" "the last code point decodes"
+check_decode f4908080 "cp:${NL}u8b: 244 144 128 128" "beyond the last code point"
+check_decode 41d790 "cp: 65 1488${NL}u8b: 65 1488" "ascii beside an aleph"
+
+"$COURT" "$T/sea/speech" "$T/engine/speech" "$T/sea/speech" "$T/engine/speech" \
+    >"$T/court-ascii.out"
+ascii_b=$(grep 'L-byte' "$T/court-ascii.out" | sed 's/L-[a-z0-9]* *//')
+ascii_c=$(grep 'L-cp' "$T/court-ascii.out" | sed 's/L-[a-z0-9]* *//')
+ascii_u=$(grep 'L-u8b' "$T/court-ascii.out" | sed 's/L-[a-z0-9]* *//')
+[ -n "$ascii_b" ] && [ "$ascii_b" = "$ascii_u" ] && [ "$ascii_b" = "$ascii_c" ] &&
+    pass "on pure ASCII the three laws are one law" || fail "ascii identity"
+
+"$COURT" "$T/sea/speech" "$T/engine/speech" "$T/sea/speech" "$T/engine/speech" \
+    >"$T/court-ascii2.out"
+cmp -s "$T/court-ascii.out" "$T/court-ascii2.out" &&
+    pass "the court is deterministic" || fail "court determinism"
+
+if python3 - "$COURT" <<'PY'
+import math, subprocess, sys
+
+COURT = sys.argv[1]
+
+# the prototype's embedding formula, reproduced from mycelium.py:31-59
+# (cited in UNICODE_COURT.md); no sibling import, the formula IS the law.
+def fnv_vec(s):
+    h = 2166136261
+    for c in s:
+        h ^= ord(c)
+        h = (h * 16777619) & 0xFFFFFFFF
+    v = []
+    for _ in range(96):
+        h ^= h >> 13
+        h = (h * 1597334677) & 0xFFFFFFFF
+        h ^= h >> 16
+        v.append((h & 0xFFFF) / 32768.0 - 1.0)
+    return v
+
+def embed(word):
+    w = "^" + word + "$"
+    grams = [w[i:i + 3] for i in range(len(w) - 2)] or [w]
+    vec = [0.0] * 96
+    for g in grams:
+        gv = fnv_vec(g)
+        for i in range(96):
+            vec[i] += gv[i]
+    n = math.sqrt(sum(x * x for x in vec)) + 1e-10
+    return [x / n for x in vec]
+
+for word in ("raven", "שלום", "cafè"):
+    mine = " ".join(f"{x:.17g}" for x in embed(word))
+    theirs = subprocess.run([COURT, "--embed-cp", word],
+                            capture_output=True, text=True).stdout.strip()
+    if mine != theirs:
+        raise SystemExit(f"parity broke on {word!r}")
+PY
+then
+    pass "L-cp matches the prototype's own embedding, bit for bit"
+else
+    fail "prototype parity"
+fi
+
 if [ ! -e "$T/.failed" ]; then
     printf '%s\n' '----' 'ALL MYCELIUM GATES PASS'
     exit 0

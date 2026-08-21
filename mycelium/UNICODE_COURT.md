@@ -17,14 +17,17 @@ or kill it.
 
 ## The three laws on trial
 
-- **L-cp — codepoint law** (the prototype's): decode UTF-8 strictly;
-  each code point is one atom folded as its integer value
+- **L-cp — codepoint law** (the prototype's, faithfully): decode UTF-8
+  strictly; each code point is one atom folded as its integer value
   (`h ^= value; h *= 16777619`, 32-bit wrap — exactly the prototype's
   arithmetic, which is why L-cp and L-byte are bit-identical on ASCII).
-  An invalid byte is one atom of its byte value — a divergence from the
-  prototype, which silently DROPS invalid input (`errors="ignore"`,
-  mycelium.py:220); the prototype's own law cannot eat Netta's byte
-  soup, so pure inheritance was never on the table.
+  An invalid byte is DROPPED, exactly as the prototype drops it
+  (`errors="ignore"`, mycelium.py:220) — which is why pure inheritance
+  was never on the table: the prototype's own law cannot eat Netta's
+  byte soup without silently deleting evidence. (Amended before the
+  instrument was written: the first draft gave L-cp the keep-as-byte
+  fallback, which would have made L-cp and L-u8b mechanically one law
+  and left the court with two arms instead of three.)
 - **L-byte — byte law** (body 1 as it stands): every byte is an atom.
 - **L-u8b — utf8-or-byte law** (the candidate): a strict RFC-3629
   decode — 2..4-byte sequences, valid continuations, no overlongs, no
