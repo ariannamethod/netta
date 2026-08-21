@@ -74,3 +74,24 @@ battery: English-control near-identity of the two arms, determinism,
 and the cap-on/cap-off consistency row (with the cap restored, its
 top-1 must reproduce the first court's attribution numbers on the same
 corpora, or the instrument is not measuring the same field).
+
+## Second-hand audit after the sitting
+
+The sealed verdict is reproduced exactly: Hebrew margin is 0.3959 under
+L-byte and 0.5397 under L-u8b (ratio 0.7335), while corpse cosine is
+0.6993 against 0.3449. The formal `HOLDS` remains part of the record.
+
+Two dead clauses named by the first hand are confirmed. Removing a
+per-source cap cannot change the already chosen global top-1, and a
+9-fragment corpse with cap 3 in a two-source room saturates the source
+count. The remaining ranking-margin clause is live, but its normalised
+quantity `(top1 - median) / (top1 - minimum)` is invariant to shifts and
+positive rescaling of every score. It describes rank shape, not the
+absolute threshold portability threatened by the Hebrew cosine cone.
+The corpse-cosine measurement directly exposed that cone, but the
+sealed rule did not give it a vote.
+
+This narrows rather than reverses the verdict: the court answered its
+registered rule, while the architectural permission attached to
+`HOLDS` outran the evidence. Body 4 waits for `ROOT_COURT.md`, whose
+primary metric directly tests the subword inheritance at issue.

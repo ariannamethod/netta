@@ -85,11 +85,19 @@ hands; this list is a map, not a promise of shape.
   it price the FUTURE stream better than its absence (never
   retrospective); only a passed exam legalises consolidation and coins a
   glyph. The track record of hypotheses is itself ledger material.
+- **Gate before body 4 — the root court.** The first two Unicode courts
+  honestly ruled on source ranking and threshold shape but did not test
+  the inherited any-script claim: character-trigram resemblance between
+  related word forms. `ROOT_COURT.md` preregisters that missing test on
+  eight corpus-declared Hebrew root families. Parliament waits for its
+  verdict and audit.
 - **Body 4 — the parliament.** LoRAgrad×DoE admission: a jury votes on
   what may become weight; verdicts (PASS/WEAKEN/FREEZE/SCAR/DARK/
   SILENCE-with-receipt) are ledger events with provenance. The admission
   jury and the plasticity experts are separate roles: an expert cannot
-  propose a change and also legalise it.
+  propose a change and also legalise it. Its citizens enter as an opaque
+  `unit_id` plus a versioned recognizer and receipt; pair/triple strings
+  are body 2's first implementation, not the parliament's eternal type.
 - **Body 5 — the notes.** Многовесовость: each consolidated pattern may
   earn a tiny mortal note-weight trained asynchronously via notorch
   (linked as an upstream dependency — nothing vendored), under the rent

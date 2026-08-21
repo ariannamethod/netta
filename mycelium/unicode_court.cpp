@@ -4,7 +4,7 @@
 
    Three laws of what an ATOM is: L-byte (every byte), L-cp (strict
    UTF-8 code points, invalid bytes dropped as the prototype drops
-   them), L-u8b (code points where valid, single-byte atoms where not).
+   them), L-u8b (code points where valid, tagged byte atoms where not).
    Everything else -- segmentation, tokenisation, stops, strip set, the
    three-atom window framed by ^ and $, the DIM-96 expansion -- is held
    constant, copied verbatim from the organism's byte-law text organs,
@@ -182,6 +182,7 @@ static std::string cut_clause(const std::string &text) {
 
 enum Law { L_BYTE = 0, L_CP = 1, L_U8B = 2 };
 static const char *LAW_NAME[3] = {"L-byte", "L-cp", "L-u8b"};
+static const uint32_t INVALID_BYTE_BASE = 0x110000u;
 
 /* strict RFC-3629 decode of one sequence at s[i]; returns length 2..4
    and sets *cp on success, 0 on invalid lead/continuation. ASCII is
@@ -242,7 +243,8 @@ static std::vector<uint32_t> atomize(const std::string &s, Law law) {
             atoms.push_back(cp);
             i += (size_t)len;
         } else if (law == L_U8B) {
-            atoms.push_back(b); /* an invalid byte keeps its evidence */
+            /* Keep fallback bytes outside the Unicode scalar domain. */
+            atoms.push_back(INVALID_BYTE_BASE + b);
             i++;
         } else {
             i++; /* L-cp: the prototype drops it on the floor */

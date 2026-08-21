@@ -32,8 +32,9 @@ or kill it.
 - **L-u8b — utf8-or-byte law** (the candidate): a strict RFC-3629
   decode — 2..4-byte sequences, valid continuations, no overlongs, no
   surrogates, max U+10FFFF — yields codepoint atoms; any invalid lead
-  or continuation byte is consumed as a single byte atom. No locale, no
-  normalisation, no case beyond the existing ASCII lower. On valid
+  or continuation byte is consumed as a tagged atom `0x110000 + byte`,
+  outside the Unicode scalar domain. No locale, no normalisation, no
+  case beyond the existing ASCII lower. On valid
   UTF-8 it IS L-cp; on arbitrary bytes it degrades gracefully instead
   of dropping evidence.
 
@@ -102,3 +103,29 @@ continuation, truncated sequence, surrogate range, U+10FFFF boundary),
 determinism across two runs, and a word-level parity probe of L-cp
 against the prototype's own embed on sample words (one Python
 invocation under Oleg's standing word for this arc's fixtures).
+
+## Second-hand audit after the sitting
+
+The sealed verdict is reproduced and stands for the sealed rule. On the
+pinned Hebrew room, L-byte/L-cp attribution is 0.7476/0.7117 and both
+self-retrieval arms are 0.9821. Re-running attribution with body 1's
+actual exclusion law — exclude every fragment with the prompt's
+`cut_clause`, not merely the prompt's own ordinal — gives 0.7448/0.7076
+and does not change the verdict.
+
+The scope claimed above was too broad in two places. Attribution was not
+mechanically body 1's metric A until that exclusion was restored, and
+self-retrieval is not an independent quality test: the complete fragment
+queries a field containing itself, so its normalised vector is its own
+maximum except for exact ties. More importantly, neither clause measures
+the any-script property that motivated the sitting: whether character
+trigrams preserve useful subword-family resemblance. `HOLDS` therefore
+means only that the byte law did not lose this court's source-ranking
+rule; it does not yet license the parliament.
+
+The audit also found an implementation collision in L-u8b. An invalid
+raw byte such as `0xe9` and the valid scalar U+00E9 formerly became the
+same atom 233. Invalid fallback bytes are now tagged above U+10FFFF, and
+the battery proves that `e9 c3a9` becomes two distinct atoms while all
+valid-corpus results remain unchanged. The missing subword question is
+preregistered separately in `ROOT_COURT.md`.
