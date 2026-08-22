@@ -3,6 +3,36 @@
 The arc's own log, in the arc's own folder. The heart's log stays
 NETTALOG2.md; nothing here reaches into it.
 
+## Body 4 audit closure - the second hand (2026-08-22)
+
+The parliament audit found two real reader/writer divergences after the
+pre-registered law was already green. First, the independent C reader's rent
+path stored proposal tokens as NUL-terminated `char *` and reconstructed pair
+and triple shapes through fixed 512-byte buffers. A full known-lane ballot for
+`alpha\0hidden memory` and another for a 601-byte two-token shape proved the
+bug at ballot time: the writer sealed PASS while the reader could reject with a
+false rent finding. The reader now carries token byte lengths and compares
+shape components directly, so NUL and long tokens stay in the same law as
+ordinary text.
+
+Second, the writer trusted opaque DARK ballots too much on replay. The reader
+already required the ballot's pinned school prefix to reproduce and the named
+glyph to exist there; the writer only checked that foreign-recognizer findings
+were `opaque` and verdict `DARK`. `School::load(limit)` now refuses a requested
+historical prefix that EOF cannot reach, and opaque replay rereads the pinned
+school prefix before accepting the DARK lane. The repair also hardens known and
+SILENCE ballot paths against impossible school record counts because they use
+the same bounded school load.
+
+The permanent gates now cover both opaque reseals (absent glyph and impossible
+school record count with a syntactically valid final chain), complete NUL and
+601-byte rent ballots, a sealed Q/P plus partial first-J tail, arity-tagged
+opaque identity isolation over the same glyph bytes, scar isolation, and DARK
+powerlessness in franchise. The parliament battery stands at 163 named M1
+gates. Ordinary, zero-line and ASan/UBSan runs all pass:
+`ALL MYCELIUM GATES PASS`, `ALL GATES PASS`, and sanitizer-silent
+`ALL MYCELIUM GATES PASS`.
+
 ## Body 4 preregistration — the second hand (2026-08-22)
 
 The parliament was stopped before its first line of code and its central
@@ -530,3 +560,36 @@ floating-point sitting, not a claim that every conforming build prints
 identical doubles. The independent reader accepts both by recomputing
 their meaning. We leave the arithmetic untouched rather than invent a
 post-verdict quantisation law.
+
+## Turn 7 — the parliament in the flesh (2026-08-22)
+
+Body 4 landed in two commits under the second hand's repaired contract,
+and the six verdict classes were all walked, not narrated. The honest
+citizen — strong, clean, alive — was admitted with a unit id reproduced
+by an independent fixture down to the hex digit, and refused a second
+petition by name. The failed-then-passed identity was scarred with its
+closing meal named in the finding itself, refused while hot, and
+entered only through WEAKEN when cooled — the cherry-pick ban made
+flesh, no forgiveness by amnesia. A foreign recognizer was heard and
+darkened, and refused repetition while its law does not exist. A
+missing glyph was silenced with three unheard receipts and refused
+until it exists. A starved citizen froze inside its window. The
+sharpest gate of the turn: a petition interrupted after its P row and
+after each juror row, with the main ledger deliberately advanced past
+the pinned meal before recovery — and all three recoveries reproduced
+the reference chain byte for byte, because a sealed ballot reads only
+the clocks its petition pinned. The three old chains stayed
+byte-identical across every parliament run.
+
+The reader grew its own parliament hand: an independent byte-law text
+pipeline in plain C — segmentation, tokenisation, stops — eating the
+grave's blobs to recompute the rent juror; a school-at-prefix parser
+rebuilding hypothesis state at the pinned record count; the unit id
+refolded from the arity byte and the shape; every finding and every
+verdict of every known ballot reproduced without sharing a line of the
+writer's implementation, and the four crafted tamper classes — flip,
+truncation, false finding, false verdict — refused by both hands in the
+same class. The battery stands at 153, sanitizers silent, the zero line
+green. The franchise now holds its first citizens: a PASS and a
+WEAKEN, both terminal, both public, both powerless until body 5 mints
+what they are owed.
