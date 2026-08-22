@@ -91,7 +91,7 @@ hands; this list is a map, not a promise of shape.
   its 2664 public rows and verdict were recomputed by an independent
   reader. The parliament may open with the Unicode cone and the
   Hebrew-specific multiscale mechanism both named as limits.
-- **Body 4 — the parliament.** LoRAgrad×DoE admission: a jury votes on
+- **Body 4 — the parliament** (this turn). LoRAgrad×DoE admission: a jury votes on
   what may become weight; verdicts (PASS/WEAKEN/FREEZE/SCAR/DARK/
   SILENCE-with-receipt) are ledger events with provenance. The admission
   jury and the plasticity experts are separate roles: an expert cannot
@@ -337,3 +337,76 @@ boundary. O rows are therefore the pricing witness: a binary/libm that
 recomputes different microbits refuses loudly as observation drift. A
 build string in every H would only name that incompatibility, not remove
 it, so the law names `libm` once and the log keeps the limit public.
+
+## Body 4 contract (frozen before code)
+
+The parliament admits proven citizens toward power it does not itself
+hold. It writes one new chain and reads three old ones; it changes no
+organ's behaviour, grants no field authority, and mints no weight —
+the franchise it builds is the roll body 5's note-weights will be
+minted FROM, nothing more. The field law is L-byte, with both cone
+limits and the Hebrew multiscale win of the three courts named here as
+its standing record. No reverse authority into any life; bodies 1-3
+untouched.
+
+- **Citizens are opaque.** A citizen is `unit_id` — the FNV-1a-64 of
+  (arity, 0x00, shape bytes) — plus a versioned recognizer name and
+  the school receipts behind it. Parliament code never interprets
+  shape bytes: it digests them once into the id and carries them
+  nowhere else. Today's recognizer version is the literal
+  `pair-triple-v1`; the door is built for versions that do not exist
+  yet (the second hand's root law).
+- **Petition.** `petition <glyph>` reads the school chain read-only,
+  finds the L row, and seals
+  `P \t petition-id \t glyph \t unit_id \t recognizer-version \t
+  school-chain \t after-school-records` into `.mycelium.parliament`
+  (own chain, law row `Q \t 1 \t body4-parl-v1` at line 1) — pinning
+  the exact school prefix the ballot will read, the prefix-binding law
+  lifted a third time.
+- **The ballot is the whole record.** Three deterministic jurors, one
+  `J \t petition-id \t juror \t finding` row each:
+  - `exam` reads the V row behind the glyph: `strong` if the sealed
+    gain is at least twice GAIN_MIN, else `adequate`;
+  - `record` enumerates EVERY hypothesis in the school chain whose
+    shape digests to the same unit_id — every attempt, never a chosen
+    latest verdict: `clean` if no fail or weak V exists for the
+    identity, else `scarred`;
+  - `rent` recomputes the proposer derivation at petition time:
+    `alive` or `starved`.
+- **The verdict is a sealed total function**, one
+  `V \t petition-id \t verdict` row, in this order of law: an unknown
+  recognizer version is `DARK` — structurally heard, power withheld,
+  receipt sealed, the open door for future classes; a petition for a
+  glyph that does not exist is `SILENCE` — a refusal to hear, with
+  receipt; a `scarred` record is `SCAR`, barring re-petition for the
+  identity for 16 meals; a `starved` rent is `FREEZE`, re-petition
+  open after 8 meals; `strong`+`clean`+`alive` is `PASS`, admitting
+  the citizen to the franchise; anything else is `WEAKEN` — admitted,
+  marked reduced. All six classes are public chain events with
+  provenance; an identity already admitted refuses a second petition
+  by name.
+- **Separation of roles, structural.** The jury is the only author of
+  V rows, and only a school-legalised glyph can be petitioned — an
+  expert (body 5's future role) cannot propose a change and legalise
+  it, because nothing an expert authors is petitionable. The
+  parliament writes no row in the ledger, the proposals, or the
+  school: a parliament run leaves all three byte-identical.
+- **The reader** (`ledger_check`) learns the parliament grammar with
+  its own hand: law row, P/J/V order, one J per juror per petition,
+  verdict class consistency with the sealed mapping where it is
+  computable from the chain, monotonic petition ids.
+- Red hands, sealed before code: an identity with a failed-then-passed
+  history is SCARRED even though its latest verdict is a pass — the
+  cherry-pick the second hand banned is impossible by construction; an
+  unknown recognizer version lands DARK, not refused — the door proves
+  it is a door; a missing glyph lands SILENCE with its receipt; a
+  second petition after PASS refuses by name; a SCAR re-petition
+  inside its window refuses; flipped byte, truncated tail and order
+  faults in the parliament chain refuse in both hands; a clean-room
+  repeat reproduces the chain byte for byte; and the no-authority row:
+  ledger, proposals and school files byte-identical across any
+  parliament run.
+- Named for later, not for now: the second hand's Leo review
+  (PatternLineage — stable identity, two currents, shadow without
+  power, deferred court) is the candidate shape for bodies 5-6; body 4
+  takes none of it on board.
