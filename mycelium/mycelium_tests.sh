@@ -176,6 +176,35 @@ carry = [
     "Another steady sentence gives the repeated meal enough plain tokens."
 ] * 10
 room_meals("carry-field", carry, 150)
+
+parl = []
+for i in range(1, 35):
+    if i <= 2:
+        parl.append(f"The quiet raven counts the copper coins tonight before dawn {i:02d}.")
+    elif i <= 18:
+        parl.append(f"The quiet raven counts the copper coins on evening {i:02d}. "
+                    f"The quiet raven counts the silver ledger on evening {i:02d} once more.")
+    elif i <= 26:
+        parl.append(f"The quiet raven counts the copper coins on evening {i:02d}. "
+                    f"The quiet raven sings beside the silver ledger on evening {i:02d} once more.")
+    else:
+        parl.append(f"The quiet raven sings beside the copper archive on evening {i:02d}.")
+room_meals("parl-field", parl, 180)
+
+parl2 = []
+for i in range(1, 27):
+    if i <= 2:
+        parl2.append(f"The amber wolf sings beside the frozen river tonight {i:02d}.")
+    elif i <= 10:
+        parl2.append(f"The amber wolf sings beside the frozen river on evening {i:02d}. "
+                     f"The amber wolf sings beside the silver bridge on evening {i:02d} as well.")
+    else:
+        parl2.append(f"A numbered courier route {i:02d} delivers the quiet evening ledger across town.")
+room_meals("parl2-field", parl2, 220)
+
+shape = "quiet raven counts".encode()
+uid = fnv(bytes([3, 0]) + shape)
+open(os.path.join(T, "parl-unit-id"), "w").write(f"{uid:016x}")
 PY
 
 mkdir "$T/honest"
@@ -1082,6 +1111,197 @@ expect_fail "a foreign corpus is refusal, not a partial court" "digest mismatch"
 expect_fail "the independent root hand refuses an incomplete report" \
     "unknown record" python3 "$ROOT/mycelium/root_court_check.py" \
     "$T/root-ascii.out"
+
+# ---- body 4: the parliament (writer stage) ----
+feed() { # $1 room dir, $2 field dir, $3 label, $4 from, $5 to
+    i=$4
+    while [ $i -le $5 ]; do
+        (cd "$1" && "$MYC" ingest "$3" "$T/$2/speech-$i" "$T/$2/bio" >/dev/null)
+        i=$((i + 1))
+    done
+}
+
+mkdir "$T/parl"
+(
+    cd "$T/parl"
+    feed "$T/parl" parl-field raven 1 2
+    "$MYC" enroll 3 quiet raven counts >/dev/null
+    feed "$T/parl" parl-field raven 3 10
+    "$MYC" examine >/dev/null
+    "$MYC" propose >/dev/null
+    "$MYC" petition 1 >pet1.out
+    grep -F 'verdict: PASS' pet1.out >/dev/null &&
+        grep -qF "unit $(cat "$T/parl-unit-id")" pet1.out &&
+        pass "a strong clean alive citizen is admitted with its pinned unit id" ||
+        fail "honest PASS: $(cat pet1.out | tr '\n' ' ')"
+    expect_fail "an admitted identity refuses a second petition" "already admitted" \
+        "$MYC" petition 1
+    "$MYC" petition-opaque 1 root-v1 0123456789abcdef >dark.out
+    grep -F 'verdict: DARK' dark.out >/dev/null &&
+        grep -cF 'J ' dark.out | grep -q 3 &&
+        pass "a foreign recognizer is heard and lands DARK" || fail "opaque lane"
+    expect_fail "a repeated opaque identity refuses without a new law" \
+        "no new preregistered law" \
+        "$MYC" petition-opaque 1 root-v1 0123456789abcdef
+    "$MYC" petition 9 >sil.out
+    grep -F 'verdict: SILENCE' sil.out >/dev/null &&
+        grep -F 'J exam unheard' sil.out >/dev/null &&
+        pass "a missing glyph lands SILENCE with unheard receipts" || fail "silence"
+    expect_fail "a silent glyph refuses until it exists" "still silent" \
+        "$MYC" petition 9
+    "$MYC" enroll 2 quiet raven >/dev/null
+    feed "$T/parl" parl-field raven 11 18
+    "$MYC" examine >/dev/null
+    "$MYC" enroll 2 quiet raven >/dev/null
+    feed "$T/parl" parl-field raven 19 26
+    "$MYC" examine >ex2.out
+    grep -F 'verdict: hyp 3 pass' ex2.out >/dev/null || fail "pair retake did not pass"
+    "$MYC" petition 2 >scar.out
+    grep -F 'J record scarred:18' scar.out >/dev/null &&
+        grep -F 'verdict: SCAR' scar.out >/dev/null &&
+        pass "a failed-then-passed identity is scarred, never cherry-picked" ||
+        fail "scar: $(cat scar.out | tr '\n' ' ')"
+    expect_fail "a hot scar refuses before its boundary" "scar holds until meal 34" \
+        "$MYC" petition 2
+    feed "$T/parl" parl-field raven 27 34
+    cp .mycelium.ledger "$T/parl-ledger.before"
+    cp .mycelium.proposals "$T/parl-props.before"
+    cp .mycelium.school "$T/parl-school.before"
+    "$MYC" petition 2 >weak.out
+    grep -F 'verdict: WEAKEN' weak.out >/dev/null &&
+        pass "a cooled scar enters only through WEAKEN, never by forgetting" ||
+        fail "cooled scar: $(cat weak.out | tr '\n' ' ')"
+    "$MYC" petition-opaque 2 root-v9 fedcba9876543210 >/dev/null
+    cmp -s .mycelium.ledger "$T/parl-ledger.before" &&
+        cmp -s .mycelium.proposals "$T/parl-props.before" &&
+        cmp -s .mycelium.school "$T/parl-school.before" &&
+        pass "the parliament wrote nothing into the three old chains" ||
+        fail "no-authority"
+    "$MYC" franchise >fr.out
+    grep -F 'citizen 1: glyph 1' fr.out >/dev/null &&
+        grep -F 'WEAKEN' fr.out >/dev/null &&
+        pass "the franchise lists both admissions deterministically" || fail "franchise"
+)
+
+mkdir "$T/parl2"
+(
+    cd "$T/parl2"
+    feed "$T/parl2" parl2-field wolf 1 2
+    "$MYC" enroll 3 amber wolf sings >/dev/null
+    feed "$T/parl2" parl2-field wolf 3 10
+    "$MYC" examine >/dev/null
+    feed "$T/parl2" parl2-field wolf 11 26
+    "$MYC" petition 1 >fr.out
+    grep -F 'J rent starved' fr.out >/dev/null &&
+        grep -F 'verdict: FREEZE' fr.out >/dev/null &&
+        pass "a starved citizen is frozen, not admitted" || fail "freeze"
+    expect_fail "a frozen identity refuses inside its window" "frozen until meal 34" \
+        "$MYC" petition 1
+)
+
+mkdir "$T/parl3"
+(
+    cd "$T/parl3"
+    feed "$T/parl3" parl2-field wolf 1 2
+    "$MYC" enroll 3 amber wolf sings >/dev/null
+    feed "$T/parl3" parl2-field wolf 3 10
+    "$MYC" examine >/dev/null
+    feed "$T/parl3" parl2-field wolf 11 25
+    "$MYC" petition 1 >/dev/null
+    cp .mycelium.parliament "$T/parl3-ref"
+)
+for cut in 2 3 4; do
+    rm -rf "$T/parl3-cut$cut" 2>/dev/null || true
+    cp -R "$T/parl3" "$T/parl3-cut$cut"
+    (
+        cd "$T/parl3-cut$cut"
+        head -n $cut "$T/parl3-ref" > .mycelium.parliament
+        "$MYC" ingest wolf "$T/parl2-field/speech-26" "$T/parl2-field/bio" >/dev/null
+        "$MYC" franchise >/dev/null 2>fr.err
+        cmp -s .mycelium.parliament "$T/parl3-ref" &&
+            pass "an interruption after line $cut recovers the exact ballot despite the advanced clock" ||
+            fail "recovery cut $cut: $(cat fr.err | tr '\n' ' ')"
+    )
+done
+
+for n in one two; do
+    rm -rf "$T/parl-det-$n" 2>/dev/null || true
+    mkdir "$T/parl-det-$n"
+    (
+        cd "$T/parl-det-$n"
+        feed "$T/parl-det-$n" parl2-field wolf 1 2
+        "$MYC" enroll 3 amber wolf sings
+        feed "$T/parl-det-$n" parl2-field wolf 3 10
+        "$MYC" examine
+        "$MYC" petition 1
+        "$MYC" petition 5
+        "$MYC" franchise
+    ) >"$T/parl-det-$n/stdout" 2>"$T/parl-det-$n/stderr"
+done
+if cmp "$T/parl-det-one/.mycelium.parliament" "$T/parl-det-two/.mycelium.parliament" &&
+        cmp "$T/parl-det-one/stdout" "$T/parl-det-two/stdout"; then
+    pass "clean-room parliament chain and stdout are byte-identical"
+else
+    fail "parliament clean-room determinism"
+fi
+
+python3 - "$T" <<'PY'
+import os, shutil, sys
+
+root = sys.argv[1]
+SEED = 0xcbf29ce484222325
+PRIME = 0x100000001b3
+
+def fnv(data, h):
+    for byte in data:
+        h ^= byte
+        h = (h * PRIME) & 0xffffffffffffffff
+    return h
+
+def seal(payloads):
+    out, h = bytearray(), SEED
+    for payload in payloads:
+        h = fnv(payload, h)
+        out += payload + b"\t" + f"{h:016x}".encode() + b"\n"
+    return bytes(out)
+
+src = os.path.join(root, "parl")
+raw = open(os.path.join(src, ".mycelium.parliament"), "rb").read()
+payloads = [line[:-17] for line in raw.splitlines()]
+for name in ("parl-flip", "parl-trunc", "parl-finding", "parl-verdict"):
+    path = os.path.join(root, name)
+    shutil.copytree(src, path)
+
+flipped = bytearray(raw)
+flipped[len(raw) // 2] ^= 1
+open(os.path.join(root, "parl-flip", ".mycelium.parliament"), "wb").write(bytes(flipped))
+open(os.path.join(root, "parl-trunc", ".mycelium.parliament"), "wb").write(raw[:-1])
+
+p = payloads.copy()
+for i, row in enumerate(p):
+    if row.startswith(b"J\t1\texam\t"):
+        p[i] = b"J\t1\texam\tadequate"
+        break
+open(os.path.join(root, "parl-finding", ".mycelium.parliament"), "wb").write(seal(p))
+
+p = payloads.copy()
+for i, row in enumerate(p):
+    if row == b"V\t1\tPASS":
+        p[i] = b"V\t1\tWEAKEN"
+        break
+open(os.path.join(root, "parl-verdict", ".mycelium.parliament"), "wb").write(seal(p))
+PY
+
+for spec in "parl-flip:parliament chain broken" \
+            "parl-trunc:unsealed" \
+            "parl-finding:false finding" \
+            "parl-verdict:false verdict"; do
+    name=${spec%%:*}; needle=${spec#*:}
+    (
+        cd "$T/$name"
+        expect_fail "$name writer refusal" "$needle" "$MYC" franchise
+    )
+done
 
 if [ ! -e "$T/.failed" ]; then
     printf '%s\n' '----' 'ALL MYCELIUM GATES PASS'

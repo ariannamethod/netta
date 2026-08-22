@@ -55,6 +55,11 @@ static const char *SCHOOL_LAW = "body3-school-v2";
 static const char *BASELINE_LAW = "laplace-unigram-lmf-u6-libm-v1";
 static const uint64_t W_EXAM = 8;
 static const uint64_t GAIN_MIN = 8000000; /* microbits: one full byte */
+static const char *PARL_PATH = ".mycelium.parliament";
+static const char *PARL_LAW = "body4-parl-v2";
+static const char *RECOGNIZER_V1 = "pair-triple-v1";
+static const uint64_t SCAR_WINDOW = 16;  /* meals from the scar's closing meal */
+static const uint64_t FREEZE_WINDOW = 8; /* meals from the frozen petition    */
 
 static uint64_t fnv64(const void *p, size_t n, uint64_t h) {
     const uint8_t *b = (const uint8_t *)p;
@@ -641,6 +646,7 @@ struct Props {
     uint64_t records = 0;
     uint64_t last_after = 0;
     bool law_seen = false;
+    std::set<std::pair<uint64_t, uint64_t>> prefixes; /* (records, chain) */
 
     void load(const Mycelium &m) {
         std::string raw;
@@ -674,6 +680,7 @@ struct Props {
                 die("proposals chain broken at line " + std::to_string(lineno));
             chain = next;
             records++;
+            prefixes.insert({records, chain});
             auto f = split_tabs(payload);
             const std::string where = "proposals line " + std::to_string(lineno);
             if (f.empty()) die(where + " is empty");
@@ -815,6 +822,7 @@ struct School {
     std::vector<std::string> legalised;  /* shapes in L order */
     uint64_t r_count = 0, o_count = 0, v_count = 0;
     uint64_t pending_glyph = 0;
+    std::set<std::pair<uint64_t, uint64_t>> prefixes; /* (records, chain) */
 
     explicit School(const Mycelium &myc) : m(myc) {}
 
@@ -862,7 +870,9 @@ struct School {
         *cand_out = (uint64_t)llround(cd * 1e6);
     }
 
-    void load() {
+    /* limit = 0 loads the whole chain; a nonzero limit stops after that
+       many records — the historical view a pinned parliament ballot reads */
+    void load(uint64_t limit = 0) {
         std::string raw;
         if (!read_file(SCHOOL_PATH, raw)) {
             struct stat st;
@@ -895,6 +905,8 @@ struct School {
             chain = next;
             records++;
             replay(payload, lineno);
+            prefixes.insert({records, chain});
+            if (limit && records == limit) return;
         }
         if (!law_seen) die("school has no law record");
     }
@@ -1471,6 +1483,500 @@ static void cmd_examine(Mycelium &m) {
            (unsigned long long)sc.records, hex16(sc.chain).c_str());
 }
 
+/* body 4: the parliament. It admits proven citizens toward a power it
+   does not itself hold: one new chain, three old ones read-only, no
+   field authority, no weight. Law: MYCELIUM.md body 4 contract as
+   repaired by the second hand (body4-parl-v2). */
+
+static uint64_t unit_id_v1(uint64_t arity, const std::string &shape) {
+    uint8_t head[2] = {(uint8_t)arity, 0x00};
+    uint64_t h = fnv64(head, 2, FNV_SEED);
+    return fnv64(shape.data(), shape.size(), h);
+}
+
+struct Ballot {
+    uint64_t pid = 0;
+    uint64_t glyph = 0;
+    bool unheard = false;          /* '-' identity: missing glyph lane */
+    std::string version;           /* '-' when unheard */
+    std::string unit_hex;          /* '-' when unheard */
+    uint64_t school_records = 0, school_chain = 0;
+    uint64_t after_meals = 0, main_chain = 0;
+    uint64_t prop_records = 0, prop_chain = 0;
+    std::vector<std::pair<std::string, std::string>> jrows;
+    bool has_v = false;
+    std::string verdict;
+};
+
+struct Findings {
+    std::string exam, record, rent;
+    uint64_t closing = 0; /* latest adverse closing meal when scarred */
+};
+
+struct Parliament {
+    const Mycelium &m;
+    uint64_t chain = FNV_SEED;
+    uint64_t records = 0;
+    bool law_seen = false;
+    std::vector<Ballot> ballots;
+
+    explicit Parliament(const Mycelium &myc) : m(myc) {}
+
+    void append(const std::string &payload) {
+        if (payload.size() + 18 > LEDGER_RECORD_MAX)
+            die("parliament record exceeds 4096-byte law");
+        chain = fnv64(payload.data(), payload.size(), chain);
+        std::string line = payload + "\t" + hex16(chain) + "\n";
+        int fd = open(PARL_PATH, O_WRONLY | O_APPEND | O_CREAT, 0644);
+        if (fd < 0) die("cannot open parliament for append");
+        ssize_t w = write(fd, line.data(), line.size());
+        if (w < 0 || (size_t)w != line.size() || close(fd) != 0)
+            die("parliament append failed");
+        records++;
+    }
+
+    void ensure_law() {
+        if (law_seen) return;
+        if (records != 0) die("cannot start a nonempty parliament");
+        append(std::string("Q\t1\t") + PARL_LAW);
+        law_seen = true;
+    }
+
+    /* the three known-lane jurors, computed from the PINNED prefixes:
+       school truth at school_records, rent at after_meals. */
+    Findings compute_findings(const Ballot &b) const {
+        Findings f;
+        School sc(m);
+        sc.load(b.school_records);
+        if (sc.chain != b.school_chain)
+            die("ballot " + std::to_string(b.pid) +
+                " pins a school prefix that does not reproduce");
+        if (b.glyph == 0 || b.glyph > sc.legalised.size())
+            die("ballot " + std::to_string(b.pid) +
+                " names a glyph absent from its pinned school prefix");
+        const std::string &shape = sc.legalised[b.glyph - 1];
+        uint64_t arity = split_ws(shape).size();
+        if (unit_id_v1(arity, shape) != strtoull(b.unit_hex.c_str(), nullptr, 16))
+            die("ballot " + std::to_string(b.pid) + " unit id does not reproduce");
+        const Hyp *passed = nullptr;
+        uint64_t uid = unit_id_v1(arity, shape);
+        bool adverse = false;
+        uint64_t closing = 0;
+        for (const auto &h : sc.hyps) {
+            uint64_t ha = split_ws(h.shape).size();
+            if (unit_id_v1(ha, h.shape) != uid) continue;
+            if (h.verdicted && h.passed && h.shape == shape) passed = &h;
+            if (h.verdicted && !h.passed) {
+                adverse = true;
+                uint64_t c = h.after + W_EXAM;
+                if (c > closing) closing = c;
+            }
+        }
+        if (!passed)
+            die("ballot " + std::to_string(b.pid) +
+                " glyph has no passed hypothesis in its pinned prefix");
+        uint64_t gain = passed->base_total - passed->cand_total;
+        f.exam = gain >= 2 * GAIN_MIN ? "strong" : "adequate";
+        if (adverse) {
+            f.record = "scarred:" + std::to_string(closing);
+            f.closing = closing;
+        } else {
+            f.record = "clean";
+        }
+        ProposalSnapshot snap = proposal_snapshot(m, b.after_meals, b.main_chain);
+        bool alive = false;
+        for (const auto &st : snap.states)
+            if (st.shape == shape && st.alive) alive = true;
+        f.rent = alive ? "alive" : "starved";
+        return f;
+    }
+
+    std::string verdict_of(const Ballot &b, const Findings &f) const {
+        if (b.unheard) return "SILENCE";
+        if (b.version != RECOGNIZER_V1) return "DARK";
+        if (f.closing && b.after_meals < f.closing + SCAR_WINDOW) return "SCAR";
+        if (f.rent == "starved") return "FREEZE";
+        if (f.exam == "strong" && f.record == "clean" && f.rent == "alive")
+            return "PASS";
+        return "WEAKEN";
+    }
+
+    /* verify a complete ballot against its own pinned truth */
+    void verify_ballot(const Ballot &b) const {
+        static const char *jur[3] = {"exam", "record", "rent"};
+        if (b.jrows.size() != 3) die("ballot has a wrong juror count");
+        for (int i = 0; i < 3; ++i)
+            if (b.jrows[i].first != jur[i])
+                die("ballot " + std::to_string(b.pid) + " jurors out of order");
+        if (b.unheard) {
+            School sc(m);
+            sc.load(b.school_records);
+            if (sc.chain != b.school_chain)
+                die("ballot " + std::to_string(b.pid) +
+                    " pins a school prefix that does not reproduce");
+            if (b.glyph != 0 && b.glyph <= sc.legalised.size())
+                die("ballot " + std::to_string(b.pid) +
+                    " claims silence for a glyph its prefix holds");
+            for (const auto &j : b.jrows)
+                if (j.second != "unheard")
+                    die("ballot " + std::to_string(b.pid) + " false finding");
+            if (b.verdict != "SILENCE")
+                die("ballot " + std::to_string(b.pid) + " false verdict");
+            return;
+        }
+        if (b.version != RECOGNIZER_V1) {
+            for (const auto &j : b.jrows)
+                if (j.second != "opaque")
+                    die("ballot " + std::to_string(b.pid) + " false finding");
+            if (b.verdict != "DARK")
+                die("ballot " + std::to_string(b.pid) + " false verdict");
+            return;
+        }
+        Findings f = compute_findings(b);
+        if (b.jrows[0].second != f.exam || b.jrows[1].second != f.record ||
+            b.jrows[2].second != f.rent)
+            die("ballot " + std::to_string(b.pid) + " false finding");
+        if (b.verdict != verdict_of(b, f))
+            die("ballot " + std::to_string(b.pid) + " false verdict");
+    }
+
+    void load(const Props &pr) {
+        std::string raw;
+        if (!read_file(PARL_PATH, raw)) {
+            struct stat st;
+            if (stat(PARL_PATH, &st) == 0) die("cannot read parliament");
+            return;
+        }
+        if (raw.empty()) die("parliament has no law record");
+        size_t pos = 0;
+        uint64_t lineno = 0;
+        while (pos < raw.size()) {
+            size_t nl = raw.find('\n', pos);
+            if (nl == std::string::npos)
+                die("parliament line " + std::to_string(lineno + 1) +
+                    " is unsealed");
+            std::string line = raw.substr(pos, nl - pos);
+            if (line.size() + 1 > LEDGER_RECORD_MAX)
+                die("parliament line " + std::to_string(lineno + 1) +
+                    " exceeds 4096-byte law");
+            pos = nl + 1;
+            lineno++;
+            size_t tab = line.rfind('\t');
+            if (tab == std::string::npos || line.size() - tab - 1 != 16)
+                die("parliament line " + std::to_string(lineno) +
+                    " has no chain field");
+            uint64_t claimed;
+            if (!canon_hex16(line.substr(tab + 1), &claimed))
+                die("parliament line " + std::to_string(lineno) +
+                    " chain is not hex16");
+            std::string payload = line.substr(0, tab);
+            uint64_t next = fnv64(payload.data(), payload.size(), chain);
+            if (next != claimed)
+                die("parliament chain broken at line " + std::to_string(lineno));
+            chain = next;
+            records++;
+            replay(payload, lineno, pr);
+        }
+        if (!law_seen) die("parliament has no law record");
+        /* every ballot but a trailing interrupted one must be complete
+           and must reproduce from its pinned truth */
+        for (size_t i = 0; i < ballots.size(); ++i) {
+            const Ballot &b = ballots[i];
+            bool complete = b.has_v && b.jrows.size() == 3;
+            if (!complete && i + 1 != ballots.size())
+                die("parliament holds an abandoned ballot before its tip");
+            if (complete) verify_ballot(b);
+        }
+    }
+
+    void replay(const std::string &payload, uint64_t lineno, const Props &pr) {
+        auto f = split_tabs(payload);
+        const std::string where = "parliament line " + std::to_string(lineno);
+        if (f.empty()) die(where + " is empty");
+        if (f[0] == "Q") {
+            if (lineno != 1 || f.size() != 3 || f[1] != "1" || f[2] != PARL_LAW)
+                die(where + ": parliament law record");
+            law_seen = true;
+            return;
+        }
+        if (!law_seen) die(where + ": record before parliament law");
+        if (f[0] == "P") {
+            if (!ballots.empty()) {
+                const Ballot &prev = ballots.back();
+                if (!prev.has_v || prev.jrows.size() != 3)
+                    die(where + ": a new petition before the last ballot closed");
+            }
+            if (f.size() != 11) die(where + ": P arity");
+            Ballot b;
+            if (!canon_u64(f[1], &b.pid) || b.pid != ballots.size() + 1)
+                die(where + ": P petition id is not sequential");
+            if (!canon_u64(f[2], &b.glyph) || b.glyph == 0)
+                die(where + ": P glyph");
+            if (f[3] == "-" && f[4] == "-") {
+                b.unheard = true;
+                b.unit_hex = "-";
+                b.version = "-";
+            } else {
+                uint64_t uid;
+                if (!canon_hex16(f[3], &uid) || !label_ok(f[4]))
+                    die(where + ": P identity grammar");
+                b.unit_hex = f[3];
+                b.version = f[4];
+            }
+            if (!canon_u64(f[5], &b.school_records) || b.school_records == 0 ||
+                !canon_hex16(f[6], &b.school_chain) ||
+                !canon_u64(f[7], &b.after_meals) ||
+                !canon_hex16(f[8], &b.main_chain) ||
+                !canon_u64(f[9], &b.prop_records) ||
+                !canon_hex16(f[10], &b.prop_chain))
+                die(where + ": P field grammar");
+            if (!m.prefixes.count({b.after_meals, b.main_chain}) &&
+                !(b.after_meals == 0 && b.main_chain == FNV_SEED))
+                die(where + ": P main prefix");
+            if (b.prop_records == 0) {
+                if (b.prop_chain != FNV_SEED) die(where + ": P proposals prefix");
+            } else if (!pr.prefixes.count({b.prop_records, b.prop_chain}))
+                die(where + ": P proposals prefix");
+            ballots.push_back(std::move(b));
+        } else if (f[0] == "J") {
+            uint64_t pid;
+            if (f.size() != 4 || !canon_u64(f[1], &pid))
+                die(where + ": J field grammar");
+            if (ballots.empty() || pid != ballots.back().pid)
+                die(where + ": J outside its ballot");
+            Ballot &b = ballots.back();
+            if (b.has_v || b.jrows.size() >= 3)
+                die(where + ": J after the ballot closed");
+            static const char *jur[3] = {"exam", "record", "rent"};
+            if (f[2] != jur[b.jrows.size()])
+                die(where + ": J juror out of canonical order");
+            if (f[3].empty()) die(where + ": J empty finding");
+            b.jrows.push_back({f[2], f[3]});
+        } else if (f[0] == "V") {
+            uint64_t pid;
+            if (f.size() != 3 || !canon_u64(f[1], &pid))
+                die(where + ": V field grammar");
+            if (ballots.empty() || pid != ballots.back().pid)
+                die(where + ": V outside its ballot");
+            Ballot &b = ballots.back();
+            if (b.has_v || b.jrows.size() != 3)
+                die(where + ": V before all three jurors");
+            if (f[2] != "PASS" && f[2] != "WEAKEN" && f[2] != "FREEZE" &&
+                f[2] != "SCAR" && f[2] != "DARK" && f[2] != "SILENCE")
+                die(where + ": V verdict class");
+            b.verdict = f[2];
+            b.has_v = true;
+        } else {
+            die(where + ": unknown parliament record type");
+        }
+    }
+
+    /* complete a trailing interrupted ballot exactly once, from its
+       pinned artifacts; growth after those tips cannot alter it */
+    void recover() {
+        if (ballots.empty()) return;
+        Ballot &b = ballots.back();
+        if (b.has_v && b.jrows.size() == 3) return;
+        static const char *jur[3] = {"exam", "record", "rent"};
+        std::string findings[3];
+        if (b.unheard) {
+            findings[0] = findings[1] = findings[2] = "unheard";
+        } else if (b.version != RECOGNIZER_V1) {
+            findings[0] = findings[1] = findings[2] = "opaque";
+        } else {
+            Findings f = compute_findings(b);
+            findings[0] = f.exam;
+            findings[1] = f.record;
+            findings[2] = f.rent;
+        }
+        for (size_t i = b.jrows.size(); i < 3; ++i) {
+            append("J\t" + std::to_string(b.pid) + "\t" + jur[i] + "\t" +
+                   findings[i]);
+            b.jrows.push_back({jur[i], findings[i]});
+        }
+        Findings f2;
+        if (!b.unheard && b.version == RECOGNIZER_V1) f2 = compute_findings(b);
+        b.verdict = verdict_of(b, f2);
+        if (b.unheard) b.verdict = "SILENCE";
+        else if (b.version != RECOGNIZER_V1) b.verdict = "DARK";
+        append("V\t" + std::to_string(b.pid) + "\t" + b.verdict);
+        b.has_v = true;
+        fprintf(stderr, "parliament: recovered ballot %llu as %s\n",
+                (unsigned long long)b.pid, b.verdict.c_str());
+    }
+
+    /* re-petition boundaries against the completed record */
+    void refuse_by_history(bool opaque_lane, uint64_t glyph,
+                           const std::string &version,
+                           const std::string &unit_hex,
+                           uint64_t glyphs_now) const {
+        for (const auto &b : ballots) {
+            if (!b.has_v) continue;
+            if (b.unheard) {
+                if (b.glyph == glyph && glyph > glyphs_now)
+                    die("petition refused: glyph " + std::to_string(glyph) +
+                        " is still silent");
+                continue;
+            }
+            if (b.version != version || b.unit_hex != unit_hex) continue;
+            if (b.verdict == "PASS" || b.verdict == "WEAKEN")
+                die("petition refused: identity already admitted as " + b.verdict);
+            if (b.verdict == "DARK" && opaque_lane)
+                die("petition refused: recognizer " + version +
+                    " has no new preregistered law");
+            if (b.verdict == "SCAR") {
+                uint64_t closing = 0;
+                for (const auto &j : b.jrows)
+                    if (j.first == "record" &&
+                        j.second.rfind("scarred:", 0) == 0)
+                        closing = strtoull(j.second.c_str() + 8, nullptr, 10);
+                if (m.meals < closing + SCAR_WINDOW)
+                    die("petition refused: scar holds until meal " +
+                        std::to_string(closing + SCAR_WINDOW));
+            }
+            if (b.verdict == "FREEZE" &&
+                m.meals < b.after_meals + FREEZE_WINDOW)
+                die("petition refused: frozen until meal " +
+                    std::to_string(b.after_meals + FREEZE_WINDOW));
+        }
+    }
+};
+
+static void seal_ballot(Parliament &pl, Ballot &b, const Findings &f) {
+    static const char *jur[3] = {"exam", "record", "rent"};
+    std::string findings[3];
+    if (b.unheard)
+        findings[0] = findings[1] = findings[2] = "unheard";
+    else if (b.version != RECOGNIZER_V1)
+        findings[0] = findings[1] = findings[2] = "opaque";
+    else {
+        findings[0] = f.exam;
+        findings[1] = f.record;
+        findings[2] = f.rent;
+    }
+    pl.ensure_law();
+    pl.append("P\t" + std::to_string(b.pid) + "\t" + std::to_string(b.glyph) +
+              "\t" + b.unit_hex + "\t" + b.version + "\t" +
+              std::to_string(b.school_records) + "\t" + hex16(b.school_chain) +
+              "\t" + std::to_string(b.after_meals) + "\t" + hex16(b.main_chain) +
+              "\t" + std::to_string(b.prop_records) + "\t" +
+              hex16(b.prop_chain));
+    for (int i = 0; i < 3; ++i) {
+        pl.append("J\t" + std::to_string(b.pid) + "\t" + jur[i] + "\t" +
+                  findings[i]);
+        b.jrows.push_back({jur[i], findings[i]});
+        printf("  J %s %s\n", jur[i], findings[i].c_str());
+    }
+    b.verdict = pl.verdict_of(b, f);
+    pl.append("V\t" + std::to_string(b.pid) + "\t" + b.verdict);
+    b.has_v = true;
+    printf("  verdict: %s\n", b.verdict.c_str());
+    printf("  receipt: parliament %llu records chain %s\n",
+           (unsigned long long)pl.records, hex16(pl.chain).c_str());
+}
+
+static void cmd_petition(Mycelium &m, const std::string &glyph_str) {
+    uint64_t glyph;
+    if (!canon_u64(glyph_str, &glyph) || glyph == 0)
+        die("petition takes a glyph ordinal");
+    School sc(m);
+    sc.load();
+    Props pr;
+    pr.load(m);
+    Parliament pl(m);
+    pl.load(pr);
+    pl.recover();
+    Ballot b;
+    b.pid = pl.ballots.size() + 1;
+    b.glyph = glyph;
+    b.school_records = sc.records;
+    b.school_chain = sc.chain;
+    b.after_meals = m.meals;
+    b.main_chain = m.led.chain;
+    b.prop_records = pr.records;
+    b.prop_chain = pr.chain;
+    Findings f;
+    if (glyph > sc.legalised.size()) {
+        pl.refuse_by_history(false, glyph, "-", "-", sc.legalised.size());
+        b.unheard = true;
+        b.unit_hex = "-";
+        b.version = "-";
+        printf("petition %llu: glyph %llu is not in the school\n",
+               (unsigned long long)b.pid, (unsigned long long)glyph);
+    } else {
+        const std::string &shape = sc.legalised[glyph - 1];
+        uint64_t arity = split_ws(shape).size();
+        b.unit_hex = hex16(unit_id_v1(arity, shape));
+        b.version = RECOGNIZER_V1;
+        pl.refuse_by_history(false, glyph, b.version, b.unit_hex,
+                             sc.legalised.size());
+        pl.ballots.push_back(b);
+        f = pl.compute_findings(pl.ballots.back());
+        pl.ballots.pop_back();
+        printf("petition %llu: glyph %llu unit %s version %s\n",
+               (unsigned long long)b.pid, (unsigned long long)glyph,
+               b.unit_hex.c_str(), b.version.c_str());
+    }
+    seal_ballot(pl, b, f);
+}
+
+static void cmd_petition_opaque(Mycelium &m, const std::string &glyph_str,
+                                const std::string &version,
+                                const std::string &unit_hex) {
+    uint64_t glyph, uid;
+    if (!canon_u64(glyph_str, &glyph) || glyph == 0)
+        die("petition-opaque takes a glyph ordinal");
+    if (!label_ok(version) || version == RECOGNIZER_V1)
+        die("petition-opaque takes a foreign recognizer version");
+    if (!canon_hex16(unit_hex, &uid))
+        die("petition-opaque takes a hex16 unit id");
+    School sc(m);
+    sc.load();
+    if (glyph > sc.legalised.size())
+        die("petition-opaque needs an existing glyph");
+    Props pr;
+    pr.load(m);
+    Parliament pl(m);
+    pl.load(pr);
+    pl.recover();
+    pl.refuse_by_history(true, glyph, version, unit_hex, sc.legalised.size());
+    Ballot b;
+    b.pid = pl.ballots.size() + 1;
+    b.glyph = glyph;
+    b.version = version;
+    b.unit_hex = unit_hex;
+    b.school_records = sc.records;
+    b.school_chain = sc.chain;
+    b.after_meals = m.meals;
+    b.main_chain = m.led.chain;
+    b.prop_records = pr.records;
+    b.prop_chain = pr.chain;
+    printf("petition %llu (opaque): glyph %llu claimed unit %s version %s\n",
+           (unsigned long long)b.pid, (unsigned long long)glyph,
+           unit_hex.c_str(), version.c_str());
+    Findings f;
+    seal_ballot(pl, b, f);
+}
+
+static void cmd_franchise(Mycelium &m) {
+    Props pr;
+    pr.load(m);
+    Parliament pl(m);
+    pl.load(pr);
+    pl.recover();
+    uint64_t n = 0;
+    for (const auto &b : pl.ballots)
+        if (b.has_v && (b.verdict == "PASS" || b.verdict == "WEAKEN")) {
+            n++;
+            printf("citizen %llu: glyph %llu unit %s version %s %s\n",
+                   (unsigned long long)n, (unsigned long long)b.glyph,
+                   b.unit_hex.c_str(), b.version.c_str(), b.verdict.c_str());
+        }
+    if (!n) printf("the franchise is empty\n");
+    printf("  receipt: parliament %llu records chain %s\n",
+           (unsigned long long)pl.records, hex16(pl.chain).c_str());
+}
+
 int main(int argc, char **argv) {
     const char *usage =
         "usage: mycelium ingest <label> <speech> <biography>\n"
@@ -1478,6 +1984,9 @@ int main(int argc, char **argv) {
         "       mycelium field\n"
         "       mycelium ablate\n"
         "       mycelium propose\n"
+        "       mycelium petition <glyph>\n"
+        "       mycelium petition-opaque <glyph> <version> <unit-id>\n"
+        "       mycelium franchise\n"
         "       mycelium enroll <arity> <token...>\n"
         "       mycelium enroll-hex <arity> <lower-hex-token...>\n"
         "       mycelium examine\n";
@@ -1513,6 +2022,14 @@ int main(int argc, char **argv) {
         std::vector<std::string> tokens;
         for (int i = 3; i < argc; ++i) tokens.push_back(argv[i]);
         cmd_enroll_hex(m, argv[2], tokens);
+    } else if (cmd == "petition") {
+        if (argc != 3) { fputs(usage, stderr); return 1; }
+        cmd_petition(m, argv[2]);
+    } else if (cmd == "petition-opaque") {
+        if (argc != 5) { fputs(usage, stderr); return 1; }
+        cmd_petition_opaque(m, argv[2], argv[3], argv[4]);
+    } else if (cmd == "franchise") {
+        cmd_franchise(m);
     } else if (cmd == "examine") {
         cmd_examine(m);
     } else {
