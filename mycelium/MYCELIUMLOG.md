@@ -3,6 +3,37 @@
 The arc's own log, in the arc's own folder. The heart's log stays
 NETTALOG2.md; nothing here reaches into it.
 
+## Body 4 preregistration — the second hand (2026-08-22)
+
+The parliament was stopped before its first line of code and its central
+boundary stood: it grants no field authority, mints no weight, keeps expert
+plasticity outside admission, and leaves PatternLineage for later bodies. Four
+holes remained in the proposed law. A school prefix did not pin the main time
+whose meals determine rent and retry windows; SILENCE and DARK had no complete
+three-juror grammar; a permanent whole-record scar could never outlive its
+nominal cooldown; and a process interruption after P or one J had no recovery
+grammar.
+
+The repaired `body4-parl-v2` petition pins the school, main and proposals
+positions and chains together. Citizen identity is the tuple of recognizer
+version and opaque unit id, with `pair-triple-v1` given an exact byte-level FNV
+input. Missing glyphs receive three `unheard` findings and SILENCE; the explicit
+powerless foreign-recognizer lane receives three `opaque` findings and DARK.
+Known ballots expose exam, complete historical record and rent at their pinned
+prefix. A recent adverse closing meal gives SCAR; after its exact cooling
+boundary the scar remains visible and permits at most WEAKEN, never PASS by
+forgetting. PASS and WEAKEN are both terminal admissions.
+
+P, each canonical J and V are separate record boundaries. Any proper ballot
+prefix resumes exactly once from P's pinned artifacts before a new petition is
+heard; later growth cannot rewrite the verdict. The independent reader must
+recompute every known finding, retry boundary and verdict rather than shelter
+behind `where computable`. New red hands cover advancing state after P, every
+append-boundary recovery, false findings/verdicts, both retry laws and the
+binary unit-id vector. The unchanged implementation remains 127/127 green; the
+complete frozen Netta battery remains `ALL GATES PASS`, strict and
+sanitizer-clean.
+
 ## Body 3 — the second hand (2026-08-21)
 
 The untouched school reproduced at 75/75 gates and its central result
