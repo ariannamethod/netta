@@ -141,6 +141,15 @@ def room_meals(name, texts, seed0):
         rows.append(sig(data, seed0 + i))
     open(os.path.join(path, "bio"), "wb").write(("\n".join(rows) + "\n").encode())
 
+def room_meals_bytes(name, texts, seed0):
+    path = os.path.join(T, name)
+    os.makedirs(path)
+    rows = []
+    for i, data in enumerate(texts, 1):
+        open(os.path.join(path, f"speech-{i}"), "wb").write(data)
+        rows.append(sig(data, seed0 + i))
+    open(os.path.join(path, "bio"), "wb").write(("\n".join(rows) + "\n").encode())
+
 school = []
 for i in range(1, 19):
     if i <= 2:
@@ -191,6 +200,25 @@ for i in range(1, 35):
         parl.append(f"The quiet raven sings beside the copper archive on evening {i:02d}.")
 room_meals("parl-field", parl, 180)
 
+little_nul = []
+for i in range(1, 11):
+    little_nul.append(
+        b"alpha\x00hidden memory speaks through the silent byte on evening " +
+        f"{i:02d}".encode() +
+        b". Another ordinary fragment carries enough visible tokens for court."
+    )
+room_meals_bytes("nul-parl-field", little_nul, 250)
+
+long_a = "a" * 300
+long_b = "b" * 300
+long = []
+for i in range(1, 11):
+    long.append(f"{long_a} {long_b} remembers the sealed record on evening {i:02d}. "
+                f"Another ordinary fragment carries enough visible tokens for court.")
+room_meals("long-parl-field", long, 270)
+open(os.path.join(T, "long-token-a"), "w").write(long_a)
+open(os.path.join(T, "long-token-b"), "w").write(long_b)
+
 parl2 = []
 for i in range(1, 27):
     if i <= 2:
@@ -205,6 +233,9 @@ room_meals("parl2-field", parl2, 220)
 shape = "quiet raven counts".encode()
 uid = fnv(bytes([3, 0]) + shape)
 open(os.path.join(T, "parl-unit-id"), "w").write(f"{uid:016x}")
+for arity in (2, 3):
+    uid = fnv(bytes([arity, 0]) + shape)
+    open(os.path.join(T, f"parl-arity{arity}-unit-id"), "w").write(f"{uid:016x}")
 PY
 
 mkdir "$T/honest"
@@ -1121,6 +1152,46 @@ feed() { # $1 room dir, $2 field dir, $3 label, $4 from, $5 to
     done
 }
 
+mkdir "$T/nul-parl"
+(
+    cd "$T/nul-parl"
+    feed "$T/nul-parl" nul-parl-field nul 1 2
+    "$MYC" enroll-hex 2 616c7068610068696464656e 6d656d6f7279 >/dev/null
+    feed "$T/nul-parl" nul-parl-field nul 3 10
+    "$MYC" examine >/dev/null
+    "$MYC" propose >/dev/null
+    "$MYC" petition 1 >pet.out
+    grep -F 'verdict: PASS' pet.out >/dev/null &&
+        pass "a NUL-bearing rent shape earns a full PASS ballot" ||
+        fail "NUL parliament ballot: $(cat pet.out | tr '\n' ' ')"
+    if "$CHECK" >check.out 2>check.err; then
+        pass "the independent hand accepts a NUL-bearing rent ballot"
+    else
+        fail "NUL parliament reader: $(cat check.err | tr '\n' ' ')"
+    fi
+)
+
+mkdir "$T/long-parl"
+(
+    cd "$T/long-parl"
+    long_a=$(cat "$T/long-token-a")
+    long_b=$(cat "$T/long-token-b")
+    feed "$T/long-parl" long-parl-field long 1 2
+    "$MYC" enroll 2 "$long_a" "$long_b" >/dev/null
+    feed "$T/long-parl" long-parl-field long 3 10
+    "$MYC" examine >/dev/null
+    "$MYC" propose >/dev/null
+    "$MYC" petition 1 >pet.out
+    grep -F 'verdict: PASS' pet.out >/dev/null &&
+        pass "a 601-byte rent shape earns a full PASS ballot" ||
+        fail "long parliament ballot: $(cat pet.out | tr '\n' ' ')"
+    if "$CHECK" >check.out 2>check.err; then
+        pass "the independent hand accepts a 601-byte rent ballot"
+    else
+        fail "long parliament reader: $(cat check.err | tr '\n' ' ')"
+    fi
+)
+
 mkdir "$T/parl"
 (
     cd "$T/parl"
@@ -1143,6 +1214,19 @@ mkdir "$T/parl"
     expect_fail "a repeated opaque identity refuses without a new law" \
         "no new preregistered law" \
         "$MYC" petition-opaque 1 root-v1 0123456789abcdef
+    arity2_id=$(cat "$T/parl-arity2-unit-id")
+    arity3_id=$(cat "$T/parl-arity3-unit-id")
+    [ "$arity2_id" != "$arity3_id" ] ||
+        fail "arity-tagged opaque unit ids collided"
+    "$MYC" petition-opaque 1 root-arity-v1 "$arity2_id" >dark-arity2.out
+    "$MYC" petition-opaque 1 root-arity-v1 "$arity3_id" >dark-arity3.out
+    grep -F 'verdict: DARK' dark-arity2.out >/dev/null &&
+        grep -F 'verdict: DARK' dark-arity3.out >/dev/null &&
+        pass "opaque identities isolate the same glyph bytes by arity-tagged unit id" ||
+        fail "opaque arity isolation"
+    expect_fail "a repeated arity-tagged opaque identity still refuses" \
+        "no new preregistered law" \
+        "$MYC" petition-opaque 1 root-arity-v1 "$arity2_id"
     "$MYC" petition 9 >sil.out
     grep -F 'verdict: SILENCE' sil.out >/dev/null &&
         grep -F 'J exam unheard' sil.out >/dev/null &&
@@ -1163,6 +1247,13 @@ mkdir "$T/parl"
         fail "scar: $(cat scar.out | tr '\n' ' ')"
     expect_fail "a hot scar refuses before its boundary" "scar holds until meal 34" \
         "$MYC" petition 2
+    "$MYC" petition-opaque 2 root-scar-v1 0badc0ffee0ddf00 >dark-scar.out
+    grep -F 'verdict: DARK' dark-scar.out >/dev/null &&
+        pass "a hot known scar does not poison a foreign opaque identity" ||
+        fail "scar isolation: $(cat dark-scar.out | tr '\n' ' ')"
+    expect_fail "the known scar still refuses after foreign darkness" \
+        "scar holds until meal 34" \
+        "$MYC" petition 2
     feed "$T/parl" parl-field raven 27 34
     cp .mycelium.ledger "$T/parl-ledger.before"
     cp .mycelium.proposals "$T/parl-props.before"
@@ -1181,6 +1272,11 @@ mkdir "$T/parl"
     grep -F 'citizen 1: glyph 1' fr.out >/dev/null &&
         grep -F 'WEAKEN' fr.out >/dev/null &&
         pass "the franchise lists both admissions deterministically" || fail "franchise"
+    if ! grep -F 'DARK' fr.out >/dev/null && ! grep -F 'root-' fr.out >/dev/null; then
+        pass "DARK ballots carry no franchise power"
+    else
+        fail "DARK leaked into franchise: $(cat fr.out | tr '\n' ' ')"
+    fi
     "$CHECK" >check.out
     grep -F 'parliament:' check.out >/dev/null &&
         pass "the independent hand recounts every ballot from the pins" ||
@@ -1228,6 +1324,27 @@ for cut in 2 3 4; do
     )
 done
 
+cp -R "$T/parl3" "$T/parl3-partial-j"
+(
+    cd "$T/parl3-partial-j"
+    python3 - "$T/parl3-ref" .mycelium.parliament <<'PY'
+import sys
+raw = open(sys.argv[1], "rb").read()
+lines = raw.splitlines(keepends=True)
+assert len(lines) >= 3 and lines[0].startswith(b"Q\t")
+assert lines[1].startswith(b"P\t") and lines[2].startswith(b"J\t")
+open(sys.argv[2], "wb").write(lines[0] + lines[1] + lines[2][:9])
+PY
+    cp .mycelium.parliament "$T/parl3-partial-j.before"
+    expect_fail "a partial first-J tail is not recovered by the writer" \
+        "unsealed" "$MYC" franchise
+    expect_fail "a partial first-J tail is refused by the reader" \
+        "unsealed" "$CHECK"
+    cmp -s .mycelium.parliament "$T/parl3-partial-j.before" &&
+        pass "a partial first-J tail leaves the parliament digest untouched" ||
+        fail "partial first-J tail was mutated"
+)
+
 for n in one two; do
     rm -rf "$T/parl-det-$n" 2>/dev/null || true
     mkdir "$T/parl-det-$n"
@@ -1272,7 +1389,8 @@ def seal(payloads):
 src = os.path.join(root, "parl")
 raw = open(os.path.join(src, ".mycelium.parliament"), "rb").read()
 payloads = [line[:-17] for line in raw.splitlines()]
-for name in ("parl-flip", "parl-trunc", "parl-finding", "parl-verdict"):
+for name in ("parl-flip", "parl-trunc", "parl-finding", "parl-verdict",
+             "parl-opaque-glyph", "parl-opaque-school-count"):
     path = os.path.join(root, name)
     shutil.copytree(src, path)
 
@@ -1294,12 +1412,36 @@ for i, row in enumerate(p):
         p[i] = b"V\t1\tWEAKEN"
         break
 open(os.path.join(root, "parl-verdict", ".mycelium.parliament"), "wb").write(seal(p))
+
+def mutate_first_opaque(name, edit):
+    p = payloads.copy()
+    for i, row in enumerate(p):
+        fields = row.split(b"\t")
+        if len(fields) == 11 and fields[0] == b"P" and fields[4] == b"root-v1":
+            edit(fields)
+            p[i] = b"\t".join(fields)
+            break
+    else:
+        raise AssertionError("root-v1 opaque ballot not found")
+    open(os.path.join(root, name, ".mycelium.parliament"), "wb").write(seal(p))
+
+mutate_first_opaque("parl-opaque-glyph",
+                    lambda fields: fields.__setitem__(2, b"999"))
+
+school_lines = open(os.path.join(src, ".mycelium.school"), "rb").read().splitlines()
+final_school_chain = school_lines[-1][-16:]
+def edit_school_count(fields):
+    fields[5] = b"999"
+    fields[6] = final_school_chain
+mutate_first_opaque("parl-opaque-school-count", edit_school_count)
 PY
 
 for spec in "parl-flip:parliament chain broken:chain does not fold" \
             "parl-trunc:unsealed:unsealed" \
             "parl-finding:false finding:false finding" \
-            "parl-verdict:false verdict:false verdict"; do
+            "parl-verdict:false verdict:false verdict" \
+            "parl-opaque-glyph:names a glyph absent:opaque petition needs an existing glyph" \
+            "parl-opaque-school-count:school prefix ends before requested record count:pinned school prefix"; do
     name=${spec%%:*}; rest=${spec#*:}; writer=${rest%%:*}; reader=${rest#*:}
     (
         cd "$T/$name"

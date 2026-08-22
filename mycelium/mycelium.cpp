@@ -908,6 +908,8 @@ struct School {
             prefixes.insert({records, chain});
             if (limit && records == limit) return;
         }
+        if (limit && records != limit)
+            die("school prefix ends before requested record count");
         if (!law_seen) die("school has no law record");
     }
 
@@ -1625,6 +1627,14 @@ struct Parliament {
             return;
         }
         if (b.version != RECOGNIZER_V1) {
+            School sc(m);
+            sc.load(b.school_records);
+            if (sc.chain != b.school_chain)
+                die("ballot " + std::to_string(b.pid) +
+                    " pins a school prefix that does not reproduce");
+            if (b.glyph == 0 || b.glyph > sc.legalised.size())
+                die("ballot " + std::to_string(b.pid) +
+                    " names a glyph absent from its pinned school prefix");
             for (const auto &j : b.jrows)
                 if (j.second != "opaque")
                     die("ballot " + std::to_string(b.pid) + " false finding");

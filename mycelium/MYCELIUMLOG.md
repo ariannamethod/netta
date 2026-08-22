@@ -3,6 +3,36 @@
 The arc's own log, in the arc's own folder. The heart's log stays
 NETTALOG2.md; nothing here reaches into it.
 
+## Body 4 audit closure - the second hand (2026-08-22)
+
+The parliament audit found two real reader/writer divergences after the
+pre-registered law was already green. First, the independent C reader's rent
+path stored proposal tokens as NUL-terminated `char *` and reconstructed pair
+and triple shapes through fixed 512-byte buffers. A full known-lane ballot for
+`alpha\0hidden memory` and another for a 601-byte two-token shape proved the
+bug at ballot time: the writer sealed PASS while the reader could reject with a
+false rent finding. The reader now carries token byte lengths and compares
+shape components directly, so NUL and long tokens stay in the same law as
+ordinary text.
+
+Second, the writer trusted opaque DARK ballots too much on replay. The reader
+already required the ballot's pinned school prefix to reproduce and the named
+glyph to exist there; the writer only checked that foreign-recognizer findings
+were `opaque` and verdict `DARK`. `School::load(limit)` now refuses a requested
+historical prefix that EOF cannot reach, and opaque replay rereads the pinned
+school prefix before accepting the DARK lane. The repair also hardens known and
+SILENCE ballot paths against impossible school record counts because they use
+the same bounded school load.
+
+The permanent gates now cover both opaque reseals (absent glyph and impossible
+school record count with a syntactically valid final chain), complete NUL and
+601-byte rent ballots, a sealed Q/P plus partial first-J tail, arity-tagged
+opaque identity isolation over the same glyph bytes, scar isolation, and DARK
+powerlessness in franchise. The parliament battery stands at 163 named M1
+gates. Ordinary, zero-line and ASan/UBSan runs all pass:
+`ALL MYCELIUM GATES PASS`, `ALL GATES PASS`, and sanitizer-silent
+`ALL MYCELIUM GATES PASS`.
+
 ## Body 4 preregistration — the second hand (2026-08-22)
 
 The parliament was stopped before its first line of code and its central

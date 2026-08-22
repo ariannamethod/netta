@@ -613,11 +613,18 @@ static int r_stop(const char *w, size_t n) {
     return 0;
 }
 
-typedef struct { uint64_t meal; char **toks; size_t ntoks; } RFrag;
+typedef struct { char *bytes; size_t len; } RToken;
+typedef struct { uint64_t meal; RToken *toks; size_t ntoks; } RFrag;
 static RFrag *rfrags;
 static size_t rfrag_n, rfrag_cap;
 
-static int rfrag_push(uint64_t meal, char **toks, size_t ntoks) {
+static void rtokens_free(RToken *toks, size_t ntoks) {
+    size_t i;
+    for (i = 0; i < ntoks; ++i) free(toks[i].bytes);
+    free(toks);
+}
+
+static int rfrag_push(uint64_t meal, RToken *toks, size_t ntoks) {
     if (rfrag_n == rfrag_cap) {
         size_t next = rfrag_cap ? rfrag_cap * 2 : 64;
         RFrag *p = realloc(rfrags, next * sizeof *p);
@@ -630,10 +637,11 @@ static int rfrag_push(uint64_t meal, char **toks, size_t ntoks) {
 }
 
 /* tokenize one sentence into a fresh token array; returns count */
-static size_t r_tokenize(const char *s, size_t n, char ***out) {
+static size_t r_tokenize(const char *s, size_t n, RToken **out) {
     static const char strip[] = ".,!?;:\"'()[]{}-*_";
-    char **toks = NULL;
+    RToken *toks = NULL;
     size_t ntoks = 0, cap = 0, i = 0;
+    *out = NULL;
     while (i < n) {
         while (i < n && r_space((unsigned char)s[i])) i++;
         size_t j = i;
@@ -645,7 +653,10 @@ static size_t r_tokenize(const char *s, size_t n, char ***out) {
             size_t wl = b - a;
             if (wl > 2) {
                 char *w = malloc(wl + 1);
-                if (!w) return (size_t)-1;
+                if (!w) {
+                    rtokens_free(toks, ntoks);
+                    return (size_t)-1;
+                }
                 size_t k;
                 for (k = 0; k < wl; ++k) {
                     char c = s[a + k];
@@ -658,12 +669,16 @@ static size_t r_tokenize(const char *s, size_t n, char ***out) {
                 } else {
                     if (ntoks == cap) {
                         size_t next = cap ? cap * 2 : 8;
-                        char **p = realloc(toks, next * sizeof *p);
-                        if (!p) return (size_t)-1;
+                        RToken *p = realloc(toks, next * sizeof *p);
+                        if (!p) {
+                            free(w);
+                            rtokens_free(toks, ntoks);
+                            return (size_t)-1;
+                        }
                         toks = p;
                         cap = next;
                     }
-                    toks[ntoks++] = w;
+                    toks[ntoks++] = (RToken){w, wl};
                 }
             }
         }
@@ -719,15 +734,17 @@ static int r_eat_blob(uint64_t meal, const unsigned char *text, size_t n) {
             size_t sl = e - p;
             while (sl && line[p + sl - 1] == ' ') sl--;
             if (sl > 12) {
-                char **toks;
+                RToken *toks = NULL;
                 size_t ntoks = r_tokenize(line + p, sl, &toks);
                 if (ntoks == (size_t)-1) { free(line); return 0; }
                 if (ntoks >= 2) {
-                    if (!rfrag_push(meal, toks, ntoks)) { free(line); return 0; }
+                    if (!rfrag_push(meal, toks, ntoks)) {
+                        rtokens_free(toks, ntoks);
+                        free(line);
+                        return 0;
+                    }
                 } else {
-                    size_t t;
-                    for (t = 0; t < ntoks; ++t) free(toks[t]);
-                    free(toks);
+                    rtokens_free(toks, ntoks);
                 }
             }
             p = e;
@@ -742,6 +759,21 @@ static int r_eat_blob(uint64_t meal, const unsigned char *text, size_t n) {
     return 1;
 }
 
+static int r_shape_match_tokens(const char *shape, size_t shape_len,
+                                const RToken *toks, size_t ntoks) {
+    size_t pos = 0, i;
+    for (i = 0; i < ntoks; ++i) {
+        if (pos > shape_len || toks[i].len > shape_len - pos) return 0;
+        if (memcmp(shape + pos, toks[i].bytes, toks[i].len)) return 0;
+        pos += toks[i].len;
+        if (i + 1 < ntoks) {
+            if (pos >= shape_len || shape[pos] != ' ') return 0;
+            pos++;
+        }
+    }
+    return pos == shape_len;
+}
+
 /* rent at a pinned meal: adjacent pair/triple support over distinct meals */
 static int r_shape_alive(const char *shape, size_t shape_len, uint64_t after) {
     uint64_t support = 0, last = 0, last_counted = 0;
@@ -750,26 +782,12 @@ static int r_shape_alive(const char *shape, size_t shape_len, uint64_t after) {
         if (rfrags[f].meal > after) continue;
         int hit = 0;
         for (i = 0; i + 1 < rfrags[f].ntoks && !hit; ++i) {
-            size_t l2 = strlen(rfrags[f].toks[i]) + 1 +
-                        strlen(rfrags[f].toks[i + 1]);
-            if (l2 == shape_len) {
-                char buf[512];
-                if (l2 < sizeof buf) {
-                    snprintf(buf, sizeof buf, "%s %s", rfrags[f].toks[i],
-                             rfrags[f].toks[i + 1]);
-                    if (!memcmp(buf, shape, shape_len)) hit = 1;
-                }
-            }
+            if (r_shape_match_tokens(shape, shape_len, &rfrags[f].toks[i], 2))
+                hit = 1;
             if (!hit && i + 2 < rfrags[f].ntoks) {
-                size_t l3 = l2 + 1 + strlen(rfrags[f].toks[i + 2]);
-                if (l3 == shape_len) {
-                    char buf[512];
-                    if (l3 < sizeof buf) {
-                        snprintf(buf, sizeof buf, "%s %s %s", rfrags[f].toks[i],
-                                 rfrags[f].toks[i + 1], rfrags[f].toks[i + 2]);
-                        if (!memcmp(buf, shape, shape_len)) hit = 1;
-                    }
-                }
+                if (r_shape_match_tokens(shape, shape_len,
+                                         &rfrags[f].toks[i], 3))
+                    hit = 1;
             }
         }
         if (hit) {
