@@ -275,6 +275,8 @@ static int prefix_has(uint64_t meals, uint64_t chain) {
     return 0;
 }
 
+static int pprefix_add(uint64_t records, uint64_t chain); /* parliament pin */
+
 static void refuse_props(unsigned long long line, const char *what) {
     fprintf(stderr, "ledger_check: proposals line %llu: %s\n", line, what);
     exit(1);
@@ -312,6 +314,7 @@ static void check_proposals(void) {
         size_t plen = len - 17;
         chain = hash_fold((unsigned char *)line, plen, chain);
         if (chain != claimed) refuse_props(lineno, "chain does not fold");
+        if (!pprefix_add(lineno, chain)) refuse_props(lineno, "memory");
 
         const char *fl[8];
         size_t fn[8];
@@ -574,6 +577,618 @@ static void check_school(uint64_t main_meals) {
     free(hyps);
 }
 
+/* body 4: the parliament, judged by the second hand. The reader
+   reproduces every known ballot from the pinned grave, ledger,
+   proposals and school with its own text pipeline -- no shared
+   implementation with the writer. Only the deliberately opaque DARK
+   lane is semantic input it cannot recompute, and its powerlessness
+   is fully checked. */
+static const char *parl_path = ".mycelium.parliament";
+
+_Noreturn static void refuse_parl(unsigned long long line, const char *what) {
+    fprintf(stderr, "ledger_check: parliament line %llu: %s\n", line, what);
+    exit(1);
+}
+
+/* ---- the reader's own byte-law text pipeline, for the rent juror ---- */
+
+static int r_space(unsigned char c) {
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' ||
+           c == '\f' || (c >= 0x1c && c <= 0x1f);
+}
+
+static int r_stop(const char *w, size_t n) {
+    static const char *stops[] = {
+        "the","a","an","and","or","but","of","to","in","on","at","is","are",
+        "was","were","be","been","it","its","this","that","these","those","i",
+        "you","he","she","we","they","me","him","her","us","them","my","your",
+        "his","our","their","as","by","for","with","from","into","over",
+        "under","so","not","no","do","does","did","have","has","had","will",
+        "would","can","could","he's","it's","there","here","then","than",
+        "when","where","what","which","who","whom","whose","all","any","some",
+        "more","most", NULL};
+    size_t i;
+    for (i = 0; stops[i]; ++i)
+        if (strlen(stops[i]) == n && !memcmp(stops[i], w, n)) return 1;
+    return 0;
+}
+
+typedef struct { uint64_t meal; char **toks; size_t ntoks; } RFrag;
+static RFrag *rfrags;
+static size_t rfrag_n, rfrag_cap;
+
+static int rfrag_push(uint64_t meal, char **toks, size_t ntoks) {
+    if (rfrag_n == rfrag_cap) {
+        size_t next = rfrag_cap ? rfrag_cap * 2 : 64;
+        RFrag *p = realloc(rfrags, next * sizeof *p);
+        if (!p) return 0;
+        rfrags = p;
+        rfrag_cap = next;
+    }
+    rfrags[rfrag_n++] = (RFrag){meal, toks, ntoks};
+    return 1;
+}
+
+/* tokenize one sentence into a fresh token array; returns count */
+static size_t r_tokenize(const char *s, size_t n, char ***out) {
+    static const char strip[] = ".,!?;:\"'()[]{}-*_";
+    char **toks = NULL;
+    size_t ntoks = 0, cap = 0, i = 0;
+    while (i < n) {
+        while (i < n && r_space((unsigned char)s[i])) i++;
+        size_t j = i;
+        while (j < n && !r_space((unsigned char)s[j])) j++;
+        if (j > i) {
+            size_t a = i, b = j;
+            while (a < b && strchr(strip, s[a]) && s[a]) a++;
+            while (b > a && strchr(strip, s[b - 1]) && s[b - 1]) b--;
+            size_t wl = b - a;
+            if (wl > 2) {
+                char *w = malloc(wl + 1);
+                if (!w) return (size_t)-1;
+                size_t k;
+                for (k = 0; k < wl; ++k) {
+                    char c = s[a + k];
+                    if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+                    w[k] = c;
+                }
+                w[wl] = 0;
+                if (r_stop(w, wl)) {
+                    free(w);
+                } else {
+                    if (ntoks == cap) {
+                        size_t next = cap ? cap * 2 : 8;
+                        char **p = realloc(toks, next * sizeof *p);
+                        if (!p) return (size_t)-1;
+                        toks = p;
+                        cap = next;
+                    }
+                    toks[ntoks++] = w;
+                }
+            }
+        }
+        i = j;
+    }
+    *out = toks;
+    return ntoks;
+}
+
+/* segment a speech blob into sentences and store fragments (>=2 tokens) */
+static int r_eat_blob(uint64_t meal, const unsigned char *text, size_t n) {
+    size_t start = 0, i;
+    /* collapse to blocks split on newline, blanks, newline */
+    for (i = 0; i <= n; ++i) {
+        int block_end = 0;
+        size_t next_start = 0;
+        if (i == n) {
+            block_end = 1;
+            next_start = n;
+        } else if (text[i] == '\n') {
+            size_t j = i + 1;
+            while (j < n && text[j] != '\n' && r_space(text[j])) j++;
+            if (j < n && text[j] == '\n') {
+                block_end = 1;
+                next_start = j + 1;
+            }
+        }
+        if (!block_end) continue;
+        /* whitespace-collapse the block, then cut on .!? + space */
+        size_t bl = i - start;
+        char *line = malloc(bl + 1);
+        if (!line) return 0;
+        size_t li = 0, k = 0;
+        while (k < bl) {
+            while (k < bl && r_space(text[start + k])) k++;
+            size_t w0 = k;
+            while (k < bl && !r_space(text[start + k])) k++;
+            if (k > w0) {
+                if (li) line[li++] = ' ';
+                memcpy(line + li, text + start + w0, k - w0);
+                li += k - w0;
+            }
+        }
+        line[li] = 0;
+        size_t p = 0, q;
+        for (q = 0; q < li; ++q) {
+            char c = line[q];
+            int cut = (c == '.' || c == '!' || c == '?') &&
+                      (q + 1 == li || line[q + 1] == ' ');
+            if (!cut && q + 1 < li) continue;
+            size_t e = cut ? q + 1 : li;
+            while (p < e && line[p] == ' ') p++;
+            size_t sl = e - p;
+            while (sl && line[p + sl - 1] == ' ') sl--;
+            if (sl > 12) {
+                char **toks;
+                size_t ntoks = r_tokenize(line + p, sl, &toks);
+                if (ntoks == (size_t)-1) { free(line); return 0; }
+                if (ntoks >= 2) {
+                    if (!rfrag_push(meal, toks, ntoks)) { free(line); return 0; }
+                } else {
+                    size_t t;
+                    for (t = 0; t < ntoks; ++t) free(toks[t]);
+                    free(toks);
+                }
+            }
+            p = e;
+            while (p < li && line[p] == ' ') p++;
+            if (cut) q = p ? p - 1 : 0;
+        }
+        free(line);
+        start = next_start;
+        if (i == n) break;
+        i = next_start ? next_start - 1 : i;
+    }
+    return 1;
+}
+
+/* rent at a pinned meal: adjacent pair/triple support over distinct meals */
+static int r_shape_alive(const char *shape, size_t shape_len, uint64_t after) {
+    uint64_t support = 0, last = 0, last_counted = 0;
+    size_t f, i;
+    for (f = 0; f < rfrag_n; ++f) {
+        if (rfrags[f].meal > after) continue;
+        int hit = 0;
+        for (i = 0; i + 1 < rfrags[f].ntoks && !hit; ++i) {
+            size_t l2 = strlen(rfrags[f].toks[i]) + 1 +
+                        strlen(rfrags[f].toks[i + 1]);
+            if (l2 == shape_len) {
+                char buf[512];
+                if (l2 < sizeof buf) {
+                    snprintf(buf, sizeof buf, "%s %s", rfrags[f].toks[i],
+                             rfrags[f].toks[i + 1]);
+                    if (!memcmp(buf, shape, shape_len)) hit = 1;
+                }
+            }
+            if (!hit && i + 2 < rfrags[f].ntoks) {
+                size_t l3 = l2 + 1 + strlen(rfrags[f].toks[i + 2]);
+                if (l3 == shape_len) {
+                    char buf[512];
+                    if (l3 < sizeof buf) {
+                        snprintf(buf, sizeof buf, "%s %s %s", rfrags[f].toks[i],
+                                 rfrags[f].toks[i + 1], rfrags[f].toks[i + 2]);
+                        if (!memcmp(buf, shape, shape_len)) hit = 1;
+                    }
+                }
+            }
+        }
+        if (hit) {
+            if (rfrags[f].meal != last_counted) {
+                support++;
+                last_counted = rfrags[f].meal;
+            }
+            if (rfrags[f].meal > last) last = rfrags[f].meal;
+        }
+    }
+    return support >= 2 && after - last < 16;
+}
+
+/* ---- proposals prefixes, collected for the parliament's pin ---- */
+static MainPrefix *pprefixes;
+static size_t pprefix_n, pprefix_cap;
+
+static int pprefix_add(uint64_t records, uint64_t chain) {
+    if (pprefix_n == pprefix_cap) {
+        size_t next = pprefix_cap ? pprefix_cap * 2 : 16;
+        MainPrefix *p = realloc(pprefixes, next * sizeof *p);
+        if (!p) return 0;
+        pprefixes = p;
+        pprefix_cap = next;
+    }
+    pprefixes[pprefix_n++] = (MainPrefix){records, chain};
+    return 1;
+}
+
+static int pprefix_has(uint64_t records, uint64_t chain) {
+    size_t i;
+    if (records == 0) return chain == 0xcbf29ce484222325ULL;
+    for (i = 0; i < pprefix_n; ++i)
+        if (pprefixes[i].meals == records && pprefixes[i].chain == chain)
+            return 1;
+    return 0;
+}
+
+/* ---- a minimal school-at-prefix parser for ballot recomputation.
+   Full grammar is already enforced by check_school over the whole file;
+   this pass rebuilds STATE at a pinned record count and verifies the
+   pinned chain. ---- */
+
+typedef struct {
+    char *shape;
+    size_t shape_len;
+    uint64_t arity, after, base_total, cand_total;
+    int verdicted, passed;
+} PHyp;
+
+typedef struct {
+    PHyp *hyps;
+    size_t nhyps;
+    size_t *legal; /* hyp index per glyph, in L order */
+    size_t nlegal;
+    uint64_t chain, records;
+} PSchool;
+
+static void pschool_free(PSchool *ps) {
+    size_t i;
+    for (i = 0; i < ps->nhyps; ++i) free(ps->hyps[i].shape);
+    free(ps->hyps);
+    free(ps->legal);
+}
+
+static int parse_school_prefix(uint64_t limit, PSchool *ps) {
+    memset(ps, 0, sizeof *ps);
+    ps->chain = 0xcbf29ce484222325ULL;
+    FILE *sf = fopen(school_path, "rb");
+    if (!sf) return 0;
+    char *line = NULL;
+    size_t cap = 0;
+    size_t hyp_cap = 0, legal_cap = 0;
+    for (;;) {
+        size_t len = 0;
+        int c, sealed = 0;
+        while ((c = fgetc(sf)) != EOF) {
+            if (c == '\n') { sealed = 1; break; }
+            if (len + 2 > cap) {
+                cap = cap ? cap * 2 : 256;
+                line = realloc(line, cap);
+                if (!line) { fclose(sf); return 0; }
+            }
+            line[len++] = (char)c;
+        }
+        if (len == 0 && !sealed) break;
+        if (!sealed || len < 18) { fclose(sf); free(line); return 0; }
+        size_t plen = len - 17;
+        ps->chain = hash_fold((unsigned char *)line, plen, ps->chain);
+        ps->records++;
+        const char *fl[10];
+        size_t fn[10];
+        int nf = fields_split(line, plen, fl, fn, 10);
+        if (nf < 1) { fclose(sf); free(line); return 0; }
+        if (fn[0] == 1 && fl[0][0] == 'H' && nf == 9) {
+            uint64_t arity, slen, after;
+            if (parse_u64(fl[2], fn[2], &arity) &&
+                parse_u64(fl[3], fn[3], &slen) && fn[4] == slen &&
+                parse_u64(fl[5], fn[5], &after)) {
+                if (ps->nhyps == hyp_cap) {
+                    size_t next = hyp_cap ? hyp_cap * 2 : 16;
+                    PHyp *p = realloc(ps->hyps, next * sizeof *p);
+                    if (!p) { fclose(sf); free(line); return 0; }
+                    ps->hyps = p;
+                    hyp_cap = next;
+                }
+                PHyp *h = &ps->hyps[ps->nhyps];
+                memset(h, 0, sizeof *h);
+                h->shape = malloc(fn[4] ? fn[4] : 1);
+                if (!h->shape) { fclose(sf); free(line); return 0; }
+                memcpy(h->shape, fl[4], fn[4]);
+                h->shape_len = fn[4];
+                h->arity = arity;
+                h->after = after;
+                ps->nhyps++;
+            }
+        } else if (fn[0] == 1 && fl[0][0] == 'O' && nf == 6) {
+            uint64_t id, base_mb, cand_mb;
+            if (parse_u64(fl[1], fn[1], &id) && id >= 1 && id <= ps->nhyps &&
+                parse_u64(fl[4], fn[4], &base_mb) &&
+                parse_u64(fl[5], fn[5], &cand_mb)) {
+                ps->hyps[id - 1].base_total += base_mb;
+                ps->hyps[id - 1].cand_total += cand_mb;
+            }
+        } else if (fn[0] == 1 && fl[0][0] == 'V' && nf == 5) {
+            uint64_t id;
+            if (parse_u64(fl[1], fn[1], &id) && id >= 1 && id <= ps->nhyps) {
+                ps->hyps[id - 1].verdicted = 1;
+                ps->hyps[id - 1].passed = field_eq(fl[2], fn[2], "pass");
+            }
+        } else if (fn[0] == 1 && fl[0][0] == 'L' && nf == 3) {
+            uint64_t id;
+            if (parse_u64(fl[1], fn[1], &id) && id >= 1 && id <= ps->nhyps) {
+                if (ps->nlegal == legal_cap) {
+                    size_t next = legal_cap ? legal_cap * 2 : 8;
+                    size_t *p = realloc(ps->legal, next * sizeof *p);
+                    if (!p) { fclose(sf); free(line); return 0; }
+                    ps->legal = p;
+                    legal_cap = next;
+                }
+                ps->legal[ps->nlegal++] = id - 1;
+            }
+        }
+        if (limit && ps->records == limit) break;
+    }
+    fclose(sf);
+    free(line);
+    return 1;
+}
+
+static uint64_t r_unit_id(uint64_t arity, const char *shape, size_t n) {
+    unsigned char head[2];
+    head[0] = (unsigned char)arity;
+    head[1] = 0;
+    uint64_t h = hash_fold(head, 2, 0xcbf29ce484222325ULL);
+    return hash_fold((const unsigned char *)shape, n, h);
+}
+
+/* ---- the parliament check proper ---- */
+
+typedef struct {
+    uint64_t pid, glyph;
+    int unheard, opaque;
+    char version[33];
+    char unit_hex[17];
+    uint64_t school_records, school_chain, after_meals, main_chain;
+    uint64_t prop_records, prop_chain;
+    char findings[3][64];
+    size_t njur;
+    int has_v;
+    char verdict[9];
+    uint64_t scar_closing;
+} PBallot;
+
+static void check_parliament(void) {
+    FILE *pf = fopen(parl_path, "rb");
+    if (!pf) return;
+    uint64_t chain = 0xcbf29ce484222325ULL;
+    unsigned long long lineno = 0, p_count = 0, j_count = 0, vv_count = 0;
+    int law_seen = 0;
+    PBallot *bs = NULL;
+    size_t bs_n = 0, bs_cap = 0;
+    char *line = NULL;
+    size_t cap = 0;
+    static const char *jur[3] = {"exam", "record", "rent"};
+    for (;;) {
+        size_t len = 0;
+        int c, sealed = 0;
+        while ((c = fgetc(pf)) != EOF) {
+            if (c == '\n') { sealed = 1; break; }
+            if (len + 2 > cap) {
+                cap = cap ? cap * 2 : 256;
+                line = realloc(line, cap);
+                if (!line) { fprintf(stderr, "ledger_check: memory\n"); exit(1); }
+            }
+            line[len++] = (char)c;
+        }
+        if (len == 0 && !sealed) break;
+        lineno++;
+        if (!sealed) refuse_parl(lineno, "record is unsealed (no newline)");
+        if (len + 1 >= RECORD_MAX) refuse_parl(lineno, "record exceeds 4096-byte law");
+        if (len < 18) refuse_parl(lineno, "record too short for a chain field");
+        if (line[len - 17] != '\t') refuse_parl(lineno, "no tab before the chain field");
+        uint64_t claimed;
+        if (!parse_hex16(line + len - 16, 16, &claimed))
+            refuse_parl(lineno, "chain field is not lowercase hex16");
+        size_t plen = len - 17;
+        chain = hash_fold((unsigned char *)line, plen, chain);
+        if (chain != claimed) refuse_parl(lineno, "chain does not fold");
+
+        const char *fl[12];
+        size_t fn[12];
+        int nf = fields_split(line, plen, fl, fn, 12);
+        if (nf < 1 || fn[0] != 1) refuse_parl(lineno, "no record type");
+        char type = fl[0][0];
+        if (type == 'Q') {
+            if (lineno != 1 || nf != 3 || !field_eq(fl[1], fn[1], "1") ||
+                    !field_eq(fl[2], fn[2], "body4-parl-v2"))
+                refuse_parl(lineno, "parliament law record");
+            law_seen = 1;
+            continue;
+        }
+        if (!law_seen) refuse_parl(lineno, "record before parliament law");
+        if (type == 'P') {
+            if (bs_n && (!bs[bs_n - 1].has_v || bs[bs_n - 1].njur != 3))
+                refuse_parl(lineno, "a new petition before the last ballot closed");
+            if (nf != 11) refuse_parl(lineno, "P arity");
+            if (bs_n == bs_cap) {
+                size_t next = bs_cap ? bs_cap * 2 : 8;
+                PBallot *p = realloc(bs, next * sizeof *p);
+                if (!p) { fprintf(stderr, "ledger_check: memory\n"); exit(1); }
+                bs = p;
+                bs_cap = next;
+            }
+            PBallot *b = &bs[bs_n];
+            memset(b, 0, sizeof *b);
+            if (!parse_u64(fl[1], fn[1], &b->pid) || b->pid != bs_n + 1)
+                refuse_parl(lineno, "P petition id is not sequential");
+            if (!parse_u64(fl[2], fn[2], &b->glyph) || b->glyph == 0)
+                refuse_parl(lineno, "P glyph");
+            if (fn[3] == 1 && fl[3][0] == '-' && fn[4] == 1 && fl[4][0] == '-') {
+                b->unheard = 1;
+                snprintf(b->unit_hex, sizeof b->unit_hex, "-");
+                snprintf(b->version, sizeof b->version, "-");
+            } else {
+                uint64_t uid;
+                if (!parse_hex16(fl[3], fn[3], &uid) ||
+                        !label_valid(fl[4], fn[4]) || fn[4] > 32)
+                    refuse_parl(lineno, "P identity grammar");
+                snprintf(b->unit_hex, sizeof b->unit_hex, "%.16s", fl[3]);
+                snprintf(b->version, sizeof b->version, "%.*s", (int)fn[4], fl[4]);
+                if (!field_eq(fl[4], fn[4], "pair-triple-v1")) b->opaque = 1;
+            }
+            if (!parse_u64(fl[5], fn[5], &b->school_records) ||
+                    b->school_records == 0 ||
+                    !parse_hex16(fl[6], fn[6], &b->school_chain) ||
+                    !parse_u64(fl[7], fn[7], &b->after_meals) ||
+                    !parse_hex16(fl[8], fn[8], &b->main_chain) ||
+                    !parse_u64(fl[9], fn[9], &b->prop_records) ||
+                    !parse_hex16(fl[10], fn[10], &b->prop_chain))
+                refuse_parl(lineno, "P field grammar");
+            if (!(b->after_meals == 0 && b->main_chain == 0xcbf29ce484222325ULL) &&
+                    !prefix_has(b->after_meals, b->main_chain))
+                refuse_parl(lineno, "P main prefix");
+            if (!pprefix_has(b->prop_records, b->prop_chain))
+                refuse_parl(lineno, "P proposals prefix");
+            bs_n++;
+            p_count++;
+        } else if (type == 'J') {
+            uint64_t pid;
+            if (nf != 4 || !parse_u64(fl[1], fn[1], &pid))
+                refuse_parl(lineno, "J field grammar");
+            if (!bs_n || pid != bs[bs_n - 1].pid)
+                refuse_parl(lineno, "J outside its ballot");
+            PBallot *b = &bs[bs_n - 1];
+            if (b->has_v || b->njur >= 3)
+                refuse_parl(lineno, "J after the ballot closed");
+            if (!field_eq(fl[2], fn[2], jur[b->njur]))
+                refuse_parl(lineno, "J juror out of canonical order");
+            if (fn[3] == 0 || fn[3] >= sizeof b->findings[0])
+                refuse_parl(lineno, "J finding grammar");
+            snprintf(b->findings[b->njur], sizeof b->findings[0], "%.*s",
+                     (int)fn[3], fl[3]);
+            b->njur++;
+            j_count++;
+        } else if (type == 'V') {
+            uint64_t pid;
+            if (nf != 3 || !parse_u64(fl[1], fn[1], &pid))
+                refuse_parl(lineno, "V field grammar");
+            if (!bs_n || pid != bs[bs_n - 1].pid)
+                refuse_parl(lineno, "V outside its ballot");
+            PBallot *b = &bs[bs_n - 1];
+            if (b->has_v || b->njur != 3)
+                refuse_parl(lineno, "V before all three jurors");
+            if (!field_eq(fl[2], fn[2], "PASS") &&
+                    !field_eq(fl[2], fn[2], "WEAKEN") &&
+                    !field_eq(fl[2], fn[2], "FREEZE") &&
+                    !field_eq(fl[2], fn[2], "SCAR") &&
+                    !field_eq(fl[2], fn[2], "DARK") &&
+                    !field_eq(fl[2], fn[2], "SILENCE"))
+                refuse_parl(lineno, "V verdict class");
+            snprintf(b->verdict, sizeof b->verdict, "%.*s", (int)fn[2], fl[2]);
+            b->has_v = 1;
+            vv_count++;
+        } else {
+            refuse_parl(lineno, "unknown parliament record type");
+        }
+    }
+    fclose(pf);
+    free(line);
+    if (!law_seen) refuse_parl(lineno, "parliament has no law record");
+
+    /* reproduce every complete ballot from its pinned truth */
+    size_t bi, hi;
+    for (bi = 0; bi < bs_n; ++bi) {
+        PBallot *b = &bs[bi];
+        int complete = b->has_v && b->njur == 3;
+        if (!complete) {
+            if (bi + 1 != bs_n)
+                refuse_parl(lineno, "an abandoned ballot before the tip");
+            continue;
+        }
+        PSchool ps;
+        if (!parse_school_prefix(b->school_records, &ps))
+            refuse_parl(lineno, "cannot reread the pinned school prefix");
+        if (ps.records != b->school_records || ps.chain != b->school_chain)
+            refuse_parl(lineno, "a pinned school prefix does not reproduce");
+        if (b->unheard) {
+            if (b->glyph <= ps.nlegal)
+                refuse_parl(lineno, "silence claimed for a glyph the prefix holds");
+            size_t k;
+            for (k = 0; k < 3; ++k)
+                if (strcmp(b->findings[k], "unheard"))
+                    refuse_parl(lineno, "false finding");
+            if (strcmp(b->verdict, "SILENCE")) refuse_parl(lineno, "false verdict");
+            pschool_free(&ps);
+            continue;
+        }
+        if (b->opaque) {
+            if (b->glyph > ps.nlegal)
+                refuse_parl(lineno, "an opaque petition needs an existing glyph");
+            size_t k;
+            for (k = 0; k < 3; ++k)
+                if (strcmp(b->findings[k], "opaque"))
+                    refuse_parl(lineno, "false finding");
+            if (strcmp(b->verdict, "DARK")) refuse_parl(lineno, "false verdict");
+            pschool_free(&ps);
+            continue;
+        }
+        if (b->glyph > ps.nlegal)
+            refuse_parl(lineno, "a known petition names a glyph its prefix lacks");
+        PHyp *gh = &ps.hyps[ps.legal[b->glyph - 1]];
+        uint64_t uid = r_unit_id(gh->arity, gh->shape, gh->shape_len);
+        char uid_hex[17];
+        snprintf(uid_hex, sizeof uid_hex, "%016llx", (unsigned long long)uid);
+        if (strcmp(uid_hex, b->unit_hex))
+            refuse_parl(lineno, "a pinned unit id does not reproduce");
+        uint64_t gain = gh->base_total - gh->cand_total;
+        const char *exam = gain >= 16000000ULL ? "strong" : "adequate";
+        uint64_t closing = 0;
+        for (hi = 0; hi < ps.nhyps; ++hi) {
+            PHyp *h = &ps.hyps[hi];
+            if (r_unit_id(h->arity, h->shape, h->shape_len) != uid) continue;
+            if (h->verdicted && !h->passed) {
+                uint64_t cend = h->after + 8;
+                if (cend > closing) closing = cend;
+            }
+        }
+        char record[64];
+        if (closing)
+            snprintf(record, sizeof record, "scarred:%llu",
+                     (unsigned long long)closing);
+        else
+            snprintf(record, sizeof record, "clean");
+        const char *rent =
+            r_shape_alive(gh->shape, gh->shape_len, b->after_meals)
+                ? "alive" : "starved";
+        if (strcmp(b->findings[0], exam) || strcmp(b->findings[1], record) ||
+                strcmp(b->findings[2], rent))
+            refuse_parl(lineno, "false finding");
+        const char *want;
+        if (closing && b->after_meals < closing + 16) want = "SCAR";
+        else if (!strcmp(rent, "starved")) want = "FREEZE";
+        else if (!strcmp(exam, "strong") && !closing) want = "PASS";
+        else want = "WEAKEN";
+        if (strcmp(b->verdict, want)) refuse_parl(lineno, "false verdict");
+        b->scar_closing = closing;
+        pschool_free(&ps);
+    }
+
+    /* history laws visible in the chain itself */
+    for (bi = 0; bi < bs_n; ++bi) {
+        PBallot *b = &bs[bi];
+        if (!b->has_v) continue;
+        size_t bj;
+        for (bj = bi + 1; bj < bs_n; ++bj) {
+            PBallot *later = &bs[bj];
+            if (later->unheard || b->unheard) continue;
+            if (strcmp(later->version, b->version) ||
+                    strcmp(later->unit_hex, b->unit_hex))
+                continue;
+            if (!strcmp(b->verdict, "PASS") || !strcmp(b->verdict, "WEAKEN"))
+                refuse_parl(lineno, "an admitted identity was petitioned again");
+            if (!strcmp(b->verdict, "DARK") && later->opaque)
+                refuse_parl(lineno, "a dark identity returned without a new law");
+            if (!strcmp(b->verdict, "SCAR") && b->scar_closing &&
+                    later->after_meals < b->scar_closing + 16)
+                refuse_parl(lineno, "a petition inside a scar window");
+            if (!strcmp(b->verdict, "FREEZE") &&
+                    later->after_meals < b->after_meals + 8)
+                refuse_parl(lineno, "a petition inside a freeze window");
+        }
+    }
+    free(bs);
+    printf("parliament: %llu records (Q 1, P %llu, J %llu, V %llu), "
+           "chain %016llx\n",
+           lineno, p_count, j_count, vv_count, (unsigned long long)chain);
+}
+
 int main(int argc, char **argv) {
     if (argc > 3) {
         fprintf(stderr, "usage: ledger_check [ledger [grave-dir]]\n");
@@ -660,22 +1275,25 @@ int main(int argc, char **argv) {
             if (wa < 0) refuse(lineno, "memory");
             if (!wa) refuse(lineno, "attestation witness appears twice");
             if (!label_add(fl[1], fn[1])) refuse(lineno, "memory");
-            /* the blob must still hold the sealed bytes */
+            /* the blob must still hold the sealed bytes; its tokens feed
+               the parliament's independent rent recomputation */
             char blob[4096];
             snprintf(blob, sizeof blob, "%s/%.16s", grave_dir, fl[4]);
             FILE *bf = fopen(blob, "rb");
             if (!bf) refuse(lineno, "grave blob is missing");
-            uint64_t bh = 0xcbf29ce484222325ULL, bn = 0;
-            unsigned char buf[65536];
-            size_t r;
-            while ((r = fread(buf, 1, sizeof buf, bf)) > 0) {
-                bh = hash_fold(buf, r, bh);
-                bn += r;
-            }
+            unsigned char *body = malloc(sbytes ? (size_t)sbytes : 1);
+            if (!body) { fclose(bf); refuse(lineno, "memory"); }
+            uint64_t bn = fread(body, 1, (size_t)sbytes, bf);
+            int extra = fgetc(bf) != EOF;
             if (ferror(bf)) { fclose(bf); refuse(lineno, "grave blob unreadable"); }
             fclose(bf);
-            if (bn != sbytes) refuse(lineno, "grave blob byte count mismatch");
-            if (bh != sdig) refuse(lineno, "grave blob digest mismatch");
+            if (bn != sbytes || extra)
+                refuse(lineno, "grave blob byte count mismatch");
+            if (hash_fold(body, (size_t)bn, 0xcbf29ce484222325ULL) != sdig)
+                refuse(lineno, "grave blob digest mismatch");
+            if (!r_eat_blob((uint64_t)g_count + 1, body, (size_t)bn))
+                refuse(lineno, "memory");
+            free(body);
             g_count++;
         } else if (type == 'U') {
             uint64_t d, k, touched;
@@ -700,6 +1318,7 @@ int main(int argc, char **argv) {
            lineno, v_count, g_count, u_count, (unsigned long long)chain);
     check_proposals();
     check_school((uint64_t)g_count);
+    check_parliament();
     printf("scope: internal consistency of the supplied file; a prefix cut at "
            "a record boundary needs an external witness\n");
     size_t i;

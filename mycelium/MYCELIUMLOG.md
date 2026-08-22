@@ -530,3 +530,36 @@ floating-point sitting, not a claim that every conforming build prints
 identical doubles. The independent reader accepts both by recomputing
 their meaning. We leave the arithmetic untouched rather than invent a
 post-verdict quantisation law.
+
+## Turn 7 — the parliament in the flesh (2026-08-22)
+
+Body 4 landed in two commits under the second hand's repaired contract,
+and the six verdict classes were all walked, not narrated. The honest
+citizen — strong, clean, alive — was admitted with a unit id reproduced
+by an independent fixture down to the hex digit, and refused a second
+petition by name. The failed-then-passed identity was scarred with its
+closing meal named in the finding itself, refused while hot, and
+entered only through WEAKEN when cooled — the cherry-pick ban made
+flesh, no forgiveness by amnesia. A foreign recognizer was heard and
+darkened, and refused repetition while its law does not exist. A
+missing glyph was silenced with three unheard receipts and refused
+until it exists. A starved citizen froze inside its window. The
+sharpest gate of the turn: a petition interrupted after its P row and
+after each juror row, with the main ledger deliberately advanced past
+the pinned meal before recovery — and all three recoveries reproduced
+the reference chain byte for byte, because a sealed ballot reads only
+the clocks its petition pinned. The three old chains stayed
+byte-identical across every parliament run.
+
+The reader grew its own parliament hand: an independent byte-law text
+pipeline in plain C — segmentation, tokenisation, stops — eating the
+grave's blobs to recompute the rent juror; a school-at-prefix parser
+rebuilding hypothesis state at the pinned record count; the unit id
+refolded from the arity byte and the shape; every finding and every
+verdict of every known ballot reproduced without sharing a line of the
+writer's implementation, and the four crafted tamper classes — flip,
+truncation, false finding, false verdict — refused by both hands in the
+same class. The battery stands at 153, sanitizers silent, the zero line
+green. The franchise now holds its first citizens: a PASS and a
+WEAKEN, both terminal, both public, both powerless until body 5 mints
+what they are owed.

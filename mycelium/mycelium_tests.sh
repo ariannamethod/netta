@@ -1181,6 +1181,10 @@ mkdir "$T/parl"
     grep -F 'citizen 1: glyph 1' fr.out >/dev/null &&
         grep -F 'WEAKEN' fr.out >/dev/null &&
         pass "the franchise lists both admissions deterministically" || fail "franchise"
+    "$CHECK" >check.out
+    grep -F 'parliament:' check.out >/dev/null &&
+        pass "the independent hand recounts every ballot from the pins" ||
+        fail "reader parliament: $(tail -1 check.out)"
 )
 
 mkdir "$T/parl2"
@@ -1292,14 +1296,15 @@ for i, row in enumerate(p):
 open(os.path.join(root, "parl-verdict", ".mycelium.parliament"), "wb").write(seal(p))
 PY
 
-for spec in "parl-flip:parliament chain broken" \
-            "parl-trunc:unsealed" \
-            "parl-finding:false finding" \
-            "parl-verdict:false verdict"; do
-    name=${spec%%:*}; needle=${spec#*:}
+for spec in "parl-flip:parliament chain broken:chain does not fold" \
+            "parl-trunc:unsealed:unsealed" \
+            "parl-finding:false finding:false finding" \
+            "parl-verdict:false verdict:false verdict"; do
+    name=${spec%%:*}; rest=${spec#*:}; writer=${rest%%:*}; reader=${rest#*:}
     (
         cd "$T/$name"
-        expect_fail "$name writer refusal" "$needle" "$MYC" franchise
+        expect_fail "$name writer refusal" "$writer" "$MYC" franchise
+        expect_fail "$name reader refusal" "$reader" "$CHECK"
     )
 done
 
