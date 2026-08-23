@@ -3,6 +3,46 @@
 The arc's own log, in the arc's own folder. The heart's log stays
 NETTALOG2.md; nothing here reaches into it.
 
+## Body 5 preregistration repair - the second hand (2026-08-22)
+
+The mint contract was stopped before code, as the parliament was. Don's
+mechanism is real: a tiny notorch-trained note can be the first mortal body of
+weight for an admitted citizen while remaining powerless until body 6. The
+audit found six contract holes that needed to be named before implementation.
+
+First, a mint must pin the parliament prefix that proves citizenship. A future
+admission cannot retroactively make an older M lawful, so M now records
+parliament records and chain as well as the first dataset prefix. Second,
+retraining is its own historical training sitting: every T records its own main
+prefix, forge header/lib digests and seed, while the first T must repeat M's
+training pin. Third, rent death and resurrection are pinned facts too, so R and
+Z name both meal count and main chain.
+
+The notorch dependency was aligned with the current installation contract:
+`/opt/homebrew/include/ariannamethod/notorch.h` and
+`/opt/homebrew/lib/libnotorch.a`, linked only from the installed artifacts, no
+sibling checkout and no vendored source. Header and library FNVs are provenance
+of the installed forge, not a cross-future promise that a later notorch checkout
+will retrain the same floats.
+
+The dataset law now closes the easiest leak. Masking happens before DIM-96
+expansion by omitting every byte-law ngram that overlaps the complete shape; no
+sentinel feature is inserted and no left/right splice is created. Holdout is
+label-stratified, both train and holdout must contain both classes, and the
+reader rederives the deterministic split and majority baseline. The reader
+still does not retrain notorch or re-price final loss; it owns the exact integer
+law around dataset counts, baseline counts, verdicts, pins, rent and weight
+digests.
+
+The crash law is also now explicit. V1 is single-threaded and deterministic:
+no background worker, no fork and no hidden queue. A blob written before T can
+be an orphan only; M at EOF is recoverable from its own pins, T at EOF is
+completed by the integer E verdict, and a partial unsealed line refuses without
+mutation. Body 6 remains named but unspent: before circulation code, it must
+seal which living LIT notes may be spent, how DIM/dead/DARK/unheard notes stay
+powerless, which commands first change, how SPA modulates selection without
+creating candidates, and what PatternLineage identity pins mean.
+
 ## Body 4 audit closure - the second hand (2026-08-22)
 
 The parliament audit found two real reader/writer divergences after the
