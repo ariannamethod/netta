@@ -463,16 +463,28 @@ counterexample, an independent reader, a delayed verdict.
 
 - **The forge is linked, never vendored.** notorch enters as an
   upstream dependency from its installation path only
-  (`/opt/homebrew/include/notorch.h`, `libnotorch.a`); the repo carries
-  no notorch source and no sibling path. Every mint receipt records
-  the forge's fingerprint — FNV-1a-64 digests of the installed header
-  and library at mint time — because a weight must remember which
-  forge struck it while the forge keeps moving.
+  (`/opt/homebrew/include/ariannamethod/notorch.h` as
+  `<ariannamethod/notorch.h>`, `/opt/homebrew/lib/libnotorch.a`);
+  the repo carries no notorch source and no sibling path. If those
+  installed artifacts are absent, the mint refuses instead of falling
+  back to a checkout. Every training receipt records the forge's
+  fingerprint — FNV-1a-64 digests of the installed header and library
+  at training time — because a weight must remember which forge struck
+  it while the forge keeps moving. The fingerprint is provenance of
+  the installed binary, not a promise that a future notorch checkout
+  can retrain the same floats.
 - **Who may mint.** Only a parliament citizen (PASS or WEAKEN, by the
-  franchise replay). PASS mints with the full step budget; WEAKEN with
-  half — the reduced mark finally costs something measurable. One note
-  per citizen identity in this body (the governor; molequla's cascade
-  lesson: bounded, cooled). A non-citizen mint refuses by name.
+  franchise replay at the pinned parliament prefix in M). PASS mints
+  with the full step budget; WEAKEN with half — the reduced mark
+  finally costs something measurable. Future admissions cannot
+  retroactively legalise an older mint. One note per citizen identity
+  in this body (the governor; molequla's cascade lesson: bounded,
+  cooled). A non-citizen mint refuses by name. A mint also refuses if
+  any earlier body has a recoverable open record boundary the mint
+  would have to repair (school pass without L, parliament P/J prefix),
+  because notes may not write the old chains. The citizen's shape must
+  be alive in the proposer derivation at the mint's pinned main prefix;
+  a currently starved citizen cannot birth a fresh note.
 - **The training brief, sealed in the contract** (the six points, for
   Oleg's word on the class): (1) organism — the note-net, a linear
   probe over the DIM-96 trigram bag of a fragment's tokens with the
@@ -481,7 +493,15 @@ counterexample, an independent reader, a delayed verdict.
   prefix: positives are fragments containing the shape, negatives an
   equal count of shape-free fragments chosen by deterministic hash
   order, masked so the net must read the COMPANY the shape keeps, not
-  the shape itself; a fixed 1-in-4 deterministic holdout; (3) steps —
+  the shape itself. Masking happens before DIM-96 expansion: every
+  byte-law ngram overlapping the complete shape occurrence is omitted,
+  no sentinel feature is inserted, no left/right splice is created, and
+  the bag is normalised by the surviving feature count so "missing
+  masked bytes" is not itself a feature. Fragments with no surviving
+  features after masking are excluded. The 1-in-4 holdout is
+  deterministic and stratified by label after hash sorting; each split
+  must contain at least one positive and one negative, or the mint
+  refuses as insufficient data. (3) steps —
   Chuck, at most 512 full-batch steps, lr fixed in code; (4)
   architecture — 96 -> 1, byte-law atoms, DIM-96 expansion identical
   to body 1's embedding law; (5) tokenizer — the field's own byte law,
@@ -491,53 +511,81 @@ counterexample, an independent reader, a delayed verdict.
 - **The chain** `.mycelium.notes`, own file, law row
   `N \t 1 \t body5-notes-v1`, same sealing discipline:
   - `M \t note-id \t citizen-unit \t recognizer-version \t
-    after-meals \t main-chain \t forge-header \t forge-lib \t seed` —
-    the mint, pinned to the exact field prefix its dataset reads;
-  - `T \t note-id \t steps \t final-loss-microbits \t
-    positives \t negatives \t holdout-hits \t holdout-total \t
-    baseline-hits \t weight-digest` — the training receipt; weights
-    live content-addressed in `.mycelium.notes.d/<weight-digest>`,
-    written blob-first like the grave;
+    parliament-records \t parliament-chain \t after-meals \t
+    main-chain \t forge-header \t forge-lib \t seed` — the mint,
+    pinned both to the franchise prefix that proves citizenship and to
+    the first field prefix its dataset reads;
+  - `T \t note-id \t after-meals \t main-chain \t forge-header \t
+    forge-lib \t seed \t steps \t final-loss-microbits \t positives
+    \t negatives \t holdout-pos \t holdout-neg \t holdout-hits \t
+    baseline-hits \t weight-digest` — the training receipt. The first
+    T after M must repeat M's training pin; every later T carries its
+    own prefix and forge fingerprint. Weights live content-addressed in
+    `.mycelium.notes.d/<weight-digest>`, written blob-first like the
+    grave. A weight blob is canonical: `body5-note-weight-v1`, DIM 96,
+    ninety-six little-endian IEEE-754 finite float32 weights and one
+    finite float32 bias, with no trailing bytes. A single FNV over this
+    blob is enough because there is one layer and the blob grammar
+    names every byte.
   - `E \t note-id \t verdict` with verdict in {LIT, DIM}: LIT iff
-    holdout accuracy strictly beats the majority baseline; DIM is kept
-    forever with its history and can never carry power into body 6 —
-    the vivisection law applied to weights: measurable effect,
-    negative case, better than absence, or no franchise of its own;
-  - `R \t note-id \t after-meals` — rent death when the citizen's
-    shape starves in the proposer derivation at the named meal; the
-    weight file stays in the morgue; `Z \t note-id \t after-meals` —
-    resurrection of the SAME identity when the shape lives again; a
-    resurrected note keeps its weight and its whole record.
+    `holdout-hits > max(holdout-pos, holdout-neg)` for the immediately
+    preceding T; DIM is kept forever with its history and can never
+    carry power into body 6 by itself — the vivisection law applied to
+    weights: measurable effect, negative case, better than absence, or
+    no franchise of its own;
+  - `R \t note-id \t after-meals \t main-chain` — rent death when the
+    citizen's shape starves in the proposer derivation at the named
+    pinned meal; the weight file stays in the morgue; `Z \t note-id
+    \t after-meals \t main-chain` — resurrection of the SAME identity
+    when the shape lives again at the named pinned meal; a resurrected
+    note keeps its weight and its whole record. R and Z must alternate.
 - **Asynchrony bounded.** A retrain (new T over the same note) is
   lawful only when the pinned prefix has advanced by at least 8 meals
   since the last T — the cooldown; each retrain is a new receipt over
   the same identity, old weight digests stay in the chain; content
-  changes, franchise never does.
+  changes, franchise never does. V1 is deterministic and single
+  threaded: no background worker, no fork, no hidden training queue. A
+  blob crash before T leaves an orphan powerless weight; M at EOF is
+  recovered from its own pins before any new note action, T at EOF is
+  completed by the integer E verdict, and any unsealed partial line
+  refuses without mutation.
 - **No authority, proven not promised.** unfold, ablate, propose,
   examine, petition and franchise are byte-identical with and without
   the notes chain present. The three old chains and the parliament
   stay untouched by any mint.
 - **The reader** learns the notes grammar with its own hand: chain,
-  record order (M before T before E, R/Z alternation), pins into real
-  prefixes, weight files matching their digests, the LIT/DIM verdict
-  recomputed from the sealed holdout counts. The reader does NOT
-  retrain: a weight digest is the receipt of one training sitting on
-  one binary — the same named floating-point limit as the school's
-  microbits and the courts' row digests; the arithmetic of the verdict
-  is exact integers and the reader owns it fully.
+  record order (M before the first T/E, every T immediately followed
+  by its E, R/Z alternation), pins into real prefixes, franchise
+  citizenship at M's parliament prefix, alive/dead rent at every M/R/Z
+  main prefix, the deterministic dataset split and majority baseline,
+  weight files matching their digests, the LIT/DIM verdict recomputed
+  from exact integer counts. The reader does NOT retrain and does not
+  re-price final loss: a weight digest is the receipt of one training
+  sitting on one installed binary — the same named floating-point limit
+  as the school's microbits and the courts' row digests. Dataset
+  arithmetic, baseline arithmetic and verdict arithmetic are exact
+  integers and the reader owns them fully.
 - Red hands, sealed before code: a non-citizen mint refuses; a WEAKEN
   citizen's budget is verifiably half; two mints from the same pin on
   the same binary produce byte-identical weight digests; advancing the
   ledger after a mint's pin changes nothing in its dataset (replay
-  from the pin, not the clock); a retrain inside the cooldown refuses;
-  a DIM verdict is reproduced by the reader from the sealed counts and
-  a crafted LIT-with-losing-counts refuses in both hands; the
-  no-authority row across all six commands; tamper classes (flip,
-  truncation, order faults, missing weight file, weight digest
-  mismatch) refuse in both hands; clean-room reproduces chain and
-  weight files byte for byte.
+  from the pin, not the clock); a future parliament admission cannot
+  legalise an earlier M; a mint during an open old-chain recovery
+  window refuses; a starved citizen cannot birth a new note; a retrain
+  inside the cooldown refuses; a DIM verdict is reproduced by the
+  reader from derived split counts and a crafted LIT-with-losing-counts
+  refuses in both hands; the no-authority row across all six commands;
+  tamper classes (flip, truncation, order faults, impossible parliament
+  pin, missing weight file, malformed weight blob, weight digest
+  mismatch, forged baseline, R/Z rent lie) refuse in both hands;
+  clean-room reproduces chain and weight files byte for byte.
 - Named for body 6, not taken now: notorch's SPA (sentence phonon
   attention — connectedness-modulated selection) is the circulation's
   candidate mechanic; PatternLineage remains the candidate object; the
   notes minted here are the weights those organs will finally be
-  allowed to spend.
+  allowed to spend. Before body 6 writes code it must seal, at minimum,
+  which living LIT notes may be spent, how DIM/dead/DARK/unheard notes
+  remain powerless, which commands are first allowed to change, how SPA
+  can modulate selection without creating candidates, what
+  PatternLineage identity and prefix pins mean, and what the independent
+  reader recomputes without rerunning a neural forward pass.
