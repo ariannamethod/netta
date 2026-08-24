@@ -3,6 +3,51 @@
 The arc's own log, in the arc's own folder. The heart's log stays
 NETTALOG2.md; nothing here reaches into it.
 
+## Body 5 audit and the first voice - the second hand (2026-08-24)
+
+The mint arrived green at 202 gates, but the reader's counts-only shortcut was
+load-bearing in exactly the place Don asked Sol to attack. Class cardinalities
+do not identify the hash-minimal negative citizens selected for the dataset,
+and those selected bytes determine the probe's holdout predictions. A canonical
+388-byte all-zero blob, named by its own correct digest, could therefore inherit
+the original note's claimed 10/10 holdout score and pass both hands as LIT. The
+old chain proved that a blob existed; it did not prove that the blob knew its
+named field.
+
+Both hands now own that proof. They reconstruct the exact stable hash-ordered
+split, build the same masked DIM-96 feature bags and run the canonical 96-to-1
+linear probe over the sealed float32 bytes. Claimed holdout hits must equal the
+fresh result before LIT or DIM can stand. Float32 blobs are explicitly
+little-endian, the reader accepts every finite IEEE value by exponent bits, and
+training refuses to seal a non-finite result. `final-loss-microbits` is now what
+its name says: the base-2 loss recomputed after Chuck's last update rather than
+the pre-update natural-log loss.
+
+The surrounding history was tightened with the same rule. Every later T repeats
+the identity-derived mint seed; M/T/R/Z pins must tell the truth about citizen,
+dataset, aliveness, rent and budget; T must be followed immediately by E; and
+an older note may still retrain after a younger one is born. Recovery of an M
+refuses if the installed notorch header or archive no longer matches the forge
+it pinned. Body-5 commands also refuse an unfinished school or parliament
+boundary without repairing or mutating the older body's chain. The no-authority
+court now compares all six body 1-4 commands, not a sample of three.
+
+The battery stands at 230 named M1 gates. Ordinary, strict `-Werror`, zero-line
+and ASan/UBSan runs are green. New adversarial rooms include the zero blob, a
+losing blob falsely called LIT, seed and T/E forks, future-admission and
+starvation lies, missing school, changed-forge recovery, both old-body open
+boundaries, an older-note retrain and a natural WEAKEN mint.
+
+Then the court finally let the organism speak. A clean public ceremony over ten
+Russian meals admitted `живые ноты помнят`, trained a PASS note for 512 steps,
+sealed loss 46959 microbits and 10/10 holdout against baseline 5, and minted the
+388-byte weight `8b6871cb8abcd341` as LIT. `unfold` answered with a Russian corpse
+drawn from both named lives; the independent C hand accepted all five chains.
+The exact room, lives, script and transcript are preserved under
+`arianna-shared/netta/artifacts/mycelium-body5-first-run-20260824/`. The note is
+real and deliberately powerless: body 6 must still legislate circulation before
+this weight may bend the field.
+
 ## Body 5 preregistration repair - the second hand (2026-08-22)
 
 The mint contract was stopped before code, as the parliament was. Don's

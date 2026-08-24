@@ -507,7 +507,10 @@ counterexample, an independent reader, a delayed verdict.
   to body 1's embedding law; (5) tokenizer — the field's own byte law,
   identical to inference by construction; (6) script — the organism
   itself, pushed. Training runs under nt_seed derived from the note's
-  identity digest: same pin, same binary, same weights.
+  identity digest: same pin, same binary, same weights. The T loss is
+  the mean held after the final Chuck update, measured with `log2` and
+  rounded to microbits; the optimization step may use its own internal
+  loss scale, but the public field named microbits is actually bits.
 - **The chain** `.mycelium.notes`, own file, law row
   `N \t 1 \t body5-notes-v1`, same sealing discipline:
   - `M \t note-id \t citizen-unit \t recognizer-version \t
@@ -529,7 +532,11 @@ counterexample, an independent reader, a delayed verdict.
     names every byte.
   - `E \t note-id \t verdict` with verdict in {LIT, DIM}: LIT iff
     `holdout-hits > max(holdout-pos, holdout-neg)` for the immediately
-    preceding T; DIM is kept forever with its history and can never
+    preceding T. Both hands rebuild the hash-selected split and run the
+    canonical 96-to-1 linear forward pass from the sealed blob before
+    accepting `holdout-hits`; a different finite digest-correct blob
+    cannot inherit an old model's score. DIM is kept forever with its
+    history and can never
     carry power into body 6 by itself — the vivisection law applied to
     weights: measurable effect, negative case, better than absence, or
     no franchise of its own;
@@ -542,13 +549,18 @@ counterexample, an independent reader, a delayed verdict.
 - **Asynchrony bounded.** A retrain (new T over the same note) is
   lawful only when the pinned prefix has advanced by at least 8 meals
   since the last T — the cooldown; each retrain is a new receipt over
-  the same identity, old weight digests stay in the chain; content
-  changes, franchise never does. V1 is deterministic and single
+  the same identity and repeats M's identity-derived seed, while old
+  weight digests stay in the chain; content changes, franchise never
+  does. A younger mint does not close an older note: any living cooled
+  note may retrain, with its T immediately followed by its own E. V1 is
+  deterministic and single
   threaded: no background worker, no fork, no hidden training queue. A
   blob crash before T leaves an orphan powerless weight; M at EOF is
   recovered from its own pins before any new note action, T at EOF is
   completed by the integer E verdict, and any unsealed partial line
-  refuses without mutation.
+  refuses without mutation. M recovery additionally requires the
+  installed forge fingerprints still to equal M's fingerprints; it
+  never trains under a changed forge while writing the old provenance.
 - **No authority, proven not promised.** unfold, ablate, propose,
   examine, petition and franchise are byte-identical with and without
   the notes chain present. The three old chains and the parliament
@@ -556,28 +568,34 @@ counterexample, an independent reader, a delayed verdict.
 - **The reader** learns the notes grammar with its own hand: chain,
   record order (M before the first T/E, every T immediately followed
   by its E, R/Z alternation), pins into real prefixes, franchise
-  citizenship at M's parliament prefix, alive/dead rent at every M/R/Z
-  main prefix, the deterministic dataset split and majority baseline,
-  weight files matching their digests, the LIT/DIM verdict recomputed
-  from exact integer counts. The reader does NOT retrain and does not
+  citizenship at M's parliament prefix, alive/dead rent at every M/T/R/Z
+  main prefix, the deterministic hash-selected dataset split and
+  majority baseline, weight files matching their digests, the held-out
+  predictions from its own byte-feature implementation, and the
+  LIT/DIM verdict recomputed from those exact integer counts. The reader
+  does NOT retrain and does not
   re-price final loss: a weight digest is the receipt of one training
   sitting on one installed binary — the same named floating-point limit
-  as the school's microbits and the courts' row digests. Dataset
-  arithmetic, baseline arithmetic and verdict arithmetic are exact
-  integers and the reader owns them fully.
+  as the school's microbits and the courts' row digests. Dataset,
+  baseline and verdict arithmetic are exact integers after the named
+  IEEE-754 linear forward pass, and the reader owns the complete path
+  from selected fragment bytes to the final hit count.
 - Red hands, sealed before code: a non-citizen mint refuses; a WEAKEN
   citizen's budget is verifiably half; two mints from the same pin on
   the same binary produce byte-identical weight digests; advancing the
   ledger after a mint's pin changes nothing in its dataset (replay
   from the pin, not the clock); a future parliament admission cannot
   legalise an earlier M; a mint during an open old-chain recovery
-  window refuses; a starved citizen cannot birth a new note; a retrain
+  window refuses without repairing that old chain; a starved citizen
+  cannot birth a new note; a retrain
   inside the cooldown refuses; a DIM verdict is reproduced by the
   reader from derived split counts and a crafted LIT-with-losing-counts
   refuses in both hands; the no-authority row across all six commands;
-  tamper classes (flip, truncation, order faults, impossible parliament
-  pin, missing weight file, malformed weight blob, weight digest
-  mismatch, forged baseline, R/Z rent lie) refuse in both hands;
+  tamper classes (flip, truncation, M/T/E order faults, impossible
+  parliament pin, missing weight file, malformed or non-finite weight
+  blob, weight digest mismatch, canonical blob substitution with false
+  hits, forged identity/training seed, forged budget/baseline, and M/T/R/Z
+  aliveness lies) refuse in both hands;
   clean-room reproduces chain and weight files byte for byte.
 - Named for body 6, not taken now: notorch's SPA (sentence phonon
   attention — connectedness-modulated selection) is the circulation's

@@ -22,6 +22,16 @@ expect_fail() {
     fi
 }
 
+capture() {
+    stem=$1
+    shift
+    if "$@" >"$stem.out" 2>&1; then
+        printf '0\n' >"$stem.status"
+    else
+        printf '%s\n' "$?" >"$stem.status"
+    fi
+}
+
 ${CXX:-c++} -std=c++17 -O2 -Wall -Wextra -Wpedantic -Werror \
     -I/opt/homebrew/include -L/opt/homebrew/lib \
     "$ROOT/mycelium/mycelium.cpp" -o "$MYC" -lnotorch -framework Accelerate
@@ -217,6 +227,8 @@ for i in range(1, 35):
                     f"The quiet raven sings beside the silver ledger on evening {i:02d} once more.")
     else:
         parl.append(f"The quiet raven sings beside the copper archive on evening {i:02d}.")
+    parl[-1] += (f" A numbered courier delivers the plain town ledger across morning {i:02d}."
+                 " Another distant engine keeps an unrelated archive for the mint.")
 room_meals("parl-field", parl, 180)
 
 little_nul = []
@@ -1503,15 +1515,27 @@ cp -R "$T/mintroom" "$T/mint-pre"
 for room in "$T/mintroom" "$T/mint-pre"; do
     (
         cd "$room"
-        "$MYC" unfold the amber wolf remembers >na-unfold.out
-        "$MYC" propose >na-propose.out
-        "$MYC" franchise >na-franchise.out
+        capture na-unfold "$MYC" unfold the amber wolf remembers
+        capture na-ablate "$MYC" ablate
+        capture na-propose "$MYC" propose
+        capture na-examine "$MYC" examine
+        capture na-petition "$MYC" petition 1
+        capture na-franchise "$MYC" franchise
     )
 done
 if cmp -s "$T/mintroom/na-unfold.out" "$T/mint-pre/na-unfold.out" &&
+        cmp -s "$T/mintroom/na-unfold.status" "$T/mint-pre/na-unfold.status" &&
+        cmp -s "$T/mintroom/na-ablate.out" "$T/mint-pre/na-ablate.out" &&
+        cmp -s "$T/mintroom/na-ablate.status" "$T/mint-pre/na-ablate.status" &&
         cmp -s "$T/mintroom/na-propose.out" "$T/mint-pre/na-propose.out" &&
-        cmp -s "$T/mintroom/na-franchise.out" "$T/mint-pre/na-franchise.out"; then
-    pass "the minted weight has no authority over bodies 1-4"
+        cmp -s "$T/mintroom/na-propose.status" "$T/mint-pre/na-propose.status" &&
+        cmp -s "$T/mintroom/na-examine.out" "$T/mint-pre/na-examine.out" &&
+        cmp -s "$T/mintroom/na-examine.status" "$T/mint-pre/na-examine.status" &&
+        cmp -s "$T/mintroom/na-petition.out" "$T/mint-pre/na-petition.out" &&
+        cmp -s "$T/mintroom/na-petition.status" "$T/mint-pre/na-petition.status" &&
+        cmp -s "$T/mintroom/na-franchise.out" "$T/mint-pre/na-franchise.out" &&
+        cmp -s "$T/mintroom/na-franchise.status" "$T/mint-pre/na-franchise.status"; then
+    pass "the minted weight has no authority over all six body 1-4 commands"
 else
     fail "no-authority"
 fi
@@ -1560,12 +1584,87 @@ for cut in 2 3; do
     (
         cd "$T/mintrec-$cut"
         head -n $cut "$T/mintdet-one/.mycelium.notes" > .mycelium.notes
+        "$MYC" ingest wolf "$T/mint-field/speech-11" "$T/mint-field/bio" \
+            >/dev/null
         "$MYC" notes >/dev/null 2>rec.err
         cmp -s .mycelium.notes "$T/mintdet-one/.mycelium.notes" &&
-            pass "an interruption after line $cut recovers the exact mint" ||
+            pass "an interruption after line $cut recovers exactly after later life" ||
             fail "mint recovery cut $cut: $(cat rec.err | tr '\n' ' ')"
     )
 done
+
+# A body-5 command may not quietly finish an older body's interrupted append.
+cp -R "$T/mint-pre" "$T/mint-open-parliament"
+(
+    cd "$T/mint-open-parliament"
+    cp .mycelium.parliament parliament.full
+    head -n 2 parliament.full >.mycelium.parliament
+    cp .mycelium.parliament parliament.before
+    expect_fail "mint refuses an open parliament boundary" "open record boundary" \
+        "$MYC" mint 1
+    cmp -s .mycelium.parliament parliament.before &&
+        pass "a refused mint does not repair the parliament" ||
+        fail "mint repaired the parliament before refusing"
+)
+
+cp -R "$T/mint-pre" "$T/mint-open-school"
+(
+    cd "$T/mint-open-school"
+    cp .mycelium.school school.full
+    lines=$(wc -l <school.full | tr -d ' ')
+    head -n $((lines - 1)) school.full >.mycelium.school
+    cp .mycelium.school school.before
+    expect_fail "mint refuses a pass awaiting its glyph" \
+        "school prefix ends before requested record count" \
+        "$MYC" mint 1
+    cmp -s .mycelium.school school.before &&
+        pass "a refused mint does not repair the school" ||
+        fail "mint repaired the school before refusing"
+)
+
+# Two independently admitted notes share the mint, and an older note keeps
+# its right to retrain after a younger note is born.
+mint_multi_flow() {
+    mkdir -p "$1"
+    feed "$1" mint-field wolf 1 2
+    (cd "$1" &&
+        "$MYC" enroll 3 amber wolf sings >/dev/null &&
+        "$MYC" enroll 3 copper courier delivers >/dev/null)
+    feed "$1" mint-field wolf 3 10
+    (cd "$1" &&
+        "$MYC" examine >/dev/null &&
+        "$MYC" petition 1 >/dev/null &&
+        "$MYC" petition 2 >/dev/null)
+}
+
+mint_multi_flow "$T/mint-multi"
+(
+    cd "$T/mint-multi"
+    "$MYC" mint 1 >/dev/null
+    "$MYC" mint 2 >/dev/null
+)
+feed "$T/mint-multi" mint-field wolf 11 18
+(
+    cd "$T/mint-multi"
+    "$MYC" retrain 1 >older.out
+    grep -F 'retrain 1:' older.out >/dev/null &&
+        "$CHECK" >/dev/null &&
+        pass "an older note retrains after a younger note is born" ||
+        fail "older-note retrain"
+)
+
+cp -R "$T/parl" "$T/mint-weak"
+(
+    cd "$T/mint-weak"
+    if "$MYC" mint 2 >weak-mint.out 2>weak-mint.err &&
+            grep -F 'WEAKEN budget 256' weak-mint.out >/dev/null &&
+            grep -F 'T steps 256' weak-mint.out >/dev/null &&
+            "$CHECK" >/dev/null; then
+        pass "a WEAKEN citizen trains on the half budget"
+    else
+        fail "WEAKEN mint: $(cat weak-mint.out weak-mint.err | tr '\n' ' ')"
+    fi
+)
 
 python3 - "$T" <<'PY'
 import os, shutil, struct, sys
@@ -1591,7 +1690,9 @@ src = os.path.join(root, "mintdet-one")
 raw = open(os.path.join(src, ".mycelium.notes"), "rb").read()
 payloads = [line[:-17] for line in raw.splitlines()]
 for name in ("notes-flip", "notes-trunc", "notes-lit", "notes-noblob",
-             "notes-badblob", "notes-nanblob"):
+             "notes-badblob", "notes-nanblob", "notes-zero-blob",
+             "notes-losing-lit", "notes-seed", "notes-no-school",
+             "notes-forge-recovery", "notes-future-admit"):
     path = os.path.join(root, name)
     shutil.copytree(src, path)
 
@@ -1600,13 +1701,11 @@ flipped[len(raw) // 2] ^= 1
 open(os.path.join(root, "notes-flip", ".mycelium.notes"), "wb").write(bytes(flipped))
 open(os.path.join(root, "notes-trunc", ".mycelium.notes"), "wb").write(raw[:-1])
 
-# false verdict: hits lowered to the baseline while E still says LIT
+# false verdict over the untouched, independently reproducible hit count
 p = payloads.copy()
 for i, row in enumerate(p):
-    if row.startswith(b"T\t"):
-        fields = row.split(b"\t")
-        fields[13] = fields[14]
-        p[i] = b"\t".join(fields)
+    if row.startswith(b"E\t"):
+        p[i] = b"E\t1\tDIM"
 open(os.path.join(root, "notes-lit", ".mycelium.notes"), "wb").write(seal(p))
 
 d = os.path.join(root, "notes-noblob", ".mycelium.notes.d")
@@ -1631,6 +1730,113 @@ for i, row in enumerate(p):
         fields[15] = nan_hex
         p[i] = b"\t".join(fields)
 open(os.path.join(root, "notes-nanblob", ".mycelium.notes"), "wb").write(seal(p))
+
+# A fully canonical finite replacement blob used to inherit the old 10/10
+# claim.  Both hands must forward-pass it and discover its real baseline tie.
+zero_blob = struct.pack("<97f", *([0.0] * 97))
+zero_hex = f"{fnv(zero_blob):016x}".encode()
+d = os.path.join(root, "notes-zero-blob", ".mycelium.notes.d")
+for f in os.listdir(d):
+    os.remove(os.path.join(d, f))
+open(os.path.join(d, zero_hex.decode()), "wb").write(zero_blob)
+p = payloads.copy()
+for i, row in enumerate(p):
+    if row.startswith(b"T\t"):
+        fields = row.split(b"\t")
+        fields[15] = zero_hex
+        p[i] = b"\t".join(fields)
+open(os.path.join(root, "notes-zero-blob", ".mycelium.notes"), "wb").write(seal(p))
+
+d = os.path.join(root, "notes-losing-lit", ".mycelium.notes.d")
+for f in os.listdir(d):
+    os.remove(os.path.join(d, f))
+open(os.path.join(d, zero_hex.decode()), "wb").write(zero_blob)
+p = payloads.copy()
+for i, row in enumerate(p):
+    if row.startswith(b"T\t"):
+        fields = row.split(b"\t")
+        fields[13] = fields[14]
+        fields[15] = zero_hex
+        p[i] = b"\t".join(fields)
+open(os.path.join(root, "notes-losing-lit", ".mycelium.notes"), "wb").write(seal(p))
+
+# M and its first T agree on a forged seed, but identity does not.
+p = payloads.copy()
+for i, row in enumerate(p):
+    fields = row.split(b"\t")
+    if row.startswith(b"M\t"):
+        fields[10] = b"0000000000000001"
+        p[i] = b"\t".join(fields)
+    elif row.startswith(b"T\t"):
+        fields[6] = b"0000000000000001"
+        p[i] = b"\t".join(fields)
+open(os.path.join(root, "notes-seed", ".mycelium.notes"), "wb").write(seal(p))
+
+os.remove(os.path.join(root, "notes-no-school", ".mycelium.school"))
+
+# Recovery after M may run only under the forge fingerprint M pinned.
+p = payloads[:2]
+fields = p[1].split(b"\t")
+fields[8] = b"0000000000000000"
+p[1] = b"\t".join(fields)
+open(os.path.join(root, "notes-forge-recovery", ".mycelium.notes"), "wb").write(seal(p))
+
+# The same parliament eventually admits the citizen, but M pins the prefix
+# immediately before V and therefore has no franchise at its own hour.
+p = payloads.copy()
+parl_lines = open(os.path.join(src, ".mycelium.parliament"), "rb").read().splitlines()
+before_v = parl_lines[-2]
+for i, row in enumerate(p):
+    if row.startswith(b"M\t"):
+        fields = row.split(b"\t")
+        fields[4] = str(len(parl_lines) - 1).encode()
+        fields[5] = before_v[-16:]
+        p[i] = b"\t".join(fields)
+open(os.path.join(root, "notes-future-admit", ".mycelium.notes"), "wb").write(seal(p))
+
+# Histories with rent truth and multiple trainings come from the full room.
+full = os.path.join(root, "mintroom")
+full_raw = open(os.path.join(full, ".mycelium.notes"), "rb").read()
+full_p = [line[:-17] for line in full_raw.splitlines()]
+for name in ("notes-t-gap", "notes-zstarve", "notes-t-seed",
+             "notes-starved-m"):
+    shutil.copytree(full, os.path.join(root, name))
+
+# Move the truthful R row between the second T and its mandatory E.
+p = full_p.copy()
+rrow = next(row for row in p if row.startswith(b"R\t"))
+p.remove(rrow)
+second_t = [i for i, row in enumerate(p) if row.startswith(b"T\t")][1]
+p.insert(second_t + 1, rrow)
+open(os.path.join(root, "notes-t-gap", ".mycelium.notes"), "wb").write(seal(p))
+
+# Resurrection falsely points at the same starved prefix as its preceding R.
+p = full_p.copy()
+rfields = next(row for row in p if row.startswith(b"R\t")).split(b"\t")
+for i, row in enumerate(p):
+    if row.startswith(b"Z\t"):
+        z = row.split(b"\t")
+        z[2], z[3] = rfields[2], rfields[3]
+        p[i] = b"\t".join(z)
+open(os.path.join(root, "notes-zstarve", ".mycelium.notes"), "wb").write(seal(p))
+
+# A later training is not allowed to fork the mint's deterministic seed.
+p = full_p.copy()
+seen = 0
+for i, row in enumerate(p):
+    if row.startswith(b"T\t"):
+        seen += 1
+        if seen == 2:
+            fields = row.split(b"\t")
+            fields[6] = b"0000000000000001"
+            p[i] = b"\t".join(fields)
+open(os.path.join(root, "notes-t-seed", ".mycelium.notes"), "wb").write(seal(p))
+
+# A future starved prefix cannot be used to invent an older M at EOF.
+m = next(row for row in full_p if row.startswith(b"M\t")).split(b"\t")
+m[6], m[7] = rfields[2], rfields[3]
+open(os.path.join(root, "notes-starved-m", ".mycelium.notes"), "wb").write(
+    seal([full_p[0], b"\t".join(m)]))
 
 # three rooms the writer's seal cannot see: only the reader refuses
 for name in ("notes-budget", "notes-count", "notes-rentfat"):
@@ -1662,7 +1868,15 @@ for spec in "notes-flip:notes chain broken" \
             "notes-lit:false verdict" \
             "notes-noblob:is missing" \
             "notes-badblob:not canonical" \
-            "notes-nanblob:non-finite"; do
+            "notes-nanblob:non-finite" \
+            "notes-zero-blob:false holdout hits" \
+            "notes-losing-lit:false verdict" \
+            "notes-seed:M seed is not derived" \
+            "notes-t-gap:record between T and its E" \
+            "notes-zstarve:Z pinned at a starved hour" \
+            "notes-t-seed:training seed forked" \
+            "notes-starved-m:mint pinned at a starved hour" \
+            "notes-future-admit:M names no citizen"; do
     name=${spec%%:*}; needle=${spec#*:}
     (
         cd "$T/$name"
@@ -1671,7 +1885,20 @@ for spec in "notes-flip:notes chain broken" \
     )
 done
 
-# where the writer's seal is blind, the independent hand still refuses
+(
+    cd "$T/notes-no-school"
+    expect_fail "notes without school writer refusal" "does not reproduce" "$MYC" notes
+    expect_fail "notes without school reader refusal" "cannot reread" "$CHECK"
+)
+
+(
+    cd "$T/notes-forge-recovery"
+    expect_fail "an interrupted M refuses under a different forge" \
+        "installed forge no longer matches" "$MYC" notes
+)
+
+# Corrupt notes remain powerless to old commands, while both body-5 hands
+# refuse them when the mint is actually read.
 for spec in "notes-budget:does not match the citizen's verdict" \
             "notes-count:dataset drifted" \
             "notes-rentfat:well-fed hour"; do
@@ -1679,10 +1906,11 @@ for spec in "notes-budget:does not match the citizen's verdict" \
     (
         cd "$T/$name"
         if "$MYC" franchise >/dev/null 2>&1; then
-            pass "$name is invisible to the writer's seal"
+            pass "$name has no authority over the old franchise"
         else
-            fail "$name (the writer refused a seal-valid chain)"
+            fail "$name leaked authority into the old franchise"
         fi
+        expect_fail "$name writer refusal" "$needle" "$MYC" notes
         expect_fail "$name reader refusal" "$needle" "$CHECK"
     )
 done
