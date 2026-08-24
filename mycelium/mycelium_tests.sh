@@ -1631,6 +1631,30 @@ for i, row in enumerate(p):
         fields[15] = nan_hex
         p[i] = b"\t".join(fields)
 open(os.path.join(root, "notes-nanblob", ".mycelium.notes"), "wb").write(seal(p))
+
+# three rooms the writer's seal cannot see: only the reader refuses
+for name in ("notes-budget", "notes-count", "notes-rentfat"):
+    shutil.copytree(src, os.path.join(root, name))
+
+def edit_first_t(name, edit):
+    p = payloads.copy()
+    for i, row in enumerate(p):
+        if row.startswith(b"T\t"):
+            fields = row.split(b"\t")
+            edit(fields)
+            p[i] = b"\t".join(fields)
+            break
+    open(os.path.join(root, name, ".mycelium.notes"), "wb").write(seal(p))
+    return p
+
+edit_first_t("notes-budget", lambda f: f.__setitem__(7, b"256"))
+edit_first_t("notes-count",
+             lambda f: f.__setitem__(9, str(int(f[9]) + 1).encode()))
+
+# an R pinned at the mint's own well-fed hour
+m = next(r for r in payloads if r.startswith(b"M\t")).split(b"\t")
+p = payloads + [b"\t".join([b"R", b"1", m[6], m[7]])]
+open(os.path.join(root, "notes-rentfat", ".mycelium.notes"), "wb").write(seal(p))
 PY
 
 for spec in "notes-flip:notes chain broken" \
@@ -1643,8 +1667,35 @@ for spec in "notes-flip:notes chain broken" \
     (
         cd "$T/$name"
         expect_fail "$name writer refusal" "$needle" "$MYC" notes
+        expect_fail "$name reader refusal" "$needle" "$CHECK"
     )
 done
+
+# where the writer's seal is blind, the independent hand still refuses
+for spec in "notes-budget:does not match the citizen's verdict" \
+            "notes-count:dataset drifted" \
+            "notes-rentfat:well-fed hour"; do
+    name=${spec%%:*}; needle=${spec#*:}
+    (
+        cd "$T/$name"
+        if "$MYC" franchise >/dev/null 2>&1; then
+            pass "$name is invisible to the writer's seal"
+        else
+            fail "$name (the writer refused a seal-valid chain)"
+        fi
+        expect_fail "$name reader refusal" "$needle" "$CHECK"
+    )
+done
+
+# the reader judges the finished mintroom chain in full
+(
+    cd "$T/mintroom"
+    "$CHECK" >reader.out 2>&1 &&
+        grep -F 'notes: 8 records (N 1, M 1, T 2, E 2, R 1, Z 1)' reader.out \
+            >/dev/null &&
+        pass "the independent hand recomputes the whole mint chain" ||
+        fail "reader mintroom: $(tail -1 reader.out)"
+)
 
 mint_flow "$T/mint-nocit" >/dev/null 2>&1 || true
 rm -rf "$T/mint-nocit"
