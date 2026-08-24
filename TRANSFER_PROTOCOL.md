@@ -30,10 +30,18 @@ Destination worlds are CONSTRUCTED, so the court knows the truth:
   Fisher–Yates under the frozen xorshift64 law (x^=x<<13; x^=x>>7;
   x^=x<<17), seed `0xC1F3E5`. The true permutation is the court's
   oracle and is never shown to the organism.
-- **W-struct** — similar frequencies, different structure: a
-  Markov-1 byte stream of length 447545 sampled from A-train's
-  bigram table, frozen seed `0x5EED01`. Long structure is dead by
-  construction; experience must not impose itself here.
+- **W-ghost** — the frequency ghost, a provable structural null:
+  447545 bytes sampled i.i.d. from A-train's unigram byte
+  distribution, frozen seed `0x5EED01`. A Markov-1 ghost was
+  rejected in preregistration repair: it preserves first-order
+  transition structure — exactly the level the transfer profile
+  reads — and would make a negative verdict ambiguous. The verifier
+  must prove BOTH invariants of the i.i.d. ghost: preserved
+  nuisance — empirical unigram distribution within L1 distance 0.01
+  of A-train's; destroyed relations — empirical bigram mutual
+  information <= 0.01 bits. The ghost's only decisive roles are the
+  anti-smoothing difference D and the non-imposition gate; it is
+  never a standalone transfer verdict.
 - **W-ff** — the false-friend world: A with the 16 most frequent
   whitespace-delimited words of A-train swapped in pairs by
   frequency rank (1st with 2nd, 3rd with 4th, ...), all occurrences,
@@ -44,7 +52,7 @@ Destination worlds are CONSTRUCTED, so the court knows the truth:
   AFTER the transfer-body code is frozen and hashed; exploratory,
   not a gate.
 
-The construction of W-iso, W-struct and W-ff is emitted as
+The construction of W-iso, W-ghost and W-ff is emitted as
 artifacts with SHA-256 before any arm runs.
 
 ## The organism under the court
@@ -123,19 +131,38 @@ Competition arms:
 Control arm, out of competition:
 
 6. **oracle** — the true correspondence (byte permutation for W-iso,
-   word-swap map for W-ff) replaces the learned matcher; everything
-   else as cache+align. Upper bound only; it can never win the
-   court, only calibrate it.
+   word-swap map for W-ff) replaces the learned matcher. **Oracle
+   identity law:** arm 6 differs from arm 3 (align) in exactly one
+   object — the correspondence mapping. The warmup schedule, the
+   shadow/earn/revoke law and its constants, the local evidence,
+   the candidate sets, the prior's functional form and the entire
+   remaining pipeline are identical; the verifier checks that the
+   two arms' evidence differs only where the mapping differs. Upper
+   bound only; it can never win the court, only calibrate it.
 
-**Prior weight law (frozen).** In every past-carrying arm:
-P_final(u) = (1 - L_t) * P_local(u) + L_t * P_prior(u), with
-L_0 = L_min = 0.01, L_max = 0.5, and after each priced position t:
-L_{t+1} = clamp(L_t * exp(0.05 * (l_local,t - l_prior,t)), L_min,
-L_max), where l are the -log2 prices of the truth under each
-component. The prior's weight starts at the minimum and grows only
-by beating the local model prospectively. All constants frozen now;
-they are positions, and their revision after a measured run is a new
-experiment.
+**Shadow, earn, revoke (frozen).** The original L_min = 0.01 start
+was rejected in preregistration repair: any nonzero live weight
+before earned evidence is authority, and the law forbids it. The
+repaired law: in every past-carrying arm the prior is ALWAYS priced
+in shadow — at each position both l_local,t and l_prior,t (the
+-log2 prices of the truth under each component) are computed, and
+the shadow ledger A_t = Σ_{τ<=t} (l_local,τ - l_prior,τ)
+accumulates in bits. Live mixing
+P_final(u) = (1 - L_t) * P_local(u) + L_t * P_prior(u) obeys:
+
+- **Unearned state: L_t = 0 exactly.** P_final = P_local, and the
+  arm's emitted choices are bit-identical to cold — a machine gate:
+  cmp of the evidence prefix up to the first earn event.
+- **Earn:** at the first t with A_t >= EARN = 32 bits, the prior
+  goes live with L = L_enter = 0.05.
+- **Live update:** L_{t+1} = clamp(L_t * exp(0.05 * (l_local,t -
+  l_prior,t)), 0.01, 0.5).
+- **Revoke:** whenever A_t < EARN/2 = 16 bits, L resets to 0 and the
+  state returns to unearned; re-earning requires A_t >= EARN again
+  (a 16-bit hysteresis against oscillation).
+
+All constants frozen now; they are positions, and their revision
+after a measured run is a new experiment.
 
 ## Ruler (frozen)
 
@@ -149,7 +176,7 @@ Final bits/byte after the full stream is reported as telemetry,
 never as the transfer verdict.
 
 Anti-smoothing difference: the reported transfer effect is
-D = G_16384(arm, W-iso) - G_16384(arm, W-struct); generic smoothing
+D = G_16384(arm, W-iso) - G_16384(arm, W-ghost); generic smoothing
 gains appear on both sides and cancel.
 
 ## PASS / FAIL (frozen wording)
@@ -170,7 +197,7 @@ gains appear on both sides and cancel.
 - **False-friend gate:** on W-ff, any arm with
   G_16384 <= -MARGIN fails with "surface authority leaked"; anchors
   may propose, never command.
-- **Non-imposition gate:** on W-struct, any past-carrying arm with
+- **Non-imposition gate:** on W-ghost, any past-carrying arm with
   G_16384 <= -MARGIN fails with "past imposed on a strange world".
 
 ## Two hands, artifacts, discipline
@@ -187,7 +214,10 @@ artifact. The builder's totals are sanity, never results. No
 coherence claims exist anywhere in this court.
 
 Frozen constants: chunk 1024 · warmup 16384 · top-M 256 · z-gate 2.0
-· L_min 0.01 · L_max 0.5 · eta 0.05 · margins 0.01*N bits · horizons
-{1024, 4096, 16384, 65536} · cipher seed 0xC1F3E5 · Markov seed
-0x5EED01 · shuffle seed 0x54AFF1E · 16 words swapped by rank pairs ·
-descriptors: the 12 scalars above · BPE tie-break: first appearance.
+· EARN 32 bits · revoke floor 16 bits · L_enter 0.05 · live clamp
+[0.01, 0.5] · eta 0.05 · margins 0.01*N bits · horizons {1024, 4096,
+16384, 65536} · cipher seed 0xC1F3E5 · ghost seed 0x5EED01 · shuffle
+seed 0x54AFF1E · 16 words swapped by rank pairs · descriptors: the
+12 scalars above · BPE tie-break: first appearance · ghost
+invariants: unigram L1 <= 0.01 preserved, bigram MI <= 0.01 bits
+destroyed.
