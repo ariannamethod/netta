@@ -86,9 +86,13 @@ scalars, computed from that world's lived stream only:
 6. log2 left degree;
 7. top-1 right continuation probability;
 8. top-4 right continuation mass;
-9-11. co-occurrence mass at distances 1, 2, 4 (each = sum of
-   1/(1+d)-decayed co-occurrence within that exact distance,
-   normalized by frequency) — aggregated scalars, no neighbour names;
+9-11. partner concentration at exact distances 1, 2, 4: the Simpson
+   index Σ_v (c_d(u,v) / N_d(u))², where c_d(u,v) counts v exactly d
+   positions after u and N_d(u) = Σ_v c_d(u,v) — repaired in
+   preregistration before code: the original decayed-mass form was
+   degenerate (near-constant for every unit) and z-scoring it would
+   amplify noise; concentration is non-degenerate and remains free
+   of neighbour names;
 12. one refinement step: transition-probability-weighted mean of
    right neighbours' right-entropies (a one-step graph-role
    signature).
@@ -163,6 +167,19 @@ P_final(u) = (1 - L_t) * P_local(u) + L_t * P_prior(u) obeys:
 
 All constants frozen now; they are positions, and their revision
 after a measured run is a new experiment.
+
+**Prior mechanics, frozen before code:** (i) every prior used for
+pricing carries the standard escape into the local model,
+P_prior_used = 0.9·P_prior_raw + 0.1·P_local — a truth outside the
+prior's support pays a large finite price instead of breaking the
+ledger; (ii) the cache prior's softmax temperature is 1; (iii) at a
+position where a prior is undefined (unaligned context, empty
+carried continuation set), P_prior = P_local exactly, the ledger
+delta is zero, and the position is flagged in the evidence.
+(iv) The ghost's preserved/destroyed invariants are verified BOTH on
+the raw byte stream and on the post-unit representation the court
+actually consumes (unit-stream unigram/bigram statistics at the end
+of the lived run) — the verifier owns both checks.
 
 ## Ruler (frozen)
 
