@@ -220,10 +220,31 @@ seed 0x5EED02 · half-tail seed 0x5EED03 · scramble seed 0x54AFF1E ·
 - **A6. Confirmatory world.** The five worlds above are DEVELOPMENT
   worlds: repairs and re-runs against them are lawful before the
   code freeze. The verdict world is ONE additional confirmatory
-  world, chosen by Oleg or Mila only AFTER v2 `transfer.c` is
-  frozen and hashed; its construction law must be one of the frozen
-  classes (cipher / plain / half / ff over an independent text
-  named at choice time). No change to code, constants or protocol
-  after the confirmatory world is seen; the final PASS wording is
-  decided on the confirmatory world with the development worlds
-  reported alongside.
+  world; its construction law must be one of the frozen classes
+  (cipher / plain / half / ff over an independent text). No change
+  to code, constants or protocol after the confirmatory world is
+  seen; the final PASS wording is decided on the confirmatory world
+  with the development worlds reported alongside.
+- **A7. Confirmatory blindness (order of freezes).** The frozen
+  order is: protocol → builder freeze + SHA-256 → INDEPENDENT
+  VERIFIER freeze + SHA-256 → confirmatory selection + hash → first
+  confirmatory run. Neither hand sees any confirmatory result
+  before both implementations are frozen. The base text is chosen
+  by Oleg or Mila; the transform class and every seed are chosen
+  DETERMINISTICALLY, not freely: class = the element of {cipher,
+  plain, half, ff} indexed by SHA-256(builder_sha || verifier_sha)
+  mod 4, and the world seed = the first 16 hex digits of
+  SHA-256(builder_sha || verifier_sha || base_text_sha), both
+  computed in public after the freezes. Nobody picks; the frozen
+  hashes pick.
+- **A8. First-chunk causality (no ambiguity).** If the cold state
+  before the first chunk is empty, the ENTIRE first chunk prices at
+  exactly 8.000000 bits per byte under the law — checked exactly,
+  not approximately. If any local counts exist before any chunk's
+  pricing, their provenance must be enumerated in the evidence and
+  provably built only from bytes before the chunk boundary. During
+  a chunk's pricing, no byte of that chunk may mutate any count,
+  map, candidate set or authority state; already-priced positions
+  of the same chunk may serve as CONTEXT (they are the past), but
+  the model state stays frozen until the chunk is fully priced,
+  and only then does the chunk's truth enter the state.
