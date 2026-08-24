@@ -633,3 +633,47 @@ same class. The battery stands at 153, sanitizers silent, the zero line
 green. The franchise now holds its first citizens: a PASS and a
 WEAKEN, both terminal, both public, both powerless until body 5 mints
 what they are owed.
+
+## Turn 8 — the mint (2026-08-24)
+
+Body 5 in the flesh, under Mila's repaired contract as the only law.
+The forge is linked, never vendored: notorch from its installation
+path, header and library digested into every mint receipt, so the
+binary that struck a weight is named in the chain that carries it. The
+mint refuses by name before it spends a cycle — no forge, no citizen at
+the pinned parliament hour, an open boundary in an earlier body, a
+starved shape, an identity already minted. Then the grave is read back
+into a sealed dataset: positives masked so the probe learns the company
+a shape keeps and never the shape itself, negatives trimmed to equal
+count by hash order, a stratified one-in-four holdout per label. Chuck
+trains the 97-parameter probe under a seed folded from the note's own
+identity, the 388-byte weight blob is sealed content-addressed into the
+morgue, and the verdict is integer law: LIT only when held-out hits
+beat the majority baseline. The first note of the battery is LIT at ten
+of ten against a baseline of five, and the first weight the Method ever
+struck can do nothing at all — unfold, propose and franchise answer
+byte-identically in a room with the weight and a room without it.
+
+Rent stayed the mycelium's rent: the wolf's citizen starved, its note
+died into the morgue with the weights kept, and resurrected as the same
+identity one meal later. Retrains cool down over eight meals and repeat
+the mint's seed, so provenance never forks. Two clean rooms from one
+pin struck byte-identical weights, stdout included; cuts after the mint
+row and after the training row recovered the exact reference chain —
+a T at EOF is completed by its integer E, an M at EOF is retrained in
+full from its pins.
+
+The reader grew the mint's integer hand without borrowing a line: its
+own occurrence detector over the grave's tokens, the dataset law
+recomputed in pure counts (the hash order drops out of the arithmetic,
+so the independent hand never sorts), the baseline, the verdict, the
+budget matched against the admitted citizen's own verdict class, the
+first-training pin equality, the cooldown, aliveness at every mint and
+rent pin, and the weight blob's size, digest and finiteness. Six
+crafted classes are refused by both hands in the same words — and three
+more rooms mark where the hands lawfully diverge: a half budget for a
+PASS citizen, a drifted dataset count and an R pinned at a well-fed
+hour are all invisible to the writer's seal and all die in the reader.
+The battery stands at 202, sanitizers silent, the zero line green. The
+franchise's citizens now hold what they were owed — and still cannot
+spend it. Circulation is body 6's contract to win.

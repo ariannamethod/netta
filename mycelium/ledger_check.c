@@ -962,6 +962,50 @@ typedef struct {
     uint64_t scar_closing;
 } PBallot;
 
+/* parliament prefixes and admissions, collected for the mint's pins */
+static MainPrefix *parl_prefixes;
+static size_t parl_prefix_n, parl_prefix_cap;
+typedef struct {
+    uint64_t at_records;
+    char version[33];
+    char unit_hex[17];
+    char verdict[9];
+} ParlAdmission;
+static ParlAdmission *parl_admissions;
+static size_t parl_adm_n, parl_adm_cap;
+
+static int parl_prefix_add(uint64_t records, uint64_t chain) {
+    if (parl_prefix_n == parl_prefix_cap) {
+        size_t next = parl_prefix_cap ? parl_prefix_cap * 2 : 16;
+        MainPrefix *p = realloc(parl_prefixes, next * sizeof *p);
+        if (!p) return 0;
+        parl_prefixes = p;
+        parl_prefix_cap = next;
+    }
+    parl_prefixes[parl_prefix_n++] = (MainPrefix){records, chain};
+    return 1;
+}
+
+static int parl_prefix_has(uint64_t records, uint64_t chain) {
+    size_t i;
+    for (i = 0; i < parl_prefix_n; ++i)
+        if (parl_prefixes[i].meals == records && parl_prefixes[i].chain == chain)
+            return 1;
+    return 0;
+}
+
+static const ParlAdmission *parl_citizen_at(uint64_t records,
+                                            const char *version,
+                                            const char *unit_hex) {
+    size_t i;
+    for (i = 0; i < parl_adm_n; ++i)
+        if (parl_admissions[i].at_records <= records &&
+                !strcmp(parl_admissions[i].version, version) &&
+                !strcmp(parl_admissions[i].unit_hex, unit_hex))
+            return &parl_admissions[i];
+    return NULL;
+}
+
 static void check_parliament(void) {
     FILE *pf = fopen(parl_path, "rb");
     if (!pf) return;
@@ -997,6 +1041,7 @@ static void check_parliament(void) {
         size_t plen = len - 17;
         chain = hash_fold((unsigned char *)line, plen, chain);
         if (chain != claimed) refuse_parl(lineno, "chain does not fold");
+        if (!parl_prefix_add(lineno, chain)) refuse_parl(lineno, "memory");
 
         const char *fl[12];
         size_t fn[12];
@@ -1092,6 +1137,21 @@ static void check_parliament(void) {
             snprintf(b->verdict, sizeof b->verdict, "%.*s", (int)fn[2], fl[2]);
             b->has_v = 1;
             vv_count++;
+            if (!b->unheard && (!strcmp(b->verdict, "PASS") ||
+                                !strcmp(b->verdict, "WEAKEN"))) {
+                if (parl_adm_n == parl_adm_cap) {
+                    size_t next = parl_adm_cap ? parl_adm_cap * 2 : 8;
+                    ParlAdmission *p = realloc(parl_admissions, next * sizeof *p);
+                    if (!p) { fprintf(stderr, "ledger_check: memory\n"); exit(1); }
+                    parl_admissions = p;
+                    parl_adm_cap = next;
+                }
+                ParlAdmission *a = &parl_admissions[parl_adm_n++];
+                a->at_records = lineno;
+                snprintf(a->version, sizeof a->version, "%s", b->version);
+                snprintf(a->unit_hex, sizeof a->unit_hex, "%s", b->unit_hex);
+                snprintf(a->verdict, sizeof a->verdict, "%s", b->verdict);
+            }
         } else {
             refuse_parl(lineno, "unknown parliament record type");
         }
@@ -1205,6 +1265,332 @@ static void check_parliament(void) {
     printf("parliament: %llu records (Q 1, P %llu, J %llu, V %llu), "
            "chain %016llx\n",
            lineno, p_count, j_count, vv_count, (unsigned long long)chain);
+}
+
+/* body 5: the mint's integer side, owned fully by the independent hand.
+   The reader recomputes the dataset law, the baseline, the verdict and
+   the governed budget from the pinned prefixes with its own text
+   pipeline; it does NOT retrain and does not re-price loss -- a weight
+   digest is the receipt of one training sitting on one installed
+   binary. */
+static const char *notes_path = ".mycelium.notes";
+static const char *notes_dir = ".mycelium.notes.d";
+
+_Noreturn static void refuse_notes(unsigned long long line, const char *what) {
+    fprintf(stderr, "ledger_check: notes line %llu: %s\n", line, what);
+    exit(1);
+}
+
+/* does the fragment hold a complete shape occurrence; do the
+   occurrences cover every token (nothing would survive the mask) */
+static void r_frag_occurrence(const RFrag *f, const char *shape,
+                              size_t shape_len, size_t arity,
+                              int *any, int *all_covered) {
+    size_t i, k;
+    char *covered = calloc(f->ntoks ? f->ntoks : 1, 1);
+    if (!covered) { fprintf(stderr, "ledger_check: memory\n"); exit(1); }
+    *any = 0;
+    if (arity && f->ntoks >= arity)
+        for (i = 0; i + arity <= f->ntoks; ++i)
+            if (r_shape_match_tokens(shape, shape_len, &f->toks[i], arity)) {
+                *any = 1;
+                for (k = 0; k < arity; ++k) covered[i + k] = 1;
+            }
+    *all_covered = 1;
+    for (i = 0; i < f->ntoks; ++i)
+        if (!covered[i]) { *all_covered = 0; break; }
+    free(covered);
+}
+
+/* the sealed dataset law in integers only: masked positives with
+   survivors, negatives trimmed to equal count, stratified 1-in-4
+   holdout per label.  The counts do not depend on the hash order, so
+   the reader never sorts.  -1 = too few negatives, -2 = a split lost
+   a whole label; a lawful writer refuses both before any T exists. */
+static int r_note_dataset(const char *shape, size_t shape_len, uint64_t arity,
+                          uint64_t after, uint64_t *pos, uint64_t *neg,
+                          uint64_t *hpos, uint64_t *hneg) {
+    uint64_t pn = 0, nn = 0;
+    size_t i;
+    for (i = 0; i < rfrag_n; ++i) {
+        const RFrag *f = &rfrags[i];
+        if (f->meal > after) continue;
+        int any, all_covered;
+        r_frag_occurrence(f, shape, shape_len, (size_t)arity, &any,
+                          &all_covered);
+        if (any) {
+            if (all_covered) continue; /* nothing survives the mask */
+            pn++;
+        } else {
+            nn++;
+        }
+    }
+    if (nn < pn) return -1;
+    nn = pn;
+    *pos = pn;
+    *neg = nn;
+    *hpos = pn ? (pn + 3) / 4 : 0;
+    *hneg = *hpos;
+    if (!*hpos || !*hneg || pn - *hpos == 0 || nn - *hneg == 0) return -2;
+    return 1;
+}
+
+typedef struct {
+    char unit_hex[17];
+    char version[33];
+    uint64_t parl_records, after_meals, main_chain, forge_h, forge_l, seed;
+    uint64_t last_t_meal, last_hits, last_base;
+    const char *shape;
+    size_t shape_len;
+    uint64_t arity;
+    int open_t, has_t, alive;
+} RNote;
+
+static void check_notes(void) {
+    FILE *nf = fopen(notes_path, "rb");
+    if (!nf) return;
+    uint64_t chain = 0xcbf29ce484222325ULL;
+    unsigned long long lineno = 0, m_count = 0, t_count = 0, e_count = 0,
+                       r_count = 0, z_count = 0;
+    int law_seen = 0;
+    RNote *ns = NULL;
+    size_t ns_n = 0, ns_cap = 0;
+    char *line = NULL;
+    size_t cap = 0;
+    PSchool ps;
+    int have_school = parse_school_prefix(0, &ps);
+    for (;;) {
+        size_t len = 0;
+        int c, sealed = 0;
+        while ((c = fgetc(nf)) != EOF) {
+            if (c == '\n') { sealed = 1; break; }
+            if (len + 2 > cap) {
+                cap = cap ? cap * 2 : 256;
+                line = realloc(line, cap);
+                if (!line) { fprintf(stderr, "ledger_check: memory\n"); exit(1); }
+            }
+            line[len++] = (char)c;
+        }
+        if (len == 0 && !sealed) break;
+        lineno++;
+        if (!sealed) refuse_notes(lineno, "record is unsealed (no newline)");
+        if (len + 1 >= RECORD_MAX) refuse_notes(lineno, "record exceeds 4096-byte law");
+        if (len < 18) refuse_notes(lineno, "record too short for a chain field");
+        if (line[len - 17] != '\t') refuse_notes(lineno, "no tab before the chain field");
+        uint64_t claimed;
+        if (!parse_hex16(line + len - 16, 16, &claimed))
+            refuse_notes(lineno, "chain field is not lowercase hex16");
+        size_t plen = len - 17;
+        chain = hash_fold((unsigned char *)line, plen, chain);
+        if (chain != claimed) refuse_notes(lineno, "notes chain broken");
+
+        const char *fl[16];
+        size_t fn[16];
+        int nfld = fields_split(line, plen, fl, fn, 16);
+        if (nfld < 1 || fn[0] != 1) refuse_notes(lineno, "no record type");
+        char type = fl[0][0];
+        if (type == 'N') {
+            if (lineno != 1 || nfld != 3 || !field_eq(fl[1], fn[1], "1") ||
+                    !field_eq(fl[2], fn[2], "body5-notes-v1"))
+                refuse_notes(lineno, "notes law record");
+            law_seen = 1;
+            continue;
+        }
+        if (!law_seen) refuse_notes(lineno, "record before notes law");
+        if (type == 'M') {
+            uint64_t id, uid, pr_, pc, am, mc, fh, flg, sd;
+            size_t k;
+            if (nfld != 11) refuse_notes(lineno, "M arity");
+            if (!parse_u64(fl[1], fn[1], &id) || id != ns_n + 1)
+                refuse_notes(lineno, "M note id is not sequential");
+            if (!parse_hex16(fl[2], fn[2], &uid) || !label_valid(fl[3], fn[3]) ||
+                    fn[3] > 32)
+                refuse_notes(lineno, "M identity grammar");
+            if (!parse_u64(fl[4], fn[4], &pr_) || pr_ == 0 ||
+                    !parse_hex16(fl[5], fn[5], &pc) ||
+                    !parse_u64(fl[6], fn[6], &am) ||
+                    !parse_hex16(fl[7], fn[7], &mc) ||
+                    !parse_hex16(fl[8], fn[8], &fh) ||
+                    !parse_hex16(fl[9], fn[9], &flg) ||
+                    !parse_hex16(fl[10], fn[10], &sd))
+                refuse_notes(lineno, "M field grammar");
+            if (!parl_prefix_has(pr_, pc)) refuse_notes(lineno, "M parliament prefix");
+            if (!prefix_has(am, mc)) refuse_notes(lineno, "M main prefix");
+            if (ns_n == ns_cap) {
+                size_t next = ns_cap ? ns_cap * 2 : 8;
+                RNote *p = realloc(ns, next * sizeof *p);
+                if (!p) { fprintf(stderr, "ledger_check: memory\n"); exit(1); }
+                ns = p;
+                ns_cap = next;
+            }
+            RNote *n = &ns[ns_n++];
+            memset(n, 0, sizeof *n);
+            snprintf(n->unit_hex, sizeof n->unit_hex, "%.*s", (int)fn[2], fl[2]);
+            snprintf(n->version, sizeof n->version, "%.*s", (int)fn[3], fl[3]);
+            n->parl_records = pr_;
+            n->after_meals = am;
+            n->main_chain = mc;
+            n->forge_h = fh;
+            n->forge_l = flg;
+            n->seed = sd;
+            n->alive = 1;
+            if (!parl_citizen_at(pr_, n->version, n->unit_hex))
+                refuse_notes(lineno, "M names no citizen at its pinned hour");
+            for (k = 0; k + 1 < ns_n; ++k)
+                if (!strcmp(ns[k].version, n->version) &&
+                        !strcmp(ns[k].unit_hex, n->unit_hex))
+                    refuse_notes(lineno, "identity already minted");
+            if (have_school) {
+                size_t g;
+                for (g = 0; g < ps.nlegal; ++g) {
+                    PHyp *h = &ps.hyps[ps.legal[g]];
+                    char hexbuf[17];
+                    snprintf(hexbuf, sizeof hexbuf, "%016llx",
+                             (unsigned long long)r_unit_id(h->arity, h->shape,
+                                                           h->shape_len));
+                    if (!strcmp(hexbuf, n->unit_hex)) {
+                        n->shape = h->shape;
+                        n->shape_len = h->shape_len;
+                        n->arity = h->arity;
+                        break;
+                    }
+                }
+                if (!n->shape)
+                    refuse_notes(lineno, "citizen unit has no glyph shape");
+                if (!r_shape_alive(n->shape, n->shape_len, am))
+                    refuse_notes(lineno, "mint pinned at a starved hour");
+            }
+            m_count++;
+        } else if (type == 'T') {
+            uint64_t id, am, mc, fh, flg, sd, steps, loss, pos, neg, hp, hn,
+                hits, base, wd;
+            if (nfld != 16) refuse_notes(lineno, "T arity");
+            if (!parse_u64(fl[1], fn[1], &id) || id == 0 || id > ns_n)
+                refuse_notes(lineno, "T names no note");
+            RNote *n = &ns[id - 1];
+            if (id != ns_n) refuse_notes(lineno, "T outside the open note");
+            if (n->open_t) refuse_notes(lineno, "T before the last training closed");
+            if (!n->alive) refuse_notes(lineno, "T for a note in the morgue");
+            if (!parse_u64(fl[2], fn[2], &am) || !parse_hex16(fl[3], fn[3], &mc) ||
+                    !parse_hex16(fl[4], fn[4], &fh) ||
+                    !parse_hex16(fl[5], fn[5], &flg) ||
+                    !parse_hex16(fl[6], fn[6], &sd) ||
+                    !parse_u64(fl[7], fn[7], &steps) ||
+                    !parse_u64(fl[8], fn[8], &loss) ||
+                    !parse_u64(fl[9], fn[9], &pos) ||
+                    !parse_u64(fl[10], fn[10], &neg) ||
+                    !parse_u64(fl[11], fn[11], &hp) ||
+                    !parse_u64(fl[12], fn[12], &hn) ||
+                    !parse_u64(fl[13], fn[13], &hits) ||
+                    !parse_u64(fl[14], fn[14], &base) ||
+                    !parse_hex16(fl[15], fn[15], &wd))
+                refuse_notes(lineno, "T field grammar");
+            if (!prefix_has(am, mc)) refuse_notes(lineno, "T main prefix");
+            if (!n->has_t) {
+                if (am != n->after_meals || mc != n->main_chain ||
+                        fh != n->forge_h || flg != n->forge_l || sd != n->seed)
+                    refuse_notes(lineno,
+                                 "first training does not repeat the mint pin");
+            } else if (am < n->last_t_meal + 8)
+                refuse_notes(lineno, "training inside the cooldown");
+            if (steps != 512 && steps != 256)
+                refuse_notes(lineno, "T steps outside the governed budgets");
+            {
+                const ParlAdmission *a =
+                    parl_citizen_at(n->parl_records, n->version, n->unit_hex);
+                uint64_t budget =
+                    a && !strcmp(a->verdict, "PASS") ? 512 : 256;
+                if (steps != budget)
+                    refuse_notes(lineno,
+                                 "T budget does not match the citizen's verdict");
+            }
+            if (base != (hp > hn ? hp : hn)) refuse_notes(lineno, "false baseline");
+            if (hits > hp + hn) refuse_notes(lineno, "holdout hits exceed the holdout");
+            if (have_school) {
+                uint64_t rp, rn, rhp, rhn;
+                if (r_note_dataset(n->shape, n->shape_len, n->arity, am,
+                                   &rp, &rn, &rhp, &rhn) < 1 ||
+                        rp != pos || rn != neg || rhp != hp || rhn != hn)
+                    refuse_notes(lineno, "dataset drifted from its pin");
+            }
+            {
+                char path[4096];
+                unsigned char blob[97 * 4 + 1];
+                size_t bn, d;
+                FILE *bf;
+                snprintf(path, sizeof path, "%s/%.16s", notes_dir, fl[15]);
+                bf = fopen(path, "rb");
+                if (!bf) refuse_notes(lineno, "weight blob is missing");
+                bn = fread(blob, 1, sizeof blob, bf);
+                if (ferror(bf)) {
+                    fclose(bf);
+                    refuse_notes(lineno, "weight blob unreadable");
+                }
+                fclose(bf);
+                if (bn != 97 * 4)
+                    refuse_notes(lineno, "weight blob is not canonical");
+                if (hash_fold(blob, bn, 0xcbf29ce484222325ULL) != wd)
+                    refuse_notes(lineno, "weight blob digest mismatch");
+                for (d = 0; d < 97; ++d) {
+                    float v;
+                    memcpy(&v, blob + d * 4, 4);
+                    if (!(v == v) || v > 3.4e38f || v < -3.4e38f)
+                        refuse_notes(lineno,
+                                     "weight blob holds a non-finite float");
+                }
+            }
+            n->open_t = 1;
+            n->has_t = 1;
+            n->last_t_meal = am;
+            n->last_hits = hits;
+            n->last_base = base;
+            t_count++;
+        } else if (type == 'E') {
+            uint64_t id;
+            const char *want;
+            if (nfld != 3) refuse_notes(lineno, "E arity");
+            if (!parse_u64(fl[1], fn[1], &id) || id == 0 || id > ns_n)
+                refuse_notes(lineno, "E names no note");
+            RNote *n = &ns[id - 1];
+            if (!n->open_t) refuse_notes(lineno, "E without an open training");
+            want = n->last_hits > n->last_base ? "LIT" : "DIM";
+            if (!field_eq(fl[2], fn[2], want)) refuse_notes(lineno, "false verdict");
+            n->open_t = 0;
+            e_count++;
+        } else if (type == 'R' || type == 'Z') {
+            uint64_t id, am, mc;
+            if (nfld != 4) refuse_notes(lineno, "rent arity");
+            if (!parse_u64(fl[1], fn[1], &id) || id == 0 || id > ns_n ||
+                    !parse_u64(fl[2], fn[2], &am) || !parse_hex16(fl[3], fn[3], &mc))
+                refuse_notes(lineno, "rent field grammar");
+            if (!prefix_has(am, mc)) refuse_notes(lineno, "rent main prefix");
+            RNote *n = &ns[id - 1];
+            if (type == 'R') {
+                if (!n->alive) refuse_notes(lineno, "R for a note already in the morgue");
+                if (n->shape && r_shape_alive(n->shape, n->shape_len, am))
+                    refuse_notes(lineno, "R pinned at a well-fed hour");
+                n->alive = 0;
+                r_count++;
+            } else {
+                if (n->alive) refuse_notes(lineno, "Z for a note not in the morgue");
+                if (n->shape && !r_shape_alive(n->shape, n->shape_len, am))
+                    refuse_notes(lineno, "Z pinned at a starved hour");
+                n->alive = 1;
+                z_count++;
+            }
+        } else {
+            refuse_notes(lineno, "unknown notes record type");
+        }
+    }
+    fclose(nf);
+    free(line);
+    free(ns);
+    if (have_school) pschool_free(&ps);
+    if (!law_seen) refuse_notes(lineno, "notes has no law record");
+    printf("notes: %llu records (N 1, M %llu, T %llu, E %llu, R %llu, Z %llu), "
+           "chain %016llx\n",
+           lineno, m_count, t_count, e_count, r_count, z_count,
+           (unsigned long long)chain);
 }
 
 int main(int argc, char **argv) {
@@ -1337,6 +1723,7 @@ int main(int argc, char **argv) {
     check_proposals();
     check_school((uint64_t)g_count);
     check_parliament();
+    check_notes();
     printf("scope: internal consistency of the supplied file; a prefix cut at "
            "a record boundary needs an external witness\n");
     size_t i;

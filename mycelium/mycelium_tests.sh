@@ -23,7 +23,8 @@ expect_fail() {
 }
 
 ${CXX:-c++} -std=c++17 -O2 -Wall -Wextra -Wpedantic -Werror \
-    "$ROOT/mycelium/mycelium.cpp" -o "$MYC"
+    -I/opt/homebrew/include -L/opt/homebrew/lib \
+    "$ROOT/mycelium/mycelium.cpp" -o "$MYC" -lnotorch -framework Accelerate
 ${CC:-cc} -std=c11 -O2 -Wall -Wextra -Wpedantic -Werror \
     "$ROOT/mycelium/ledger_check.c" -o "$CHECK"
 pass "both hands build strict and silent"
@@ -167,6 +168,24 @@ for i in range(1, 11):
     else:
         glory.append(f"A numbered courier route {i:02d} delivers the quiet evening ledger across town.")
 room_meals("glory-field", glory, 90)
+
+mintf = []
+for i in range(1, 28):
+    if i <= 2:
+        mintf.append(f"The amber wolf sings beside the frozen granite river tonight {i:02d}. "
+                     f"A copper courier delivers the quiet town ledger across morning {i:02d}.")
+    elif i <= 10:
+        mintf.append(f"The amber wolf sings beside the frozen granite river on evening {i:02d}. "
+                     f"The amber wolf sings beside the silver granite bridge on evening {i:02d} as well. "
+                     f"A copper courier delivers the quiet town ledger across morning {i:02d}. "
+                     f"Another copper courier carries the town parcel across evening {i:02d}.")
+    elif i <= 26:
+        mintf.append(f"A copper courier delivers the quiet town ledger across morning {i:02d}. "
+                     f"Another copper courier carries the town parcel across evening {i:02d}.")
+    else:
+        mintf.append(f"The amber wolf sings beside the frozen granite river tonight {i:02d}. "
+                     f"A copper courier delivers the quiet town ledger across morning {i:02d}.")
+room_meals("mint-field", mintf, 260)
 
 opposite = []
 for i in range(1, 19):
@@ -1449,6 +1468,247 @@ for spec in "parl-flip:parliament chain broken:chain does not fold" \
         expect_fail "$name reader refusal" "$reader" "$CHECK"
     )
 done
+
+# ---- body 5: the mint (writer stage) ----
+mint_flow() { # $1 room: feed 1-10, enroll, examine, petition -> PASS citizen
+    mkdir -p "$1"
+    feed "$1" mint-field wolf 1 2
+    (cd "$1" && "$MYC" enroll 3 amber wolf sings >/dev/null)
+    feed "$1" mint-field wolf 3 10
+    (cd "$1" && "$MYC" examine >/dev/null && "$MYC" petition 1 >/dev/null)
+}
+
+mint_flow "$T/mintroom"
+cp -R "$T/mintroom" "$T/mint-pre"
+(
+    cd "$T/mintroom"
+    "$MYC" mint 1 >mint.out
+    grep -F 'PASS budget 512' mint.out >/dev/null &&
+        grep -F 'E LIT' mint.out >/dev/null &&
+        pass "the first note is struck LIT on a full budget" ||
+        fail "mint: $(cat mint.out | tr '\n' ' ')"
+    blob=$(ls .mycelium.notes.d | head -1)
+    [ "$(wc -c < ".mycelium.notes.d/$blob" | tr -d ' ')" = "388" ] &&
+        pass "the weight blob is canonical body5-note-weight-v1" ||
+        fail "blob size"
+    expect_fail "a minted identity refuses a second mint" "already minted" \
+        "$MYC" mint 1
+    expect_fail "a retrain inside the cooldown refuses" "cooldown holds" \
+        "$MYC" retrain 1
+    expect_fail "a missing glyph cannot mint" "needs an existing glyph" \
+        "$MYC" mint 9
+)
+# no-authority: mintroom holds a note, mint-pre does not; same field,
+# every organ of bodies 1-4 must answer byte-identically
+for room in "$T/mintroom" "$T/mint-pre"; do
+    (
+        cd "$room"
+        "$MYC" unfold the amber wolf remembers >na-unfold.out
+        "$MYC" propose >na-propose.out
+        "$MYC" franchise >na-franchise.out
+    )
+done
+if cmp -s "$T/mintroom/na-unfold.out" "$T/mint-pre/na-unfold.out" &&
+        cmp -s "$T/mintroom/na-propose.out" "$T/mint-pre/na-propose.out" &&
+        cmp -s "$T/mintroom/na-franchise.out" "$T/mint-pre/na-franchise.out"; then
+    pass "the minted weight has no authority over bodies 1-4"
+else
+    fail "no-authority"
+fi
+feed "$T/mintroom" mint-field wolf 11 18
+(
+    cd "$T/mintroom"
+    "$MYC" retrain 1 >re.out
+    grep -F 'T steps 512' re.out >/dev/null &&
+        pass "a cooled note retrains on the pinned field without drift" ||
+        fail "retrain: $(cat re.out | tr '\n' ' ')"
+)
+feed "$T/mintroom" mint-field wolf 19 26
+(
+    cd "$T/mintroom"
+    "$MYC" notes >rent.out
+    grep -F 'R note 1' rent.out >/dev/null &&
+        pass "a starved citizen's note dies into the morgue" || fail "rent R"
+    expect_fail "a note in the morgue cannot retrain" "morgue" \
+        "$MYC" retrain 1
+)
+feed "$T/mintroom" mint-field wolf 27 27
+(
+    cd "$T/mintroom"
+    "$MYC" notes >res.out
+    grep -F 'Z note 1' res.out >/dev/null &&
+        pass "the same identity resurrects with its weights kept" || fail "rent Z"
+)
+
+# clean-room determinism: same pin, same binary, byte-identical weights
+for n in one two; do
+    mint_flow "$T/mintdet-$n"
+    (cd "$T/mintdet-$n" && "$MYC" mint 1) >"$T/mintdet-$n/stdout" 2>&1
+done
+if cmp "$T/mintdet-one/.mycelium.notes" "$T/mintdet-two/.mycelium.notes" &&
+        diff -r "$T/mintdet-one/.mycelium.notes.d" "$T/mintdet-two/.mycelium.notes.d" >/dev/null &&
+        cmp "$T/mintdet-one/stdout" "$T/mintdet-two/stdout"; then
+    pass "two mints from one pin strike byte-identical weights"
+else
+    fail "mint determinism"
+fi
+
+# recovery: cuts after M and after T complete to the reference chain
+for cut in 2 3; do
+    rm -rf "$T/mintrec-$cut" 2>/dev/null || true
+    cp -R "$T/mintdet-one" "$T/mintrec-$cut"
+    (
+        cd "$T/mintrec-$cut"
+        head -n $cut "$T/mintdet-one/.mycelium.notes" > .mycelium.notes
+        "$MYC" notes >/dev/null 2>rec.err
+        cmp -s .mycelium.notes "$T/mintdet-one/.mycelium.notes" &&
+            pass "an interruption after line $cut recovers the exact mint" ||
+            fail "mint recovery cut $cut: $(cat rec.err | tr '\n' ' ')"
+    )
+done
+
+python3 - "$T" <<'PY'
+import os, shutil, struct, sys
+
+root = sys.argv[1]
+SEED = 0xcbf29ce484222325
+PRIME = 0x100000001b3
+
+def fnv(data, h=SEED):
+    for byte in data:
+        h ^= byte
+        h = (h * PRIME) & 0xffffffffffffffff
+    return h
+
+def seal(payloads):
+    out, h = bytearray(), SEED
+    for payload in payloads:
+        h = fnv(payload, h)
+        out += payload + b"\t" + f"{h:016x}".encode() + b"\n"
+    return bytes(out)
+
+src = os.path.join(root, "mintdet-one")
+raw = open(os.path.join(src, ".mycelium.notes"), "rb").read()
+payloads = [line[:-17] for line in raw.splitlines()]
+for name in ("notes-flip", "notes-trunc", "notes-lit", "notes-noblob",
+             "notes-badblob", "notes-nanblob"):
+    path = os.path.join(root, name)
+    shutil.copytree(src, path)
+
+flipped = bytearray(raw)
+flipped[len(raw) // 2] ^= 1
+open(os.path.join(root, "notes-flip", ".mycelium.notes"), "wb").write(bytes(flipped))
+open(os.path.join(root, "notes-trunc", ".mycelium.notes"), "wb").write(raw[:-1])
+
+# false verdict: hits lowered to the baseline while E still says LIT
+p = payloads.copy()
+for i, row in enumerate(p):
+    if row.startswith(b"T\t"):
+        fields = row.split(b"\t")
+        fields[13] = fields[14]
+        p[i] = b"\t".join(fields)
+open(os.path.join(root, "notes-lit", ".mycelium.notes"), "wb").write(seal(p))
+
+d = os.path.join(root, "notes-noblob", ".mycelium.notes.d")
+for f in os.listdir(d):
+    os.remove(os.path.join(d, f))
+
+d = os.path.join(root, "notes-badblob", ".mycelium.notes.d")
+for f in os.listdir(d):
+    open(os.path.join(d, f), "wb").write(b"short")
+
+# non-finite floats with a matching resealed digest
+nan_blob = struct.pack("<97f", *([float("inf")] * 97))
+nan_hex = f"{fnv(nan_blob):016x}".encode()
+d = os.path.join(root, "notes-nanblob", ".mycelium.notes.d")
+for f in os.listdir(d):
+    os.remove(os.path.join(d, f))
+open(os.path.join(d, nan_hex.decode()), "wb").write(nan_blob)
+p = payloads.copy()
+for i, row in enumerate(p):
+    if row.startswith(b"T\t"):
+        fields = row.split(b"\t")
+        fields[15] = nan_hex
+        p[i] = b"\t".join(fields)
+open(os.path.join(root, "notes-nanblob", ".mycelium.notes"), "wb").write(seal(p))
+
+# three rooms the writer's seal cannot see: only the reader refuses
+for name in ("notes-budget", "notes-count", "notes-rentfat"):
+    shutil.copytree(src, os.path.join(root, name))
+
+def edit_first_t(name, edit):
+    p = payloads.copy()
+    for i, row in enumerate(p):
+        if row.startswith(b"T\t"):
+            fields = row.split(b"\t")
+            edit(fields)
+            p[i] = b"\t".join(fields)
+            break
+    open(os.path.join(root, name, ".mycelium.notes"), "wb").write(seal(p))
+    return p
+
+edit_first_t("notes-budget", lambda f: f.__setitem__(7, b"256"))
+edit_first_t("notes-count",
+             lambda f: f.__setitem__(9, str(int(f[9]) + 1).encode()))
+
+# an R pinned at the mint's own well-fed hour
+m = next(r for r in payloads if r.startswith(b"M\t")).split(b"\t")
+p = payloads + [b"\t".join([b"R", b"1", m[6], m[7]])]
+open(os.path.join(root, "notes-rentfat", ".mycelium.notes"), "wb").write(seal(p))
+PY
+
+for spec in "notes-flip:notes chain broken" \
+            "notes-trunc:unsealed" \
+            "notes-lit:false verdict" \
+            "notes-noblob:is missing" \
+            "notes-badblob:not canonical" \
+            "notes-nanblob:non-finite"; do
+    name=${spec%%:*}; needle=${spec#*:}
+    (
+        cd "$T/$name"
+        expect_fail "$name writer refusal" "$needle" "$MYC" notes
+        expect_fail "$name reader refusal" "$needle" "$CHECK"
+    )
+done
+
+# where the writer's seal is blind, the independent hand still refuses
+for spec in "notes-budget:does not match the citizen's verdict" \
+            "notes-count:dataset drifted" \
+            "notes-rentfat:well-fed hour"; do
+    name=${spec%%:*}; needle=${spec#*:}
+    (
+        cd "$T/$name"
+        if "$MYC" franchise >/dev/null 2>&1; then
+            pass "$name is invisible to the writer's seal"
+        else
+            fail "$name (the writer refused a seal-valid chain)"
+        fi
+        expect_fail "$name reader refusal" "$needle" "$CHECK"
+    )
+done
+
+# the reader judges the finished mintroom chain in full
+(
+    cd "$T/mintroom"
+    "$CHECK" >reader.out 2>&1 &&
+        grep -F 'notes: 8 records (N 1, M 1, T 2, E 2, R 1, Z 1)' reader.out \
+            >/dev/null &&
+        pass "the independent hand recomputes the whole mint chain" ||
+        fail "reader mintroom: $(tail -1 reader.out)"
+)
+
+mint_flow "$T/mint-nocit" >/dev/null 2>&1 || true
+rm -rf "$T/mint-nocit"
+mkdir -p "$T/mint-nocit"
+feed "$T/mint-nocit" mint-field wolf 1 2
+(cd "$T/mint-nocit" && "$MYC" enroll 3 amber wolf sings >/dev/null)
+feed "$T/mint-nocit" mint-field wolf 3 10
+(
+    cd "$T/mint-nocit"
+    "$MYC" examine >/dev/null
+    expect_fail "a glyph without citizenship cannot mint" "is not a citizen" \
+        "$MYC" mint 1
+)
 
 if [ ! -e "$T/.failed" ]; then
     printf '%s\n' '----' 'ALL MYCELIUM GATES PASS'

@@ -40,6 +40,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+/* body 5's forge: linked from the installation path, never vendored */
+extern "C" {
+#include <ariannamethod/notorch.h>
+}
+
 static const int DIM = 96;
 static const uint64_t FNV_SEED = 0xcbf29ce484222325ULL;
 static const uint64_t FNV_PRIME = 0x100000001b3ULL;
@@ -60,6 +65,17 @@ static const char *PARL_LAW = "body4-parl-v2";
 static const char *RECOGNIZER_V1 = "pair-triple-v1";
 static const uint64_t SCAR_WINDOW = 16;  /* meals from the scar's closing meal */
 static const uint64_t FREEZE_WINDOW = 8; /* meals from the frozen petition    */
+static const char *NOTES_PATH = ".mycelium.notes";
+static const char *NOTES_LAW = "body5-notes-v1";
+static const char *NOTES_DIR = ".mycelium.notes.d";
+static const char *FORGE_HEADER_PATH =
+    "/opt/homebrew/include/ariannamethod/notorch.h";
+static const char *FORGE_LIB_PATH = "/opt/homebrew/lib/libnotorch.a";
+static const uint64_t NOTE_STEPS_PASS = 512;
+static const uint64_t NOTE_STEPS_WEAKEN = 256;
+static const uint64_t NOTE_COOLDOWN = 8;   /* meals between trainings */
+static const size_t NOTE_BLOB_BYTES = 97 * 4; /* 96 f32 weights + f32 bias */
+static const float NOTE_LR = 0.05f;
 
 static uint64_t fnv64(const void *p, size_t n, uint64_t h) {
     const uint8_t *b = (const uint8_t *)p;
@@ -1521,6 +1537,22 @@ struct Parliament {
     uint64_t records = 0;
     bool law_seen = false;
     std::vector<Ballot> ballots;
+    std::set<std::pair<uint64_t, uint64_t>> prefixes; /* (records, chain) */
+    struct Admission {
+        uint64_t at_records;
+        std::string version, unit_hex, verdict;
+    };
+    std::vector<Admission> admissions;
+
+    /* is this identity admitted (PASS/WEAKEN) by the pinned prefix? */
+    const Admission *citizen_at(uint64_t records, const std::string &version,
+                                const std::string &unit_hex) const {
+        for (const auto &a : admissions)
+            if (a.at_records <= records && a.version == version &&
+                a.unit_hex == unit_hex)
+                return &a;
+        return nullptr;
+    }
 
     explicit Parliament(const Mycelium &myc) : m(myc) {}
 
@@ -1686,6 +1718,7 @@ struct Parliament {
             chain = next;
             records++;
             replay(payload, lineno, pr);
+            prefixes.insert({records, chain});
         }
         if (!law_seen) die("parliament has no law record");
         /* every ballot but a trailing interrupted one must be complete
@@ -1776,6 +1809,8 @@ struct Parliament {
                 die(where + ": V verdict class");
             b.verdict = f[2];
             b.has_v = true;
+            if ((b.verdict == "PASS" || b.verdict == "WEAKEN") && !b.unheard)
+                admissions.push_back({records, b.version, b.unit_hex, b.verdict});
         } else {
             die(where + ": unknown parliament record type");
         }
@@ -1987,6 +2022,796 @@ static void cmd_franchise(Mycelium &m) {
            (unsigned long long)pl.records, hex16(pl.chain).c_str());
 }
 
+/* body 5: the mint. Notes are tiny mortal nets trained by the linked
+   forge on a citizen's lived contexts, masked so the net learns the
+   company a shape keeps, never the shape itself. Every gram of weight
+   is powerless: bodies 1-4 answer byte-identically with and without
+   this chain. Law: MYCELIUM.md body 5 contract as repaired by the
+   second hand (body5-notes-v1). */
+
+struct NoteExample {
+    std::vector<float> x; /* DIM features, count-normalised bag */
+    int label;
+    uint64_t key; /* fnv64 over tokens joined by 0x1f */
+};
+
+struct NoteDataset {
+    std::vector<NoteExample> train, holdout;
+    uint64_t positives = 0, negatives = 0;
+    uint64_t holdout_pos = 0, holdout_neg = 0;
+    bool ok = false;
+    std::string refusal;
+};
+
+static uint64_t note_frag_key(const std::vector<std::string> &toks) {
+    uint64_t h = FNV_SEED;
+    for (size_t i = 0; i < toks.size(); ++i) {
+        if (i) { uint8_t sep = 0x1f; h = fnv64(&sep, 1, h); }
+        h = fnv64(toks[i].data(), toks[i].size(), h);
+    }
+    return h;
+}
+
+/* mark every token position covered by a complete shape occurrence */
+static void note_mark_occurrences(const std::vector<std::string> &toks,
+                                  const std::vector<std::string> &shape,
+                                  std::vector<char> *covered, bool *any) {
+    covered->assign(toks.size(), 0);
+    *any = false;
+    if (shape.empty() || toks.size() < shape.size()) return;
+    for (size_t i = 0; i + shape.size() <= toks.size(); ++i) {
+        bool hit = true;
+        for (size_t k = 0; k < shape.size() && hit; ++k)
+            if (toks[i + k] != shape[k]) hit = false;
+        if (hit) {
+            *any = true;
+            for (size_t k = 0; k < shape.size(); ++k) (*covered)[i + k] = 1;
+        }
+    }
+}
+
+/* DIM-96 trigram bag of the SURVIVING tokens, normalised by surviving
+   window count; masking = the occurrence's tokens are omitted entirely,
+   no sentinel, no splice. Returns window count (0 = no features). */
+static uint64_t note_features(const std::vector<std::string> &toks,
+                              const std::vector<char> &covered,
+                              std::vector<float> *out) {
+    std::vector<double> bag(DIM, 0.0);
+    uint64_t windows = 0;
+    for (size_t t = 0; t < toks.size(); ++t) {
+        if (covered[t]) continue;
+        std::string w = "^" + toks[t] + "$";
+        if (w.size() >= 3) {
+            for (size_t i = 0; i + 3 <= w.size(); ++i) {
+                const auto &gv = fnv_vec(w.substr(i, 3));
+                for (int d = 0; d < DIM; ++d) bag[d] += gv[d];
+                windows++;
+            }
+        } else {
+            const auto &gv = fnv_vec(w);
+            for (int d = 0; d < DIM; ++d) bag[d] += gv[d];
+            windows++;
+        }
+    }
+    out->assign(DIM, 0.0f);
+    if (!windows) return 0;
+    for (int d = 0; d < DIM; ++d)
+        (*out)[d] = (float)(bag[d] / (double)windows);
+    return windows;
+}
+
+/* the sealed dataset law: positives masked, equal-count negatives by
+   hash order, stratified 1-in-4 holdout after hash sorting */
+static NoteDataset note_dataset(const Mycelium &m,
+                                const std::vector<std::string> &shape,
+                                uint64_t after_meals) {
+    NoteDataset ds;
+    struct Cand { uint64_t key; std::vector<float> x; };
+    std::vector<Cand> pos, neg;
+    for (const auto &f : m.frags) {
+        if (f.meal > after_meals) continue;
+        std::vector<char> covered;
+        bool any;
+        note_mark_occurrences(f.toks, shape, &covered, &any);
+        std::vector<float> x;
+        if (any) {
+            if (!note_features(f.toks, covered, &x)) continue; /* nothing survives */
+            pos.push_back({note_frag_key(f.toks), std::move(x)});
+        } else {
+            note_features(f.toks, covered, &x);
+            neg.push_back({note_frag_key(f.toks), std::move(x)});
+        }
+    }
+    auto by_key = [](const Cand &a, const Cand &b) { return a.key < b.key; };
+    std::stable_sort(pos.begin(), pos.end(), by_key);
+    std::stable_sort(neg.begin(), neg.end(), by_key);
+    if (neg.size() < pos.size()) {
+        ds.refusal = "insufficient data: " + std::to_string(neg.size()) +
+                     " shape-free fragments against " +
+                     std::to_string(pos.size()) + " positives";
+        return ds;
+    }
+    neg.resize(pos.size());
+    ds.positives = pos.size();
+    ds.negatives = neg.size();
+    for (int label = 0; label < 2; ++label) {
+        const std::vector<Cand> &side = label ? pos : neg;
+        for (size_t i = 0; i < side.size(); ++i) {
+            NoteExample ex;
+            ex.x = side[i].x;
+            ex.label = label;
+            ex.key = side[i].key;
+            if (i % 4 == 0) {
+                ds.holdout.push_back(std::move(ex));
+                if (label) ds.holdout_pos++; else ds.holdout_neg++;
+            } else {
+                ds.train.push_back(std::move(ex));
+            }
+        }
+    }
+    uint64_t train_pos = ds.positives - ds.holdout_pos;
+    uint64_t train_neg = ds.negatives - ds.holdout_neg;
+    if (!ds.holdout_pos || !ds.holdout_neg || !train_pos || !train_neg) {
+        ds.refusal = "insufficient data: a split lost a whole label";
+        return ds;
+    }
+    ds.ok = true;
+    return ds;
+}
+
+/* Chuck trains the 97-parameter probe; the gradient of a linear
+   sigmoid is exact closed form, the step is the forge's own. */
+struct NoteWeights {
+    float w[DIM];
+    float bias;
+    uint64_t loss_microbits;
+};
+
+static NoteWeights note_train(const NoteDataset &ds, uint64_t steps,
+                              uint64_t seed) {
+    nt_seed(seed);
+    nt_tape_start();
+    nt_tensor *W = nt_tensor_new(DIM);
+    nt_tensor *B = nt_tensor_new(1);
+    int wi = nt_tape_param(W);
+    int bi = nt_tape_param(B);
+    nt_tape *tape = nt_tape_get();
+    if (!tape->entries[wi].grad) tape->entries[wi].grad = nt_tensor_new(DIM);
+    if (!tape->entries[bi].grad) tape->entries[bi].grad = nt_tensor_new(1);
+    float *gw = tape->entries[wi].grad->data;
+    float *gb = tape->entries[bi].grad->data;
+    double loss = 0.0;
+    size_t n = ds.train.size();
+    for (uint64_t step = 0; step < steps; ++step) {
+        for (int d = 0; d < DIM; ++d) gw[d] = 0.0f;
+        gb[0] = 0.0f;
+        loss = 0.0;
+        for (const auto &ex : ds.train) {
+            double z = (double)B->data[0];
+            for (int d = 0; d < DIM; ++d)
+                z += (double)W->data[d] * (double)ex.x[d];
+            double p = 1.0 / (1.0 + std::exp(-z));
+            if (p < 1e-7) p = 1e-7;
+            if (p > 1.0 - 1e-7) p = 1.0 - 1e-7;
+            loss += ex.label ? -std::log(p) : -std::log(1.0 - p);
+            float g = (float)((p - (double)ex.label) / (double)n);
+            for (int d = 0; d < DIM; ++d) gw[d] += g * ex.x[d];
+            gb[0] += g;
+        }
+        loss /= (double)n;
+        nt_tape_chuck_step(NOTE_LR, (float)loss);
+    }
+    NoteWeights out;
+    for (int d = 0; d < DIM; ++d) out.w[d] = W->data[d];
+    out.bias = B->data[0];
+    double scaled = loss * 1e6;
+    out.loss_microbits =
+        scaled > 0.0 && scaled < 9e18 ? (uint64_t)llround(scaled) : 0;
+    nt_tape_destroy();
+    nt_tensor_free(W);
+    nt_tensor_free(B);
+    return out;
+}
+
+static uint64_t note_holdout_hits(const NoteWeights &nw,
+                                  const std::vector<NoteExample> &holdout) {
+    uint64_t hits = 0;
+    for (const auto &ex : holdout) {
+        double z = (double)nw.bias;
+        for (int d = 0; d < DIM; ++d)
+            z += (double)nw.w[d] * (double)ex.x[d];
+        int pred = z >= 0.0 ? 1 : 0;
+        if (pred == ex.label) hits++;
+    }
+    return hits;
+}
+
+static std::string note_blob_bytes(const NoteWeights &nw) {
+    std::string blob(NOTE_BLOB_BYTES, '\0');
+    float all[DIM + 1];
+    for (int d = 0; d < DIM; ++d) all[d] = nw.w[d];
+    all[DIM] = nw.bias;
+    memcpy(&blob[0], all, NOTE_BLOB_BYTES);
+    return blob;
+}
+
+static uint64_t forge_digest(const char *path, bool *present) {
+    std::string raw;
+    if (!read_file(path, raw)) { *present = false; return 0; }
+    *present = true;
+    return fnv64(raw.data(), raw.size(), FNV_SEED);
+}
+
+struct NoteRec {
+    uint64_t id = 0;
+    std::string unit_hex, version;
+    uint64_t parl_records = 0, parl_chain = 0;
+    uint64_t after_meals = 0, main_chain = 0;
+    uint64_t forge_h = 0, forge_l = 0, seed = 0;
+    struct Training {
+        uint64_t after_meals, main_chain, forge_h, forge_l, seed, steps,
+            loss_mb, positives, negatives, hpos, hneg, hits, baseline;
+        std::string weight_hex;
+        bool has_e = false;
+        std::string verdict;
+    };
+    std::vector<Training> ts;
+    /* rent state: 1 = alive, 0 = in the morgue */
+    int alive = 1;
+    uint64_t last_rent_meal = 0;
+};
+
+struct Notes {
+    const Mycelium &m;
+    const Parliament &pl;
+    uint64_t chain = FNV_SEED;
+    uint64_t records = 0;
+    bool law_seen = false;
+    std::vector<NoteRec> notes;
+
+    Notes(const Mycelium &myc, const Parliament &parl) : m(myc), pl(parl) {}
+
+    void append(const std::string &payload) {
+        if (payload.size() + 18 > LEDGER_RECORD_MAX)
+            die("notes record exceeds 4096-byte law");
+        chain = fnv64(payload.data(), payload.size(), chain);
+        std::string line = payload + "\t" + hex16(chain) + "\n";
+        int fd = open(NOTES_PATH, O_WRONLY | O_APPEND | O_CREAT, 0644);
+        if (fd < 0) die("cannot open notes for append");
+        ssize_t w = write(fd, line.data(), line.size());
+        if (w < 0 || (size_t)w != line.size() || close(fd) != 0)
+            die("notes append failed");
+        records++;
+    }
+
+    void ensure_law() {
+        if (law_seen) return;
+        if (records != 0) die("cannot start a nonempty notes chain");
+        append(std::string("N\t1\t") + NOTES_LAW);
+        law_seen = true;
+    }
+
+    NoteRec *by_identity(const std::string &version, const std::string &unit) {
+        for (auto &n : notes)
+            if (n.version == version && n.unit_hex == unit) return &n;
+        return nullptr;
+    }
+
+    /* the citizen's shape, recovered from the pinned school glyphs */
+    static std::vector<std::string> shape_of_unit(const School &sc,
+                                                  const std::string &unit_hex) {
+        for (const auto &shape : sc.legalised) {
+            uint64_t arity = split_ws(shape).size();
+            if (hex16(unit_id_v1(arity, shape)) == unit_hex)
+                return split_ws(shape);
+        }
+        return {};
+    }
+
+    void write_blob(const std::string &blob, uint64_t digest) {
+        struct stat st;
+        if (stat(NOTES_DIR, &st) != 0) {
+            if (mkdir(NOTES_DIR, 0755) != 0) die("cannot open the weight morgue");
+        } else if (!S_ISDIR(st.st_mode))
+            die("the weight morgue is not a directory");
+        std::string path = std::string(NOTES_DIR) + "/" + hex16(digest);
+        std::string existing;
+        if (read_file(path, existing)) {
+            if (existing != blob) die("weight blob digest collision");
+            return;
+        }
+        std::string tmp = path + ".tmp";
+        FILE *f = fopen(tmp.c_str(), "wb");
+        if (!f) die("cannot write weight blob");
+        if (fwrite(blob.data(), 1, blob.size(), f) != blob.size() ||
+            fflush(f) != 0 || fclose(f) != 0)
+            die("cannot write weight blob");
+        if (rename(tmp.c_str(), path.c_str()) != 0)
+            die("cannot seal weight blob");
+    }
+
+    void verify_blob(const std::string &weight_hex, uint64_t lineno) const {
+        std::string blob;
+        std::string path = std::string(NOTES_DIR) + "/" + weight_hex;
+        if (!read_file(path, blob))
+            die("notes line " + std::to_string(lineno) + ": weight blob " +
+                weight_hex + " is missing");
+        if (blob.size() != NOTE_BLOB_BYTES)
+            die("notes line " + std::to_string(lineno) +
+                ": weight blob is not canonical body5-note-weight-v1");
+        if (hex16(fnv64(blob.data(), blob.size(), FNV_SEED)) != weight_hex)
+            die("notes line " + std::to_string(lineno) +
+                ": weight blob digest mismatch");
+        float all[DIM + 1];
+        memcpy(all, blob.data(), NOTE_BLOB_BYTES);
+        for (int d = 0; d <= DIM; ++d)
+            if (!std::isfinite(all[d]))
+                die("notes line " + std::to_string(lineno) +
+                    ": weight blob holds a non-finite float");
+    }
+
+    /* verify a training receipt's integer side against its own pins */
+    void verify_training(const NoteRec &n, const NoteRec::Training &t,
+                         const School &sc_now, uint64_t lineno) const {
+        auto shape = shape_of_unit(sc_now, n.unit_hex);
+        if (shape.empty())
+            die("notes line " + std::to_string(lineno) +
+                ": citizen unit has no glyph shape");
+        NoteDataset ds = note_dataset(m, shape, t.after_meals);
+        if (!ds.ok)
+            die("notes line " + std::to_string(lineno) +
+                ": pinned dataset no longer derives (" + ds.refusal + ")");
+        if (ds.positives != t.positives || ds.negatives != t.negatives ||
+            ds.holdout_pos != t.hpos || ds.holdout_neg != t.hneg)
+            die("notes line " + std::to_string(lineno) +
+                ": dataset drifted from its pin");
+        uint64_t baseline = ds.holdout_pos > ds.holdout_neg ? ds.holdout_pos
+                                                            : ds.holdout_neg;
+        if (t.baseline != baseline)
+            die("notes line " + std::to_string(lineno) + ": false baseline");
+        if (t.hits > ds.holdout_pos + ds.holdout_neg)
+            die("notes line " + std::to_string(lineno) +
+                ": holdout hits exceed the holdout");
+        if (t.has_e) {
+            const char *want = t.hits > baseline ? "LIT" : "DIM";
+            if (t.verdict != want)
+                die("notes line " + std::to_string(lineno) + ": false verdict");
+        }
+        verify_blob(t.weight_hex, lineno);
+    }
+
+    void load(const School &sc_now) {
+        std::string raw;
+        if (!read_file(NOTES_PATH, raw)) {
+            struct stat st;
+            if (stat(NOTES_PATH, &st) == 0) die("cannot read notes");
+            return;
+        }
+        if (raw.empty()) die("notes has no law record");
+        size_t pos = 0;
+        uint64_t lineno = 0;
+        while (pos < raw.size()) {
+            size_t nl = raw.find('\n', pos);
+            if (nl == std::string::npos)
+                die("notes line " + std::to_string(lineno + 1) + " is unsealed");
+            std::string line = raw.substr(pos, nl - pos);
+            if (line.size() + 1 > LEDGER_RECORD_MAX)
+                die("notes line " + std::to_string(lineno + 1) +
+                    " exceeds 4096-byte law");
+            pos = nl + 1;
+            lineno++;
+            size_t tab = line.rfind('\t');
+            if (tab == std::string::npos || line.size() - tab - 1 != 16)
+                die("notes line " + std::to_string(lineno) + " has no chain field");
+            uint64_t claimed;
+            if (!canon_hex16(line.substr(tab + 1), &claimed))
+                die("notes line " + std::to_string(lineno) + " chain is not hex16");
+            std::string payload = line.substr(0, tab);
+            uint64_t next = fnv64(payload.data(), payload.size(), chain);
+            if (next != claimed)
+                die("notes chain broken at line " + std::to_string(lineno));
+            chain = next;
+            records++;
+            replay(payload, lineno);
+        }
+        if (!law_seen) die("notes has no law record");
+        /* verify every complete training against its pins; the trailing
+           record may be an honest interruption, recovered by recover() */
+        for (size_t i = 0; i < notes.size(); ++i) {
+            const NoteRec &n = notes[i];
+            for (size_t t = 0; t < n.ts.size(); ++t) {
+                bool tail = i + 1 == notes.size() && t + 1 == n.ts.size();
+                if (!n.ts[t].has_e && !tail)
+                    die("notes holds an unfinished training before its tip");
+                verify_training(n, n.ts[t], sc_now, records);
+            }
+            if (n.ts.empty() && i + 1 != notes.size())
+                die("notes holds a mint without training before its tip");
+        }
+    }
+
+    void replay(const std::string &payload, uint64_t lineno) {
+        auto f = split_tabs(payload);
+        const std::string where = "notes line " + std::to_string(lineno);
+        if (f.empty()) die(where + " is empty");
+        if (f[0] == "N") {
+            if (lineno != 1 || f.size() != 3 || f[1] != "1" || f[2] != NOTES_LAW)
+                die(where + ": notes law record");
+            law_seen = true;
+            return;
+        }
+        if (!law_seen) die(where + ": record before notes law");
+        if (f[0] == "M") {
+            if (!notes.empty()) {
+                const NoteRec &prev = notes.back();
+                if (prev.ts.empty() || !prev.ts.back().has_e)
+                    die(where + ": a new mint before the last note closed");
+            }
+            if (f.size() != 11) die(where + ": M arity");
+            NoteRec n;
+            if (!canon_u64(f[1], &n.id) || n.id != notes.size() + 1)
+                die(where + ": M note id is not sequential");
+            uint64_t uid;
+            if (!canon_hex16(f[2], &uid) || !label_ok(f[3]))
+                die(where + ": M identity grammar");
+            n.unit_hex = f[2];
+            n.version = f[3];
+            if (!canon_u64(f[4], &n.parl_records) || n.parl_records == 0 ||
+                !canon_hex16(f[5], &n.parl_chain) ||
+                !canon_u64(f[6], &n.after_meals) ||
+                !canon_hex16(f[7], &n.main_chain) ||
+                !canon_hex16(f[8], &n.forge_h) || !canon_hex16(f[9], &n.forge_l) ||
+                !canon_hex16(f[10], &n.seed))
+                die(where + ": M field grammar");
+            if (!pl.prefixes.count({n.parl_records, n.parl_chain}))
+                die(where + ": M parliament prefix");
+            if (!m.prefixes.count({n.after_meals, n.main_chain}))
+                die(where + ": M main prefix");
+            if (!pl.citizen_at(n.parl_records, n.version, n.unit_hex))
+                die(where + ": M names no citizen at its pinned hour");
+            if (by_identity(n.version, n.unit_hex))
+                die(where + ": identity already minted");
+            n.last_rent_meal = n.after_meals;
+            notes.push_back(std::move(n));
+        } else if (f[0] == "T") {
+            if (f.size() != 16) die(where + ": T arity");
+            uint64_t id;
+            if (!canon_u64(f[1], &id) || id == 0 || id > notes.size())
+                die(where + ": T names no note");
+            NoteRec &n = notes[id - 1];
+            if (id != notes.size())
+                die(where + ": T outside the open note");
+            if (!n.ts.empty() && !n.ts.back().has_e)
+                die(where + ": T before the last training closed");
+            if (!n.alive) die(where + ": T for a note in the morgue");
+            NoteRec::Training t;
+            if (!canon_u64(f[2], &t.after_meals) ||
+                !canon_hex16(f[3], &t.main_chain) ||
+                !canon_hex16(f[4], &t.forge_h) || !canon_hex16(f[5], &t.forge_l) ||
+                !canon_hex16(f[6], &t.seed) || !canon_u64(f[7], &t.steps) ||
+                !canon_u64(f[8], &t.loss_mb) || !canon_u64(f[9], &t.positives) ||
+                !canon_u64(f[10], &t.negatives) || !canon_u64(f[11], &t.hpos) ||
+                !canon_u64(f[12], &t.hneg) || !canon_u64(f[13], &t.hits) ||
+                !canon_u64(f[14], &t.baseline) || f[15].size() != 16)
+                die(where + ": T field grammar");
+            uint64_t wd;
+            if (!canon_hex16(f[15], &wd)) die(where + ": T weight digest");
+            t.weight_hex = f[15];
+            if (!m.prefixes.count({t.after_meals, t.main_chain}))
+                die(where + ": T main prefix");
+            if (n.ts.empty()) {
+                if (t.after_meals != n.after_meals ||
+                    t.main_chain != n.main_chain || t.forge_h != n.forge_h ||
+                    t.forge_l != n.forge_l || t.seed != n.seed)
+                    die(where + ": first training does not repeat the mint pin");
+            } else {
+                if (t.after_meals < n.ts.back().after_meals + NOTE_COOLDOWN)
+                    die(where + ": training inside the cooldown");
+            }
+            if (t.steps == 0 ||
+                (t.steps != NOTE_STEPS_PASS && t.steps != NOTE_STEPS_WEAKEN))
+                die(where + ": T steps outside the governed budgets");
+            n.ts.push_back(std::move(t));
+        } else if (f[0] == "E") {
+            if (f.size() != 3) die(where + ": E arity");
+            uint64_t id;
+            if (!canon_u64(f[1], &id) || id == 0 || id > notes.size())
+                die(where + ": E names no note");
+            NoteRec &n = notes[id - 1];
+            if (n.ts.empty() || n.ts.back().has_e)
+                die(where + ": E without an open training");
+            if (f[2] != "LIT" && f[2] != "DIM") die(where + ": E verdict class");
+            n.ts.back().has_e = true;
+            n.ts.back().verdict = f[2];
+        } else if (f[0] == "R" || f[0] == "Z") {
+            if (f.size() != 4) die(where + ": rent arity");
+            uint64_t id, after, mc;
+            if (!canon_u64(f[1], &id) || id == 0 || id > notes.size() ||
+                !canon_u64(f[2], &after) || !canon_hex16(f[3], &mc))
+                die(where + ": rent field grammar");
+            NoteRec &n = notes[id - 1];
+            if (!m.prefixes.count({after, mc})) die(where + ": rent main prefix");
+            if (f[0] == "R") {
+                if (!n.alive) die(where + ": R for a note already in the morgue");
+                n.alive = 0;
+            } else {
+                if (n.alive) die(where + ": Z for a note not in the morgue");
+                n.alive = 1;
+            }
+            n.last_rent_meal = after;
+        } else {
+            die(where + ": unknown notes record type");
+        }
+    }
+
+    /* seal T (+blob) and its integer E from a finished training */
+    void seal_training(NoteRec &n, uint64_t after_meals, uint64_t main_chain,
+                       uint64_t fh, uint64_t fl, uint64_t seed, uint64_t steps,
+                       const NoteDataset &ds, const NoteWeights &nw) {
+        std::string blob = note_blob_bytes(nw);
+        uint64_t wd = fnv64(blob.data(), blob.size(), FNV_SEED);
+        write_blob(blob, wd);
+        uint64_t hits = note_holdout_hits(nw, ds.holdout);
+        uint64_t baseline = ds.holdout_pos > ds.holdout_neg ? ds.holdout_pos
+                                                            : ds.holdout_neg;
+        NoteRec::Training t;
+        t.after_meals = after_meals;
+        t.main_chain = main_chain;
+        t.forge_h = fh;
+        t.forge_l = fl;
+        t.seed = seed;
+        t.steps = steps;
+        t.loss_mb = nw.loss_microbits;
+        t.positives = ds.positives;
+        t.negatives = ds.negatives;
+        t.hpos = ds.holdout_pos;
+        t.hneg = ds.holdout_neg;
+        t.hits = hits;
+        t.baseline = baseline;
+        t.weight_hex = hex16(wd);
+        append("T\t" + std::to_string(n.id) + "\t" + std::to_string(after_meals) +
+               "\t" + hex16(main_chain) + "\t" + hex16(fh) + "\t" + hex16(fl) +
+               "\t" + hex16(seed) + "\t" + std::to_string(steps) + "\t" +
+               std::to_string(nw.loss_microbits) + "\t" +
+               std::to_string(ds.positives) + "\t" + std::to_string(ds.negatives) +
+               "\t" + std::to_string(ds.holdout_pos) + "\t" +
+               std::to_string(ds.holdout_neg) + "\t" + std::to_string(hits) +
+               "\t" + std::to_string(baseline) + "\t" + t.weight_hex);
+        const char *verdict = hits > baseline ? "LIT" : "DIM";
+        append("E\t" + std::to_string(n.id) + "\t" + verdict);
+        t.has_e = true;
+        t.verdict = verdict;
+        printf("  T steps %llu loss %llu holdout %llu/%llu baseline %llu "
+               "weight %s\n",
+               (unsigned long long)steps,
+               (unsigned long long)nw.loss_microbits, (unsigned long long)hits,
+               (unsigned long long)(ds.holdout_pos + ds.holdout_neg),
+               (unsigned long long)baseline, t.weight_hex.c_str());
+        printf("  E %s\n", verdict);
+        n.ts.push_back(std::move(t));
+    }
+
+    /* recover a trailing interrupted mint or training exactly once */
+    void recover(const School &sc_now) {
+        if (notes.empty()) return;
+        NoteRec &n = notes.back();
+        if (!n.ts.empty() && !n.ts.back().has_e) {
+            NoteRec::Training &t = n.ts.back();
+            const char *verdict = t.hits > t.baseline ? "LIT" : "DIM";
+            append("E\t" + std::to_string(n.id) + "\t" + verdict);
+            t.has_e = true;
+            t.verdict = verdict;
+            fprintf(stderr, "notes: recovered training of note %llu as %s\n",
+                    (unsigned long long)n.id, verdict);
+            return;
+        }
+        if (n.ts.empty()) {
+            auto shape = shape_of_unit(sc_now, n.unit_hex);
+            if (shape.empty()) die("recovery: citizen unit has no glyph shape");
+            NoteDataset ds = note_dataset(m, shape, n.after_meals);
+            if (!ds.ok) die("recovery: " + ds.refusal);
+            const Parliament::Admission *a =
+                pl.citizen_at(n.parl_records, n.version, n.unit_hex);
+            if (!a) die("recovery: mint names no citizen");
+            uint64_t steps = a->verdict == "PASS" ? NOTE_STEPS_PASS
+                                                  : NOTE_STEPS_WEAKEN;
+            NoteWeights nw = note_train(ds, steps, n.seed);
+            seal_training(n, n.after_meals, n.main_chain, n.forge_h, n.forge_l,
+                          n.seed, steps, ds, nw);
+            fprintf(stderr, "notes: recovered mint of note %llu from its pins\n",
+                    (unsigned long long)n.id);
+        }
+    }
+
+    /* reconcile rent for every note against the live prefix */
+    void reconcile_rent(const School &sc_now) {
+        for (auto &n : notes) {
+            auto shape = shape_of_unit(sc_now, n.unit_hex);
+            if (shape.empty()) continue;
+            std::string joined;
+            for (size_t i = 0; i < shape.size(); ++i) {
+                if (i) joined += ' ';
+                joined += shape[i];
+            }
+            ProposalSnapshot snap = proposal_snapshot(m, m.meals, m.led.chain);
+            bool alive_now = false;
+            for (const auto &st : snap.states)
+                if (st.shape == joined && st.alive) alive_now = true;
+            if (n.alive && !alive_now) {
+                append("R\t" + std::to_string(n.id) + "\t" +
+                       std::to_string(m.meals) + "\t" + hex16(m.led.chain));
+                n.alive = 0;
+                n.last_rent_meal = m.meals;
+                printf("  R note %llu at meal %llu (the morgue keeps the "
+                       "weight)\n",
+                       (unsigned long long)n.id, (unsigned long long)m.meals);
+            } else if (!n.alive && alive_now) {
+                append("Z\t" + std::to_string(n.id) + "\t" +
+                       std::to_string(m.meals) + "\t" + hex16(m.led.chain));
+                n.alive = 1;
+                n.last_rent_meal = m.meals;
+                printf("  Z note %llu at meal %llu (the same identity "
+                       "returns)\n",
+                       (unsigned long long)n.id, (unsigned long long)m.meals);
+            }
+        }
+    }
+};
+
+/* refuse when any earlier body holds an open record boundary the mint
+   would have to repair; notes may not write the old chains */
+static void refuse_open_boundaries(const School &sc, const Parliament &pl) {
+    if (sc.pending_glyph)
+        die("an earlier body has an open record boundary (school pass "
+            "without its glyph)");
+    if (!pl.ballots.empty()) {
+        const Ballot &b = pl.ballots.back();
+        if (!b.has_v || b.jrows.size() != 3)
+            die("an earlier body has an open record boundary (parliament "
+                "ballot unfinished)");
+    }
+}
+
+static void cmd_mint(Mycelium &m, const std::string &glyph_str) {
+    uint64_t glyph;
+    if (!canon_u64(glyph_str, &glyph) || glyph == 0)
+        die("mint takes a glyph ordinal");
+    bool hp, lp;
+    uint64_t fh = forge_digest(FORGE_HEADER_PATH, &hp);
+    uint64_t fl = forge_digest(FORGE_LIB_PATH, &lp);
+    if (!hp || !lp)
+        die("the forge is not installed; the mint refuses instead of "
+            "falling back to a checkout");
+    School sc(m);
+    sc.load();
+    Props pr;
+    pr.load(m);
+    Parliament pl(m);
+    pl.load(pr);
+    pl.recover();
+    refuse_open_boundaries(sc, pl);
+    if (glyph > sc.legalised.size()) die("mint needs an existing glyph");
+    const std::string &shape_str = sc.legalised[glyph - 1];
+    uint64_t arity = split_ws(shape_str).size();
+    std::string unit = hex16(unit_id_v1(arity, shape_str));
+    const Parliament::Admission *a =
+        pl.citizen_at(pl.records, RECOGNIZER_V1, unit);
+    if (!a) die("mint refused: glyph " + glyph_str + " is not a citizen");
+    Notes no(m, pl);
+    no.load(sc);
+    no.recover(sc);
+    no.reconcile_rent(sc);
+    if (no.by_identity(RECOGNIZER_V1, unit))
+        die("mint refused: identity already minted");
+    ProposalSnapshot snap = proposal_snapshot(m, m.meals, m.led.chain);
+    bool alive = false;
+    for (const auto &st : snap.states)
+        if (st.shape == shape_str && st.alive) alive = true;
+    if (!alive)
+        die("mint refused: a starved citizen cannot birth a fresh note");
+    auto shape = split_ws(shape_str);
+    NoteDataset ds = note_dataset(m, shape, m.meals);
+    if (!ds.ok) die("mint refused: " + ds.refusal);
+    uint64_t steps = a->verdict == "PASS" ? NOTE_STEPS_PASS : NOTE_STEPS_WEAKEN;
+    std::string seed_src = std::string("note:") + RECOGNIZER_V1 + ":" + unit;
+    uint64_t seed = fnv64(seed_src.data(), seed_src.size(), FNV_SEED);
+    NoteRec n;
+    n.id = no.notes.size() + 1;
+    n.unit_hex = unit;
+    n.version = RECOGNIZER_V1;
+    n.parl_records = pl.records;
+    n.parl_chain = pl.chain;
+    n.after_meals = m.meals;
+    n.main_chain = m.led.chain;
+    n.forge_h = fh;
+    n.forge_l = fl;
+    n.seed = seed;
+    n.last_rent_meal = m.meals;
+    no.ensure_law();
+    no.append("M\t" + std::to_string(n.id) + "\t" + unit + "\t" + RECOGNIZER_V1 +
+              "\t" + std::to_string(pl.records) + "\t" + hex16(pl.chain) + "\t" +
+              std::to_string(m.meals) + "\t" + hex16(m.led.chain) + "\t" +
+              hex16(fh) + "\t" + hex16(fl) + "\t" + hex16(seed));
+    printf("mint %llu: glyph %llu unit %s %s budget %llu\n",
+           (unsigned long long)n.id, (unsigned long long)glyph, unit.c_str(),
+           a->verdict.c_str(), (unsigned long long)steps);
+    NoteWeights nw = note_train(ds, steps, seed);
+    no.notes.push_back(n);
+    no.seal_training(no.notes.back(), m.meals, m.led.chain, fh, fl, seed, steps,
+                     ds, nw);
+    printf("  receipt: notes %llu records chain %s\n",
+           (unsigned long long)no.records, hex16(no.chain).c_str());
+}
+
+static void cmd_retrain(Mycelium &m, const std::string &id_str) {
+    uint64_t id;
+    if (!canon_u64(id_str, &id) || id == 0) die("retrain takes a note id");
+    bool hp, lp;
+    uint64_t fh = forge_digest(FORGE_HEADER_PATH, &hp);
+    uint64_t fl = forge_digest(FORGE_LIB_PATH, &lp);
+    if (!hp || !lp) die("the forge is not installed");
+    School sc(m);
+    sc.load();
+    Props pr;
+    pr.load(m);
+    Parliament pl(m);
+    pl.load(pr);
+    pl.recover();
+    refuse_open_boundaries(sc, pl);
+    Notes no(m, pl);
+    no.load(sc);
+    no.recover(sc);
+    no.reconcile_rent(sc);
+    if (id > no.notes.size()) die("retrain names no note");
+    NoteRec &n = no.notes[id - 1];
+    if (id != no.notes.size())
+        die("retrain refused: only the open note may retrain in this body");
+    if (!n.alive) die("retrain refused: the note is in the morgue");
+    if (!n.ts.empty() &&
+        m.meals < n.ts.back().after_meals + NOTE_COOLDOWN)
+        die("retrain refused: cooldown holds until meal " +
+            std::to_string(n.ts.back().after_meals + NOTE_COOLDOWN));
+    const Parliament::Admission *a =
+        pl.citizen_at(n.parl_records, n.version, n.unit_hex);
+    if (!a) die("retrain: mint names no citizen");
+    auto shape = Notes::shape_of_unit(sc, n.unit_hex);
+    if (shape.empty()) die("retrain: citizen unit has no glyph shape");
+    NoteDataset ds = note_dataset(m, shape, m.meals);
+    if (!ds.ok) die("retrain refused: " + ds.refusal);
+    uint64_t steps = a->verdict == "PASS" ? NOTE_STEPS_PASS : NOTE_STEPS_WEAKEN;
+    printf("retrain %llu: %s budget %llu\n", (unsigned long long)id,
+           a->verdict.c_str(), (unsigned long long)steps);
+    NoteWeights nw = note_train(ds, steps, n.seed);
+    no.seal_training(n, m.meals, m.led.chain, fh, fl, n.seed, steps, ds, nw);
+    printf("  receipt: notes %llu records chain %s\n",
+           (unsigned long long)no.records, hex16(no.chain).c_str());
+}
+
+static void cmd_notes(Mycelium &m) {
+    School sc(m);
+    sc.load();
+    Props pr;
+    pr.load(m);
+    Parliament pl(m);
+    pl.load(pr);
+    pl.recover();
+    Notes no(m, pl);
+    no.load(sc);
+    no.recover(sc);
+    no.reconcile_rent(sc);
+    for (const auto &n : no.notes) {
+        const char *verdict = "unjudged";
+        if (!n.ts.empty() && n.ts.back().has_e)
+            verdict = n.ts.back().verdict.c_str();
+        printf("note %llu: unit %s %s trainings %zu %s %s\n",
+               (unsigned long long)n.id, n.unit_hex.c_str(), n.version.c_str(),
+               n.ts.size(), verdict, n.alive ? "alive" : "morgue");
+    }
+    if (no.notes.empty()) printf("the mint has struck nothing yet\n");
+    printf("  receipt: notes %llu records chain %s\n",
+           (unsigned long long)no.records, hex16(no.chain).c_str());
+}
+
 int main(int argc, char **argv) {
     const char *usage =
         "usage: mycelium ingest <label> <speech> <biography>\n"
@@ -1997,6 +2822,9 @@ int main(int argc, char **argv) {
         "       mycelium petition <glyph>\n"
         "       mycelium petition-opaque <glyph> <version> <unit-id>\n"
         "       mycelium franchise\n"
+        "       mycelium mint <glyph>\n"
+        "       mycelium retrain <note-id>\n"
+        "       mycelium notes\n"
         "       mycelium enroll <arity> <token...>\n"
         "       mycelium enroll-hex <arity> <lower-hex-token...>\n"
         "       mycelium examine\n";
@@ -2038,6 +2866,14 @@ int main(int argc, char **argv) {
     } else if (cmd == "petition-opaque") {
         if (argc != 5) { fputs(usage, stderr); return 1; }
         cmd_petition_opaque(m, argv[2], argv[3], argv[4]);
+    } else if (cmd == "mint") {
+        if (argc != 3) { fputs(usage, stderr); return 1; }
+        cmd_mint(m, argv[2]);
+    } else if (cmd == "retrain") {
+        if (argc != 3) { fputs(usage, stderr); return 1; }
+        cmd_retrain(m, argv[2]);
+    } else if (cmd == "notes") {
+        cmd_notes(m);
     } else if (cmd == "franchise") {
         cmd_franchise(m);
     } else if (cmd == "examine") {
