@@ -98,13 +98,18 @@ hands; this list is a map, not a promise of shape.
   propose a change and also legalise it. Its citizens enter as an opaque
   `unit_id` plus a versioned recognizer and receipt; pair/triple strings
   are body 2's first implementation, not the parliament's eternal type.
-- **Body 5 — the notes** (this turn). Многовесовость: each consolidated pattern may
+- **Body 5 — the notes** (landed, audited, closed). Многовесовость: each consolidated pattern may
   earn a tiny mortal note-weight trained asynchronously via notorch
   (linked as an upstream dependency — nothing vendored), under the rent
   law and a governor (molequla's cascade lesson: bounded, cooled).
   Asynchrony changes a note's content, never its franchise; every update
   is an event.
-- **Body 6 — the circulation.** The looped transformer, named at last:
+- **Gate before body 6 — the diet** (this turn). The mycelium eats
+  adult speech or none: the matched s row's own LIVED, LAW and HAND
+  under sealed bounds, a public D law row in every new ledger, refusal
+  at the mouth of the grave. Molequla steered the field after eating;
+  law 1 chose witness, so the Method's answer is a door, not a rudder.
+- **Body 6 — the circulation** (this turn). The looped transformer, named at last:
   not a box but the cycle — field → ghost attention → candidate →
   verdict → field edit → next pass over a field changed by its own last
   output. Plasticity lives in the medium, not the operator.
@@ -607,3 +612,151 @@ counterexample, an independent reader, a delayed verdict.
   can modulate selection without creating candidates, what
   PatternLineage identity and prefix pins mean, and what the independent
   reader recomputes without rerunning a neural forward pass.
+
+## The diet (gate before body 6, frozen before code)
+
+The mycelium eats adult speech or none. Law 5 attests WHO signed a
+stream; the diet judges WHEN and under WHICH mouth — because the zero
+line's own sealed record shows the food is not born coherent: a fresh
+40-episode life signs its speech at 32000 lived bytes and the receipt
+of that mouth is byte soup (`research/README_VOICE_2026-08-24.md`); an
+elected tri mouth at 384000 lived bytes still prints 39.7 percent
+(`research/MOUTH_AUDIT_2026-08-16.md`); and printability itself was
+defeated as a ruler by the shore's sealed ear, which priced the
+printability champion at 7.48 bits/byte — noise wearing letters
+(NETTALOG2). A grave filled with that stream is not memory; it is
+noise that resonance will faithfully amplify and the mint will
+faithfully learn. Molequla met the same danger from the other side:
+its coordinator measures field coherence live and steers the
+collective — amplify, dampen, ground, realign — a rudder correcting
+what was already eaten. Our law 1 refused steering before the first
+line of code. The Method's answer is a door, not a rudder: refusal at
+the mouth of the grave, before anything is eaten, from evidence the
+gate already holds in its hands.
+
+- **The predicate.** The matched `s` row that law 5 already requires
+  carries the mouth's HAND, its LAW and the life's LIVED bytes at
+  signing (the biography grammar, body 30: nine public fields). Speech
+  is food iff all three hold: `LIVED >= 384000`;
+  `LAW == supported-backoff`; `HAND` in {`bi`, `tri`}. Each bound is
+  the record's own: 384000 is the only maturity at which coherent
+  speech is witnessed in the sealed mouth audit; `laplace-red` is the
+  zero line's declared red hand and refuses at any age — age alone
+  buys nothing; `uni` refuses as the printability trap — 97.7 percent
+  printable, ear-priced at noise. The boundary is exact: 384000 eats,
+  383999 refuses by name, with nothing eaten and nothing written.
+- **The law is a public row, never a default.** From this gate on, a
+  NEW ledger must open with a second law row immediately after `V`:
+  `D \t 1 \t body6-diet-v1` for the living tree, or
+  `D \t 1 \t body6-diet-none` for a mechanism room that must eat
+  underage or red-hand streams to prove a negative. Garbage can enter
+  only under its own name. A ledger with no D row is lawful only as a
+  pre-diet chain already written; the organism refuses to CREATE one.
+  The diet never rewrites the past: bodies 1-5 chains replay under the
+  law rows they carry — the past a weight is judged by does not
+  silently change (law 2).
+- **The reader owns the diet for free.** A `G` record already seals
+  the matching s line verbatim, so `ledger_check` parses its nine
+  public fields with no new data and re-judges LIVED, LAW and HAND
+  against the ledger's own D row. A crafted diet-v1 chain carrying an
+  underage or red-hand G refuses in both hands.
+- Red hands, sealed before code: a 383999-lived signature refuses and
+  a 384000 one eats, same mouth, same text; an old life under
+  laplace-red refuses; an adult uni stream refuses — printable noise
+  is still noise; a diet-none room eats those same refused streams
+  and confesses it in its chain; replay of a pre-diet chain is
+  byte-identical to its record; creating a fresh ledger without a D
+  row refuses; a flipped or truncated D row refuses in both hands;
+  clean-room reproduces grave, ledger and every refusal byte for
+  byte.
+
+## Body 6 contract (frozen before code)
+
+The circulation lets the Method's first weights finally touch the
+field — under total witness, and nowhere else. One command changes: an
+unfold may be asked to circulate, spending living LIT notes on its
+ranking. Every other organ keeps its byte-identical row: propose,
+examine, petition, mint, franchise, ablate and a plain unfold answer
+byte-identically with and without the circulation chain present. The
+corpse remains retrieval — spliced attested speech, ranked; no clause
+of this body calls it generated speech, and law 3 stays unclaimed.
+Mechanism and voice were conflated once in a README, and that
+conflation is now a constitutional defect, not a style choice: a voice
+quote in any public text of this repository is lawful only as exact
+emitted bytes of the organism itself, carried with a receipt, from an
+agreed finished run — retrieval, corpse, fixture, probe and classifier
+are never called speech, and no seed is chosen for its beauty after
+the fact.
+
+- **Who spends.** A note may spend iff, at the spend's pinned
+  prefixes: its citizen is PASS or WEAKEN in the franchise replay; its
+  latest E verdict is LIT; it is not rent-dead (no R without a later
+  Z); and its citizen's shape is alive in the proposer derivation.
+  DIM, dead, DARK, SILENCE, SCAR-refused and unheard stay powerless
+  exactly as their bodies left them — proven again at the moment of
+  spending.
+- **The caller chooses WHETHER, never WHO.** A circulated unfold
+  spends EVERY lawful spender at its pin, in note-id order; there is
+  no way to name a subset, so a favorable jury cannot be picked. Zero
+  lawful spenders is not an error: it is a plain unfold with a
+  receipt.
+- **What spending is.** unfold's candidate set, per-source cap and
+  clause cut are untouched: every fragment of the grave is considered
+  exactly as body 1 law considers it, and a weight cannot inject,
+  create or resurrect a candidate. Spending bends order only. For
+  each candidate fragment, each spender computes the canonical 96->1
+  forward pass from its sealed blob — the same masked DIM-96 bag law
+  as its training: the citizen's shape occurrences masked before
+  expansion, the bag normalised by surviving features — yielding
+  sigma in (0,1); a fragment with no surviving features after masking
+  is indifferent to that note by law (its term is 0). The fragment's
+  resonance score becomes `score * (1 + ALPHA * B)`, where
+  `B = clamp(sum_i w_i * (2*sigma_i - 1), -1, +1)` summed in note-id
+  order, `ALPHA = 1/4` sealed, `w_i = 1` for a PASS citizen's note
+  and `1/2` for WEAKEN — the reduced mark costs at the exact moment
+  of power, again. An indifferent note (sigma = 1/2) bends nothing by
+  construction. The float law is body 5's: named IEEE-754 doubles,
+  the same forward discipline both hands already own.
+- **SPA stands at the door, named and outside.** notorch's sentence
+  phonon attention is the candidate v2 mechanic for HOW bends
+  compose; it enters only through its own preregistration, may only
+  modulate weights among candidates this law already admits, and
+  creates nothing. PatternLineage is not taken: it remains body 7
+  material — one body, one organ of power.
+- **The chain** `.mycelium.circulation`, own file, law row
+  `C \t 1 \t body6-circ-v1`, same sealing discipline. One spend is
+  one atomic row: `S \t spend-id \t prompt-digest \t after-meals \t
+  main-chain \t notes-records \t notes-chain \t spenders \t
+  plain-corpse-digest \t circ-corpse-digest`, where spenders is
+  `note-id:class` pairs in note-id order (the weight digests are
+  already sealed in the notes chain the pin names). Every circulated
+  unfold computes BOTH corpses in one run — the plain ranking and the
+  bent one — and seals both digests: influence is never claimed,
+  always witnessed as an exact diff. spend-id is monotonic; a
+  truncated tail refuses; there is no multi-row ballot to recover.
+- **The beautiful coup is caught by arithmetic.** The reader learns
+  the circulation grammar with its own hand: chain and law row; every
+  pin a real prefix; every spender's right re-derived at those pins —
+  citizenship class, LIT, rent-aliveness, shape-aliveness; every
+  forward pass recomputed from the sealed blobs by the reader's own
+  implementation (a one-layer linear law the body 5 reader already
+  owns — and this is the sealed answer to what the independent reader
+  recomputes: all of it); the bent ranking re-derived and both corpse
+  digests reproduced. A spend naming a dead, DIM or foreign note, a
+  wrong class weight, a bend outside the sealed formula, or a corpse
+  digest that does not reproduce refuses in both hands.
+- **No budget is borrowed.** Spending writes nothing into any older
+  chain and pays no rent of its own: rent stays body 5's law over
+  notes, and a note that dies between spends cannot spend until its
+  resurrection. The governor stays: one note per citizen, the
+  cooldown untouched.
+- Red hands, sealed before code: a zero-spender circulation is
+  byte-identical to plain unfold with equal corpse digests; a DIM
+  note offered as spender refuses; a rent-dead LIT cannot spend until
+  its Z; a WEAKEN bend is verifiably half a PASS bend on the same
+  fragment — two rooms, one arithmetic; ALPHA and the clamp are
+  pinned by a binary vector; a crafted S with a false class, false
+  pin or false corpse digest refuses in both hands; every command
+  except unfold is byte-identical with the circulation chain present;
+  flip, truncation and order faults refuse; clean-room reproduces the
+  chain and both corpses byte for byte.
