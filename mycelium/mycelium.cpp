@@ -83,6 +83,25 @@ static uint64_t fnv64(const void *p, size_t n, uint64_t h) {
     return h;
 }
 
+static void f32_to_le(char *out, float value) {
+    uint32_t bits;
+    memcpy(&bits, &value, sizeof bits);
+    out[0] = (char)(bits & 0xffu);
+    out[1] = (char)((bits >> 8) & 0xffu);
+    out[2] = (char)((bits >> 16) & 0xffu);
+    out[3] = (char)((bits >> 24) & 0xffu);
+}
+
+static float f32_from_le(const char *in) {
+    uint32_t bits = (uint32_t)(uint8_t)in[0] |
+                    ((uint32_t)(uint8_t)in[1] << 8) |
+                    ((uint32_t)(uint8_t)in[2] << 16) |
+                    ((uint32_t)(uint8_t)in[3] << 24);
+    float value;
+    memcpy(&value, &bits, sizeof value);
+    return value;
+}
+
 static std::string hex16(uint64_t v) {
     char b[17];
     snprintf(b, sizeof b, "%016llx", (unsigned long long)v);
@@ -2204,7 +2223,18 @@ static NoteWeights note_train(const NoteDataset &ds, uint64_t steps,
     NoteWeights out;
     for (int d = 0; d < DIM; ++d) out.w[d] = W->data[d];
     out.bias = B->data[0];
-    double scaled = loss * 1e6;
+    double final_bits = 0.0;
+    for (const auto &ex : ds.train) {
+        double z = (double)out.bias;
+        for (int d = 0; d < DIM; ++d)
+            z += (double)out.w[d] * (double)ex.x[d];
+        double p = 1.0 / (1.0 + std::exp(-z));
+        if (p < 1e-7) p = 1e-7;
+        if (p > 1.0 - 1e-7) p = 1.0 - 1e-7;
+        final_bits += ex.label ? -std::log2(p) : -std::log2(1.0 - p);
+    }
+    final_bits /= (double)n;
+    double scaled = final_bits * 1e6;
     out.loss_microbits =
         scaled > 0.0 && scaled < 9e18 ? (uint64_t)llround(scaled) : 0;
     nt_tape_destroy();
@@ -2228,10 +2258,8 @@ static uint64_t note_holdout_hits(const NoteWeights &nw,
 
 static std::string note_blob_bytes(const NoteWeights &nw) {
     std::string blob(NOTE_BLOB_BYTES, '\0');
-    float all[DIM + 1];
-    for (int d = 0; d < DIM; ++d) all[d] = nw.w[d];
-    all[DIM] = nw.bias;
-    memcpy(&blob[0], all, NOTE_BLOB_BYTES);
+    for (int d = 0; d < DIM; ++d) f32_to_le(&blob[(size_t)d * 4], nw.w[d]);
+    f32_to_le(&blob[(size_t)DIM * 4], nw.bias);
     return blob;
 }
 
@@ -2240,6 +2268,26 @@ static uint64_t forge_digest(const char *path, bool *present) {
     if (!read_file(path, raw)) { *present = false; return 0; }
     *present = true;
     return fnv64(raw.data(), raw.size(), FNV_SEED);
+}
+
+static uint64_t note_seed_for(const std::string &version,
+                              const std::string &unit_hex) {
+    std::string src = std::string("note:") + version + ":" + unit_hex;
+    return fnv64(src.data(), src.size(), FNV_SEED);
+}
+
+static bool note_shape_alive_at(const Mycelium &m,
+                                const std::vector<std::string> &shape,
+                                uint64_t after_meals, uint64_t main_chain) {
+    std::string joined;
+    for (size_t i = 0; i < shape.size(); ++i) {
+        if (i) joined += ' ';
+        joined += shape[i];
+    }
+    ProposalSnapshot snap = proposal_snapshot(m, after_meals, main_chain);
+    for (const auto &st : snap.states)
+        if (st.shape == joined && st.alive) return true;
+    return false;
 }
 
 struct NoteRec {
@@ -2258,7 +2306,7 @@ struct NoteRec {
     std::vector<Training> ts;
     /* rent state: 1 = alive, 0 = in the morgue */
     int alive = 1;
-    uint64_t last_rent_meal = 0;
+    uint64_t last_event_meal = 0;
 };
 
 struct Notes {
@@ -2268,6 +2316,7 @@ struct Notes {
     uint64_t records = 0;
     bool law_seen = false;
     std::vector<NoteRec> notes;
+    uint64_t open_training = 0;
 
     Notes(const Mycelium &myc, const Parliament &parl) : m(myc), pl(parl) {}
 
@@ -2330,7 +2379,8 @@ struct Notes {
             die("cannot seal weight blob");
     }
 
-    void verify_blob(const std::string &weight_hex, uint64_t lineno) const {
+    NoteWeights verify_blob(const std::string &weight_hex,
+                            uint64_t lineno) const {
         std::string blob;
         std::string path = std::string(NOTES_DIR) + "/" + weight_hex;
         if (!read_file(path, blob))
@@ -2342,12 +2392,16 @@ struct Notes {
         if (hex16(fnv64(blob.data(), blob.size(), FNV_SEED)) != weight_hex)
             die("notes line " + std::to_string(lineno) +
                 ": weight blob digest mismatch");
-        float all[DIM + 1];
-        memcpy(all, blob.data(), NOTE_BLOB_BYTES);
-        for (int d = 0; d <= DIM; ++d)
-            if (!std::isfinite(all[d]))
+        NoteWeights nw{};
+        for (int d = 0; d <= DIM; ++d) {
+            float value = f32_from_le(blob.data() + (size_t)d * 4);
+            if (!std::isfinite(value))
                 die("notes line " + std::to_string(lineno) +
                     ": weight blob holds a non-finite float");
+            if (d == DIM) nw.bias = value;
+            else nw.w[d] = value;
+        }
+        return nw;
     }
 
     /* verify a training receipt's integer side against its own pins */
@@ -2377,7 +2431,11 @@ struct Notes {
             if (t.verdict != want)
                 die("notes line " + std::to_string(lineno) + ": false verdict");
         }
-        verify_blob(t.weight_hex, lineno);
+        NoteWeights nw = verify_blob(t.weight_hex, lineno);
+        uint64_t hits = note_holdout_hits(nw, ds.holdout);
+        if (hits != t.hits)
+            die("notes line " + std::to_string(lineno) +
+                ": false holdout hits");
     }
 
     void load(const School &sc_now) {
@@ -2412,25 +2470,27 @@ struct Notes {
                 die("notes chain broken at line " + std::to_string(lineno));
             chain = next;
             records++;
-            replay(payload, lineno);
+            replay(payload, lineno, sc_now);
         }
         if (!law_seen) die("notes has no law record");
         /* verify every complete training against its pins; the trailing
            record may be an honest interruption, recovered by recover() */
+        size_t unfinished = 0;
         for (size_t i = 0; i < notes.size(); ++i) {
             const NoteRec &n = notes[i];
             for (size_t t = 0; t < n.ts.size(); ++t) {
-                bool tail = i + 1 == notes.size() && t + 1 == n.ts.size();
-                if (!n.ts[t].has_e && !tail)
-                    die("notes holds an unfinished training before its tip");
+                if (!n.ts[t].has_e) unfinished++;
                 verify_training(n, n.ts[t], sc_now, records);
             }
             if (n.ts.empty() && i + 1 != notes.size())
                 die("notes holds a mint without training before its tip");
         }
+        if (unfinished > 1)
+            die("notes holds more than one unfinished training");
     }
 
-    void replay(const std::string &payload, uint64_t lineno) {
+    void replay(const std::string &payload, uint64_t lineno,
+                const School &sc_now) {
         auto f = split_tabs(payload);
         const std::string where = "notes line " + std::to_string(lineno);
         if (f.empty()) die(where + " is empty");
@@ -2441,6 +2501,10 @@ struct Notes {
             return;
         }
         if (!law_seen) die(where + ": record before notes law");
+        if (open_training && f[0] != "E")
+            die(where + ": record between T and its E");
+        if (!notes.empty() && notes.back().ts.empty() && f[0] != "T")
+            die(where + ": record between M and its first T");
         if (f[0] == "M") {
             if (!notes.empty()) {
                 const NoteRec &prev = notes.back();
@@ -2471,7 +2535,13 @@ struct Notes {
                 die(where + ": M names no citizen at its pinned hour");
             if (by_identity(n.version, n.unit_hex))
                 die(where + ": identity already minted");
-            n.last_rent_meal = n.after_meals;
+            if (n.seed != note_seed_for(n.version, n.unit_hex))
+                die(where + ": M seed is not derived from its identity");
+            auto shape = shape_of_unit(sc_now, n.unit_hex);
+            if (shape.empty()) die(where + ": citizen unit has no glyph shape");
+            if (!note_shape_alive_at(m, shape, n.after_meals, n.main_chain))
+                die(where + ": mint pinned at a starved hour");
+            n.last_event_meal = n.after_meals;
             notes.push_back(std::move(n));
         } else if (f[0] == "T") {
             if (f.size() != 16) die(where + ": T arity");
@@ -2479,8 +2549,8 @@ struct Notes {
             if (!canon_u64(f[1], &id) || id == 0 || id > notes.size())
                 die(where + ": T names no note");
             NoteRec &n = notes[id - 1];
-            if (id != notes.size())
-                die(where + ": T outside the open note");
+            if (notes.back().ts.empty() && id != notes.size())
+                die(where + ": first T does not close the open mint");
             if (!n.ts.empty() && !n.ts.back().has_e)
                 die(where + ": T before the last training closed");
             if (!n.alive) die(where + ": T for a note in the morgue");
@@ -2508,21 +2578,38 @@ struct Notes {
                 if (t.after_meals < n.ts.back().after_meals + NOTE_COOLDOWN)
                     die(where + ": training inside the cooldown");
             }
+            if (t.seed != n.seed)
+                die(where + ": training seed forked from the mint");
+            if (t.after_meals < n.last_event_meal)
+                die(where + ": training pin travels backward");
             if (t.steps == 0 ||
                 (t.steps != NOTE_STEPS_PASS && t.steps != NOTE_STEPS_WEAKEN))
                 die(where + ": T steps outside the governed budgets");
+            const Parliament::Admission *a =
+                pl.citizen_at(n.parl_records, n.version, n.unit_hex);
+            uint64_t budget =
+                a && a->verdict == "PASS" ? NOTE_STEPS_PASS : NOTE_STEPS_WEAKEN;
+            if (t.steps != budget)
+                die(where + ": T budget does not match the citizen's verdict");
+            auto shape = shape_of_unit(sc_now, n.unit_hex);
+            if (shape.empty()) die(where + ": citizen unit has no glyph shape");
+            if (!note_shape_alive_at(m, shape, t.after_meals, t.main_chain))
+                die(where + ": training pinned at a starved hour");
             n.ts.push_back(std::move(t));
+            n.last_event_meal = n.ts.back().after_meals;
+            open_training = id;
         } else if (f[0] == "E") {
             if (f.size() != 3) die(where + ": E arity");
             uint64_t id;
             if (!canon_u64(f[1], &id) || id == 0 || id > notes.size())
                 die(where + ": E names no note");
             NoteRec &n = notes[id - 1];
-            if (n.ts.empty() || n.ts.back().has_e)
+            if (id != open_training || n.ts.empty() || n.ts.back().has_e)
                 die(where + ": E without an open training");
             if (f[2] != "LIT" && f[2] != "DIM") die(where + ": E verdict class");
             n.ts.back().has_e = true;
             n.ts.back().verdict = f[2];
+            open_training = 0;
         } else if (f[0] == "R" || f[0] == "Z") {
             if (f.size() != 4) die(where + ": rent arity");
             uint64_t id, after, mc;
@@ -2531,14 +2618,21 @@ struct Notes {
                 die(where + ": rent field grammar");
             NoteRec &n = notes[id - 1];
             if (!m.prefixes.count({after, mc})) die(where + ": rent main prefix");
+            if (after < n.last_event_meal)
+                die(where + ": rent pin travels backward");
+            auto shape = shape_of_unit(sc_now, n.unit_hex);
+            if (shape.empty()) die(where + ": citizen unit has no glyph shape");
+            bool truth = note_shape_alive_at(m, shape, after, mc);
             if (f[0] == "R") {
                 if (!n.alive) die(where + ": R for a note already in the morgue");
+                if (truth) die(where + ": R pinned at a well-fed hour");
                 n.alive = 0;
             } else {
                 if (n.alive) die(where + ": Z for a note not in the morgue");
+                if (!truth) die(where + ": Z pinned at a starved hour");
                 n.alive = 1;
             }
-            n.last_rent_meal = after;
+            n.last_event_meal = after;
         } else {
             die(where + ": unknown notes record type");
         }
@@ -2548,6 +2642,11 @@ struct Notes {
     void seal_training(NoteRec &n, uint64_t after_meals, uint64_t main_chain,
                        uint64_t fh, uint64_t fl, uint64_t seed, uint64_t steps,
                        const NoteDataset &ds, const NoteWeights &nw) {
+        for (int d = 0; d < DIM; ++d)
+            if (!std::isfinite(nw.w[d]))
+                die("training produced a non-finite weight");
+        if (!std::isfinite(nw.bias))
+            die("training produced a non-finite bias");
         std::string blob = note_blob_bytes(nw);
         uint64_t wd = fnv64(blob.data(), blob.size(), FNV_SEED);
         write_blob(blob, wd);
@@ -2589,30 +2688,40 @@ struct Notes {
                (unsigned long long)baseline, t.weight_hex.c_str());
         printf("  E %s\n", verdict);
         n.ts.push_back(std::move(t));
+        n.last_event_meal = after_meals;
     }
 
     /* recover a trailing interrupted mint or training exactly once */
     void recover(const School &sc_now) {
         if (notes.empty()) return;
-        NoteRec &n = notes.back();
-        if (!n.ts.empty() && !n.ts.back().has_e) {
+        if (open_training) {
+            NoteRec &n = notes[open_training - 1];
             NoteRec::Training &t = n.ts.back();
             const char *verdict = t.hits > t.baseline ? "LIT" : "DIM";
             append("E\t" + std::to_string(n.id) + "\t" + verdict);
             t.has_e = true;
             t.verdict = verdict;
+            open_training = 0;
             fprintf(stderr, "notes: recovered training of note %llu as %s\n",
                     (unsigned long long)n.id, verdict);
             return;
         }
+        NoteRec &n = notes.back();
         if (n.ts.empty()) {
             auto shape = shape_of_unit(sc_now, n.unit_hex);
             if (shape.empty()) die("recovery: citizen unit has no glyph shape");
+            if (!note_shape_alive_at(m, shape, n.after_meals, n.main_chain))
+                die("recovery: mint pinned at a starved hour");
             NoteDataset ds = note_dataset(m, shape, n.after_meals);
             if (!ds.ok) die("recovery: " + ds.refusal);
             const Parliament::Admission *a =
                 pl.citizen_at(n.parl_records, n.version, n.unit_hex);
             if (!a) die("recovery: mint names no citizen");
+            bool hp, lp;
+            uint64_t fh = forge_digest(FORGE_HEADER_PATH, &hp);
+            uint64_t fl = forge_digest(FORGE_LIB_PATH, &lp);
+            if (!hp || !lp || fh != n.forge_h || fl != n.forge_l)
+                die("recovery: installed forge no longer matches the mint pin");
             uint64_t steps = a->verdict == "PASS" ? NOTE_STEPS_PASS
                                                   : NOTE_STEPS_WEAKEN;
             NoteWeights nw = note_train(ds, steps, n.seed);
@@ -2628,20 +2737,12 @@ struct Notes {
         for (auto &n : notes) {
             auto shape = shape_of_unit(sc_now, n.unit_hex);
             if (shape.empty()) continue;
-            std::string joined;
-            for (size_t i = 0; i < shape.size(); ++i) {
-                if (i) joined += ' ';
-                joined += shape[i];
-            }
-            ProposalSnapshot snap = proposal_snapshot(m, m.meals, m.led.chain);
-            bool alive_now = false;
-            for (const auto &st : snap.states)
-                if (st.shape == joined && st.alive) alive_now = true;
+            bool alive_now = note_shape_alive_at(m, shape, m.meals, m.led.chain);
             if (n.alive && !alive_now) {
                 append("R\t" + std::to_string(n.id) + "\t" +
                        std::to_string(m.meals) + "\t" + hex16(m.led.chain));
                 n.alive = 0;
-                n.last_rent_meal = m.meals;
+                n.last_event_meal = m.meals;
                 printf("  R note %llu at meal %llu (the morgue keeps the "
                        "weight)\n",
                        (unsigned long long)n.id, (unsigned long long)m.meals);
@@ -2649,7 +2750,7 @@ struct Notes {
                 append("Z\t" + std::to_string(n.id) + "\t" +
                        std::to_string(m.meals) + "\t" + hex16(m.led.chain));
                 n.alive = 1;
-                n.last_rent_meal = m.meals;
+                n.last_event_meal = m.meals;
                 printf("  Z note %llu at meal %llu (the same identity "
                        "returns)\n",
                        (unsigned long long)n.id, (unsigned long long)m.meals);
@@ -2688,7 +2789,6 @@ static void cmd_mint(Mycelium &m, const std::string &glyph_str) {
     pr.load(m);
     Parliament pl(m);
     pl.load(pr);
-    pl.recover();
     refuse_open_boundaries(sc, pl);
     if (glyph > sc.legalised.size()) die("mint needs an existing glyph");
     const std::string &shape_str = sc.legalised[glyph - 1];
@@ -2713,8 +2813,7 @@ static void cmd_mint(Mycelium &m, const std::string &glyph_str) {
     NoteDataset ds = note_dataset(m, shape, m.meals);
     if (!ds.ok) die("mint refused: " + ds.refusal);
     uint64_t steps = a->verdict == "PASS" ? NOTE_STEPS_PASS : NOTE_STEPS_WEAKEN;
-    std::string seed_src = std::string("note:") + RECOGNIZER_V1 + ":" + unit;
-    uint64_t seed = fnv64(seed_src.data(), seed_src.size(), FNV_SEED);
+    uint64_t seed = note_seed_for(RECOGNIZER_V1, unit);
     NoteRec n;
     n.id = no.notes.size() + 1;
     n.unit_hex = unit;
@@ -2726,7 +2825,7 @@ static void cmd_mint(Mycelium &m, const std::string &glyph_str) {
     n.forge_h = fh;
     n.forge_l = fl;
     n.seed = seed;
-    n.last_rent_meal = m.meals;
+    n.last_event_meal = m.meals;
     no.ensure_law();
     no.append("M\t" + std::to_string(n.id) + "\t" + unit + "\t" + RECOGNIZER_V1 +
               "\t" + std::to_string(pl.records) + "\t" + hex16(pl.chain) + "\t" +
@@ -2756,7 +2855,6 @@ static void cmd_retrain(Mycelium &m, const std::string &id_str) {
     pr.load(m);
     Parliament pl(m);
     pl.load(pr);
-    pl.recover();
     refuse_open_boundaries(sc, pl);
     Notes no(m, pl);
     no.load(sc);
@@ -2764,8 +2862,6 @@ static void cmd_retrain(Mycelium &m, const std::string &id_str) {
     no.reconcile_rent(sc);
     if (id > no.notes.size()) die("retrain names no note");
     NoteRec &n = no.notes[id - 1];
-    if (id != no.notes.size())
-        die("retrain refused: only the open note may retrain in this body");
     if (!n.alive) die("retrain refused: the note is in the morgue");
     if (!n.ts.empty() &&
         m.meals < n.ts.back().after_meals + NOTE_COOLDOWN)
@@ -2794,7 +2890,7 @@ static void cmd_notes(Mycelium &m) {
     pr.load(m);
     Parliament pl(m);
     pl.load(pr);
-    pl.recover();
+    refuse_open_boundaries(sc, pl);
     Notes no(m, pl);
     no.load(sc);
     no.recover(sc);

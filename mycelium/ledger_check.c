@@ -1281,14 +1281,42 @@ _Noreturn static void refuse_notes(unsigned long long line, const char *what) {
     exit(1);
 }
 
-/* does the fragment hold a complete shape occurrence; do the
-   occurrences cover every token (nothing would survive the mask) */
-static void r_frag_occurrence(const RFrag *f, const char *shape,
-                              size_t shape_len, size_t arity,
-                              int *any, int *all_covered) {
+typedef struct {
+    uint64_t key;
+    size_t order;
+    float x[96];
+} RNoteCand;
+
+static void r_note_add_gram(const unsigned char *s, size_t n,
+                            double bag[96]) {
+    uint32_t h = 2166136261u;
+    size_t i, d;
+    for (i = 0; i < n; ++i) { h ^= s[i]; h *= 16777619u; }
+    for (d = 0; d < 96; ++d) {
+        h ^= h >> 13; h *= 1597334677u; h ^= h >> 16;
+        bag[d] += (double)(h & 0xffffu) / 32768.0 - 1.0;
+    }
+}
+
+static uint64_t r_note_frag_key(const RFrag *f) {
+    uint64_t h = 0xcbf29ce484222325ULL;
+    size_t i;
+    for (i = 0; i < f->ntoks; ++i) {
+        static const unsigned char sep = 0x1f;
+        if (i) h = hash_fold(&sep, 1, h);
+        h = hash_fold((const unsigned char *)f->toks[i].bytes,
+                      f->toks[i].len, h);
+    }
+    return h;
+}
+
+/* Returns an owned coverage map and whether a complete occurrence exists. */
+static unsigned char *r_note_coverage(const RFrag *f, const char *shape,
+                                      size_t shape_len, size_t arity,
+                                      int *any) {
     size_t i, k;
-    char *covered = calloc(f->ntoks ? f->ntoks : 1, 1);
-    if (!covered) { fprintf(stderr, "ledger_check: memory\n"); exit(1); }
+    unsigned char *covered = calloc(f->ntoks ? f->ntoks : 1, 1);
+    if (!covered) return NULL;
     *any = 0;
     if (arity && f->ntoks >= arity)
         for (i = 0; i + arity <= f->ntoks; ++i)
@@ -1296,55 +1324,145 @@ static void r_frag_occurrence(const RFrag *f, const char *shape,
                 *any = 1;
                 for (k = 0; k < arity; ++k) covered[i + k] = 1;
             }
-    *all_covered = 1;
-    for (i = 0; i < f->ntoks; ++i)
-        if (!covered[i]) { *all_covered = 0; break; }
-    free(covered);
+    return covered;
 }
 
-/* the sealed dataset law in integers only: masked positives with
-   survivors, negatives trimmed to equal count, stratified 1-in-4
-   holdout per label.  The counts do not depend on the hash order, so
-   the reader never sorts.  -1 = too few negatives, -2 = a split lost
-   a whole label; a lawful writer refuses both before any T exists. */
+/* The writer's exact DIM-96 bag: token boundary bytes, byte trigrams,
+   surviving-window normalization, and no splice across a masked token. */
+static uint64_t r_note_features(const RFrag *f, const unsigned char *covered,
+                                float out[96]) {
+    double bag[96] = {0};
+    uint64_t windows = 0;
+    size_t t, i, d;
+    for (t = 0; t < f->ntoks; ++t) {
+        if (covered[t]) continue;
+        size_t wn = f->toks[t].len + 2;
+        unsigned char *w = malloc(wn ? wn : 1);
+        if (!w) return UINT64_MAX;
+        w[0] = '^';
+        memcpy(w + 1, f->toks[t].bytes, f->toks[t].len);
+        w[wn - 1] = '$';
+        if (wn >= 3) {
+            for (i = 0; i + 3 <= wn; ++i) {
+                r_note_add_gram(w + i, 3, bag);
+                windows++;
+            }
+        } else {
+            r_note_add_gram(w, wn, bag);
+            windows++;
+        }
+        free(w);
+    }
+    for (d = 0; d < 96; ++d)
+        out[d] = windows ? (float)(bag[d] / (double)windows) : 0.0f;
+    return windows;
+}
+
+static int r_note_cand_cmp(const void *ap, const void *bp) {
+    const RNoteCand *a = ap, *b = bp;
+    if (a->key < b->key) return -1;
+    if (a->key > b->key) return 1;
+    return a->order < b->order ? -1 : a->order > b->order;
+}
+
+static int r_note_push(RNoteCand **v, size_t *n, size_t *cap,
+                       const RNoteCand *cand) {
+    if (*n == *cap) {
+        size_t next = *cap ? *cap * 2 : 16;
+        RNoteCand *p = realloc(*v, next * sizeof *p);
+        if (!p) return 0;
+        *v = p;
+        *cap = next;
+    }
+    (*v)[(*n)++] = *cand;
+    return 1;
+}
+
+/* Rebuild the actual selected examples, not only their cardinalities.
+   The independent hand sorts the hash-selected negatives and performs
+   the canonical linear forward pass, while still never retraining. */
 static int r_note_dataset(const char *shape, size_t shape_len, uint64_t arity,
-                          uint64_t after, uint64_t *pos, uint64_t *neg,
-                          uint64_t *hpos, uint64_t *hneg) {
-    uint64_t pn = 0, nn = 0;
-    size_t i;
+                          uint64_t after, const float weight[97],
+                          uint64_t *pos, uint64_t *neg, uint64_t *hpos,
+                          uint64_t *hneg, uint64_t *hits) {
+    RNoteCand *pv = NULL, *nv = NULL;
+    size_t pn = 0, nn = 0, pc = 0, nc = 0, i, d;
+    *hits = 0;
     for (i = 0; i < rfrag_n; ++i) {
         const RFrag *f = &rfrags[i];
         if (f->meal > after) continue;
-        int any, all_covered;
-        r_frag_occurrence(f, shape, shape_len, (size_t)arity, &any,
-                          &all_covered);
+        int any;
+        unsigned char *covered =
+            r_note_coverage(f, shape, shape_len, (size_t)arity, &any);
+        if (!covered) goto memory;
+        RNoteCand cand;
+        cand.key = r_note_frag_key(f);
+        cand.order = i;
+        uint64_t windows = r_note_features(f, covered, cand.x);
+        free(covered);
+        if (windows == UINT64_MAX) goto memory;
         if (any) {
-            if (all_covered) continue; /* nothing survives the mask */
-            pn++;
-        } else {
-            nn++;
+            if (!windows) continue;
+            if (!r_note_push(&pv, &pn, &pc, &cand)) goto memory;
+        } else if (!r_note_push(&nv, &nn, &nc, &cand)) {
+            goto memory;
         }
     }
-    if (nn < pn) return -1;
+    if (nn < pn) { free(pv); free(nv); return -1; }
+    qsort(pv, pn, sizeof *pv, r_note_cand_cmp);
+    qsort(nv, nn, sizeof *nv, r_note_cand_cmp);
     nn = pn;
-    *pos = pn;
-    *neg = nn;
-    *hpos = pn ? (pn + 3) / 4 : 0;
-    *hneg = *hpos;
-    if (!*hpos || !*hneg || pn - *hpos == 0 || nn - *hneg == 0) return -2;
+    *pos = (uint64_t)pn;
+    *neg = (uint64_t)nn;
+    *hpos = pn ? (uint64_t)((pn + 3) / 4) : 0;
+    *hneg = nn ? (uint64_t)((nn + 3) / 4) : 0;
+    if (!*hpos || !*hneg || pn - (size_t)*hpos == 0 ||
+            nn - (size_t)*hneg == 0) {
+        free(pv); free(nv); return -2;
+    }
+    for (int label = 0; label < 2; ++label) {
+        RNoteCand *side = label ? pv : nv;
+        size_t sn = label ? pn : nn;
+        for (i = 0; i < sn; i += 4) {
+            double z = (double)weight[96];
+            for (d = 0; d < 96; ++d)
+                z += (double)weight[d] * (double)side[i].x[d];
+            if ((z >= 0.0 ? 1 : 0) == label) (*hits)++;
+        }
+    }
+    free(pv);
+    free(nv);
     return 1;
+memory:
+    free(pv);
+    free(nv);
+    return -3;
 }
 
 typedef struct {
     char unit_hex[17];
     char version[33];
     uint64_t parl_records, after_meals, main_chain, forge_h, forge_l, seed;
-    uint64_t last_t_meal, last_hits, last_base;
+    uint64_t last_t_meal, last_event_meal, last_hits, last_base;
     const char *shape;
     size_t shape_len;
     uint64_t arity;
     int open_t, has_t, alive;
 } RNote;
+
+static uint64_t r_note_seed(const char *version, const char *unit_hex) {
+    static const unsigned char head[] = "note:";
+    static const unsigned char colon = ':';
+    uint64_t h = hash_fold(head, sizeof head - 1, 0xcbf29ce484222325ULL);
+    h = hash_fold((const unsigned char *)version, strlen(version), h);
+    h = hash_fold(&colon, 1, h);
+    return hash_fold((const unsigned char *)unit_hex, strlen(unit_hex), h);
+}
+
+static uint32_t r_u32_le(const unsigned char p[4]) {
+    return (uint32_t)p[0] | ((uint32_t)p[1] << 8) |
+           ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);
+}
 
 static void check_notes(void) {
     FILE *nf = fopen(notes_path, "rb");
@@ -1359,6 +1477,7 @@ static void check_notes(void) {
     size_t cap = 0;
     PSchool ps;
     int have_school = parse_school_prefix(0, &ps);
+    size_t open_idx = (size_t)-1;
     for (;;) {
         size_t len = 0;
         int c, sealed = 0;
@@ -1397,6 +1516,10 @@ static void check_notes(void) {
             continue;
         }
         if (!law_seen) refuse_notes(lineno, "record before notes law");
+        if (open_idx != (size_t)-1 && type != 'E')
+            refuse_notes(lineno, "record between T and its E");
+        if (ns_n && !ns[ns_n - 1].has_t && type != 'T')
+            refuse_notes(lineno, "record between M and its first T");
         if (type == 'M') {
             uint64_t id, uid, pr_, pc, am, mc, fh, flg, sd;
             size_t k;
@@ -1434,13 +1557,18 @@ static void check_notes(void) {
             n->forge_l = flg;
             n->seed = sd;
             n->alive = 1;
+            n->last_event_meal = am;
             if (!parl_citizen_at(pr_, n->version, n->unit_hex))
                 refuse_notes(lineno, "M names no citizen at its pinned hour");
+            if (sd != r_note_seed(n->version, n->unit_hex))
+                refuse_notes(lineno, "M seed is not derived from its identity");
             for (k = 0; k + 1 < ns_n; ++k)
                 if (!strcmp(ns[k].version, n->version) &&
                         !strcmp(ns[k].unit_hex, n->unit_hex))
                     refuse_notes(lineno, "identity already minted");
-            if (have_school) {
+            if (!have_school)
+                refuse_notes(lineno, "citizen unit has no school");
+            {
                 size_t g;
                 for (g = 0; g < ps.nlegal; ++g) {
                     PHyp *h = &ps.hyps[ps.legal[g]];
@@ -1468,7 +1596,8 @@ static void check_notes(void) {
             if (!parse_u64(fl[1], fn[1], &id) || id == 0 || id > ns_n)
                 refuse_notes(lineno, "T names no note");
             RNote *n = &ns[id - 1];
-            if (id != ns_n) refuse_notes(lineno, "T outside the open note");
+            if (!ns[ns_n - 1].has_t && id != ns_n)
+                refuse_notes(lineno, "first T does not close the open mint");
             if (n->open_t) refuse_notes(lineno, "T before the last training closed");
             if (!n->alive) refuse_notes(lineno, "T for a note in the morgue");
             if (!parse_u64(fl[2], fn[2], &am) || !parse_hex16(fl[3], fn[3], &mc) ||
@@ -1493,6 +1622,12 @@ static void check_notes(void) {
                                  "first training does not repeat the mint pin");
             } else if (am < n->last_t_meal + 8)
                 refuse_notes(lineno, "training inside the cooldown");
+            if (sd != n->seed)
+                refuse_notes(lineno, "training seed forked from the mint");
+            if (am < n->last_event_meal)
+                refuse_notes(lineno, "training pin travels backward");
+            if (n->shape && !r_shape_alive(n->shape, n->shape_len, am))
+                refuse_notes(lineno, "training pinned at a starved hour");
             if (steps != 512 && steps != 256)
                 refuse_notes(lineno, "T steps outside the governed budgets");
             {
@@ -1506,16 +1641,10 @@ static void check_notes(void) {
             }
             if (base != (hp > hn ? hp : hn)) refuse_notes(lineno, "false baseline");
             if (hits > hp + hn) refuse_notes(lineno, "holdout hits exceed the holdout");
-            if (have_school) {
-                uint64_t rp, rn, rhp, rhn;
-                if (r_note_dataset(n->shape, n->shape_len, n->arity, am,
-                                   &rp, &rn, &rhp, &rhn) < 1 ||
-                        rp != pos || rn != neg || rhp != hp || rhn != hn)
-                    refuse_notes(lineno, "dataset drifted from its pin");
-            }
             {
                 char path[4096];
                 unsigned char blob[97 * 4 + 1];
+                float weight[97];
                 size_t bn, d;
                 FILE *bf;
                 snprintf(path, sizeof path, "%s/%.16s", notes_dir, fl[15]);
@@ -1531,19 +1660,30 @@ static void check_notes(void) {
                     refuse_notes(lineno, "weight blob is not canonical");
                 if (hash_fold(blob, bn, 0xcbf29ce484222325ULL) != wd)
                     refuse_notes(lineno, "weight blob digest mismatch");
+                if (sizeof(float) != 4)
+                    refuse_notes(lineno, "reader has no IEEE-754 float32");
                 for (d = 0; d < 97; ++d) {
-                    float v;
-                    memcpy(&v, blob + d * 4, 4);
-                    if (!(v == v) || v > 3.4e38f || v < -3.4e38f)
+                    uint32_t bits = r_u32_le(blob + d * 4);
+                    if ((bits & 0x7f800000u) == 0x7f800000u)
                         refuse_notes(lineno,
                                      "weight blob holds a non-finite float");
+                    memcpy(&weight[d], &bits, sizeof bits);
                 }
+                uint64_t rp, rn, rhp, rhn, rhits;
+                int ds = r_note_dataset(n->shape, n->shape_len, n->arity, am,
+                                        weight, &rp, &rn, &rhp, &rhn, &rhits);
+                if (ds < 1 || rp != pos || rn != neg || rhp != hp || rhn != hn)
+                    refuse_notes(lineno, "dataset drifted from its pin");
+                if (rhits != hits)
+                    refuse_notes(lineno, "false holdout hits");
             }
             n->open_t = 1;
             n->has_t = 1;
             n->last_t_meal = am;
+            n->last_event_meal = am;
             n->last_hits = hits;
             n->last_base = base;
+            open_idx = (size_t)(id - 1);
             t_count++;
         } else if (type == 'E') {
             uint64_t id;
@@ -1552,10 +1692,12 @@ static void check_notes(void) {
             if (!parse_u64(fl[1], fn[1], &id) || id == 0 || id > ns_n)
                 refuse_notes(lineno, "E names no note");
             RNote *n = &ns[id - 1];
-            if (!n->open_t) refuse_notes(lineno, "E without an open training");
+            if (open_idx != (size_t)(id - 1) || !n->open_t)
+                refuse_notes(lineno, "E without an open training");
             want = n->last_hits > n->last_base ? "LIT" : "DIM";
             if (!field_eq(fl[2], fn[2], want)) refuse_notes(lineno, "false verdict");
             n->open_t = 0;
+            open_idx = (size_t)-1;
             e_count++;
         } else if (type == 'R' || type == 'Z') {
             uint64_t id, am, mc;
@@ -1565,6 +1707,8 @@ static void check_notes(void) {
                 refuse_notes(lineno, "rent field grammar");
             if (!prefix_has(am, mc)) refuse_notes(lineno, "rent main prefix");
             RNote *n = &ns[id - 1];
+            if (am < n->last_event_meal)
+                refuse_notes(lineno, "rent pin travels backward");
             if (type == 'R') {
                 if (!n->alive) refuse_notes(lineno, "R for a note already in the morgue");
                 if (n->shape && r_shape_alive(n->shape, n->shape_len, am))
@@ -1578,6 +1722,7 @@ static void check_notes(void) {
                 n->alive = 1;
                 z_count++;
             }
+            n->last_event_meal = am;
         } else {
             refuse_notes(lineno, "unknown notes record type");
         }
