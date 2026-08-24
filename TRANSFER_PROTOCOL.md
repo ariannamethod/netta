@@ -172,3 +172,58 @@ T start 2.0, halve on stagnation < 0.01 bits, floor 0.25 · S0
 weight 0.25 · top-3 context rows · cipher seed 0xB170C5 · ghost
 seed 0x5EED02 · half-tail seed 0x5EED03 · scramble seed 0x54AFF1E ·
 16 words by rank pairs · merges 2048 · MIN_PAIR 4 · R5 total order.
+
+## Amendments (frozen before code, same day)
+
+- **A1. Candidate-set fixture.** The builder ships a crafted fixture
+  suite, separate from R5: hand-built tiny streams driving every
+  pricing path (tri hit, tri-miss/bi hit, bi-miss/uni, empty-model
+  floor, unit longer than one byte under the R2 law). For each
+  fixture position the builder and the verifier must both emit the
+  ORDERED candidate set and the normalized probabilities, and they
+  must match exactly (1e-12). The court-1 candidate-set ambiguity is
+  closed by fixture, not by prose.
+- **A2. Prefix-causality gate.** Two auxiliary worlds share an
+  identical prefix (first 8192 bytes of W-iso) and diverge after it
+  (continuation A = W-iso's own, continuation B = ghost-law bytes,
+  seed `0x5EED04`). Everything the court emits before the divergence
+  point — predictions, candidate sets, map snapshots, ledgers,
+  authority states, losses — must be bit-identical between the two
+  runs. This machine-proves scoring causality: a chunk is priced by
+  the state built from the PAST prefix only, and the chunk's truth
+  enters the state only after its scoring.
+- **A3. The null is derived, not observed.** The empty-model price
+  follows from the frozen law: with an empty inventory the byte
+  floor gives exactly 8.000000 bits per byte, and the first-chunk
+  cold price on any world is the law-derived expectation for its
+  actual early counts, checked by fixture within 1e-9 — never an
+  empirical ceiling read off the evidence.
+- **A4. Arm truth table (normative).** The four arms and the control
+  differ ONLY as follows; everything not listed is bit-identical by
+  law, and the verifier checks that their evidence diverges only
+  where a listed object differs:
+
+  | object | cold | carrier | scrambled | oracle |
+  |---|---|---|---|---|
+  | local model (units, R2 floor) | same | same | same | same |
+  | cargo (byte backoff of S) | absent | present | present (same counts) | present |
+  | map M | absent | learned (Sinkhorn) | learned, source rows permuted after every refinement | true map, constant |
+  | prior | absent | through M | through permuted M | through true map |
+  | shadow/earn/revoke | n/a | standing law | standing law | standing law |
+  | refinement schedule | n/a | geometric | geometric | same clocks, refinement is a no-op |
+
+- **A5. Map gate classification.** The map gate (top-1 >= 90% at
+  1024, >= 99% at 4096 lived bytes on W-iso) is a PASS gate for the
+  MATCHER claim only: failing it while the oracle floor passes
+  yields "memory carries, matcher weak" and does not void the
+  court. Map accuracy on all other worlds is telemetry.
+- **A6. Confirmatory world.** The five worlds above are DEVELOPMENT
+  worlds: repairs and re-runs against them are lawful before the
+  code freeze. The verdict world is ONE additional confirmatory
+  world, chosen by Oleg or Mila only AFTER v2 `transfer.c` is
+  frozen and hashed; its construction law must be one of the frozen
+  classes (cipher / plain / half / ff over an independent text
+  named at choice time). No change to code, constants or protocol
+  after the confirmatory world is seen; the final PASS wording is
+  decided on the confirmatory world with the development worlds
+  reported alongside.
