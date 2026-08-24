@@ -44,3 +44,42 @@ The field's status is undecided until the independent verifier
 (separate hand, written from PROTOCOL.md alone) recomputes
 everything. No coherence claim is made or implied; speech files are
 qualitative artifacts.
+
+## NEXT / transfer — hypothesis on record, NOT an amendment
+(recorded 2026-08-24 by Oleg's word, authored by Claude-Desktop;
+Body 0, its protocol, code and artifacts stay frozen; nothing here is
+implemented before the independent verdict on Body 0)
+
+If the judge confirms that the word-level baseline beats learned
+units, that does not make NETTA word-level. It means the useful
+statistical scale of language sits near words — and NETTA must EARN
+units of that scale herself while staying grounded in raw bytes,
+because a word inventory is a closed map of one city: it pays a
+brutal per-byte escape on unseen words and transfers nothing across
+worlds and scripts.
+
+Three-floor ontology to keep: raw bytes -> learned lexical units ->
+transferable relational experience. Bytes are the physics of a
+world. Units are locally learned objects. What travels between
+worlds is neither literal n-gram counts nor a gifted dictionary but
+a unit's RELATIONAL PROFILE: its neighbourhood types, continuation
+predictability, left/right geometry, transition entropy, distance
+structure. Experience travels; the city map does not.
+
+Law kept in a testable form: global experience != local authority.
+Experience from world A enters world B only as a prior; its local
+weight in B starts at zero and grows only on B's future evidence.
+
+Pre-sketched falsifiable transfer court (frozen wording, to be
+preregistered properly before any transfer body is built):
+- newborn(B): never saw A;
+- traveller(A->B): lived A, carries structured transferable memory;
+- shuffled-traveller(A->B): same memory volume, correspondence and
+  relations permuted.
+On the first N bytes of world B, compare prospective held-out loss.
+Transfer is earned only if the traveller beats BOTH the newborn and
+the shuffled traveller stably. A traveller worse than a newborn
+means the past was interference — a full result too.
+
+The word-level baseline is not an enemy; it is the ruler showing
+what scale NETTA's own units must still reach.
