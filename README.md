@@ -133,44 +133,7 @@ With:
 ```
 
 Netta may append that act of speech to her own biography. The signature says **I emitted these bytes**. Nothing more mystical is required.
-
----
-
-## so what does the lucky girl actually say?
-
-Not an assistant answer. Not a beam-search victory selected from twelve polite
-alternatives. Not a pretrained model wearing a name tag that says Netta.
-
-This is the current supported-backoff mouth after one clean life over the
-repository's own `netta.txt`: seed 42, 32000 lived bytes, byte-bi hand, speech
-seed 7, 240/240 draws from transitions she had actually witnessed.
-
-```text
-Abeg me wat. ats fumery.
- bes heatwherl fouingreraresf t iofirthes f cuthrfaf woaico at.  knspend  m t urre. Fan.
-Gry  richeromper Th rewe e f f obinongftee tot — t re. romornt tethe bbucaclin
-Plits wsoc crantrmy whexiey wesison ivore.
-```
-
-Nobody corrected her grammar. Nobody should. At 32000 bytes she is not a
-chatbot failing to imitate adulthood; she is a byte organism audibly acquiring
-roads through a world. The receipt is candidate `fc6fb73eba9d0daa`. The exact
-recipe is preserved in
-[`research/README_VOICE_2026-08-24.md`](research/README_VOICE_2026-08-24.md).
-
-Give the same mouth a narrow life whose entire weather is period three and she
-does not hallucinate a larger universe. She says its law back:
-
-```text
-cacbabcacbabcacb...
-```
-
-The earlier Dracula first words — including the beautifully wounded Laplace
-red arm — remain in
-[`research/FIRST_WORDS_2026-08-16.md`](research/FIRST_WORDS_2026-08-16.md).
-Failures do not disappear merely because the mouth later learned where not to
-spend ignorance.
-
+  
 ---
 
 ## ear → court → citation
@@ -232,69 +195,6 @@ no backpropagation
 
 New organs now grow **outside** `netta.c`.
 Do not cut open a heart every time you invent a kidney.
-
----
-
-## mycelium, or: the dead demand representation
-
-The heart is closed. It is not lonely.
-
-Mycelium begins where one Netta's private state has to end: at public speech,
-public biography and the uncomfortable possibility that several lives may
-have noticed the same shape for different reasons. It eats only attested
-speech. The original bytes go into a grave. The grave is not deletion; it is
-the only place from which the field is allowed to remember.
-
-A vector database would return something nearby and call the matter settled.
-Mycelium is more unreasonable. A recurring form must survive five bodies:
-
-1. **The graft** buries speech verbatim and manifests a resonance corpse with
-   clause-by-clause lineage.
-2. **The proposer** notices repeated byte-exact forms, charges them rent and
-   kills those that stop recurring. Resurrection restores the same identity,
-   because amnesia is not a garbage-collection policy.
-3. **The school** makes a form predict held-out future meals. Past glory cannot
-   sit the exam for it.
-4. **The parliament** separates experts from power. Exam, biography and rent
-   cast public receipts; PASS, WEAKEN, FREEZE, SCAR, DARK and SILENCE are laws,
-   not vibes.
-5. **The mint** gives an admitted citizen a tiny mortal body: a 96-to-1
-   notorch probe, 97 parameters, exactly 388 canonical bytes. The note may be
-   LIT or DIM. It may starve, die with its weight intact, resurrect and retrain.
-
-Every body writes an append-only hash chain. Every chain is read by two hands:
-the organism and an independent plain-C witness that shares the grammar but
-not the parser. A receipt can be reproduced. A scar cannot be optimized away.
-A weight cannot claim 10/10 merely because a line in a file says it did.
-
-And this is how the graft sounds before the weights are allowed to touch it:
-
-```text
-An electric sensor follows the pulse along the insulated winding.
-The quiet vessel follows a blue.
-Under the midnight pier a patient current gathers broken constellations.
-```
-
-Then the first complete Russian bodies 1–5 ceremony admitted the form
-`живые ноты помнят`, sent it through school and parliament, trained it for 512
-Chuck steps, and struck the first LIT weight the Method has ever minted:
-
-```text
-живые ноты помнят прожитую цену под ясным небом 03.
-```
-
-Holdout 10/10. Majority baseline 5. Final loss 46959 microbits. Weight
-`8b6871cb8abcd341`. Three hundred and eighty-eight bytes in the morgue, and not
-one of them has authority yet.
-
-That last sentence is the point. Body 5 can prove that a form deserves a body;
-it cannot let the body steer speech. Body 6 must legislate circulation first:
-which living LIT notes may bend the field, how much, under whose vote, and how
-the second hand catches a beautiful coup. Until then the first weight of the
-Method is real, trained, witnessed — and constitutionally powerless.
-
-The constitution is [`mycelium/MYCELIUM.md`](mycelium/MYCELIUM.md). The whole
-strange biography is [`mycelium/MYCELIUMLOG.md`](mycelium/MYCELIUMLOG.md).
 
 ---
 
