@@ -134,7 +134,8 @@ this run; labels are always recorded alongside the primary verdict
     G_o(iso) >= M  AND  G_o(plain) >= M
     AND |G_o(ghost)| <= 520
     AND G_o(half1) >= M  AND  |G_o(half2)| < M
-    AND G_o(ff) > -M.
+    AND G_o(ff) > -M
+    AND no blocking label on oracle.
 - GENERIC(w) := G_B(w) >= M AND (G_B - G_sh)(w) < M, evaluated on
   iso and plain.
 
@@ -144,7 +145,7 @@ exclusive by construction):**
 | condition | frozen primary verdict |
 |---|---|
 | B-PASS | **learned transfer earned (development)** — the final claim still requires the untouched confirmatory world of Standing Law 4 |
-| not B-PASS and ORACLE-PASS | **recognition without transport** — the loss lies between the map and the cargo, not in B |
+| not B-PASS and ORACLE-PASS and not GENERIC(iso) and not GENERIC(plain) | **recognition without transport** — the loss lies between the map and the cargo, not in B |
 | GENERIC(iso) or GENERIC(plain) | **generic carrier effect** — frequency/smoothing, not learned correspondence |
 | otherwise | **transfer not detected in this form** |
 
@@ -158,6 +159,7 @@ truncation counts, oracle-matchable set sizes.
 ## Two hands
 
 Builder emits raw artifacts and grades nothing; the independent
-verifier is written from this file alone, reconstructs worlds and
+verifier is written from exactly this file and COURT2_SNAPSHOT.md
+and from no code, reconstructs worlds and
 maps, reprices everything, and owns the verdict. All artifacts
 SHA-256-pinned in manifests; the log cites hashes only.
