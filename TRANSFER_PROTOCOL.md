@@ -22,15 +22,18 @@ the first measured run is a new experiment, named aloud.
    instruments; they touch neither matching nor cargo. The oracle is
    an upper bound for the mechanism, never a guaranteed win of the
    past-world model.
-3. **Remapping semantics.** The map is recomputed at every chunk
-   boundary from the lived prefix, never inside a chunk. When a
-   source symbol's match changes (s->d to s->d'), no shadow evidence
-   and no earned authority transfers to the new pair: the arm-level
-   ledger keeps its history, but the telemetry names every remap;
-   map churn (remap count per boundary, map size) is printed as
-   telemetry. [Ledger granularity note: authority in this court is
-   arm-level, as in court 2; per-pair ledgers remain a named
-   candidate for a later court and are not built here.]
+3. **Remapping semantics: map-epoch authority.** The map is
+   recomputed at every chunk boundary from the lived prefix, never
+   inside a chunk. Authority is arm-level (per-pair ledgers remain a
+   named candidate for a later court), so the no-inheritance promise
+   is enforced by epochs: ANY change in the matched-pair set at a
+   boundary (a remap, a new match, a dropped match) opens a new map
+   epoch, and at the epoch boundary the traveller arm's live weight
+   L resets to 0 and its shadow ledger resets to 0 — the old ledger
+   values remain in the evidence as history only, and earning starts
+   from zero under the standing earn/revoke law. A boundary where
+   the matched-pair set is unchanged continues the current epoch.
+   Epoch openings, remap counts and map sizes are telemetry.
 4. **Development-selected map needs fresh confirmation.** Greedy
    1-to-1 was chosen after seeing oracle diagnostics on W-iso, so
    every transfer-G on the development worlds is DEVELOPMENT
@@ -73,11 +76,19 @@ as court 2 froze it. Transport through the hard partial map m:
   span (court-2 law); shadow/earn/revoke as Standing Law 1;
   P_final = (1-L)P_local + L*P_prior.
 
-Local model, worlds (iso/plain/ghost/half/ff from miller + the
-causality pair), run length 131072, chunk 1024, R2 newborn floor, R5
-total-order BPE, evidence format, A1 fixtures, A2 causality gate, A3
-derived null, A8 first-chunk law — all verbatim from the court-2
-freeze (git history 3804cacf...); nothing is re-litigated here.
+**Immutable dependency (repaired: "from this file alone" was false
+as written, and the earlier reference pinned the wrong pre-A9
+hash).** The local model, worlds (iso/plain/ghost/half/ff from
+miller + the causality pair), run length 131072, chunk 1024, R2
+newborn floor, R5 total-order BPE, evidence format, A1 fixtures, A2
+causality gate, A3 derived null and A8 first-chunk law are inherited
+verbatim from the court-2 final freeze, preserved as the pinned
+snapshot file `COURT2_SNAPSHOT.md`, SHA-256
+`c5a60f6643f55ef60d21a037388d63d307351d795cb9729d038cb1258857716b`
+(14218 bytes; byte-identical to git 52b9744:TRANSFER_PROTOCOL.md).
+The independent verifier is written from EXACTLY TWO protocol files
+— this file and that snapshot — and from no code. Nothing inherited
+is re-litigated here.
 
 ## Arms
 
@@ -97,17 +108,48 @@ freeze (git history 3804cacf...); nothing is re-litigated here.
 
 ## Rulers and verdict table (frozen wording)
 
-G_N at horizons {1024, 4096, 16384, 65536}; MARGIN(N) = 0.01*N bits;
-deciding N = 16384. Ghost line 520 bits. All prior gates verbatim.
+G_N at horizons {1024, 4096, 16384, 65536}. Let M = MARGIN(16384) =
+163.84 bits; all decisions read G at the deciding horizon N = 16384.
+Ghost line 520 bits. Every boundary belongs to exactly one side.
 
-| observation (each vs its margin) | frozen verdict |
+**Blocking labels** (computed first, independently, per arm a and
+world w; the boundary belongs to the label):
+- interference(a, w) := G_a(w) <= -M;
+- surface_leak(a) := G_a(ff) <= -M (a special case of interference,
+  named separately).
+A blocking label on arm B forbids the learned-transfer verdict for
+this run; labels are always recorded alongside the primary verdict
+(multi-label evidence, single primary verdict).
+
+**Arm formulas (literal, frozen):**
+- B-PASS :=
+    G_B(iso) >= M  AND  G_B(plain) >= M
+    AND (G_B - G_sh)(iso) >= M  AND  (G_B - G_sh)(plain) >= M
+    AND |G_B(ghost)| <= 520
+    AND G_B(half1) >= M  AND  |G_B(half2)| < M
+    AND G_B(ff) > -M
+    AND no blocking label on B.
+- ORACLE-PASS (control ceiling; the oracle has no shuffled pair and
+  no shuffled term) :=
+    G_o(iso) >= M  AND  G_o(plain) >= M
+    AND |G_o(ghost)| <= 520
+    AND G_o(half1) >= M  AND  |G_o(half2)| < M
+    AND G_o(ff) > -M.
+- GENERIC(w) := G_B(w) >= M AND (G_B - G_sh)(w) < M, evaluated on
+  iso and plain.
+
+**Primary verdict — first matching row, top to bottom (mutually
+exclusive by construction):**
+
+| condition | frozen primary verdict |
 |---|---|
-| B >= MARGIN on iso AND plain; B - shuffled >= MARGIN on both; ghost <= 520; half-1 >= MARGIN and half-2 within MARGIN; ff >= -MARGIN | **learned transfer earned (development)** — final claim still requires the untouched confirmatory world of Standing Law 4 |
-| oracle clears the same bars, B does not | **recognition without transport** — the loss lies between the map and the cargo, not in B |
-| B and shuffled clear alike (difference < MARGIN) | **generic carrier effect** — frequency/smoothing, not learned correspondence |
-| neither oracle nor B clears | **transfer not detected in this form** |
-| any past arm <= -MARGIN on any world | **past experience interferes** (named per arm and world) |
-| ff <= -MARGIN for any past arm | **surface authority leaked** |
+| B-PASS | **learned transfer earned (development)** — the final claim still requires the untouched confirmatory world of Standing Law 4 |
+| not B-PASS and ORACLE-PASS | **recognition without transport** — the loss lies between the map and the cargo, not in B |
+| GENERIC(iso) or GENERIC(plain) | **generic carrier effect** — frequency/smoothing, not learned correspondence |
+| otherwise | **transfer not detected in this form** |
+
+Blocking labels (interference, surface leak) are reported with the
+primary verdict in every case.
 
 Telemetry (never PASS criteria): map size and churn per boundary,
 shadow ledgers and earn/revoke events per arm, unmatched-context
