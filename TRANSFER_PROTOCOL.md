@@ -237,6 +237,18 @@ seed 0x5EED02 · half-tail seed 0x5EED03 · scramble seed 0x54AFF1E ·
   SHA-256(builder_sha || verifier_sha || base_text_sha), both
   computed in public after the freezes. Nobody picks; the frozen
   hashes pick.
+- **A9. Run length (frozen before code; the original text left it
+  open).** Each development world is lived for its first 131072
+  bytes (128 chunks) — twice the widest horizon, covering the full
+  map-refinement schedule; the streams beyond that are out of this
+  court's scope. W-half is constructed with its boundary INSIDE the
+  run: bytes [0, 65536) = cipher of D's first 65536 bytes under the
+  W-iso permutation; bytes [65536, 131072) = i.i.d. unigram
+  continuation (seed `0x5EED03`). The half gates measure G over
+  [0, 16384) (half 1) and over the first 16384 bytes after the
+  boundary (half 2), each against cold on the same span. The A2
+  causality pair is 16384 bytes per world. The confirmatory world
+  is lived to the same 131072-byte law.
 - **A8. First-chunk causality (no ambiguity).** If the cold state
   before the first chunk is empty, the ENTIRE first chunk prices at
   exactly 8.000000 bits per byte under the law — checked exactly,
