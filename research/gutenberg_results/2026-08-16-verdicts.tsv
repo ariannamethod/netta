@@ -1,9 +1,0 @@
-prediction	verdict
-kin_transfer_grows_with_context	PASS
-alien_context_negative	FAIL
-shuffle_kills_contextual_excess	FAIL
-shared_vocabulary_survives	PASS
-dracula_specific_vocabulary_dies	PASS
-dracula_specific_vocabulary_resurrects	FAIL
-kin_court_never_refuses	PASS
-alien_court_refuses_early	FAIL
