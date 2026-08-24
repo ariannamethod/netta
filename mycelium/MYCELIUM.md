@@ -98,13 +98,18 @@ hands; this list is a map, not a promise of shape.
   propose a change and also legalise it. Its citizens enter as an opaque
   `unit_id` plus a versioned recognizer and receipt; pair/triple strings
   are body 2's first implementation, not the parliament's eternal type.
-- **Body 5 — the notes** (this turn). Многовесовость: each consolidated pattern may
+- **Body 5 — the notes** (landed, audited, closed). Многовесовость: each consolidated pattern may
   earn a tiny mortal note-weight trained asynchronously via notorch
   (linked as an upstream dependency — nothing vendored), under the rent
   law and a governor (molequla's cascade lesson: bounded, cooled).
   Asynchrony changes a note's content, never its franchise; every update
   is an event.
-- **Body 6 — the circulation.** The looped transformer, named at last:
+- **Gate before body 6 — the diet** (this turn). The mycelium eats
+  adult speech or none: the matched s row's own LIVED, LAW and HAND
+  under sealed bounds, a public D law row in every new ledger, refusal
+  at the mouth of the grave. Molequla steered the field after eating;
+  law 1 chose witness, so the Method's answer is a door, not a rudder.
+- **Body 6 — the circulation** (this turn). The looped transformer, named at last:
   not a box but the cycle — field → ghost attention → candidate →
   verdict → field edit → next pass over a field changed by its own last
   output. Plasticity lives in the medium, not the operator.
@@ -607,3 +612,60 @@ counterexample, an independent reader, a delayed verdict.
   can modulate selection without creating candidates, what
   PatternLineage identity and prefix pins mean, and what the independent
   reader recomputes without rerunning a neural forward pass.
+
+## The diet (gate before body 6, frozen before code)
+
+The mycelium eats adult speech or none. Law 5 attests WHO signed a
+stream; the diet judges WHEN and under WHICH mouth — because the zero
+line's own sealed record shows the food is not born coherent: a fresh
+40-episode life signs its speech at 32000 lived bytes and the receipt
+of that mouth is byte soup (`research/README_VOICE_2026-08-24.md`); an
+elected tri mouth at 384000 lived bytes still prints 39.7 percent
+(`research/MOUTH_AUDIT_2026-08-16.md`); and printability itself was
+defeated as a ruler by the shore's sealed ear, which priced the
+printability champion at 7.48 bits/byte — noise wearing letters
+(NETTALOG2). A grave filled with that stream is not memory; it is
+noise that resonance will faithfully amplify and the mint will
+faithfully learn. Molequla met the same danger from the other side:
+its coordinator measures field coherence live and steers the
+collective — amplify, dampen, ground, realign — a rudder correcting
+what was already eaten. Our law 1 refused steering before the first
+line of code. The Method's answer is a door, not a rudder: refusal at
+the mouth of the grave, before anything is eaten, from evidence the
+gate already holds in its hands.
+
+- **The predicate.** The matched `s` row that law 5 already requires
+  carries the mouth's HAND, its LAW and the life's LIVED bytes at
+  signing (the biography grammar, body 30: nine public fields). Speech
+  is food iff all three hold: `LIVED >= 384000`;
+  `LAW == supported-backoff`; `HAND` in {`bi`, `tri`}. Each bound is
+  the record's own: 384000 is the only maturity at which coherent
+  speech is witnessed in the sealed mouth audit; `laplace-red` is the
+  zero line's declared red hand and refuses at any age — age alone
+  buys nothing; `uni` refuses as the printability trap — 97.7 percent
+  printable, ear-priced at noise. The boundary is exact: 384000 eats,
+  383999 refuses by name, with nothing eaten and nothing written.
+- **The law is a public row, never a default.** From this gate on, a
+  NEW ledger must open with a second law row immediately after `V`:
+  `D \t 1 \t body6-diet-v1` for the living tree, or
+  `D \t 1 \t body6-diet-none` for a mechanism room that must eat
+  underage or red-hand streams to prove a negative. Garbage can enter
+  only under its own name. A ledger with no D row is lawful only as a
+  pre-diet chain already written; the organism refuses to CREATE one.
+  The diet never rewrites the past: bodies 1-5 chains replay under the
+  law rows they carry — the past a weight is judged by does not
+  silently change (law 2).
+- **The reader owns the diet for free.** A `G` record already seals
+  the matching s line verbatim, so `ledger_check` parses its nine
+  public fields with no new data and re-judges LIVED, LAW and HAND
+  against the ledger's own D row. A crafted diet-v1 chain carrying an
+  underage or red-hand G refuses in both hands.
+- Red hands, sealed before code: a 383999-lived signature refuses and
+  a 384000 one eats, same mouth, same text; an old life under
+  laplace-red refuses; an adult uni stream refuses — printable noise
+  is still noise; a diet-none room eats those same refused streams
+  and confesses it in its chain; replay of a pre-diet chain is
+  byte-identical to its record; creating a fresh ledger without a D
+  row refuses; a flipped or truncated D row refuses in both hands;
+  clean-room reproduces grave, ledger and every refusal byte for
+  byte.
