@@ -1,240 +1,174 @@
-# NETTA TRANSFER COURT — PREREGISTRATION (2026-08-24)
+# NETTA TRANSFER COURT 2 — PREREGISTRATION (2026-08-24)
 
-Frozen before any transfer-body code. Body 0 is closed: its results,
-thresholds and interpretation are not touched. Any change to this
-file after the first measured run is a new experiment, named aloud.
+Second sitting. Court 1 (protocol SHA-256 230030d7..., verdict in
+git history and transfer0/) is closed: reproduced where its law was
+tight, annulled as ill-posed where it was not. Its four defects and
+two ambiguities are this court's first paragraphs. Any change after
+the first measured run is a new experiment, named aloud.
 
-## Two standing laws
+## Standing laws (carried, unchanged)
 
-1. **The dead field does not resurrect under a new name.** Body 0's
-   Hebbian H is deleted and stays deleted. Transfer memory is built
-   anew from the surviving representation — unit streams and the
-   renaming-invariant descriptors defined below. No copy of H, no
-   renamed field mechanism. The independent verifier checks the code
-   for this by reading it.
-2. **Global experience != local authority.** Past experience may
-   offer a prior or a correspondence; it receives local weight in the
-   new world only from prospective evidence of that world, by the
-   frozen weight law below, starting at the minimum.
+1. The dead field of Body 0 does not resurrect under any name.
+2. Global experience != local authority: the shadow/earn/revoke law
+   of court 1 is carried verbatim (always priced in shadow; live
+   weight exactly 0 until the ledger earns EARN = 32 bits; enter at
+   L = 0.05; live clamp [0.01, 0.5], eta 0.05; revoke below 16 bits
+   with hysteresis). It was verified clean by the second hand.
+3. Two hands. The builder emits raw artifacts and grades nothing;
+   an independent verifier written from this file alone owns every
+   result. Repo hygiene: one protocol file, overwritten per court;
+   one log; heavy evidence out of the tree, pinned by manifests.
 
-## Source and destination worlds (all pinned before code)
+## Repairs from court 1 (each closes a named defect)
 
-Source S = World A of Body 0: `netta.txt`, 447545 bytes, SHA-256
-`02c08152e281d28e48e17a2b6813bb693dfa255c94f30e033137409d0e8b5cfb`.
-The traveller's past = S train (first 90%, Body 0 split law).
+- **R1 (was Д1).** No warmup wall. The map exists from byte 0 with
+  frequency seeding; it is refined on the geometric chunk schedule
+  {1, 2, 4, 8, 16, 32, 64, 128, 256, last}. Nothing is structurally
+  zero at any horizon.
+- **R2 (was Д2).** The newborn floor is honest: the unigram level's
+  escape distribution is length-aware, U(u) = 256^(-len(u)) / Z with
+  Z = Σ_inventory 256^(-len), and when the unigram level has no
+  counts its FULL mass goes to U (no epsilon waste). An empty model
+  prices a byte at exactly 8 bits. Applies to every arm including
+  cold.
+- **R3 (was Д3).** No candidate renormalization anywhere. Every
+  prior is a full probability model over the same support as the
+  local model. The position class "prior undefined" is abolished.
+- **R4 (was Д4).** Destination worlds are built from an INDEPENDENT
+  text the traveller has never eaten. No horizon lies inside
+  anything she memorized.
+- **R5 (tie-break hole).** BPE selection is a total order: highest
+  pair count, then earliest first-appearance position, then smaller
+  (left_id, right_id) lexicographically. Ties are impossible by
+  construction; the verifier must reproduce every merge list
+  byte-identically or the run is void.
+- **R6 (candidate-set hole).** Dissolved by R3.
 
-Destination worlds are CONSTRUCTED, so the court knows the truth:
+## Source, cargo, map
 
-- **W-iso** — same structure, different alphabet: byte-substitution
-  cipher of the whole of A. Permutation of byte values 0..255 by
-  Fisher–Yates under the frozen xorshift64 law (x^=x<<13; x^=x>>7;
-  x^=x<<17), seed `0xC1F3E5`. The true permutation is the court's
-  oracle and is never shown to the organism.
-- **W-ghost** — the frequency ghost, a provable structural null:
-  447545 bytes sampled i.i.d. from A-train's unigram byte
-  distribution, frozen seed `0x5EED01`. A Markov-1 ghost was
-  rejected in preregistration repair: it preserves first-order
-  transition structure — exactly the level the transfer profile
-  reads — and would make a negative verdict ambiguous. The verifier
-  must prove BOTH invariants of the i.i.d. ghost: preserved
-  nuisance — empirical unigram distribution within L1 distance 0.01
-  of A-train's; destroyed relations — empirical bigram mutual
-  information <= 0.01 bits. The ghost's only decisive roles are the
-  anti-smoothing difference D and the non-imposition gate; it is
-  never a standalone transfer verdict.
-- **W-ff** — the false-friend world: A with the 16 most frequent
-  whitespace-delimited words of A-train swapped in pairs by
-  frequency rank (1st with 2nd, 3rd with 4th, ...), all occurrences,
-  deterministic, no seed. Identical surface units deliberately
-  occupy different relational roles; the true swap map is the
-  court's oracle for this world.
-- **W-blind** — a natural fourth world chosen by Oleg or Mila only
-  AFTER the transfer-body code is frozen and hashed; exploratory,
-  not a gate.
+Source S = A-train: first 90% of `netta.txt` (447545 B, SHA-256
+02c08152e281d28e48e17a2b6813bb693dfa255c94f30e033137409d0e8b5cfb).
 
-The construction of W-iso, W-ghost and W-ff is emitted as
-artifacts with SHA-256 before any arm runs.
+**Cargo (layer 0 only, frozen).** The traveller carries the full
+byte-level backoff model of S: counts of orders 0..3 (unigram,
+bigram, trigram, 4-gram over raw bytes), pricing with the Body 0
+chain law (epsilon 0.1 per level, R2 floor). Unit-level cargo is
+NAMED for court 3 and enters only if layer 0 earns. Nothing else
+travels.
 
-## The organism under the court
+**Map.** A soft doubly-stochastic 256x256 matrix M, pure counting:
+initialized from frequency seeding S0[s][d] = -|log f_S(s) -
+log f_D(d)| (f_D from the lived destination prefix,
+Krichevsky-Trofimov smoothed), refined by relaxation labelling
+S = A2·M·B2^T + A2^T·M·B2 + 0.25·S0, then M = Sinkhorn(exp(S/T), 20
+iterations), where A2/B2 are the source/lived-destination bigram
+transition matrices. Temperature anneals on evidence: T halves when
+the mean row entropy of M stops falling (stagnation = change <
+0.01 bits over one refinement), floor T = 0.25, start T = 2.0.
+Refinement runs on the R1 geometric schedule.
 
-The base learner in every arm is Body 0's surviving representation:
-learned units + the exact probability chain of PROTOCOL.md, WITHOUT
-the field. One frozen amendment for this court only: the BPE
-tie-break is **first position of pair appearance in the stream**
-(earlier wins), not lexicographic ids — the unit learner must be
-permutation-equivariant so that A and cipher(A) grow isomorphic
-units by construction. The verifier proves this: units grown on A
-and on cipher(A) must be identical up to the known byte permutation.
+**The prior.** P_prior(d | c) = Σ_s M[s][d] · P_S(s | c_S), where
+c_S is the destination context mapped source-ward through the top-3
+rows of M per context byte, weighted by their masses, and P_S is the
+carried backoff chain. Full support, sums to 1 (verifier checks
+within 1e-6 per position). Uniform M degrades this to ~8 bits/byte
+— never worse than the honest floor.
 
-**Prequential adaptation law.** A destination stream is consumed in
-frozen chunks of 1024 bytes. Each chunk is priced (bits, by the
-Body 0 probability chain over the organism's current units and
-counts) BEFORE being absorbed; after pricing, the chunk joins the
-lived prefix, and units and counts are rebuilt from that prefix.
-loss(arm, t) is the priced bits of chunk t.
+## Destination worlds (all constructed before code, pinned by hash)
 
-## The transferable memory (renaming-invariant by construction)
+Base text D = miller `combined.clean.txt` (1301310 B, SHA-256
+76e8246b462c9d697fff5f14e5d25c131620397bb85112c9cc10132d03ef61a2)
+— same hidden language class, never eaten by the traveller.
 
-For every unit u of a lived world, a descriptor of 12 frozen
-scalars, computed from that world's lived stream only:
+- **W-iso**: byte-substitution cipher of D, Fisher-Yates over
+  0..255, frozen xorshift64 seed `0xB170C5`. Oracle = the
+  permutation.
+- **W-plain**: D as-is. Natural transfer, same alphabet; oracle =
+  identity.
+- **W-ghost**: i.i.d. unigram sample from D's byte distribution,
+  length of D, seed `0x5EED02`. Verifier proves preserved unigram
+  (L1 <= 0.01 vs D) and destroyed relations (bigram MI <= 0.01
+  bits). Decisive roles: the D-gate difference and the
+  non-imposition gate only.
+- **W-half**: first half = cipher of D's first half under the W-iso
+  permutation; second half = i.i.d. unigram continuation (seed
+  `0x5EED03`). The past must work on half 1 and must not fire on
+  half 2; G is measured per half separately.
+- **W-ff**: D with its 16 most frequent whitespace-delimited words
+  swapped in rank pairs (1st with 2nd, 3rd with 4th, ...); oracle =
+  identity plus the swap table.
 
-1. log2 frequency;
-2. unit byte length;
-3. right transition entropy (bits) over unit bigrams;
-4. left transition entropy;
-5. log2 right degree (distinct right neighbours);
-6. log2 left degree;
-7. top-1 right continuation probability;
-8. top-4 right continuation mass;
-9-11. partner concentration at exact distances 1, 2, 4: the Simpson
-   index Σ_v (c_d(u,v) / N_d(u))², where c_d(u,v) counts v exactly d
-   positions after u and N_d(u) = Σ_v c_d(u,v) — repaired in
-   preregistration before code: the original decayed-mass form was
-   degenerate (near-constant for every unit) and z-scoring it would
-   amplify noise; concentration is non-degenerate and remains free
-   of neighbour names;
-12. one refinement step: transition-probability-weighted mean of
-   right neighbours' right-entropies (a one-step graph-role
-   signature).
+## Arms (equal budget; the cache/align split of court 1 is retired)
 
-Descriptors are z-scored per world over that world's own units.
-Similarity = negative Euclidean distance in z-space. No neighbour
-identity ever enters the descriptor: the profile is invariant to
-unit renaming by construction.
+1. **cold** — no past.
+2. **carrier** — full layer-0 cargo through the LEARNED map M.
+3. **scrambled** — identical machinery, M's source rows permuted by
+   Fisher-Yates seed `0x54AFF1E` after every refinement: same
+   volume, dead correspondence. The negative control.
+4. **oracle** — control, out of competition: the true map replaces
+   M from byte 0; every other object and schedule identical to
+   carrier (the identity law: their evidence may differ only where
+   the map differs).
 
-## Arms (equal budget; frozen)
+## Prequential law
 
-Competition arms:
+Chunks of 1024 bytes, priced before absorption; after absorption
+the local model rebuilds from the lived prefix (units for the local
+model per Body 0 law with R5 tie-break; the local model itself is
+the Body 0 unit chain with the R2 floor). loss(arm, t) = priced
+bits of chunk t under P_final = (1 - L_t)·P_local + L_t·P_prior,
+with the standing shadow law. Note the two models price the same
+bytes: P_local prices unit positions, P_prior prices bytes; both
+are converted to bits over the chunk's byte span before mixing at
+the chunk level: P_final is applied per unit position with P_prior
+evaluated as the product of its per-byte probabilities across the
+unit's byte span (exact, no approximation).
 
-1. **cold** — newborn: no past.
-2. **cache** — past-cache only, active from byte 0: at each
-   prediction, the current context unit is matched on the fly to the
-   nearest A-unit by descriptor similarity (descriptors of the
-   destination side computed prospectively from its lived prefix
-   only); the A-side match contributes a prior that redistributes
-   probability over the local candidate set by descriptor closeness
-   of each candidate to the matched A-unit's top-4 continuation
-   descriptors: prior score r(u) = -min over those 4 of z-distance;
-   P_prior = softmax over candidates of r(u).
-3. **align** — late structural alignment only: cold until the frozen
-   warmup of 16384 bytes; then a one-to-one greedy alignment between
-   the top-256 units of A and the top-256 units of the destination
-   prefix by descriptor similarity, accepting pairs with z-distance
-   <= 2.0; after that, the aligned A-unit's continuation
-   distribution, carried through the alignment map (only aligned
-   continuations count), is the prior. Realignment at every chunk
-   boundary thereafter.
-4. **cache+align** — both mechanisms; before warmup, the cache
-   prior; after warmup, the mixture of the two priors in equal
-   halves.
-5. **shuffled** — the interference control: identical machinery to
-   cache+align, but A-side descriptor rows and continuation tables
-   are permuted by Fisher–Yates, frozen seed `0x54AFF1E`, breaking
-   every correspondence while preserving volume and distributions.
+## Rulers and gates (frozen)
 
-Control arm, out of competition:
+- G_N(arm) = Σ (loss(cold) - loss(arm)) over the first N bytes,
+  N in {1024, 4096, 16384, 65536}; deciding N = 16384;
+  MARGIN(N) = 0.01·N bits.
+- **D-gate (kept — it worked):** reported effect = G_16384(W-iso) -
+  G_16384(W-ghost); must clear MARGIN.
+- **Map gate:** top-1 accuracy of M vs the W-iso oracle >= 90% at
+  1024 lived bytes, >= 99% at 4096. (Unicity distance for this
+  cipher class is ~100 bytes; failing this kills the matcher, not
+  the memory.)
+- **Oracle floor:** G_1024(oracle, W-iso) >= 3000 bits. If even the
+  true map with full cargo cannot beat the newborn early, the cargo
+  law is wrong and the court is void — machine identity: on W-iso
+  the oracle prior IS the source model on isomorphic text.
+- **Ghost line:** G_16384(any past arm, W-ghost) <= 520 bits (the
+  KT unigram-regret line, frozen); above it the prior imposes
+  structure that is not there — non-imposition fails.
+- **Half gate:** G_16384(carrier, W-half half 1) >= MARGIN and
+  |G(half 2)| < MARGIN — the past works only where structure is
+  shared.
+- **FF gate:** G_16384(carrier, W-ff) >= 0 - MARGIN (99% of the
+  world is intact; surface authority leaking shows as a loss).
+- **Interference:** any past arm at G_16384 <= -MARGIN on any world
+  = "past experience interferes", recorded plainly.
+- **PASS wording:** "transfer earned (predictively)" iff carrier
+  clears MARGIN and beats scrambled by MARGIN on W-iso AND W-plain,
+  passes the D-gate, the half gate, the FF gate, and stays under
+  the ghost line. Ceiling: predictively admitted; speech value
+  needs its own court. No coherence claims.
 
-6. **oracle** — the true correspondence (byte permutation for W-iso,
-   word-swap map for W-ff) replaces the learned matcher. **Oracle
-   identity law:** arm 6 differs from arm 3 (align) in exactly one
-   object — the correspondence mapping. The warmup schedule, the
-   shadow/earn/revoke law and its constants, the local evidence,
-   the candidate sets, the prior's functional form and the entire
-   remaining pipeline are identical; the verifier checks that the
-   two arms' evidence differs only where the mapping differs. Upper
-   bound only; it can never win the court, only calibrate it.
+## Evidence
 
-**Shadow, earn, revoke (frozen).** The original L_min = 0.01 start
-was rejected in preregistration repair: any nonzero live weight
-before earned evidence is authority, and the law forbids it. The
-repaired law: in every past-carrying arm the prior is ALWAYS priced
-in shadow — at each position both l_local,t and l_prior,t (the
--log2 prices of the truth under each component) are computed, and
-the shadow ledger A_t = Σ_{τ<=t} (l_local,τ - l_prior,τ)
-accumulates in bits. Live mixing
-P_final(u) = (1 - L_t) * P_local(u) + L_t * P_prior(u) obeys:
+Per chunk per arm: chunk, byte span, positions, bits, L, ledger,
+state. Map snapshots (top-1 table vs oracle) at every refinement.
+Worlds, oracle maps, manifests — all SHA-256 pinned. The verifier
+reconstructs worlds from seeds, re-derives the cargo, the map
+schedule and every price from this file alone, and owns the
+verdict.
 
-- **Unearned state: L_t = 0 exactly.** P_final = P_local, and the
-  arm's emitted choices are bit-identical to cold — a machine gate:
-  cmp of the evidence prefix up to the first earn event.
-- **Earn:** at the first t with A_t >= EARN = 32 bits, the prior
-  goes live with L = L_enter = 0.05.
-- **Live update:** L_{t+1} = clamp(L_t * exp(0.05 * (l_local,t -
-  l_prior,t)), 0.01, 0.5).
-- **Revoke:** whenever A_t < EARN/2 = 16 bits, L resets to 0 and the
-  state returns to unearned; re-earning requires A_t >= EARN again
-  (a 16-bit hysteresis against oscillation).
-
-All constants frozen now; they are positions, and their revision
-after a measured run is a new experiment.
-
-**Prior mechanics, frozen before code:** (i) every prior used for
-pricing carries the standard escape into the local model,
-P_prior_used = 0.9·P_prior_raw + 0.1·P_local — a truth outside the
-prior's support pays a large finite price instead of breaking the
-ledger; (ii) the cache prior's softmax temperature is 1; (iii) at a
-position where a prior is undefined (unaligned context, empty
-carried continuation set), P_prior = P_local exactly, the ledger
-delta is zero, and the position is flagged in the evidence.
-(iv) The ghost's preserved/destroyed invariants are verified BOTH on
-the raw byte stream and on the post-unit representation the court
-actually consumes (unit-stream unigram/bigram statistics at the end
-of the lived run) — the verifier owns both checks.
-
-## Ruler (frozen)
-
-Primary: early prospective adaptation.
-G_N(arm) = sum over chunks within the first N bytes of
-(loss(cold, t) - loss(arm, t)), in bits. Horizons: N in {1024, 4096,
-16384, 65536}; G_16384 is the deciding horizon, the others are
-reported. Material margin: MARGIN(N) = 0.01 * N bits (the Body 0
-margin scaled to the horizon; at the deciding horizon ~164 bits).
-Final bits/byte after the full stream is reported as telemetry,
-never as the transfer verdict.
-
-Anti-smoothing difference: the reported transfer effect is
-D = G_16384(arm, W-iso) - G_16384(arm, W-ghost); generic smoothing
-gains appear on both sides and cancel.
-
-## PASS / FAIL (frozen wording)
-
-- **"Transfer earned (predictively)"** for an arm iff, at the
-  deciding horizon: G_16384 >= MARGIN on W-iso; the arm beats
-  shuffled by >= MARGIN on W-iso; D >= MARGIN; and the arm does not
-  fail the false-friend gate. Ceiling: status is predictive only —
-  speech-side value needs its own future court.
-- **"Transfer not detected"** iff no competition arm meets the
-  above. Additionally, if even oracle fails G_16384 >= MARGIN on
-  W-iso, the verdict is "transfer not detected: carried memory
-  insufficient" — the matcher is exonerated, the memory itself is
-  the failure.
-- **"Past experience interferes"** for an arm iff
-  G_16384 <= -MARGIN on any world. Recorded as a full result, not
-  smoothed.
-- **False-friend gate:** on W-ff, any arm with
-  G_16384 <= -MARGIN fails with "surface authority leaked"; anchors
-  may propose, never command.
-- **Non-imposition gate:** on W-ghost, any past-carrying arm with
-  G_16384 <= -MARGIN fails with "past imposed on a strange world".
-
-## Two hands, artifacts, discipline
-
-The builder writes the transfer body and emits raw artifacts only:
-world constructions, per-chunk evidence (chunk ordinal, byte span,
-per-arm priced bits, per-arm L_t trace), alignment tables per
-realignment, all SHA-256-pinned in manifests. An independent
-verifier, written by a different model from this file alone,
-reconstructs worlds from the frozen seeds, re-derives units (and
-proves A/cipher(A) isomorphism), reprices every chunk for every arm,
-recomputes every G_N and every gate, and its output is the results
-artifact. The builder's totals are sanity, never results. No
-coherence claims exist anywhere in this court.
-
-Frozen constants: chunk 1024 · warmup 16384 · top-M 256 · z-gate 2.0
-· EARN 32 bits · revoke floor 16 bits · L_enter 0.05 · live clamp
-[0.01, 0.5] · eta 0.05 · margins 0.01*N bits · horizons {1024, 4096,
-16384, 65536} · cipher seed 0xC1F3E5 · ghost seed 0x5EED01 · shuffle
-seed 0x54AFF1E · 16 words swapped by rank pairs · descriptors: the
-12 scalars above · BPE tie-break: first appearance · ghost
-invariants: unigram L1 <= 0.01 preserved, bigram MI <= 0.01 bits
-destroyed.
+Frozen constants: chunk 1024 · horizons {1024,4096,16384,65536} ·
+margins 0.01·N · EARN 32 · revoke 16 · L_enter 0.05 · clamp
+[0.01,0.5] · eta 0.05 · epsilon 0.1 · cargo orders 0..3 · map
+refinement schedule {1,2,4,8,16,32,64,128,256,last} · Sinkhorn 20 ·
+T start 2.0, halve on stagnation < 0.01 bits, floor 0.25 · S0
+weight 0.25 · top-3 context rows · cipher seed 0xB170C5 · ghost
+seed 0x5EED02 · half-tail seed 0x5EED03 · scramble seed 0x54AFF1E ·
+16 words by rank pairs · merges 2048 · MIN_PAIR 4 · R5 total order.
