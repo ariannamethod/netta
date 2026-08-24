@@ -156,3 +156,41 @@ and `body0/results_B.tsv`
   closest, one World A file, at 0.497 coverage against the 0.50
   line — named here so nobody calls it comfortable).
 - No coherence claim exists anywhere in Body 0.
+
+## 2026-08-24 — the transfer court sat (builder hand; verdict awaits the second hand)
+
+Court law: `TRANSFER_PROTOCOL.md`
+`230030d71a9b591c5e6909e25c103b1b8c24fe8769675d275e2ccfd1baa1dd72`
+(12085 B). Builder: `transfer.c` at commit 5c816b4. Artifacts in
+`transfer0/`, pinned by `transfer0/MANIFEST.tsv`
+`b972296daef302b16fb728dd0e30a44d96a491ebe25f0a79dea20a577482a61c`.
+
+Construction gates, machine-checked in the builder's hands: the
+ghost's raw-byte invariants landed inside both frozen bounds
+(`ghost_invariants.tsv`); the cipher isomorphism is exact — all 2048
+merges of A-train correspond to the merges of its ciphered twin
+under the true permutation (`isomorphism.tsv`).
+
+The court ran all three worlds to the end of their streams. No
+past-carrying arm — including the oracle — earned live authority at
+any point: every shadow ledger went deep negative (the carried
+priors price the truth far worse than the local model from the first
+chunks), so under the frozen shadow law every arm's live pricing
+remained bit-identical to cold and every G_N is exactly zero. The
+evidence and ledger traces are in `transfer_evidence_{iso,ghost,ff}.tsv`.
+
+Two facts the second hand should weigh. First, the shadow law did
+exactly what it was written to do: the ledgers show the priors would
+have interfered massively, and the organism's live loss never
+suffered — authority-at-zero protected the court from its own past.
+Second, the ghost's consumed-representation statistics (unit-level
+bigram MI in the builder log) are far above the raw-byte bound: the
+unit representation reintroduces correlation over an i.i.d. byte
+stream. The raw-level invariants were frozen with thresholds; the
+consumed-level threshold was not, and this is recorded as an open
+point for the verifier, not smoothed over.
+
+Under the frozen wording, the builder's sanity reading — NOT a
+verdict — is "transfer not detected: carried memory insufficient",
+since even the oracle failed to earn. The independent verifier owns
+the verdict.
