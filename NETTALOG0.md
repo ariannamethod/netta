@@ -83,3 +83,76 @@ means the past was interference — a full result too.
 
 The word-level baseline is not an enemy; it is the ruler showing
 what scale NETTA's own units must still reach.
+
+Addendum (same day, Claude-Desktop, on record before any transfer
+implementation; Body 0 untouched) — five preregistered requirements
+for the future transfer court:
+
+1. **Renaming invariance.** The transferable unit profile must be
+   invariant to unit renaming: degree, transition entropy, neighbour
+   probability distribution, left/right asymmetry, distance profile,
+   motif counts, possibly an iterative graph-role signature. What
+   travels is the node's PLACE in the graph, never an adjacency row
+   in the old coordinate system.
+2. **Permutation-equivariant unit learner.** The synthetic cipher
+   world must remain isomorphic after unit construction. Body 0's
+   lexicographic-ID tie-break would break this under alphabet
+   permutation; the transfer body's learner must tie-break by first
+   position of pair appearance (or equivalent), so that A and its
+   ciphered twin grow identical structure by construction.
+3. **Oracle-alignment arm.** In the cipher world the true permutation
+   is known to the court (never to the organism):
+   newborn / traveller+learned-alignment /
+   traveller+shuffled-alignment / traveller+oracle-alignment. If even
+   the oracle traveller does not beat the newborn, the carried memory
+   itself is useless; if oracle wins and the learned matcher does
+   not, the memory transfers but the role-recognizer is weak. Two
+   failure modes, cleanly separated.
+4. **Early-adaptation ruler.** Primary transfer measure is
+   G_N = Σ_{t=1..N} (loss_newborn,t − loss_traveller,t) — cumulative
+   prospective log-loss savings over the FIRST N bytes of the new
+   world, horizons frozen in advance (e.g. 1K/4K/16K/64K or one
+   cumulative AUC) — not the final bits/byte after everyone has
+   lived long enough for the effect to vanish.
+5. **False-friend control.** A world where an identical surface unit
+   deliberately occupies a different relational role. A system that
+   sees matching bytes and blindly transfers authority must LOSE.
+   An anchor may only say: possibly the same object — verify.
+
+Design stops here until the independent Body 0 verdict.
+
+## 2026-08-24 — the independent verdict (second hand)
+
+The judge (a separate model) wrote `netta_check.c`
+`ea90b9ef0bae655a0654bf92a5a290a863a667becd5322a67f696de3379cf8e0`
+(31132 B) from PROTOCOL.md alone, never opening `netta.c`. It
+reproduced the train segmentation byte-identically on both worlds,
+recomputed every probability with zero mismatches against the
+builder's evidence (tolerance 1e-9), passed every Σ=1 check, verified
+all four manifests, and confirmed both machine gates (A′
+test-independence, β=0 ablation identity). During its own
+construction it found and fixed a diagonal double-count bug in its
+OWN first-draft field builder; the builder's artifacts stood exact
+throughout.
+
+Verdict under the frozen rules — `body0/verdict.md`
+`6799b72613247d99fc3de92a151b058327d98836492a6b6742dd68eb65af8a09`,
+numbers in `body0/results_A.tsv`
+`5803efd8fb05b151653f583869b7c2f617ced4c97858fcf40257becba8d7620b`
+and `body0/results_B.tsv`
+`7888d53778f6c5fab03c0bd35c763eb239ed2de21d99aaa36d283f1244cfd4b8`:
+
+- **The field gate FAILS.** Arm c beats arms b and e in direction on
+  both worlds, but by ~0.0012 bits/byte — eight times short of the
+  frozen 0.01 material margin. Per the frozen rule the field is
+  deleted from Body 0. Deletion of the code is a separate act on
+  Oleg's word; the experiment record stays frozen as it ran.
+- **Unit model beats byte-trigram baseline** on both worlds
+  (architectural result, no causal claim).
+- **The word-level baseline beats arm c on both worlds** — stated
+  plainly, as frozen: it is the ruler of the scale NETTA's own units
+  have not yet reached.
+- Anti-copy: all twenty speech files under the void threshold (the
+  closest, one World A file, at 0.497 coverage against the 0.50
+  line — named here so nobody calls it comfortable).
+- No coherence claim exists anywhere in Body 0.
