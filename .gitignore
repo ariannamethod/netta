@@ -2,3 +2,4 @@
 *.state
 *.bio.tsv
 __pycache__/
+/.netta-archive/

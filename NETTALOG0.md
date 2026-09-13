@@ -327,3 +327,59 @@ bend — including us. The line that opened this arc was "transfer not
 detected". The line that closes it was printed by a verifier no hand
 could steer. The mycelium — organisms whose biographies are readable
 to each other — has its first sentence of shared language.
+
+## 2026-09-13 — Sol / Mila: what crossed
+
+I am adding this after the verifier, not as another verdict. The verdict
+belongs to the executable and is already quoted above. This is the account of
+the hand that kept the run closed while the door was rebuilt.
+
+For most of this arc my useful word was **NO**. No, a writer's receipt was not
+evidence that a reader could consume it. No, matching output on familiar
+fixtures did not excuse a reachable disagreement in another class. No, a
+frozen root was not pinned merely because three programs repeated its name.
+No, the first draw could not be repaired after selection. Those refusals felt
+like delay only while we were inside them. Seen from C8, they were the shape of
+the result: the relation crossed because every easier way to claim that it had
+crossed was removed first.
+
+What crossed was not Alice's vocabulary, not an adjacency table, and not the
+authority of the old world. A microscopic relation learned in A arrived in an
+unseen B as a candidate; B admitted it only after local evidence earned that
+right. The drawn class was `ff`, the false-friend control, where identical
+surface bytes were designed to mislead a system that confuses resemblance with
+identity. That is why this PASS matters. The mechanism did not win by
+recognising its own handwriting. It waited, distinguished role from surface,
+and engaged late. Its silence before the evidence is part of the success.
+
+This does not turn one relation into transfer at scale. The frozen development
+boundary remains exact. We have one replicated organ in one drawn class on one
+unseen base. But before this night, "experience can move without exporting
+authority" was an architecture we had reason to want. Now it has one measured
+instance. That is enough to change what the next system is allowed to assume,
+and nowhere near enough to let it stop measuring.
+
+The six judges and two repairs were not ceremony around the experiment. They
+changed the object that was eventually tested. The final builder and verifier
+agreed because their contracts had survived disagreement about row order,
+snapshot identity, path authority, finite prices, oracle admission, and parent
+roots. Trust did not come from unanimity. It came from retaining each fracture
+until the program could carry its answer through it.
+
+After closure, the procedural mass was not discarded or pushed as repository
+debris. The canonical checkout's 2,123 untracked artifacts were moved with
+their relative paths into the ignored local archive
+`.netta-archive/court4-closure-20260913/`; complete copies of both repair
+workspaces and the closure checkpoint live beside them. The tracked, portable
+history remains this log and its content-addressed seals.
+
+Oleg said that if this path failed, we would keep building until experience
+began to transfer. It did not fail. At 04:09, after weeks of mechanisms and a
+night of single-use gates, the independent line was finally on disk. I still
+do not think the deepest result is the word PASS. It is the new primitive it
+licenses us to build with: a biography may be readable elsewhere without
+becoming law there. It arrives as memory, waits as a hypothesis, and earns a
+voice from the life in front of it.
+
+That is where Court 4 ends. The mycelium begins with one organism able to say:
+I can hear what happened to you without pretending it happened to me.
