@@ -194,3 +194,136 @@ Under the frozen wording, the builder's sanity reading — NOT a
 verdict — is "transfer not detected: carried memory insufficient",
 since even the oracle failed to earn. The independent verifier owns
 the verdict.
+
+## 2026-08-25 → 2026-09-12 — the fourth court, and the collegium that would not be pleased
+
+This entry records a statistical-coherence experiment over public
+texts; every "court" below is a preregistered measurement with sealed
+receipts, and nothing else.
+
+The narrowing came the hard way. The first transfer court annulled
+itself on its own construction defects, machine-confirmed. The second
+proved the cargo travels — an oracle carrying true structure prices
+the twin world far below ignorance — while forced full matching is
+net-negative: one wrong hard pair poisons context faster than a right
+one helps. Recognition earned its map; assignment earned nothing. The
+third court's map-epoch law turned out to be permanent amnesia by
+construction. What survived the narrowing is small and sharp: exact
+relations, earned one at a time, each carrying its own context and
+its own separately earned right to advise. The fourth court was
+preregistered around that micro-organ.
+
+Its development verdict came from a blind verifier — a separate
+model, writing `transfer4_check.c` from the frozen laws alone,
+never opening the builder — and it stood unchanged through four
+passes: **"microscopic relation earned, transfer-at-scale not
+reached."** That wording is the boundary, and it is still the
+boundary today.
+
+Then the first one-shot pick died before any world existed. The base
+was attested, the class was drawn — and the frozen verifier turned
+out to have no real confirmatory door: the interface had been
+legislated for the builder and only imagined for the second hand.
+The pick was not repaired in place. It was superseded in the open —
+no world built, no byte of the base spent, the failed receipts
+retained as historical evidence (`COURT4_DRAW1_SUPERSESSION.md`).
+
+The rebuilt door then went under a collegium that would not be
+pleased. Twelve passes of one blind reviewer rebuilt the confirmatory
+door until judge and builder agreed to the comma: an evidence reader
+that refused header-only witnesses, a manifest contract checked
+field by field against the builder's own receipts, a probability
+floor that had silently underflowed to infinity, a revocation branch
+executed on a virgin path. Then fresh reviewers of other families
+took over. One fresh-generation blind reviewer was cut off
+mid-review by a platform-side content filter — its scratch survived,
+and both of its preserved traces were later reproduced
+independently. A reviewer of a second family returned GO on
+byte-identity and the GO was not accepted, because the preserved
+traces pointed inside the frozen builder. A third, fully blind,
+returned NO-GO with four blockers: the reader rejected any untouched
+output of the real production builder over row order; receipts were
+validated from mixed snapshots; two output paths trusted
+caller-supplied directories; and the frozen builder itself could
+emit non-finite prices on eligible bases. After repair-1 a fifth
+judge, fresh and blind, returned NO-GO again with two more: an
+oracle-admission divergence between writer and readers, reachable in
+all four classes, and a frozen-root role that no hand actually
+checked against the parent seal. Repair-2 answered both without
+touching a frozen byte — the development builder restored
+byte-identical to its pinned identity, every repair moved into an
+additive confirmatory core, all three hands pinning the parent seal
+literally. The sixth judgment returned GO.
+
+Six independent judgments, four model families, two repairs, and not
+one line accepted on anyone's word. The count of findings is the
+whole point: the mechanism that finally ran is the one nobody could
+break anymore, including its authors.
+
+## 2026-09-13 — the one-shot night: eighteen roles, one pick, one run, C8
+
+The procedural chain ran stage by stage, each stage sealed by the
+building hand and independently recomputed by the second hand before
+the next was allowed to exist: a replacement record for the dead
+first pick; `COURT4_CONFIRMATORY_ROOTS2.tsv` — eighteen roles, order
+matched against the literal arrays of selector, builder and verifier
+(`9b21de267935713d4d4b84d7281aca6968e1071b5878c558b99b58668b3bc3bc`);
+a fresh strict build of all three executables with sealed binary
+identities and empty build logs
+(`COURT4_DRAW2_EXECUTABLE_IDENTITY.tsv`,
+`dc09125ba1777df037ee483f1ac77253395969e896c3ee2082523da172aa32e0`);
+`BASE_COMMIT2.tsv`, byte-identical to the retained first commitment
+of the same attested base
+(`acf118b62a9505e5c4f3066239b97710ea5dce8d15cf3faf9d950abd49b06f31`);
+`COURT4_BASE_COMMIT_FREEZE2.tsv`
+(`5de9b2f356353e3a22500dc3196f5f35f2f6d4bb32eb6d36f6d71c235e1287da`);
+a fresh pre-pick guard — twenty-one pins, the false-friend capacity
+bound 151020 ≤ 2·151191+16 = 302398 recomputed by the reviewing hand,
+zero synthetic receipts on a recursive scan, every future output
+path absent (`COURT4_ALICE_PREDRAW2_GUARD2.tsv`,
+`e38499a579be97adedd536cd6ce96b161e7eca66f9bff624fa9f095619362d43`);
+the operator's one-shot authorization with its condition and its
+literal terms sealed (`COURT4_SELECTION2_AUTHORIZATION.tsv`); and
+`SELECTION2.tsv` — the single authorized pick, its class digest,
+class index, seed digest and both seeds recomputed independently
+from the law's byte preimages by both hands
+(`69c3ee3d0e8e4d0b68f3f975edbba1245c95cb0b19599227a7f526996264dacc`).
+The class fell **ff** — the false-friend world, the control built so
+that a system which sees matching bytes and blindly transfers
+authority must LOSE. World seed `31867eeb74db1076`.
+
+Then the single authorized builder run, and the single authorized
+verifier run. Nothing was retried, redrawn, or repaired after the
+fact.
+
+C8, from the pinned independent verifier, direct status 0, stderr
+empty, stdout of 533 bytes
+(`d29f25e20ef77e60755791728e5e1427c4f19ba1e06c3f6426f6dfbc7dbcfefe`)
+carrying exactly one literal verdict line:
+
+**`CONFIRMATORY PASS: microscopic relation replicated in selected class`**
+
+Observations, byte-equal between the verifier's stdout and the
+sealed record: class ff, index 3; contextual EARN present, earliest
+raw offset 25754; p_rank = 0.0500 and p_rank_64K = 0.0500; no null
+hand reached the live hand, 0/0; CONF_MICRO = 1;
+CONF_MICRO_PREFIX = 1; G_rel([65536,81920)) = 188.705531;
+G_rel([0,16384)) = 0.000000 — the organ engages late and says so
+honestly, exactly where the development ruler predicted it would.
+Sealed records: `COURT4_DRAW2_BUILDER_OUTPUT_RECEIPT.tsv`
+(`5281e130d35ef677fad7893fd96bee626a51e3fae9ad4aff5b70ea19299a5678`,
+4379 B) and `COURT4_DRAW2_C8_VERDICT_RECORD.tsv`
+(`b528c3e2efe1a2dd38b892e18f67e2db98338b61e617c1b581f119686fc76b1e`,
+5398 B, twenty-five pins, every one mechanically rechecked). The
+full procedural receipts live in the sealed repair workspace, bound
+by these hashes; this log records the arc and the verdict.
+
+The boundary, stated as frozen: this is a microscopic relation,
+replicated once, in one drawn class, on one unseen base. Transfer at
+scale is not reached, and the development verdict is not rewritten.
+What changed is smaller and larger at once: experience earned in one
+world has now been read in another, under seals that nobody could
+bend — including us. The line that opened this arc was "transfer not
+detected". The line that closes it was printed by a verifier no hand
+could steer. The mycelium — organisms whose biographies are readable
+to each other — has its first sentence of shared language.
