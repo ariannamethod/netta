@@ -583,6 +583,21 @@ static size_t support_collect(const uint32_t *em, size_t nem, int level) {
     return k;
 }
 
+/* Amendment 3: close the one token that would keep walking the higher
+   singleton corridor.  Candidate types are unique inside ccbuf. */
+static size_t support_close_token(size_t n, uint32_t token, int *closed) {
+    size_t w = 0;
+    *closed = 0;
+    for (size_t i = 0; i < n; i++) {
+        if (ccbuf[i].tok == token) {
+            *closed = 1;
+            continue;
+        }
+        ccbuf[w++] = ccbuf[i];
+    }
+    return w;
+}
+
 static void speak(const uint32_t *t, size_t n, uint64_t seed) {
     char fname[128], tname[128];
     int fn = snprintf(fname, sizeof(fname), "speech_%llu.bin", (unsigned long long)seed);
@@ -592,7 +607,7 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
     FILE *f = open_out(fname), *tf = open_out(tname);
     fprintf(tf, "index\ttoken_id\tstart_position\tbackoff\tsupport_types\t"
                 "support_occurrences\tchosen_occurrences\texpansion_bytes\t"
-                "advice_book_row\tadvice_factor\tcorridor\n");
+                "advice_book_row\tadvice_factor\tcorridor\tcorridor_veto\n");
     rng_state = seed ^ 0x9E3779B97F4A7C15ull;
     if (!rng_state) rng_state = 1;
 
@@ -612,7 +627,7 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
         em[nem++] = t[sp + (size_t)k];
         write_bytes(f, exp_pool + exp_off[em[nem - 1]], exp_lenv[em[nem - 1]]);
         ebytes += exp_lenv[em[nem - 1]];
-        fprintf(tf, "%zu\t%u\t%zu\t0\t0\t0\t0\t%u\t0\t1\t0\n",
+        fprintf(tf, "%zu\t%u\t%zu\t0\t0\t0\t0\t%u\t0\t1\t0\t-\n",
                 nem - 1, em[nem - 1], sp + (size_t)k, exp_lenv[em[nem - 1]]);
     }
 
@@ -627,18 +642,41 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
         }
         if (nc == 0) die("empty lived support");
 
-        /* the corridor law (MOUTH_PROTOCOL_A2.md) */
+        /* the corridor law and its real-exit invariant (A2 + A3) */
         uint32_t corridor_before = corr;
+        uint32_t corridor_veto = UINT32_MAX;
         if (nc >= 2) {
             corr = 0;
         } else if (CORRIDOR != 0) {
             if (corr >= CORRIDOR) {
+                int highest_level = backoff;
+                size_t highest_types = nc;
+                uint32_t corridor_token = ccbuf[0].tok;
                 int found = 0;
                 for (int lvl = backoff - 1; lvl >= 1; lvl--) {
                     size_t alt = support_collect(em, nem, lvl);
-                    if (alt >= 2) { nc = alt; backoff = lvl; found = 1; break; }
+                    if (alt >= 2) {
+                        int closed = 0;
+                        size_t admitted = support_close_token(alt, corridor_token, &closed);
+                        if (!closed) die("lower support lost the corridor continuation");
+                        if (admitted) {
+                            nc = admitted;
+                            backoff = lvl;
+                            corridor_veto = corridor_token;
+                            found = 1;
+                            break;
+                        }
+                    }
                 }
-                if (found) corr = 0; else corr++;
+                if (found) {
+                    corr = 0;
+                } else {
+                    nc = support_collect(em, nem, highest_level);
+                    if (nc != highest_types || nc != 1 || ccbuf[0].tok != corridor_token)
+                        die("highest corridor support changed while descending");
+                    backoff = highest_level;
+                    corr++;
+                }
             } else {
                 corr++;
             }
@@ -686,10 +724,12 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
         em[nem++] = chosen;
         write_bytes(f, exp_pool + exp_off[chosen], exp_lenv[chosen]);
         ebytes += exp_lenv[chosen];
-        fprintf(tf, "%zu\t%u\t-\t%d\t%zu\t%llu\t%u\t%u\t%u\t%.17g\t%u\n",
+        fprintf(tf, "%zu\t%u\t-\t%d\t%zu\t%llu\t%u\t%u\t%u\t%.17g\t%u\t",
                 nem - 1, chosen, backoff, nc, (unsigned long long)support_occ,
                 sc[chosen_at].cnt, exp_lenv[chosen], sc[chosen_at].advice_row,
                 sc[chosen_at].factor, corridor_before);
+        if (corridor_veto == UINT32_MAX) fputs("-\n", tf);
+        else fprintf(tf, "%u\n", corridor_veto);
         if (ebytes >= want && !ends_sentence(chosen) && ebytes < hard) want = ebytes + 1;
     }
     close_out(f);
