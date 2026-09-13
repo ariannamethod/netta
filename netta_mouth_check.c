@@ -262,11 +262,13 @@ static Support support_at(const WorldModel *m, const uint32_t *past, size_t npas
     return s;
 }
 
-/* the corridor law of MOUTH_PROTOCOL_A2.md, replayed independently:
-   returns the lawful support (counts filled for it) and updates *corr. */
+/* The corridor law of A2 and the real-exit invariant of A3, replayed
+   independently.  Returns the admitted support, updates *corr, and names
+   the one closed corridor token through *veto_token (UINT32_MAX = none). */
 static Support lawful_support(const WorldModel *m, const uint32_t *past, size_t npast,
                               int order, uint32_t corridor_k, uint32_t *corr,
-                              uint32_t *counts) {
+                              uint32_t *counts, uint32_t *veto_token) {
+    *veto_token = UINT32_MAX;
     int highest = order >= 4 && npast >= 3 ? 4 : npast >= 2 ? 3 : npast >= 1 ? 2 : 1;
     Support h; memset(&h, 0, sizeof h);
     for (int level = highest; level >= 1; level--) {
@@ -277,9 +279,25 @@ static Support lawful_support(const WorldModel *m, const uint32_t *past, size_t 
     if (h.types >= 2) { *corr = 0; return h; }
     if (corridor_k != 0) {
         if (*corr >= corridor_k) {
+            uint32_t corridor_token = UINT32_MAX;
+            for (uint32_t u = 0; u < m->nunits; u++) if (counts[u]) {
+                if (corridor_token != UINT32_MAX) die("singleton support has multiple tokens");
+                corridor_token = u;
+            }
+            if (corridor_token == UINT32_MAX) die("singleton support lost its token");
             for (int level = h.level - 1; level >= 1; level--) {
                 Support alt = support_at(m, past, npast, level, counts);
-                if (alt.occurrences && alt.types >= 2) { *corr = 0; return alt; }
+                if (alt.occurrences && alt.types >= 2) {
+                    uint32_t removed = counts[corridor_token];
+                    if (!removed) die("lower support lost the corridor continuation");
+                    counts[corridor_token] = 0;
+                    alt.types--;
+                    alt.occurrences -= removed;
+                    if (!alt.types || !alt.occurrences) die("corridor exit has no admitted alternative");
+                    *veto_token = corridor_token;
+                    *corr = 0;
+                    return alt;
+                }
             }
             *corr += 1;
         } else {
@@ -305,6 +323,8 @@ typedef struct {
     unsigned advice_row;
     double advice_factor;
     uint32_t corridor;
+    int has_corridor_veto;
+    uint32_t corridor_veto;
 } TraceRow;
 
 typedef struct {
@@ -328,7 +348,7 @@ static Trace read_trace(const char *path) {
     static const char header[] =
         "index\ttoken_id\tstart_position\tbackoff\tsupport_types\t"
         "support_occurrences\tchosen_occurrences\texpansion_bytes\t"
-        "advice_book_row\tadvice_factor\tcorridor";
+        "advice_book_row\tadvice_factor\tcorridor\tcorridor_veto";
     FILE *f = fopen(path, "rb");
     if (!f) die("cannot open token trace");
     Trace t; memset(&t, 0, sizeof t);
@@ -340,8 +360,8 @@ static Trace read_trace(const char *path) {
         line[--z] = 0;
         if (z && line[z - 1] == '\r') die("trace is not canonical LF text");
         if (line_no == 1) { if (strcmp(line, header)) die("trace header drifted"); continue; }
-        char *v[11];
-        if (split_tabs(line, v, 11) != 11) die("trace row width drifted");
+        char *v[12];
+        if (split_tabs(line, v, 12) != 12) die("trace row width drifted");
         if (parse_size_arg(v[0], "bad trace index") != t.n) die("trace index drifted");
         if (t.n == t.cap) { t.cap = t.cap ? t.cap * 2u : 256u; t.row = xrealloc(t.row, t.cap * sizeof *t.row); }
         TraceRow *r = &t.row[t.n++]; memset(r, 0, sizeof *r);
@@ -355,6 +375,10 @@ static Trace read_trace(const char *path) {
         r->advice_row = parse_u32(v[8], "bad trace advice row");
         r->advice_factor = parse_real(v[9], "bad trace advice factor");
         r->corridor = parse_u32(v[10], "bad trace corridor");
+        if (strcmp(v[11], "-")) {
+            r->has_corridor_veto = 1;
+            r->corridor_veto = parse_u32(v[11], "bad trace corridor veto");
+        }
         if (r->advice_factor < 1.0 || r->advice_factor > 1.5) die("trace advice factor outside law");
         if ((!r->advice_row && r->advice_factor != 1.0) || (r->advice_row && r->advice_factor == 1.0))
             die("trace advice row/factor disagree");
@@ -493,6 +517,7 @@ static StreamVerdict read_one(FILE *report, const WorldModel *m, const uint8_t *
     for (size_t i = 0; i < t.n; i++) {
         tokens[i] = t.row[i].token;
         uint32_t corr_before = corr;
+        uint32_t expected_veto = UINT32_MAX;
         Support s;
         if (i < 3u) {
             /* the lived opening is priced but stands outside the corridor law */
@@ -505,7 +530,8 @@ static StreamVerdict read_one(FILE *report, const WorldModel *m, const uint8_t *
             if (!s.occurrences) die("no lived support");
             if (t.row[i].corridor) die("initial run carries a corridor count");
         } else {
-            s = lawful_support(m, tokens, i, order, corridor_k, &corr, counts);
+            s = lawful_support(m, tokens, i, order, corridor_k, &corr, counts,
+                               &expected_veto);
         }
         uint32_t chosen = counts[tokens[i]];
         if (!chosen) die("emitted token is outside lawful lived support");
@@ -513,10 +539,13 @@ static StreamVerdict read_one(FILE *report, const WorldModel *m, const uint8_t *
             t.row[i].support_types != s.types ||
             t.row[i].support_occurrences != s.occurrences ||
             t.row[i].chosen_occurrences != chosen ||
-            t.row[i].corridor != corr_before))
+            t.row[i].corridor != corr_before ||
+            t.row[i].has_corridor_veto != (expected_veto != UINT32_MAX) ||
+            (t.row[i].has_corridor_veto && t.row[i].corridor_veto != expected_veto)))
             die("mouth trace disagrees with independent corridor-law replay");
         if (i < 3u) {
-            if (t.row[i].advice_row || t.row[i].advice_factor != 1.0)
+            if (t.row[i].advice_row || t.row[i].advice_factor != 1.0 ||
+                t.row[i].has_corridor_veto)
                 die("initial run carries unlawful advice");
         } else {
             Unit before = m->unit[tokens[i - 1u]], current = m->unit[tokens[i]];
