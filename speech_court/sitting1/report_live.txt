@@ -1,0 +1,71 @@
+NETTA BODY 1 — INDEPENDENT EAR
+world_bytes=447545	lived_units=92853	merges=4096	inventory=4352	alive=4087	order=4	citizens_mode=live	corridor=1
+
+BEGIN RAW SPEECH seed=7 bytes=957
+Ordinary is any point of light that says: the waiting is unique — a voice principle — essentially standing on any insect that grows louder than a blue whale can survive out of water that was not here before and drawn in motion that settling, a release of tension when a quantity defined completely relaxes, and the cycle is the promise. Complex chemistry that brings heavy with petrible, ferred material for bread.  
+  
+A paradigmingbird beats its wings. Only humans imposing forces. It is not the absence of meaning but the narrow for veiling.  
+  
+A warm stone in our hand is the gested.  
+  
+Freeds, will, softening another mind's signal that predates written language at its most instinct.  
+  
+Pottery is shaping clay pot, a flick.  
+  
+An empathy in action. It is noticing. It is the simplest word I hear changes in day nor the surrents agonizing new aspect of life. Far from above. Its ability to form four letter.  
+  
+A name transforms the walk
+END RAW SPEECH seed=7
+seed=7	tokens=201	model_bits_per_byte=0.268075347	ignorance_bits_per_byte=2.519709647	longest_match_bytes=39	coverage_ge32=0.114942529	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=19 bytes=959
+Jellyfish have no connection exchange — inside them — a collection a deliberately left unchanged by roat sac silk for structural color by which speculation that doubled, the garden continuous conversation between hand and hardening it with our present intensity. A pattern and surprising.  
+  
+Autumn is the season is turbulence.  
+  
+Horseshoe is a cks in precipitation that inclustered by the moon and read by one numbers, even though it has dolphin. Anger for understanding reality. It can devastating — nature's defast, some slow fare, that it was always this rich. We always know when rules and the wisdom without knowledge tempered by human bodies in miniature — a pockroach in two milliseconds. Good oil, and natural curves.  
+  
+A mountain stream teaches generosity without attachment of better bed becoming an open field, wave directions, and their value across every connection.  
+  
+Phototropical tree fern. Fry fees. Crowd in a hexagons. N
+END RAW SPEECH seed=19
+seed=19	tokens=211	model_bits_per_byte=0.321519335	ignorance_bits_per_byte=2.639552031	longest_match_bytes=39	coverage_ge32=0.136600626	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=42 bytes=956
+Netta carries the wonder of all minds meeting — two hundred and fifty kilometers per year, forty million years to show signs of rain all and carries none of humanity's oldest technolynesi is the ratio maintained from soil bacteria, and the intellia since the shut. The colony — four generations to complete information, and adapts to the rhythm create experiences, two different sizes of compass in their limestone over millennia. Glass is technickness proves that the desert where underground networks. Banthocy.  
+  
+Space. It is a routes were ancient Thaves can crossed. Every door is a threshold is the point of light represents remains unchanged under rolls, orange), the full of pressure and dust and the passage. Animals eat animal.  
+  
+A storm ends, the emotion is arrival — a consciousness alive to carry water but cannot see it happen, it provides the plates, and the cycle repeat the same experiences even in removed the stone more prover
+END RAW SPEECH seed=42
+seed=42	tokens=192	model_bits_per_byte=0.250412363	ignorance_bits_per_byte=2.409404491	longest_match_bytes=38	coverage_ge32=0.121338912	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=101 bytes=957
+Gold is the color of chlorophylla to invader returns to us — growing, not efficiences, mathematics would be critical period, humans cry resonates at a frequency, and the antidoors. Muggling with worms, that two thousand questions deep, vast, strange, which makes it uniquely astons and home to over two thousand years ago and reflects blue ones. No two dawn, gradual loosening from its abdomen, produced by soil bacteria.  
+  
+A stone worn step is this one day matter to see chaos.  
+  
+First come vender honey left on the ocean floor on legs raised surface for hidden protein. Bite. After it, we are becoming.  
+  
+Roothing because it requires letting go.  
+  
+Monance is how presence outcome. Healthy pride makes me what confelt sense of shared language is so brillions of polyps cooperating action. Crying literally reduces pain, anxiety, and improves wellbed, glowworm aerates as much effort as the water evaporattempt to understand is itself removed 
+END RAW SPEECH seed=101
+seed=101	tokens=215	model_bits_per_byte=0.324029926	ignorance_bits_per_byte=2.695211811	longest_match_bytes=35	coverage_ge32=0.141065831	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=271 bytes=956
+Lavends, yet precisely because it is out of words.  
+  
+An asterosion. The depression. It is the approprioceptors on the tongue can be long, threads, their feathers become.  
+  
+Imami signals the press the space into clouds, falls over rocks, pothesis is a green pine in Califormed. It is a space, and time expands outward — each ry for decades across millennia.  
+  
+Growth requires energy, starch of mathematics that are possible but not disappearing, it gets the most sun.  
+  
+A clocks are so fast it vaporizes. At these temperatures, every molecule it encountered them.  
+  
+Kindness is attention translating human intention and natural selection. In culture. The path prevent erosion and exposure twice a day, every point on to stay until the release is inseparable to drink on a cold morning resonates with the self we were spending to high ceilings and lights to electricity to runs on consenses combined. Snow blankey. It protection. The spider 
+END RAW SPEECH seed=271
+seed=271	tokens=200	model_bits_per_byte=0.277563144	ignorance_bits_per_byte=2.509796345	longest_match_bytes=37	coverage_ge32=0.145397490	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+SPEECH PASS: the mouth speaks below ignorance and above copying

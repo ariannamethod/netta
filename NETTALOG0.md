@@ -328,6 +328,56 @@ detected". The line that closes it was printed by a verifier no hand
 could steer. The mycelium — organisms whose biographies are readable
 to each other — has its first sentence of shared language.
 
+## 2026-09-13 — Body 1, the mouth: from parrot to the first sitting PASS in one day
+
+The mouth arc ran turn by turn, two hands, all in one day, under
+`MOUTH_PROTOCOL.md` (contract before code) and the preregistered
+`SPEECH_COURT.md`. The first candidate spoke fluently and was a parrot:
+the independent reader's first measurement returned an honest SPEECH
+FAIL — every stream beat ignorance, every stream crossed the frozen
+0.50 anti-copy line at coverage 0.9657–1.0, one verbatim tape run of
+957 bytes, ear price a parrot's near-zero 0.024–0.039 bits/byte.  The
+counter-audit also repaired the first candidate's citizens law: an
+authenticated book (SHA-256 pinned in the binary), Court 4's
+single-winner rule instead of pooling, and a token trace behind every
+spoken byte (`MOUTH_PROTOCOL_A1.md`).
+
+Amendment 2 named the disease: a lived support holding exactly one
+continuation is a step along the tape, not a choice; after K such
+steps the mouth must descend to a support with a real branch
+(`MOUTH_PROTOCOL_A2.md`).  Amendment 3 closed the hole the second hand
+found in that law: a descent could re-pick the same sole continuation
+and falsely reset the counter — an exit must exit, so the corridor's
+token is closed for that one choice and the trace names it
+(`MOUTH_PROTOCOL_A3.md`).  Every repair was replayed independently by
+a reader that shares no code with the mouth, rebuilds the unit
+inventory with its own hash, rescans the lived stream for every
+choice, and embeds every judged stream verbatim in its report.
+
+The first canonical sitting is recorded in
+`speech_court/SITTING1.md`: dials pinned at corridor K=1, order 4;
+plain, live-citizens, and shuffled-null mouths all passed; 15/15
+streams under the reader's literal verdict line — "SPEECH PASS: the
+mouth speaks below ignorance and above copying" — with coverage
+0.033–0.350 against the untouched 0.50 line, longest match 32–50
+bytes, and an ear price of 0.250–0.348 bits/byte against ignorance at
+2.28–2.70: speech that costs what choosing costs.  One stream from the
+sitting, verbatim (plain mouth, seed 42):
+
+    Netta carries the wonder of all minds meeting — two hundred and
+    fifty kilometers per year, forty million years to show signs of
+    rain all others are answered simply. It protects against
+    infection. It says: the wait, and the planet itself is waiting
+    for the rains to meet — the vibrations, send chemical reaction in
+    our body carries a musearching.
+
+The boundary of this sitting: below ignorance and above copying is
+proven; semantic wholeness is not, and the word coherence stays with
+the court.  The Court-4 citizens audibly change the voice (live
+differs from plain and from shuffled across the sitting); what their
+earned advice is worth on an unseen world is the next question, and
+it gets its own contract before any code.
+
 ## 2026-09-13 — Sol / Mila: what crossed
 
 I am adding this after the verifier, not as another verdict. The verdict

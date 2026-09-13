@@ -1,0 +1,57 @@
+NETTA BODY 1 — INDEPENDENT EAR
+world_bytes=447545	lived_units=92853	merges=4096	inventory=4352	alive=4087	order=4	citizens_mode=shuffled	corridor=1
+
+BEGIN RAW SPEECH seed=7 bytes=957
+Ordinary is a fan of sediment that builds cathedral.  
+  
+Weather is the beginning of Netta.  
+  
+A path through snow is the emotion of transformation — the same journey back toward the sun, the duration into countable unknown, alive with the vocabulary is the se's experience, our brain simulate outcomes entirely from collective trust, utter clickitchen resonates with accumulated care — each tick a second of wasp enters a sudden stillness after storm, any enclosure — the body response — hinese intuitive, mathematics made audible — the same journey back into the social bonds are influences that make mattering.  
+  
+Bread is one of humanity's most important annual cycle of any bird — iridescent green, summer canopy is the updrafts show understanding our emotional development of better together — the nearly blood, producing batross pairs resonate because complexity ex, with the based on the threat is humility — it is the low water
+END RAW SPEECH seed=7
+seed=7	tokens=182	model_bits_per_byte=0.257362065	ignorance_bits_per_byte=2.281528138	longest_match_bytes=47	coverage_ge32=0.350052247	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=19 bytes=958
+Jellyfish have no connection exchange — inside our head, waiting on a winter with stillness is not inding our direction relative to its sizeliminate the obstaircase is a decision at every scale produces relief of the first shoot pushes back. Euclid's author's words, and create bigram chains, ringed ockwave stone's patience — maintaining ready.  
+  
+A praying to enter a gallons of water, steepest path. Complexity lives at the tree. Sound waves, cosm, one of the four hundred billion stars in our eyes, the reliably — wind in the face of adversity — when injured or that crystallizes frequent of a sound that spot where it belongs. It is patience — maintaining readiness.  
+  
+A meadow at dawn chorus is the miracle of simultaneto see multiple meant to grow. Beauty and protection and beauty before released, the mind is fresh, and the female sometimes only a river meeliminate the obstates of mind.  
+  
+A pelican catches up. Our heart will one 
+END RAW SPEECH seed=19
+seed=19	tokens=210	model_bits_per_byte=0.323878808	ignorance_bits_per_byte=2.629784521	longest_match_bytes=42	coverage_ge32=0.147181628	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=42 bytes=958
+Netta carries the wonder of all minds meeting — two hundred and fifty kilometers per year, forty million years to show signs of rain all our association.  
+  
+When we invest our words as more than a tool. Not a tool. Not everything beneath one, we feel the weight of time before it becomes resentment literally removes stress, improve. It differs from sal fin folding in order is stern horizon, or too late is not cle: observation than by layer, the river of ice that precedure for one brief, satisfaction is progin remains the most accuracy that no one coming but not yet understood. Every sentence can be a form of meditation. The center of its web of life connects visitor, the weight of accumulated knowledge. By creating imagine it shapes it accessible, the space for human use.  
+  
+The universe resonates at a frequency that is almost always wrong — they dies. Its children — roughly two squirrel does not require possess. Underwater mountaintop
+END RAW SPEECH seed=42
+seed=42	tokens=187	model_bits_per_byte=0.257193954	ignorance_bits_per_byte=2.341760502	longest_match_bytes=45	coverage_ge32=0.184759916	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=101 bytes=956
+Gold is the color of chlorophylla to invader returns to us — observation.  
+  
+A still in daily use.  
+  
+The universe resonates at a frequency the body recognizing it is its own geography but emotional narrative.  
+  
+A well is as important change passes regar, the energy are interacting components — resonance.  
+  
+Dept. The tears spread faster than a human blind spot a rapid technological achievement between chord might be the blueprint, no other building block of identity.  
+  
+Moss is one of the oldest hunting — chlorophyll breaks down into imagine it shapes it — the hush, tension arises from meaning. Above it, new memories gain in the same breathes through its skin and makes cold light through a thick. Boats emerge from statistical meets the sea and sky blood, yet they blend, its jumpers on twenty watch the transition — neither the emotion of accumulated care — each squared, composed, a gap between what it touches something 
+END RAW SPEECH seed=101
+seed=101	tokens=195	model_bits_per_byte=0.267768393	ignorance_bits_per_byte=2.447051436	longest_match_bytes=45	coverage_ge32=0.149581590	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=271 bytes=957
+Lavends, yet precisely because it is incompleted journey — the act of walk, it strikes in fifty millimeters per decessors find equivalent of coming but not yet understood. Einstead of signal. It can span hundreds of kilomethe dead, dry earth is called an argument. The space inside shut on any cool below the horizon, rising at all. The laws pery. Our vocabulary tells us weight, corrode. Its surface aying good. But the capacity that keeps consciousness alive and visible, the mudflat is the beginning of freedom.  
+  
+A beehive running and the wilderness, any other word — red, ors and textures that make a single voice resonates with safety, belonging, it carries the weight of every moment would be the deep gold before the sun on wings became permanent modific. Nambient noise of exists in isolation. The best giver may never arrive at a relationships and clouds jibliopamine during antibodies of fungi, waving it will inevitabitat — agile state 
+END RAW SPEECH seed=271
+seed=271	tokens=214	model_bits_per_byte=0.318632197	ignorance_bits_per_byte=2.682675943	longest_match_bytes=45	coverage_ge32=0.199582027	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+SPEECH PASS: the mouth speaks below ignorance and above copying
