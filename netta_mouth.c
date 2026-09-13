@@ -19,7 +19,7 @@
    usage: netta_mouth <world> --out <dir>
             [--merges N=4096] [--min-pair N=4] [--order 4|3=4]
             [--bytes N=700] [--seeds a,b,c,...=7,19,42,101,271]
-            [--temp X=0.8] [--topk N=15]
+            [--temp X=0.8] [--topk N=15] [--corridor K=3]
             [--citizens FILE --citizens-mode live|none|shuffled=none]
 
    C11, stdlib only.  Deterministic.                                   */
@@ -153,6 +153,7 @@ static int ORDER = 4;
 static size_t SPEAK_BYTES = 700;
 static double TEMP = 0.8;
 static size_t TOP_K = 15;
+static uint32_t CORRIDOR = 3; /* Amendment 2: 0 disables the corridor law */
 
 /* ── rng (frozen xorshift64, Body 0's law) ── */
 static uint64_t rng_state;
@@ -554,6 +555,34 @@ static void close_out(FILE *f) {
     if (fclose(f)) die("cannot close artifact");
 }
 
+/* lived support at one explicit level; fills ccbuf, returns type count */
+static size_t support_collect(const uint32_t *em, size_t nem, int level) {
+    size_t lo, hi;
+    if (level == 4) {
+        if (ORDER < 4 || !n_quad || nem < 3) return 0;
+        uint64_t ctx = ((uint64_t)em[nem - 3] << (2 * PACK)) |
+                       ((uint64_t)em[nem - 2] << PACK) | em[nem - 1];
+        key_range(tbl_quad, n_quad, ctx, PACK, &lo, &hi);
+        return hi > lo ? collect(tbl_quad, lo, hi) : 0;
+    }
+    if (level == 3) {
+        if (nem < 2) return 0;
+        uint64_t ctx = ((uint64_t)em[nem - 2] << PACK) | em[nem - 1];
+        key_range(tbl_tri, n_tri, ctx, PACK, &lo, &hi);
+        return hi > lo ? collect(tbl_tri, lo, hi) : 0;
+    }
+    if (level == 2) {
+        key_range(tbl_bi, n_bi, em[nem - 1], PACK, &lo, &hi);
+        return hi > lo ? collect(tbl_bi, lo, hi) : 0;
+    }
+    size_t k;
+    for (k = 0; k < nalive && k < MAX_CAND; k++) {
+        ccbuf[k].tok = alive[k];
+        ccbuf[k].cnt = n1[alive[k]];
+    }
+    return k;
+}
+
 static void speak(const uint32_t *t, size_t n, uint64_t seed) {
     char fname[128], tname[128];
     int fn = snprintf(fname, sizeof(fname), "speech_%llu.bin", (unsigned long long)seed);
@@ -563,7 +592,7 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
     FILE *f = open_out(fname), *tf = open_out(tname);
     fprintf(tf, "index\ttoken_id\tstart_position\tbackoff\tsupport_types\t"
                 "support_occurrences\tchosen_occurrences\texpansion_bytes\t"
-                "advice_book_row\tadvice_factor\n");
+                "advice_book_row\tadvice_factor\tcorridor\n");
     rng_state = seed ^ 0x9E3779B97F4A7C15ull;
     if (!rng_state) rng_state = 1;
 
@@ -583,38 +612,37 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
         em[nem++] = t[sp + (size_t)k];
         write_bytes(f, exp_pool + exp_off[em[nem - 1]], exp_lenv[em[nem - 1]]);
         ebytes += exp_lenv[em[nem - 1]];
-        fprintf(tf, "%zu\t%u\t%zu\t0\t0\t0\t0\t%u\t0\t1\n",
+        fprintf(tf, "%zu\t%u\t%zu\t0\t0\t0\t0\t%u\t0\t1\t0\n",
                 nem - 1, em[nem - 1], sp + (size_t)k, exp_lenv[em[nem - 1]]);
     }
 
+    uint32_t corr = 0; /* Amendment 2: consecutive single-type steps */
     size_t want = SPEAK_BYTES, hard = SPEAK_BYTES + SPEAK_HARD;
     while (ebytes < want && nem + 1 < MAX_EM) {
-        size_t nc = 0, lo, hi;
+        size_t nc = 0;
         int backoff = 0;
-        if (ORDER >= 4 && n_quad && nem >= 3) {
-            uint64_t ctx = ((uint64_t)em[nem - 3] << (2 * PACK)) |
-                           ((uint64_t)em[nem - 2] << PACK) | em[nem - 1];
-            key_range(tbl_quad, n_quad, ctx, PACK, &lo, &hi);
-            if (hi > lo) { nc = collect(tbl_quad, lo, hi); backoff = 4; }
-        }
-        if (nc == 0 && nem >= 2) {
-            uint64_t ctx = ((uint64_t)em[nem - 2] << PACK) | em[nem - 1];
-            key_range(tbl_tri, n_tri, ctx, PACK, &lo, &hi);
-            if (hi > lo) { nc = collect(tbl_tri, lo, hi); backoff = 3; }
-        }
-        if (nc == 0) {
-            key_range(tbl_bi, n_bi, em[nem - 1], PACK, &lo, &hi);
-            if (hi > lo) { nc = collect(tbl_bi, lo, hi); backoff = 2; }
-        }
-        if (nc == 0) {
-            for (size_t k = 0; k < nalive && k < MAX_CAND; k++) {
-                ccbuf[k].tok = alive[k];
-                ccbuf[k].cnt = n1[alive[k]];
-            }
-            nc = nalive < MAX_CAND ? nalive : MAX_CAND;
-            backoff = 1;
+        for (int lvl = 4; lvl >= 1 && nc == 0; lvl--) {
+            nc = support_collect(em, nem, lvl);
+            if (nc) backoff = lvl;
         }
         if (nc == 0) die("empty lived support");
+
+        /* the corridor law (MOUTH_PROTOCOL_A2.md) */
+        uint32_t corridor_before = corr;
+        if (nc >= 2) {
+            corr = 0;
+        } else if (CORRIDOR != 0) {
+            if (corr >= CORRIDOR) {
+                int found = 0;
+                for (int lvl = backoff - 1; lvl >= 1; lvl--) {
+                    size_t alt = support_collect(em, nem, lvl);
+                    if (alt >= 2) { nc = alt; backoff = lvl; found = 1; break; }
+                }
+                if (found) corr = 0; else corr++;
+            } else {
+                corr++;
+            }
+        }
 
         uint32_t last = em[nem - 1];
         uint8_t prev_byte = exp_pool[exp_off[last] + exp_lenv[last] - 1];
@@ -658,10 +686,10 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
         em[nem++] = chosen;
         write_bytes(f, exp_pool + exp_off[chosen], exp_lenv[chosen]);
         ebytes += exp_lenv[chosen];
-        fprintf(tf, "%zu\t%u\t-\t%d\t%zu\t%llu\t%u\t%u\t%u\t%.17g\n",
+        fprintf(tf, "%zu\t%u\t-\t%d\t%zu\t%llu\t%u\t%u\t%u\t%.17g\t%u\n",
                 nem - 1, chosen, backoff, nc, (unsigned long long)support_occ,
                 sc[chosen_at].cnt, exp_lenv[chosen], sc[chosen_at].advice_row,
-                sc[chosen_at].factor);
+                sc[chosen_at].factor, corridor_before);
         if (ebytes >= want && !ends_sentence(chosen) && ebytes < hard) want = ebytes + 1;
     }
     close_out(f);
@@ -689,6 +717,7 @@ int main(int argc, char **argv) {
         else if (!strcmp(argv[i], "--bytes") && i + 1 < argc) SPEAK_BYTES = parse_size_arg(argv[++i], "bad --bytes");
         else if (!strcmp(argv[i], "--temp") && i + 1 < argc) TEMP = parse_real(argv[++i], "bad --temp");
         else if (!strcmp(argv[i], "--topk") && i + 1 < argc) TOP_K = parse_size_arg(argv[++i], "bad --topk");
+        else if (!strcmp(argv[i], "--corridor") && i + 1 < argc) CORRIDOR = parse_u32(argv[++i], "bad --corridor");
         else if (!strcmp(argv[i], "--citizens") && i + 1 < argc) cit_path = argv[++i];
         else if (!strcmp(argv[i], "--citizens-mode") && i + 1 < argc) {
             const char *m = argv[++i];
@@ -711,6 +740,7 @@ int main(int argc, char **argv) {
     if (SPEAK_BYTES == 0 || SPEAK_BYTES > MAX_SPEAK_BYTES) die("--bytes outside 1..65000");
     if (!(TEMP > 0.0) || !isfinite(TEMP)) die("--temp must be finite and positive");
     if (TOP_K == 0 || TOP_K > 256) die("--topk outside 1..256");
+    if (CORRIDOR > 4096) die("--corridor outside 0..4096");
     if (cit_mode != 0 && !cit_path) die("citizens mode without a book");
     if (cit_path && cit_mode != 0) load_citizens(cit_path);
 
