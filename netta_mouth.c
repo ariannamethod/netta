@@ -7,9 +7,11 @@
    the field organ, and the mouth does not resurrect it.
 
    Court-4 citizens (live earned relations from the sealed book) advise
-   sampling inside their exact context and nowhere else, with the L they
-   earned.  Controls: --citizens-mode none (plain mouth) and shuffled
-   (deterministic rotation of targets) run beside the advised mouth.
+   sampling only through the destination-byte projection declared in the
+   contract.  Court 4's single-winner law is preserved: greatest ledger,
+   full RelationKey tie-break; citizens are never multiplied.  Controls:
+   --citizens-mode none (plain mouth) and shuffled (deterministic rotation
+   of target identities) run beside the advised mouth.
 
    Iteration is the law: --merges, --order, --temp, --topk, --bytes are
    open dials; the same flags and seed speak the same bytes.
@@ -22,6 +24,8 @@
 
    C11, stdlib only.  Deterministic.                                   */
 
+#include <errno.h>
+#include <limits.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -37,8 +41,110 @@
 #define MAX_SEEDS 32
 #define MAX_CITIZENS 64
 #define MAX_EM 65536
+#define MAX_SPEAK_BYTES 65000
+#define CITIZENS_BYTES 36101u
+
+static const uint8_t CITIZENS_SHA256[32] = {
+    0xd3,0xe5,0xe5,0x14,0xea,0x4c,0xcc,0xc4,
+    0xa0,0x44,0xad,0x22,0x4d,0x19,0x17,0x0e,
+    0x63,0x7b,0xeb,0x79,0xa8,0x10,0xfb,0x08,
+    0x75,0x81,0x6f,0x79,0x82,0x11,0xb4,0x38
+};
 
 static void die(const char *m) { fprintf(stderr, "netta_mouth: %s\n", m); exit(1); }
+
+/* Small local SHA-256: the mouth authenticates the sealed citizens book
+   without invoking a shell or accepting a path as identity. */
+typedef struct {
+    uint32_t h[8];
+    uint64_t bits;
+    uint8_t block[64];
+    size_t used;
+} Sha256;
+
+static uint32_t rotr32(uint32_t x, unsigned n) { return (x >> n) | (x << (32u - n)); }
+
+static void sha256_block(Sha256 *s, const uint8_t b[64]) {
+    static const uint32_t k[64] = {
+        0x428a2f98u,0x71374491u,0xb5c0fbcfu,0xe9b5dba5u,0x3956c25bu,0x59f111f1u,0x923f82a4u,0xab1c5ed5u,
+        0xd807aa98u,0x12835b01u,0x243185beu,0x550c7dc3u,0x72be5d74u,0x80deb1feu,0x9bdc06a7u,0xc19bf174u,
+        0xe49b69c1u,0xefbe4786u,0x0fc19dc6u,0x240ca1ccu,0x2de92c6fu,0x4a7484aau,0x5cb0a9dcu,0x76f988dau,
+        0x983e5152u,0xa831c66du,0xb00327c8u,0xbf597fc7u,0xc6e00bf3u,0xd5a79147u,0x06ca6351u,0x14292967u,
+        0x27b70a85u,0x2e1b2138u,0x4d2c6dfcu,0x53380d13u,0x650a7354u,0x766a0abbu,0x81c2c92eu,0x92722c85u,
+        0xa2bfe8a1u,0xa81a664bu,0xc24b8b70u,0xc76c51a3u,0xd192e819u,0xd6990624u,0xf40e3585u,0x106aa070u,
+        0x19a4c116u,0x1e376c08u,0x2748774cu,0x34b0bcb5u,0x391c0cb3u,0x4ed8aa4au,0x5b9cca4fu,0x682e6ff3u,
+        0x748f82eeu,0x78a5636fu,0x84c87814u,0x8cc70208u,0x90befffau,0xa4506cebu,0xbef9a3f7u,0xc67178f2u
+    };
+    uint32_t w[64];
+    for (unsigned i = 0; i < 16; i++)
+        w[i] = ((uint32_t)b[4*i] << 24) | ((uint32_t)b[4*i+1] << 16) |
+               ((uint32_t)b[4*i+2] << 8) | (uint32_t)b[4*i+3];
+    for (unsigned i = 16; i < 64; i++) {
+        uint32_t x = w[i-15], y = w[i-2];
+        uint32_t a = rotr32(x,7) ^ rotr32(x,18) ^ (x >> 3);
+        uint32_t z = rotr32(y,17) ^ rotr32(y,19) ^ (y >> 10);
+        w[i] = w[i-16] + a + w[i-7] + z;
+    }
+    uint32_t a=s->h[0], c=s->h[2], d=s->h[3], e=s->h[4];
+    uint32_t f=s->h[5], g=s->h[6], h=s->h[7], bb=s->h[1];
+    for (unsigned i = 0; i < 64; i++) {
+        uint32_t s1=rotr32(e,6)^rotr32(e,11)^rotr32(e,25);
+        uint32_t ch=(e&f)^((~e)&g), t1=h+s1+ch+k[i]+w[i];
+        uint32_t s0=rotr32(a,2)^rotr32(a,13)^rotr32(a,22);
+        uint32_t maj=(a&bb)^(a&c)^(bb&c), t2=s0+maj;
+        h=g; g=f; f=e; e=d+t1; d=c; c=bb; bb=a; a=t1+t2;
+    }
+    s->h[0]+=a; s->h[1]+=bb; s->h[2]+=c; s->h[3]+=d;
+    s->h[4]+=e; s->h[5]+=f; s->h[6]+=g; s->h[7]+=h;
+}
+
+static void sha256_init(Sha256 *s) {
+    static const uint32_t iv[8] = {0x6a09e667u,0xbb67ae85u,0x3c6ef372u,0xa54ff53au,
+                                    0x510e527fu,0x9b05688cu,0x1f83d9abu,0x5be0cd19u};
+    memcpy(s->h, iv, sizeof iv); s->bits = 0; s->used = 0;
+}
+
+static void sha256_update(Sha256 *s, const uint8_t *p, size_t n) {
+    s->bits += (uint64_t)n * 8u;
+    while (n) {
+        size_t take = 64u - s->used;
+        if (take > n) take = n;
+        memcpy(s->block + s->used, p, take);
+        s->used += take; p += take; n -= take;
+        if (s->used == 64u) { sha256_block(s, s->block); s->used = 0; }
+    }
+}
+
+static void sha256_final(Sha256 *s, uint8_t out[32]) {
+    uint64_t bits = s->bits;
+    s->block[s->used++] = 0x80;
+    if (s->used > 56u) {
+        while (s->used < 64u) s->block[s->used++] = 0;
+        sha256_block(s, s->block); s->used = 0;
+    }
+    while (s->used < 56u) s->block[s->used++] = 0;
+    for (unsigned i = 0; i < 8; i++) s->block[63u-i] = (uint8_t)(bits >> (8u*i));
+    sha256_block(s, s->block);
+    for (unsigned i = 0; i < 8; i++) {
+        out[4*i]=(uint8_t)(s->h[i]>>24); out[4*i+1]=(uint8_t)(s->h[i]>>16);
+        out[4*i+2]=(uint8_t)(s->h[i]>>8); out[4*i+3]=(uint8_t)s->h[i];
+    }
+}
+
+static void sha256_stream(FILE *f, uint8_t out[32], size_t *bytes) {
+    Sha256 s; uint8_t buf[16384]; size_t total = 0, n;
+    sha256_init(&s);
+    for (;;) {
+        n = fread(buf, 1, sizeof buf, f);
+        if (n) { sha256_update(&s, buf, n); total += n; }
+        if (n != sizeof buf) {
+            if (ferror(f)) die("cannot hash file");
+            break;
+        }
+    }
+    sha256_final(&s, out);
+    if (bytes) *bytes = total;
+}
 
 /* ── dials ── */
 static uint32_t MERGES = 4096;
@@ -85,8 +191,13 @@ static uint32_t *exp_lenv;
 static uint32_t nunits;
 
 static void exp_append(uint32_t id, const uint8_t *b, uint32_t len) {
+    if ((size_t)len > SIZE_MAX - exp_pool_len) die("unit expansion pool overflow");
     if (exp_pool_len + len > exp_pool_cap) {
-        exp_pool_cap = exp_pool_cap ? exp_pool_cap * 2 : (1u << 20);
+        if (!exp_pool_cap) exp_pool_cap = 1u << 20;
+        while (exp_pool_len + len > exp_pool_cap) {
+            if (exp_pool_cap > SIZE_MAX / 2) die("unit expansion pool overflow");
+            exp_pool_cap *= 2;
+        }
         exp_pool = realloc(exp_pool, exp_pool_cap);
         if (!exp_pool) die("oom pool");
     }
@@ -216,61 +327,203 @@ static size_t collect(const uint64_t *keys, size_t lo, size_t hi) {
     return n;
 }
 
-/* ── Court-4 citizens: live earned relations advise in their context ── */
-typedef struct { uint8_t ctx, target; double L; } Citizen;
+/* ── Court-4 citizens: authenticated book, projected context, one winner ── */
+typedef struct {
+    uint8_t target_s, target_d;
+    uint32_t target_epoch;
+    uint8_t cl;
+    uint8_t ctx_s[3], ctx_d[3];
+    uint32_t ctx_epoch[3];
+    uint64_t seen, positive, negative;
+    double ledger, peak, L;
+    int state, ever_earned;
+    unsigned book_row;
+} Citizen;
 static Citizen cit[MAX_CITIZENS];
 static size_t ncit;
 static int cit_mode; /* 0 none, 1 live, 2 shuffled */
 
+static uint64_t parse_u64(const char *s, const char *what) {
+    char *end = NULL;
+    if (!s || !*s || *s == '-') die(what);
+    errno = 0;
+    unsigned long long v = strtoull(s, &end, 10);
+    if (errno || !end || *end) die(what);
+    return (uint64_t)v;
+}
+
+static uint32_t parse_u32(const char *s, const char *what) {
+    uint64_t v = parse_u64(s, what);
+    if (v > UINT32_MAX) die(what);
+    return (uint32_t)v;
+}
+
+static uint8_t parse_u8(const char *s, const char *what) {
+    uint32_t v = parse_u32(s, what);
+    if (v > UINT8_MAX) die(what);
+    return (uint8_t)v;
+}
+
+static double parse_real(const char *s, const char *what) {
+    char *end = NULL;
+    errno = 0;
+    double v = strtod(s, &end);
+    if (!s || !*s || errno || !end || *end || !isfinite(v)) die(what);
+    return v;
+}
+
+static size_t parse_size_arg(const char *s, const char *what) {
+    uint64_t v = parse_u64(s, what);
+    if (v > SIZE_MAX) die(what);
+    return (size_t)v;
+}
+
+static size_t parse_seed_list(const char *s, uint64_t out[MAX_SEEDS]) {
+    size_t n = 0;
+    const char *p = s;
+    if (!p || !*p) die("empty seed list");
+    while (*p) {
+        const char *start = p;
+        while (*p && *p != ',') p++;
+        size_t len = (size_t)(p - start);
+        if (!len || len >= 64) die("bad seed list");
+        char one[64];
+        memcpy(one, start, len); one[len] = 0;
+        if (n == MAX_SEEDS) die("too many seeds");
+        uint64_t v = parse_u64(one, "bad seed");
+        for (size_t i = 0; i < n; i++) if (out[i] == v) die("duplicate seed");
+        out[n++] = v;
+        if (*p == ',') { p++; if (!*p) die("bad seed list"); }
+    }
+    return n;
+}
+
+static int split_tabs(char *line, char **fld, int cap) {
+    int n = 0;
+    if (!line || !*line) return 0;
+    fld[n++] = line;
+    for (char *p = line; *p; p++) {
+        if (*p == '\t') {
+            *p = 0;
+            if (n == cap) die("citizens row has too many fields");
+            fld[n++] = p + 1;
+        }
+    }
+    return n;
+}
+
+static int citizen_key_cmp(const Citizen *a, const Citizen *b) {
+#define CMP(x) do { if (a->x != b->x) return a->x < b->x ? -1 : 1; } while (0)
+    CMP(target_s); CMP(target_d); CMP(target_epoch); CMP(cl);
+    for (int i = 0; i < 3; i++) {
+        if (a->ctx_s[i] != b->ctx_s[i]) return a->ctx_s[i] < b->ctx_s[i] ? -1 : 1;
+        if (a->ctx_d[i] != b->ctx_d[i]) return a->ctx_d[i] < b->ctx_d[i] ? -1 : 1;
+        if (a->ctx_epoch[i] != b->ctx_epoch[i]) return a->ctx_epoch[i] < b->ctx_epoch[i] ? -1 : 1;
+    }
+#undef CMP
+    return 0;
+}
+
 static void load_citizens(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) die("cannot open citizens book");
+    uint8_t digest[32]; size_t bytes = 0;
+    sha256_stream(f, digest, &bytes);
+    if (bytes != CITIZENS_BYTES || memcmp(digest, CITIZENS_SHA256, sizeof digest))
+        die("citizens book identity mismatch");
+    if (fseek(f, 0, SEEK_SET)) die("cannot rewind citizens book");
+
+    static const char header[] =
+        "arm\ttarget_s\ttarget_d\ttarget_epoch\tcontext_len\tc1_s\tc1_d\tc1_epoch\t"
+        "c2_s\tc2_d\tc2_epoch\tc3_s\tc3_d\tc3_epoch\tseen\tpositive\tnegative\t"
+        "ledger_bits\tpeak_bits\tstate\tL\tever_earned";
     char line[4096];
-    int row = 0;
+    unsigned row = 0;
     while (fgets(line, sizeof line, f)) {
         row++;
+        size_t len = strlen(line);
+        if (!len || line[len - 1] != '\n') die("citizens book has unterminated or oversized row");
+        line[--len] = 0;
+        if (len && line[len - 1] == '\r') die("citizens book is not canonical LF text");
         if (row == 1) {
-            if (strncmp(line, "arm\t", 4)) die("citizens book header drifted");
+            if (strcmp(line, header)) die("citizens book header drifted");
             continue;
         }
-        char *save = line, *fld[24];
-        int nf = 0;
-        for (char *p = strsep(&save, "\t\n"); p && nf < 24; p = strsep(&save, "\t\n"))
-            fld[nf++] = p;
-        if (nf < 22) continue;
+        char *fld[22];
+        int nf = split_tabs(line, fld, 22);
+        if (nf != 22) die("citizens book row width drifted");
         if (strcmp(fld[0], "relation")) continue;   /* oracle and nulls are controls, never advisers */
         if (strcmp(fld[19], "1")) continue;          /* state=1 only: live earned balance */
-        long clen = strtol(fld[4], NULL, 10);
-        if (clen != 1) die("citizen with unexpected context length");
-        long tgt = strtol(fld[2], NULL, 10);         /* target_d: destination-side byte */
-        long ctx = strtol(fld[6], NULL, 10);         /* c1_d: destination-side context byte */
-        double L = strtod(fld[20], NULL);
-        if (tgt < 0 || tgt > 255 || ctx < 0 || ctx > 255 || L <= 0.0 || L > 0.5)
-            die("citizen outside the sealed law");
         if (ncit == MAX_CITIZENS) die("too many citizens");
-        cit[ncit].ctx = (uint8_t)ctx;
-        cit[ncit].target = (uint8_t)tgt;
-        cit[ncit].L = L;
+        Citizen *c = &cit[ncit];
+        memset(c, 0, sizeof *c);
+        c->target_s = parse_u8(fld[1], "bad citizen target_s");
+        c->target_d = parse_u8(fld[2], "bad citizen target_d");
+        c->target_epoch = parse_u32(fld[3], "bad citizen target_epoch");
+        c->cl = parse_u8(fld[4], "bad citizen context_len");
+        c->ctx_s[0] = parse_u8(fld[5], "bad citizen c1_s");
+        c->ctx_d[0] = parse_u8(fld[6], "bad citizen c1_d");
+        c->ctx_epoch[0] = parse_u32(fld[7], "bad citizen c1_epoch");
+        c->ctx_s[1] = parse_u8(fld[8], "bad citizen c2_s");
+        c->ctx_d[1] = parse_u8(fld[9], "bad citizen c2_d");
+        c->ctx_epoch[1] = parse_u32(fld[10], "bad citizen c2_epoch");
+        c->ctx_s[2] = parse_u8(fld[11], "bad citizen c3_s");
+        c->ctx_d[2] = parse_u8(fld[12], "bad citizen c3_d");
+        c->ctx_epoch[2] = parse_u32(fld[13], "bad citizen c3_epoch");
+        c->seen = parse_u64(fld[14], "bad citizen seen");
+        c->positive = parse_u64(fld[15], "bad citizen positive");
+        c->negative = parse_u64(fld[16], "bad citizen negative");
+        c->ledger = parse_real(fld[17], "bad citizen ledger");
+        c->peak = parse_real(fld[18], "bad citizen peak");
+        c->state = (int)parse_u32(fld[19], "bad citizen state");
+        c->L = parse_real(fld[20], "bad citizen L");
+        c->ever_earned = (int)parse_u32(fld[21], "bad citizen ever_earned");
+        c->book_row = row;
+        if (c->cl != 1 || c->ctx_epoch[0] == 0 || c->target_epoch == 0 ||
+            c->state != 1 || c->ever_earned != 1 || c->seen == 0 ||
+            c->positive > c->seen || c->negative != c->seen - c->positive ||
+            c->L <= 0.0 || c->L > 0.5)
+            die("citizen outside the sealed law");
         ncit++;
     }
+    if (ferror(f)) die("cannot read citizens book");
     fclose(f);
-    if (!ncit) die("citizens book holds no live relation");
-    if (cit_mode == 2) { /* deterministic rotation of targets: the null hand */
-        uint8_t t0 = cit[0].target;
-        for (size_t i = 0; i + 1 < ncit; i++) cit[i].target = cit[i + 1].target;
-        cit[ncit - 1].target = t0;
+    if (ncit != 5) die("citizens book live population drifted");
+    if (cit_mode == 2) { /* rotate the target identity bundle, preserving evidence/context */
+        uint8_t s0 = cit[0].target_s, d0 = cit[0].target_d;
+        uint32_t e0 = cit[0].target_epoch;
+        for (size_t i = 0; i + 1 < ncit; i++) {
+            cit[i].target_s = cit[i + 1].target_s;
+            cit[i].target_d = cit[i + 1].target_d;
+            cit[i].target_epoch = cit[i + 1].target_epoch;
+        }
+        cit[ncit - 1].target_s = s0;
+        cit[ncit - 1].target_d = d0;
+        cit[ncit - 1].target_epoch = e0;
     }
 }
 
-/* the advice law: inside the citizen's exact context only, weight = earned L */
-static double advice(uint8_t prev_byte, uint32_t cand) {
-    if (cit_mode == 0 || ncit == 0) return 1.0;
+/* Court 4 chooses one eligible citizen before pricing a truth.  Here the
+   full context has an explicitly declared destination-byte projection. */
+static const Citizen *citizen_winner(uint8_t prev_byte) {
+    const Citizen *winner = NULL;
+    if (cit_mode == 0 || ncit == 0) return NULL;
+    for (size_t i = 0; i < ncit; i++) {
+        const Citizen *c = &cit[i];
+        if (c->cl != 1 || c->ctx_d[0] != prev_byte) continue;
+        if (!winner || c->ledger > winner->ledger ||
+            (c->ledger == winner->ledger && citizen_key_cmp(c, winner) < 0))
+            winner = c;
+    }
+    return winner;
+}
+
+static double advice(const Citizen *winner, uint32_t cand, unsigned *book_row) {
+    if (!winner) { *book_row = 0; return 1.0; }
     uint8_t first = exp_pool[exp_off[cand]];
-    double f = 1.0;
-    for (size_t i = 0; i < ncit; i++)
-        if (cit[i].ctx == prev_byte && cit[i].target == first)
-            f *= 1.0 + cit[i].L;
-    return f;
+    if (winner->target_d != first) { *book_row = 0; return 1.0; }
+    *book_row = winner->book_row;
+    return 1.0 + winner->L;
 }
 
 /* ── speech: lived continuations only, quad -> tri -> bi -> lived uni ── */
@@ -286,16 +539,31 @@ static int ends_sentence(uint32_t id) {
 static char outdir[1024];
 static FILE *open_out(const char *name) {
     char path[1200];
-    snprintf(path, sizeof(path), "%s/%s", outdir, name);
+    int n = snprintf(path, sizeof(path), "%s/%s", outdir, name);
+    if (n < 0 || (size_t)n >= sizeof path) die("output path too long");
     FILE *f = fopen(path, "wb");
     if (!f) die("cannot open artifact for writing");
     return f;
 }
 
+static void write_bytes(FILE *f, const void *p, size_t n) {
+    if (n && fwrite(p, 1, n, f) != n) die("cannot write artifact");
+}
+
+static void close_out(FILE *f) {
+    if (fclose(f)) die("cannot close artifact");
+}
+
 static void speak(const uint32_t *t, size_t n, uint64_t seed) {
-    char fname[128];
-    snprintf(fname, sizeof(fname), "speech_%llu.bin", (unsigned long long)seed);
-    FILE *f = open_out(fname);
+    char fname[128], tname[128];
+    int fn = snprintf(fname, sizeof(fname), "speech_%llu.bin", (unsigned long long)seed);
+    int tn = snprintf(tname, sizeof(tname), "trace_%llu.tsv", (unsigned long long)seed);
+    if (fn < 0 || (size_t)fn >= sizeof fname || tn < 0 || (size_t)tn >= sizeof tname)
+        die("seed filename too long");
+    FILE *f = open_out(fname), *tf = open_out(tname);
+    fprintf(tf, "index\ttoken_id\tstart_position\tbackoff\tsupport_types\t"
+                "support_occurrences\tchosen_occurrences\texpansion_bytes\t"
+                "advice_book_row\tadvice_factor\n");
     rng_state = seed ^ 0x9E3779B97F4A7C15ull;
     if (!rng_state) rng_state = 1;
 
@@ -313,27 +581,30 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
     size_t nem = 0, ebytes = 0;
     for (int k = 0; k < 3; k++) {
         em[nem++] = t[sp + (size_t)k];
-        fwrite(exp_pool + exp_off[em[nem - 1]], 1, exp_lenv[em[nem - 1]], f);
+        write_bytes(f, exp_pool + exp_off[em[nem - 1]], exp_lenv[em[nem - 1]]);
         ebytes += exp_lenv[em[nem - 1]];
+        fprintf(tf, "%zu\t%u\t%zu\t0\t0\t0\t0\t%u\t0\t1\n",
+                nem - 1, em[nem - 1], sp + (size_t)k, exp_lenv[em[nem - 1]]);
     }
 
     size_t want = SPEAK_BYTES, hard = SPEAK_BYTES + SPEAK_HARD;
     while (ebytes < want && nem + 1 < MAX_EM) {
         size_t nc = 0, lo, hi;
+        int backoff = 0;
         if (ORDER >= 4 && n_quad && nem >= 3) {
             uint64_t ctx = ((uint64_t)em[nem - 3] << (2 * PACK)) |
                            ((uint64_t)em[nem - 2] << PACK) | em[nem - 1];
             key_range(tbl_quad, n_quad, ctx, PACK, &lo, &hi);
-            if (hi > lo) nc = collect(tbl_quad, lo, hi);
+            if (hi > lo) { nc = collect(tbl_quad, lo, hi); backoff = 4; }
         }
         if (nc == 0 && nem >= 2) {
             uint64_t ctx = ((uint64_t)em[nem - 2] << PACK) | em[nem - 1];
             key_range(tbl_tri, n_tri, ctx, PACK, &lo, &hi);
-            if (hi > lo) nc = collect(tbl_tri, lo, hi);
+            if (hi > lo) { nc = collect(tbl_tri, lo, hi); backoff = 3; }
         }
         if (nc == 0) {
             key_range(tbl_bi, n_bi, em[nem - 1], PACK, &lo, &hi);
-            if (hi > lo) nc = collect(tbl_bi, lo, hi);
+            if (hi > lo) { nc = collect(tbl_bi, lo, hi); backoff = 2; }
         }
         if (nc == 0) {
             for (size_t k = 0; k < nalive && k < MAX_CAND; k++) {
@@ -341,25 +612,35 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
                 ccbuf[k].cnt = n1[alive[k]];
             }
             nc = nalive < MAX_CAND ? nalive : MAX_CAND;
+            backoff = 1;
         }
+        if (nc == 0) die("empty lived support");
 
         uint32_t last = em[nem - 1];
         uint8_t prev_byte = exp_pool[exp_off[last] + exp_lenv[last] - 1];
+        const Citizen *winner = citizen_winner(prev_byte);
 
-        typedef struct { uint32_t tok; double s; } SC;
+        typedef struct { uint32_t tok, cnt; unsigned advice_row; double factor, s; } SC;
         static SC sc[MAX_CAND];
         for (size_t k = 0; k < nc; k++) {
-            double w = (double)ccbuf[k].cnt * advice(prev_byte, ccbuf[k].tok);
+            unsigned advice_row = 0;
+            double factor = advice(winner, ccbuf[k].tok, &advice_row);
+            double w = (double)ccbuf[k].cnt * factor;
             int freq = 0;
             size_t rst = nem > REP_WINDOW ? nem - REP_WINDOW : 0;
             for (size_t j = rst; j < nem; j++) if (em[j] == ccbuf[k].tok) freq++;
             sc[k].tok = ccbuf[k].tok;
+            sc[k].cnt = ccbuf[k].cnt;
+            sc[k].advice_row = advice_row;
+            sc[k].factor = factor;
             sc[k].s = log(w + 1e-300) - log(1.0 + REP_PENALTY * (double)freq);
         }
         size_t limit = nc < TOP_K ? nc : TOP_K;
         for (size_t i = 0; i < limit; i++) {
             size_t best = i;
-            for (size_t j = i + 1; j < nc; j++) if (sc[j].s > sc[best].s) best = j;
+            for (size_t j = i + 1; j < nc; j++)
+                if (sc[j].s > sc[best].s ||
+                    (sc[j].s == sc[best].s && sc[j].tok < sc[best].tok)) best = j;
             if (best != i) { SC tmp = sc[i]; sc[i] = sc[best]; sc[best] = tmp; }
         }
         double ls[256], mx = -1e300, tot = 0;
@@ -367,15 +648,24 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
         for (size_t i = 0; i < limit; i++) { ls[i] = sc[i].s / TEMP; if (ls[i] > mx) mx = ls[i]; }
         for (size_t i = 0; i < limit; i++) { ls[i] = exp(ls[i] - mx); tot += ls[i]; }
         double r = rng_double() * tot, cum = 0;
-        uint32_t chosen = sc[0].tok;
-        for (size_t i = 0; i < limit; i++) { cum += ls[i]; if (cum > r) { chosen = sc[i].tok; break; } }
+        size_t chosen_at = 0;
+        for (size_t i = 0; i < limit; i++) { cum += ls[i]; if (cum > r) { chosen_at = i; break; } }
+        uint32_t chosen = sc[chosen_at].tok;
+
+        uint64_t support_occ = 0;
+        for (size_t i = 0; i < nc; i++) support_occ += ccbuf[i].cnt;
 
         em[nem++] = chosen;
-        fwrite(exp_pool + exp_off[chosen], 1, exp_lenv[chosen], f);
+        write_bytes(f, exp_pool + exp_off[chosen], exp_lenv[chosen]);
         ebytes += exp_lenv[chosen];
+        fprintf(tf, "%zu\t%u\t-\t%d\t%zu\t%llu\t%u\t%u\t%u\t%.17g\n",
+                nem - 1, chosen, backoff, nc, (unsigned long long)support_occ,
+                sc[chosen_at].cnt, exp_lenv[chosen], sc[chosen_at].advice_row,
+                sc[chosen_at].factor);
         if (ebytes >= want && !ends_sentence(chosen) && ebytes < hard) want = ebytes + 1;
     }
-    fclose(f);
+    close_out(f);
+    close_out(tf);
 }
 
 /* ── main ── */
@@ -385,13 +675,20 @@ int main(int argc, char **argv) {
     size_t nseeds = 5;
     outdir[0] = 0;
     for (int i = 1; i < argc; i++) {
-        if (!strcmp(argv[i], "--out") && i + 1 < argc) snprintf(outdir, sizeof(outdir), "%s", argv[++i]);
-        else if (!strcmp(argv[i], "--merges") && i + 1 < argc) MERGES = (uint32_t)strtoul(argv[++i], NULL, 10);
-        else if (!strcmp(argv[i], "--min-pair") && i + 1 < argc) MIN_PAIR = (uint32_t)strtoul(argv[++i], NULL, 10);
-        else if (!strcmp(argv[i], "--order") && i + 1 < argc) ORDER = atoi(argv[++i]);
-        else if (!strcmp(argv[i], "--bytes") && i + 1 < argc) SPEAK_BYTES = (size_t)strtoul(argv[++i], NULL, 10);
-        else if (!strcmp(argv[i], "--temp") && i + 1 < argc) TEMP = atof(argv[++i]);
-        else if (!strcmp(argv[i], "--topk") && i + 1 < argc) TOP_K = (size_t)strtoul(argv[++i], NULL, 10);
+        if (!strcmp(argv[i], "--out") && i + 1 < argc) {
+            int n = snprintf(outdir, sizeof(outdir), "%s", argv[++i]);
+            if (n < 0 || (size_t)n >= sizeof outdir) die("output directory path too long");
+        }
+        else if (!strcmp(argv[i], "--merges") && i + 1 < argc) MERGES = parse_u32(argv[++i], "bad --merges");
+        else if (!strcmp(argv[i], "--min-pair") && i + 1 < argc) MIN_PAIR = parse_u32(argv[++i], "bad --min-pair");
+        else if (!strcmp(argv[i], "--order") && i + 1 < argc) {
+            uint32_t v = parse_u32(argv[++i], "bad --order");
+            if (v > INT_MAX) die("bad --order");
+            ORDER = (int)v;
+        }
+        else if (!strcmp(argv[i], "--bytes") && i + 1 < argc) SPEAK_BYTES = parse_size_arg(argv[++i], "bad --bytes");
+        else if (!strcmp(argv[i], "--temp") && i + 1 < argc) TEMP = parse_real(argv[++i], "bad --temp");
+        else if (!strcmp(argv[i], "--topk") && i + 1 < argc) TOP_K = parse_size_arg(argv[++i], "bad --topk");
         else if (!strcmp(argv[i], "--citizens") && i + 1 < argc) cit_path = argv[++i];
         else if (!strcmp(argv[i], "--citizens-mode") && i + 1 < argc) {
             const char *m = argv[++i];
@@ -401,24 +698,26 @@ int main(int argc, char **argv) {
             else die("unknown citizens mode");
         }
         else if (!strcmp(argv[i], "--seeds") && i + 1 < argc) {
-            nseeds = 0;
-            char *dup = argv[++i];
-            for (char *p = strtok(dup, ","); p && nseeds < MAX_SEEDS; p = strtok(NULL, ","))
-                seeds[nseeds++] = strtoull(p, NULL, 10);
-            if (!nseeds) die("empty seed list");
+            nseeds = parse_seed_list(argv[++i], seeds);
         }
+        else if (argv[i][0] == '-') die("unknown or incomplete option");
+        else if (path) die("more than one world path");
         else path = argv[i];
     }
     if (!path || !outdir[0]) die("usage: netta_mouth <world> --out <dir> [dials]");
     if (ORDER != 3 && ORDER != 4) die("--order must be 3 or 4");
-    if (BASE_UNITS + MERGES > (1u << PACK)) die("merge budget exceeds packed id space");
+    if ((uint64_t)BASE_UNITS + MERGES > (1ull << PACK)) die("merge budget exceeds packed id space");
+    if (MIN_PAIR < 2) die("--min-pair must be at least 2");
+    if (SPEAK_BYTES == 0 || SPEAK_BYTES > MAX_SPEAK_BYTES) die("--bytes outside 1..65000");
+    if (!(TEMP > 0.0) || !isfinite(TEMP)) die("--temp must be finite and positive");
+    if (TOP_K == 0 || TOP_K > 256) die("--topk outside 1..256");
     if (cit_mode != 0 && !cit_path) die("citizens mode without a book");
     if (cit_path && cit_mode != 0) load_citizens(cit_path);
 
     read_world(path);
 
-    merge_left = malloc(MERGES * sizeof(uint32_t));
-    merge_right = malloc(MERGES * sizeof(uint32_t));
+    merge_left = malloc((MERGES ? MERGES : 1u) * sizeof(uint32_t));
+    merge_right = malloc((MERGES ? MERGES : 1u) * sizeof(uint32_t));
     exp_off = malloc((BASE_UNITS + (size_t)MERGES) * sizeof(size_t));
     exp_lenv = malloc((BASE_UNITS + (size_t)MERGES) * sizeof(uint32_t));
     if (!merge_left || !merge_right || !exp_off || !exp_lenv) die("oom");
@@ -440,6 +739,6 @@ int main(int argc, char **argv) {
             world_n, sn, nmerges, nunits, (double)world_n / (double)sn, ORDER, ncit, cit_mode);
 
     for (size_t s = 0; s < nseeds; s++) speak(stream, sn, seeds[s]);
-    fprintf(stderr, "netta_mouth: %zu speech streams written to %s\n", nseeds, outdir);
+    fprintf(stderr, "netta_mouth: %zu speech streams and token traces written to %s\n", nseeds, outdir);
     return 0;
 }
