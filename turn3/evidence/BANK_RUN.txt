@@ -1,0 +1,123 @@
+COMMAND ['make', '-C', 'turn3']
+make: Nothing to be done for `all'.
+EXIT 0 elapsed 0.014484291896224022
+COMMAND ['python3', 'turn3/experiment.py', 'freeze']
+EXIT 0 elapsed 0.08037387486547232
+COMMAND ['python3', 'turn3/experiment.py', 'generate']
+generated 32
+generated 33
+generated 34
+generated 35
+generated 36
+generated 37
+generated 38
+generated 39
+EXIT 0 elapsed 3.479140375042334
+COMMAND ['python3', 'turn3/experiment.py', 'extract']
+extracted 32 sourceA0
+extracted 32 sourceA1
+extracted 32 sourceB0
+extracted 32 sourceB1
+extracted 32 mosaic
+extracted 32 unrelated
+extracted 32 mosaic_then_unrelated
+extracted 33 sourceA0
+extracted 33 sourceA1
+extracted 33 sourceB0
+extracted 33 sourceB1
+extracted 33 mosaic
+extracted 33 unrelated
+extracted 33 mosaic_then_unrelated
+extracted 34 sourceA0
+extracted 34 sourceA1
+extracted 34 sourceB0
+extracted 34 sourceB1
+extracted 34 mosaic
+extracted 34 unrelated
+extracted 34 mosaic_then_unrelated
+extracted 35 sourceA0
+extracted 35 sourceA1
+extracted 35 sourceB0
+extracted 35 sourceB1
+extracted 35 mosaic
+extracted 35 unrelated
+extracted 35 mosaic_then_unrelated
+extracted 36 sourceA0
+extracted 36 sourceA1
+extracted 36 sourceB0
+extracted 36 sourceB1
+extracted 36 mosaic
+extracted 36 unrelated
+extracted 36 mosaic_then_unrelated
+extracted 37 sourceA0
+extracted 37 sourceA1
+extracted 37 sourceB0
+extracted 37 sourceB1
+extracted 37 mosaic
+extracted 37 unrelated
+extracted 37 mosaic_then_unrelated
+extracted 38 sourceA0
+extracted 38 sourceA1
+extracted 38 sourceB0
+extracted 38 sourceB1
+extracted 38 mosaic
+extracted 38 unrelated
+extracted 38 mosaic_then_unrelated
+extracted 39 sourceA0
+extracted 39 sourceA1
+extracted 39 sourceB0
+extracted 39 sourceB1
+extracted 39 mosaic
+extracted 39 unrelated
+extracted 39 mosaic_then_unrelated
+collected 32
+collected 33
+collected 34
+collected 35
+collected 36
+collected 37
+collected 38
+collected 39
+EXIT 0 elapsed 40.984540707897395
+COMMAND ['python3', 'turn3/experiment.py', 'evaluate']
+evaluated 34 mosaic 143.35426478115366
+evaluated 32 mosaic 130.3404262277582
+evaluated 35 mosaic 160.81667016503968
+evaluated 33 mosaic 203.59223755305615
+evaluated 34 unrelated 0.0
+evaluated 32 unrelated 0.0
+evaluated 35 unrelated 0.0
+evaluated 33 unrelated 0.0
+evaluated 34 mosaic_then_unrelated 125.8881979078029
+evaluated 32 mosaic_then_unrelated 106.6306006083025
+evaluated 35 mosaic_then_unrelated 148.2187819643778
+evaluated 33 mosaic_then_unrelated 166.19817980024004
+evaluated 36 mosaic 189.48287429540432
+evaluated 37 mosaic 183.856929658989
+evaluated 38 mosaic 164.3519894883895
+evaluated 39 mosaic 185.80854304027818
+evaluated 37 unrelated 0.0
+evaluated 36 unrelated 0.0
+evaluated 39 unrelated 0.0
+evaluated 38 unrelated 0.0
+evaluated 37 mosaic_then_unrelated 168.93190285213677
+evaluated 36 mosaic_then_unrelated 152.939240809081
+evaluated 39 mosaic_then_unrelated 136.98116843689547
+evaluated 38 mosaic_then_unrelated 97.17070142476342
+{
+  "metrics": {
+    "gain_bpb": 0.010388213617020178,
+    "best_null_contrast_bpb": 0.010388213617020178,
+    "global_contrast_bpb": 0.010388213617020178,
+    "pool_contrast_bpb": 0.010371591602250475
+  },
+  "tests": {
+    "mean_vs_cold": true,
+    "mean_vs_best_null": true,
+    "all_worlds_positive": true,
+    "mean_vs_global": true,
+    "mean_vs_pool": true
+  },
+  "material_pass": true
+}
+EXIT 0 elapsed 76.14936483302154

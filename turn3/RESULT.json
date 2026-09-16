@@ -1,0 +1,5046 @@
+{
+  "material_pass": true,
+  "metrics": {
+    "best_null_contrast_bpb": 0.010388213617020178,
+    "gain_bpb": 0.010388213617020178,
+    "global_contrast_bpb": 0.010388213617020178,
+    "pool_contrast_bpb": 0.010371591602250475
+  },
+  "paired_mosaic": [
+    {
+      "best_null_contrast": 130.3404262277582,
+      "gain": 130.3404262277582,
+      "global_contrast": 130.3404262277582,
+      "pool_contrast": 130.3404262277582,
+      "world": 32
+    },
+    {
+      "best_null_contrast": 203.59223755305615,
+      "gain": 203.59223755305615,
+      "global_contrast": 203.59223755305615,
+      "pool_contrast": 203.59223755305615,
+      "world": 33
+    },
+    {
+      "best_null_contrast": 143.35426478115366,
+      "gain": 143.35426478115366,
+      "global_contrast": 143.35426478115366,
+      "pool_contrast": 143.35426478115366,
+      "world": 34
+    },
+    {
+      "best_null_contrast": 160.81667016503968,
+      "gain": 160.81667016503968,
+      "global_contrast": 160.81667016503968,
+      "pool_contrast": 158.63798944514508,
+      "world": 35
+    },
+    {
+      "best_null_contrast": 189.48287429540432,
+      "gain": 189.48287429540432,
+      "global_contrast": 189.48287429540432,
+      "pool_contrast": 189.48287429540432,
+      "world": 36
+    },
+    {
+      "best_null_contrast": 183.856929658989,
+      "gain": 183.856929658989,
+      "global_contrast": 183.856929658989,
+      "pool_contrast": 183.856929658989,
+      "world": 37
+    },
+    {
+      "best_null_contrast": 164.3519894883895,
+      "gain": 164.3519894883895,
+      "global_contrast": 164.3519894883895,
+      "pool_contrast": 164.3519894883895,
+      "world": 38
+    },
+    {
+      "best_null_contrast": 185.80854304027818,
+      "gain": 185.80854304027818,
+      "global_contrast": 185.80854304027818,
+      "pool_contrast": 185.80854304027818,
+      "world": 39
+    }
+  ],
+  "protocol_sha256": "2a97c72e40f8a8a3f7c2c7d45733808015aa601118a8bb043860130cf075df87",
+  "source_summary_sha256": "b6935e1837755106478668605938c95acab901991bcf061048c8cf1fc5c44598",
+  "tests": {
+    "all_worlds_positive": true,
+    "mean_vs_best_null": true,
+    "mean_vs_cold": true,
+    "mean_vs_global": true,
+    "mean_vs_pool": true
+  },
+  "worlds": [
+    {
+      "bank_bytes": 14080,
+      "regimes": {
+        "mosaic": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -373.10334349550914,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -373.10334349550914,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1164.7319463255462,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1164.7319463255462,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1019.8888334695631,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1019.8888334695631,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1019.8134890386732,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1019.8134890386732,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -234.30904642611665,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -234.30904642611665,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 568,
+              "active": true,
+              "active_events": 15816,
+              "at8192": 82.79064561939386,
+              "drawdown": 9.875656823827818,
+              "gain": 130.3404262277582,
+              "horizons": {
+                "1024": 1.931825923531341,
+                "16384": 130.3404262277582,
+                "4096": 35.61344681835921,
+                "8192": 82.79064561939386
+              },
+              "inner_score": 163.70452546027045,
+              "minimum": -0.9390461405043213,
+              "odds": 4.967906740175975,
+              "peak": 133.0760597725679,
+              "shadow": 163.70452546027045,
+              "tail_gain": 47.549780608364344
+            }
+          },
+          "base_loss": 175127.88439102774,
+          "cold_loss": 98512.46758558061,
+          "max_c_difference": 1.7053025658242404e-12,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 297.36065243593833,
+              "best_whole": -372.10334349550664,
+              "component_scores": [
+                -372.10334349550664,
+                -603.467256899078
+              ],
+              "identity_error": 2.5011104298755527e-12,
+              "mixture_identity": -373.10334349550664,
+              "regret": 1.000000000002501,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -1028.504894793175,
+              "best_whole": -1625.4540959085775,
+              "component_scores": [
+                -1625.4540959085775,
+                -1706.8010397325797
+              ],
+              "identity_error": 0.0,
+              "mixture_identity": -1164.7319463255462,
+              "regret": 136.2270515323712,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -877.4610290049873,
+              "best_whole": -1634.8314354808037,
+              "component_scores": [
+                -1634.8314354808037,
+                -1641.237457364403
+              ],
+              "identity_error": 1.8189894035458565e-12,
+              "mixture_identity": -1019.8888334695613,
+              "regret": 142.42780446457584,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -874.9713984476974,
+              "best_whole": -1479.4429729867854,
+              "component_scores": [
+                -1748.6750916629057,
+                -1479.4429729867854
+              ],
+              "identity_error": 1.1368683772161603e-13,
+              "mixture_identity": -1019.8134890386731,
+              "regret": 144.84209059097577,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": 297.36065243593833,
+              "best_whole": -372.10334349550664,
+              "component_scores": [
+                -372.10334349550664,
+                -603.467256899078
+              ],
+              "identity_error": 4.831690603168681e-13,
+              "mixture_identity": 163.70452546026996,
+              "regret": 133.6561269756679,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2354,
+              "B": 2160,
+              "shared": 3672
+            },
+            "last8192": {
+              "A": 2391,
+              "B": 2252,
+              "shared": 3549
+            }
+          }
+        },
+        "mosaic_then_unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -500.75372532230836,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -500.75372532230836,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -951.0304977997378,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -951.0304977997378,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -823.4620342173157,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -823.4620342173157,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -854.6466799265355,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -854.6466799265355,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -323.61562117865043,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -323.61562117865043,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 568,
+              "active": true,
+              "active_events": 15816,
+              "at8192": 82.79064561939386,
+              "drawdown": 10.334055296062644,
+              "gain": 106.6306006083025,
+              "horizons": {
+                "1024": 1.931825923531341,
+                "16384": 106.6306006083025,
+                "4096": 35.61344681835921,
+                "8192": 82.79064561939386
+              },
+              "inner_score": -7.096594704418406,
+              "minimum": -0.9390461405043213,
+              "odds": -147.1366717503036,
+              "peak": 116.96465590436512,
+              "shadow": -7.096594704418406,
+              "tail_gain": 23.839954988908644
+            }
+          },
+          "base_loss": 175430.440940096,
+          "cold_loss": 100663.74552981327,
+          "max_c_difference": 1.4210854715202004e-12,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 126.69318997262455,
+              "best_whole": -499.7537253223071,
+              "component_scores": [
+                -499.7537253223071,
+                -700.6365684061757
+              ],
+              "identity_error": 1.2505552149377763e-12,
+              "mixture_identity": -500.7537253223071,
+              "regret": 1.0000000000012506,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -808.4205870936827,
+              "best_whole": -1416.5065786951006,
+              "component_scores": [
+                -1495.899191758196,
+                -1416.5065786951006
+              ],
+              "identity_error": 2.0463630789890885e-12,
+              "mixture_identity": -951.0304977997357,
+              "regret": 142.60991070605508,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -678.8110833900948,
+              "best_whole": -1409.4283285045756,
+              "component_scores": [
+                -1409.4283285045756,
+                -1416.8446518526598
+              ],
+              "identity_error": 4.092726157978177e-12,
+              "mixture_identity": -823.4620342173198,
+              "regret": 144.65095082722087,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -713.2633552947627,
+              "best_whole": -1373.6615038274665,
+              "component_scores": [
+                -1425.8736301876963,
+                -1373.6615038274665
+              ],
+              "identity_error": 2.0463630789890885e-12,
+              "mixture_identity": -854.6466799265376,
+              "regret": 141.38332463177278,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": 126.69318997262455,
+              "best_whole": -499.7537253223071,
+              "component_scores": [
+                -499.7537253223071,
+                -700.6365684061757
+              ],
+              "identity_error": 7.815970093361102e-14,
+              "mixture_identity": -7.096594704418328,
+              "regret": 133.78978467704295,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2354,
+              "B": 2160,
+              "shared": 3672
+            },
+            "last8192": {
+              "A": 2534,
+              "B": 2214,
+              "shared": 3444
+            }
+          }
+        },
+        "unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1496.5881275822612,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1496.5881275822612,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1049.57446555668,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1049.57446555668,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1030.7981030417907,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1030.7981030417907,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1062.4041896086326,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1062.4041896086326,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1377.8961372674594,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1377.8961372674594,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1011.1199481343555,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1011.1199481343555,
+              "tail_gain": 0.0
+            }
+          },
+          "base_loss": 175327.74082651833,
+          "cold_loss": 99046.50199846146,
+          "max_c_difference": 2.7284841053187847e-12,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": -879.4525783496892,
+              "best_whole": -1495.8365130422578,
+              "component_scores": [
+                -1495.8365130422578,
+                -1498.2486526654097
+              ],
+              "identity_error": 6.59383658785373e-12,
+              "mixture_identity": -1496.5881275822678,
+              "regret": 0.751614540003402,
+              "visited_rows": 201
+            },
+            "null0": {
+              "best_per_row": -912.9516793710297,
+              "best_whole": -1512.5893053342688,
+              "component_scores": [
+                -1628.5174729237428,
+                -1512.5893053342688
+              ],
+              "identity_error": 6.821210263296962e-13,
+              "mixture_identity": -1049.5744655566793,
+              "regret": 136.62278618565028,
+              "visited_rows": 201
+            },
+            "null1": {
+              "best_per_row": -893.7823055632958,
+              "best_whole": -1531.8242285381127,
+              "component_scores": [
+                -1531.8242285381127,
+                -1551.9836920072585
+              ],
+              "identity_error": 9.094947017729282e-13,
+              "mixture_identity": -1030.7981030417898,
+              "regret": 137.01579747849485,
+              "visited_rows": 201
+            },
+            "null2": {
+              "best_per_row": -928.3335606757711,
+              "best_whole": -1534.029244214797,
+              "component_scores": [
+                -1534.029244214797,
+                -1639.9464340219797
+              ],
+              "identity_error": 7.503331289626658e-12,
+              "mixture_identity": -1062.404189608625,
+              "regret": 134.0706289328615,
+              "visited_rows": 201
+            },
+            "row": {
+              "best_per_row": -879.4525783496892,
+              "best_whole": -1495.8365130422578,
+              "component_scores": [
+                -1495.8365130422578,
+                -1498.2486526654097
+              ],
+              "identity_error": 9.322320693172514e-12,
+              "mixture_identity": -1011.1199481343461,
+              "regret": 131.66736978466622,
+              "visited_rows": 201
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2504,
+              "B": 2160,
+              "shared": 3522
+            },
+            "last8192": {
+              "A": 2528,
+              "B": 2225,
+              "shared": 3439
+            }
+          }
+        }
+      },
+      "source_bytes": 65536,
+      "source_events": [
+        32756,
+        32756
+      ],
+      "supported_rows": [
+        145,
+        176
+      ],
+      "world": 32
+    },
+    {
+      "bank_bytes": 14080,
+      "regimes": {
+        "mosaic": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -420.51197612455957,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -420.51197612455957,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1216.668378615278,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1216.668378615278,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1142.7414030921934,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1142.7414030921934,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1399.0170815847714,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1399.0170815847714,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -185.15933248303614,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -185.15933248303614,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 443,
+              "active": true,
+              "active_events": 15941,
+              "at8192": 172.03568521798667,
+              "drawdown": 7.511293579588994,
+              "gain": 203.59223755305615,
+              "horizons": {
+                "1024": 26.8478548847867,
+                "16384": 203.59223755305615,
+                "4096": 106.48562605374596,
+                "8192": 172.03568521798667
+              },
+              "inner_score": 232.8428742489801,
+              "minimum": -0.9834693670586123,
+              "odds": -4.411085463198247,
+              "peak": 211.10353113264514,
+              "shadow": 232.8428742489801,
+              "tail_gain": 31.556552335069483
+            }
+          },
+          "base_loss": 174778.76346131825,
+          "cold_loss": 98129.63434054889,
+          "max_c_difference": 1.0516032489249483e-12,
+          "max_norm_error": 4.440892098500626e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 357.374930964723,
+              "best_whole": -419.511976124569,
+              "component_scores": [
+                -419.511976124569,
+                -456.8811745119506
+              ],
+              "identity_error": 1.3073986337985843e-12,
+              "mixture_identity": -420.5119761245609,
+              "regret": 0.999999999990564,
+              "visited_rows": 201
+            },
+            "null0": {
+              "best_per_row": -1082.3953854583403,
+              "best_whole": -1697.5257509037144,
+              "component_scores": [
+                -1762.1220992812493,
+                -1697.5257509037144
+              ],
+              "identity_error": 2.0463630789890885e-12,
+              "mixture_identity": -1216.66837861528,
+              "regret": 134.27299315693767,
+              "visited_rows": 201
+            },
+            "null1": {
+              "best_per_row": -1005.2589310274853,
+              "best_whole": -1713.4826907115498,
+              "component_scores": [
+                -1713.4826907115498,
+                -1728.5742002853178
+              ],
+              "identity_error": 1.1368683772161603e-12,
+              "mixture_identity": -1142.7414030921946,
+              "regret": 137.48247206470808,
+              "visited_rows": 201
+            },
+            "null2": {
+              "best_per_row": -1264.3797367939383,
+              "best_whole": -1806.5673428100026,
+              "component_scores": [
+                -1959.6890914219698,
+                -1806.5673428100026
+              ],
+              "identity_error": 9.094947017729282e-13,
+              "mixture_identity": -1399.0170815847723,
+              "regret": 134.63734479083314,
+              "visited_rows": 201
+            },
+            "row": {
+              "best_per_row": 357.374930964723,
+              "best_whole": -419.511976124569,
+              "component_scores": [
+                -419.511976124569,
+                -456.8811745119506
+              ],
+              "identity_error": 1.0231815394945443e-12,
+              "mixture_identity": 232.8428742489791,
+              "regret": 124.53205671574287,
+              "visited_rows": 201
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1914,
+              "B": 2415,
+              "shared": 3857
+            },
+            "last8192": {
+              "A": 2009,
+              "B": 2437,
+              "shared": 3746
+            }
+          }
+        },
+        "mosaic_then_unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -523.4315344768899,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -523.4315344768899,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1019.4313465998838,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1019.4313465998838,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -983.6088104625902,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -983.6088104625902,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1187.0542597953997,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1187.0542597953997,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -274.9505950272749,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -274.9505950272749,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 443,
+              "active": true,
+              "active_events": 15941,
+              "at8192": 172.03568521798667,
+              "drawdown": 9.239958424391375,
+              "gain": 166.19817980024004,
+              "horizons": {
+                "1024": 26.8478548847867,
+                "16384": 166.19817980024004,
+                "4096": 106.48562605374596,
+                "8192": 172.03568521798667
+              },
+              "inner_score": -67.16164651759598,
+              "minimum": -0.9834693670586123,
+              "odds": -267.0878148560082,
+              "peak": 175.43813822463142,
+              "shadow": -67.16164651759598,
+              "tail_gain": -5.837505417746627
+            }
+          },
+          "base_loss": 175400.72719708906,
+          "cold_loss": 101315.91731791955,
+          "max_c_difference": 1.0516032489249483e-12,
+          "max_norm_error": 4.440892098500626e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 51.459706955282314,
+              "best_whole": -522.4315531415854,
+              "component_scores": [
+                -538.6696385635136,
+                -522.4315531415854
+              ],
+              "identity_error": 1.5916157281026244e-12,
+              "mixture_identity": -523.4315344768883,
+              "regret": 0.9999813353044829,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -890.5335533883838,
+              "best_whole": -1417.9727931354507,
+              "component_scores": [
+                -1430.4924452809985,
+                -1417.9727931354507
+              ],
+              "identity_error": 4.092726157978177e-12,
+              "mixture_identity": -1019.4313465998879,
+              "regret": 128.89779321150002,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -846.1595213597033,
+              "best_whole": -1466.3254268132414,
+              "component_scores": [
+                -1466.3254268132414,
+                -1500.0302330071056
+              ],
+              "identity_error": 9.094947017729282e-13,
+              "mixture_identity": -983.6088104625893,
+              "regret": 137.44928910288695,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -1050.6640816820477,
+              "best_whole": -1618.4895799859955,
+              "component_scores": [
+                -1618.4895799859955,
+                -1657.3860226775869
+              ],
+              "identity_error": 5.4569682106375694e-12,
+              "mixture_identity": -1187.0542597953943,
+              "regret": 136.39017811335202,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": 51.459706955282314,
+              "best_whole": -522.4315531415854,
+              "component_scores": [
+                -538.6696385635136,
+                -522.4315531415854
+              ],
+              "identity_error": 1.1652900866465643e-12,
+              "mixture_identity": -67.16164651759715,
+              "regret": 118.6213534728783,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1914,
+              "B": 2415,
+              "shared": 3857
+            },
+            "last8192": {
+              "A": 1798,
+              "B": 2575,
+              "shared": 3819
+            }
+          }
+        },
+        "unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1363.677654950972,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1363.677654950972,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1148.1991059623972,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1148.1991059623972,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1075.1531206470897,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1075.1531206470897,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1188.2344611713786,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1188.2344611713786,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1293.4600570594891,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1293.4600570594891,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -932.5686857567796,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -932.5686857567796,
+              "tail_gain": 0.0
+            }
+          },
+          "base_loss": 175749.87461818676,
+          "cold_loss": 100257.0361076114,
+          "max_c_difference": 5.6843418860808015e-12,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": -804.4929014823865,
+              "best_whole": -1362.6776549509677,
+              "component_scores": [
+                -1457.8786357119382,
+                -1362.6776549509677
+              ],
+              "identity_error": 4.320099833421409e-12,
+              "mixture_identity": -1363.6776549509677,
+              "regret": 1.00000000000432,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -1021.1012775956021,
+              "best_whole": -1595.269875256627,
+              "component_scores": [
+                -1595.269875256627,
+                -1602.018213062429
+              ],
+              "identity_error": 2.0463630789890885e-12,
+              "mixture_identity": -1148.1991059623952,
+              "regret": 127.09782836679506,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -941.5854167078901,
+              "best_whole": -1563.4479160363244,
+              "component_scores": [
+                -1563.4479160363244,
+                -1599.6824061785883
+              ],
+              "identity_error": 1.5916157281026244e-12,
+              "mixture_identity": -1075.1531206470881,
+              "regret": 133.56770393919965,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -1054.3175138097308,
+              "best_whole": -1585.0306470189196,
+              "component_scores": [
+                -1585.0306470189196,
+                -1804.2518169698246
+              ],
+              "identity_error": 6.139089236967266e-12,
+              "mixture_identity": -1188.2344611713725,
+              "regret": 133.91694736164777,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": -804.4929014823865,
+              "best_whole": -1362.6776549509677,
+              "component_scores": [
+                -1457.8786357119382,
+                -1362.6776549509677
+              ],
+              "identity_error": 3.410605131648481e-13,
+              "mixture_identity": -932.5686857567792,
+              "regret": 128.07578427439307,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1819,
+              "B": 2554,
+              "shared": 3813
+            },
+            "last8192": {
+              "A": 1803,
+              "B": 2582,
+              "shared": 3807
+            }
+          }
+        }
+      },
+      "source_bytes": 65536,
+      "source_events": [
+        32756,
+        32756
+      ],
+      "supported_rows": [
+        151,
+        164
+      ],
+      "world": 33
+    },
+    {
+      "bank_bytes": 14080,
+      "regimes": {
+        "mosaic": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -295.13214431185963,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -295.13214431185963,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1106.6888582509137,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1106.6888582509137,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1091.5977697269666,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1091.5977697269666,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1247.044160374679,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1247.044160374679,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -68.18849626441647,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -68.18849626441647,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 293,
+              "active": true,
+              "active_events": 16091,
+              "at8192": 123.5569558384116,
+              "drawdown": 8.156326011074768,
+              "gain": 143.35426478115366,
+              "horizons": {
+                "1024": 34.564708726092164,
+                "16384": 143.35426478115366,
+                "4096": 86.8137629363242,
+                "8192": 123.5569558384116
+              },
+              "inner_score": 176.82003117593266,
+              "minimum": -0.4503071703239758,
+              "odds": 5.544458104356626,
+              "peak": 145.3087299321526,
+              "shadow": 176.82003117593266,
+              "tail_gain": 19.797308942742063
+            }
+          },
+          "base_loss": 176025.728092183,
+          "cold_loss": 97838.73192947084,
+          "max_c_difference": 1.3926637620897964e-12,
+          "max_norm_error": 3.3306690738754696e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 293.6033229707045,
+              "best_whole": -294.1321443118588,
+              "component_scores": [
+                -426.9196995620189,
+                -294.1321443118588
+              ],
+              "identity_error": 8.526512829121202e-13,
+              "mixture_identity": -295.1321443118588,
+              "regret": 1.0000000000008527,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -975.4057376608631,
+              "best_whole": -1532.9798757794817,
+              "component_scores": [
+                -1532.9798757794817,
+                -1682.2540901895056
+              ],
+              "identity_error": 7.503331289626658e-12,
+              "mixture_identity": -1106.6888582509212,
+              "regret": 131.28312059005054,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -960.5395849753633,
+              "best_whole": -1511.0183475839553,
+              "component_scores": [
+                -1679.406407697569,
+                -1511.0183475839553
+              ],
+              "identity_error": 3.183231456205249e-12,
+              "mixture_identity": -1091.5977697269698,
+              "regret": 131.05818475160333,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -1117.090228467899,
+              "best_whole": -1642.8099101376183,
+              "component_scores": [
+                -1970.3083145382648,
+                -1642.8099101376183
+              ],
+              "identity_error": 9.094947017729282e-13,
+              "mixture_identity": -1247.044160374678,
+              "regret": 129.9539319067801,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": 293.6033229707045,
+              "best_whole": -294.1321443118588,
+              "component_scores": [
+                -426.9196995620189,
+                -294.1321443118588
+              ],
+              "identity_error": 3.979039320256561e-13,
+              "mixture_identity": 176.82003117593226,
+              "regret": 116.78329179477183,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1549,
+              "B": 3217,
+              "shared": 3420
+            },
+            "last8192": {
+              "A": 1531,
+              "B": 3529,
+              "shared": 3132
+            }
+          }
+        },
+        "mosaic_then_unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -471.38897918048485,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -471.38897918048485,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -966.2293791233379,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -966.2293791233379,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -906.0348991516146,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -906.0348991516146,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1028.7181748080225,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1028.7181748080225,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -227.09371729180216,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -227.09371729180216,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 293,
+              "active": true,
+              "active_events": 16091,
+              "at8192": 123.5569558384116,
+              "drawdown": 8.438764057719666,
+              "gain": 125.8881979078029,
+              "horizons": {
+                "1024": 34.564708726092164,
+                "16384": 125.8881979078029,
+                "4096": 86.8137629363242,
+                "8192": 123.5569558384116
+              },
+              "inner_score": -42.37186414506572,
+              "minimum": -0.4503071703239758,
+              "odds": -201.7564138811686,
+              "peak": 134.32696196552257,
+              "shadow": -42.37186414506572,
+              "tail_gain": 2.3312420693913083
+            }
+          },
+          "base_loss": 175311.27732880868,
+          "cold_loss": 99776.02130785401,
+          "max_c_difference": 2.4442670110147446e-12,
+          "max_norm_error": 3.3306690738754696e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 73.46273173004792,
+              "best_whole": -470.38897918048394,
+              "component_scores": [
+                -542.5481915935643,
+                -470.38897918048394
+              ],
+              "identity_error": 9.094947017729282e-13,
+              "mixture_identity": -471.38897918048394,
+              "regret": 1.0000000000009095,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -835.6589796015195,
+              "best_whole": -1346.3075697651202,
+              "component_scores": [
+                -1346.3075697651202,
+                -1444.7058691846316
+              ],
+              "identity_error": 3.751665644813329e-12,
+              "mixture_identity": -966.2293791233417,
+              "regret": 130.57039952181844,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -773.3114691442923,
+              "best_whole": -1355.4097378063886,
+              "component_scores": [
+                -1373.734148392892,
+                -1355.4097378063886
+              ],
+              "identity_error": 2.7284841053187847e-12,
+              "mixture_identity": -906.0348991516119,
+              "regret": 132.72343000732224,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -903.9989130985575,
+              "best_whole": -1407.96206010668,
+              "component_scores": [
+                -1600.8434725184752,
+                -1407.96206010668
+              ],
+              "identity_error": 8.185452315956354e-12,
+              "mixture_identity": -1028.7181748080143,
+              "regret": 124.71926170946494,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": 73.46273173004792,
+              "best_whole": -470.38897918048394,
+              "component_scores": [
+                -542.5481915935643,
+                -470.38897918048394
+              ],
+              "identity_error": 2.0605739337042905e-13,
+              "mixture_identity": -42.371864145065516,
+              "regret": 115.83459587511365,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1549,
+              "B": 3217,
+              "shared": 3420
+            },
+            "last8192": {
+              "A": 2066,
+              "B": 1812,
+              "shared": 4314
+            }
+          }
+        },
+        "unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1566.9088484762954,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1566.9088484762954,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1174.2522356013337,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1174.2522356013337,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1135.6777862480901,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1135.6777862480901,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1082.9018134193136,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1082.9018134193136,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1552.6678870837304,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1552.6678870837304,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1136.180908745606,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1136.180908745606,
+              "tail_gain": 0.0
+            }
+          },
+          "base_loss": 174498.1244621817,
+          "cold_loss": 96613.7851588638,
+          "max_c_difference": 1.5916157281026244e-12,
+          "max_norm_error": 4.440892098500626e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": -1012.2841812030591,
+              "best_whole": -1565.9088484762908,
+              "component_scores": [
+                -1565.9088484762908,
+                -1625.849385132551
+              ],
+              "identity_error": 4.547473508864641e-12,
+              "mixture_identity": -1566.9088484762908,
+              "regret": 1.0000000000045475,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -1045.3611219093857,
+              "best_whole": -1651.4039391453841,
+              "component_scores": [
+                -1651.4039391453841,
+                -1724.778830651436
+              ],
+              "identity_error": 4.547473508864641e-13,
+              "mixture_identity": -1174.2522356013333,
+              "regret": 128.89111369194802,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -1007.2450028999122,
+              "best_whole": -1606.8254302341034,
+              "component_scores": [
+                -1606.8254302341034,
+                -1674.3458719006705
+              ],
+              "identity_error": 7.73070496506989e-12,
+              "mixture_identity": -1135.6777862480824,
+              "regret": 128.43278334817796,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -956.2420951854419,
+              "best_whole": -1639.9000258506196,
+              "component_scores": [
+                -1697.174578813691,
+                -1639.9000258506196
+              ],
+              "identity_error": 2.5011104298755527e-12,
+              "mixture_identity": -1082.901813419316,
+              "regret": 126.65971823387167,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": -1012.2841812030591,
+              "best_whole": -1565.9088484762908,
+              "component_scores": [
+                -1565.9088484762908,
+                -1625.849385132551
+              ],
+              "identity_error": 6.821210263296962e-13,
+              "mixture_identity": -1136.1809087456054,
+              "regret": 123.89672754254696,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2099,
+              "B": 1791,
+              "shared": 4296
+            },
+            "last8192": {
+              "A": 2066,
+              "B": 1813,
+              "shared": 4313
+            }
+          }
+        }
+      },
+      "source_bytes": 65536,
+      "source_events": [
+        32756,
+        32756
+      ],
+      "supported_rows": [
+        145,
+        151
+      ],
+      "world": 34
+    },
+    {
+      "bank_bytes": 14080,
+      "regimes": {
+        "mosaic": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -295.9865737821144,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -295.9865737821144,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -982.2491430512082,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -982.2491430512082,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -824.5575920268416,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -824.5575920268416,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1011.5222950026633,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1011.5222950026633,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": 8245,
+              "active": true,
+              "active_events": 8139,
+              "at8192": 0.0,
+              "drawdown": 7.894499925548853,
+              "gain": 2.1786807198945937,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 2.1786807198945937,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": 28.365277681705663,
+              "minimum": -0.40903873949633973,
+              "odds": -7.503008002123231,
+              "peak": 9.521958086477248,
+              "shadow": 28.365277681705663,
+              "tail_gain": 2.1786807198945937
+            },
+            "row": {
+              "activation": 952,
+              "active": true,
+              "active_events": 15432,
+              "at8192": 157.12613745835128,
+              "drawdown": 8.937628694299235,
+              "gain": 160.81667016503968,
+              "horizons": {
+                "1024": -0.3522119653398921,
+                "16384": 160.81667016503968,
+                "4096": 32.99032724771032,
+                "8192": 157.12613745835128
+              },
+              "inner_score": 177.40532186226125,
+              "minimum": -0.9600796010768506,
+              "odds": -16.776867911415156,
+              "peak": 169.66529758180272,
+              "shadow": 177.40532186226125,
+              "tail_gain": 3.6905327066884013
+            }
+          },
+          "base_loss": 174676.69924920145,
+          "cold_loss": 98684.4323703653,
+          "max_c_difference": 7.958078640513122e-13,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 303.57079619139085,
+              "best_whole": -295.00022636680933,
+              "component_scores": [
+                -301.71684314747665,
+                -295.00022636680933
+              ],
+              "identity_error": 2.3305801732931286e-12,
+              "mixture_identity": -295.98657378211675,
+              "regret": 0.9863474153050902,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -834.7648473088482,
+              "best_whole": -1448.6603826107566,
+              "component_scores": [
+                -1606.6900973201532,
+                -1448.6603826107566
+              ],
+              "identity_error": 1.5916157281026244e-12,
+              "mixture_identity": -982.2491430512098,
+              "regret": 147.48429574236002,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -682.5866315696777,
+              "best_whole": -1226.7647504548513,
+              "component_scores": [
+                -1226.7647504548513,
+                -1376.6241007541437
+              ],
+              "identity_error": 3.865352482534945e-12,
+              "mixture_identity": -824.5575920268377,
+              "regret": 141.97096045716387,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -867.3394597496983,
+              "best_whole": -1470.8619374877496,
+              "component_scores": [
+                -1470.8619374877496,
+                -1576.439952310296
+              ],
+              "identity_error": 3.296918293926865e-12,
+              "mixture_identity": -1011.5222950026666,
+              "regret": 144.182835252965,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": 303.57079619139085,
+              "best_whole": -295.00022636680933,
+              "component_scores": [
+                -301.71684314747665,
+                -295.00022636680933
+              ],
+              "identity_error": 5.968558980384842e-13,
+              "mixture_identity": 177.40532186226065,
+              "regret": 126.16547432912961,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2404,
+              "B": 1949,
+              "shared": 3833
+            },
+            "last8192": {
+              "A": 2415,
+              "B": 1996,
+              "shared": 3781
+            }
+          }
+        },
+        "mosaic_then_unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -396.46432240853056,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -396.46432240853056,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -930.6816482895933,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -930.6816482895933,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -693.4935597524681,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -693.4935597524681,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -880.9456469321871,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -880.9456469321871,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": 8222,
+              "active": true,
+              "active_events": 8162,
+              "at8192": 0.0,
+              "drawdown": 10.173356477620107,
+              "gain": 3.3679610698785227,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 3.3679610698785227,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -91.50317428184258,
+              "minimum": -0.8480287266170794,
+              "odds": -128.05995512445025,
+              "peak": 13.466395221717145,
+              "shadow": -91.50317428184258,
+              "tail_gain": 3.3679610698785227
+            },
+            "row": {
+              "activation": 952,
+              "active": true,
+              "active_events": 15432,
+              "at8192": 157.12613745835128,
+              "drawdown": 9.285987675649977,
+              "gain": 148.2187819643778,
+              "horizons": {
+                "1024": -0.3522119653398921,
+                "16384": 148.2187819643778,
+                "4096": 32.99032724771032,
+                "8192": 157.12613745835128
+              },
+              "inner_score": -4.513043617190511,
+              "minimum": -0.9600796010768506,
+              "odds": -186.09735803811677,
+              "peak": 157.50476964002777,
+              "shadow": -4.513043617190511,
+              "tail_gain": -8.907355493973483
+            }
+          },
+          "base_loss": 175096.2256325347,
+          "cold_loss": 99798.18854669358,
+          "max_c_difference": 1.1937117960769683e-12,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 121.65338237640132,
+              "best_whole": -395.4644457796804,
+              "component_scores": [
+                -408.97785777455505,
+                -395.4644457796804
+              ],
+              "identity_error": 8.526512829121202e-13,
+              "mixture_identity": -396.4643224085297,
+              "regret": 0.9998766288501884,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -785.7181052090693,
+              "best_whole": -1411.413843843172,
+              "component_scores": [
+                -1464.4052077560877,
+                -1411.413843843172
+              ],
+              "identity_error": 1.7053025658242404e-12,
+              "mixture_identity": -930.681648289595,
+              "regret": 144.963543080524,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -548.7435557561224,
+              "best_whole": -1155.8790267446602,
+              "component_scores": [
+                -1170.1842128957705,
+                -1155.8790267446602
+              ],
+              "identity_error": 4.774847184307873e-12,
+              "mixture_identity": -693.4935597524633,
+              "regret": 144.75000399634564,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -736.5518013941356,
+              "best_whole": -1345.4484835465773,
+              "component_scores": [
+                -1345.4484835465773,
+                -1383.863216068547
+              ],
+              "identity_error": 1.0231815394945443e-12,
+              "mixture_identity": -880.945646932186,
+              "regret": 144.39384553805144,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": 121.65338237640132,
+              "best_whole": -395.4644457796804,
+              "component_scores": [
+                -408.97785777455505,
+                -395.4644457796804
+              ],
+              "identity_error": 7.442935157087049e-13,
+              "mixture_identity": -4.513043617191255,
+              "regret": 126.16642599359183,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2404,
+              "B": 1949,
+              "shared": 3833
+            },
+            "last8192": {
+              "A": 3037,
+              "B": 2069,
+              "shared": 3086
+            }
+          }
+        },
+        "unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1125.5895273218723,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1125.5895273218723,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -847.2810777152175,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -847.2810777152175,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -780.4875745962968,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -780.4875745962968,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -857.4425527622576,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -857.4425527622576,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1119.517101459387,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1119.517101459387,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -775.1371540990812,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -775.1371540990812,
+              "tail_gain": 0.0
+            }
+          },
+          "base_loss": 174967.63838998685,
+          "cold_loss": 97317.43797940474,
+          "max_c_difference": 4.092726157978177e-12,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": -639.7543758687951,
+              "best_whole": -1124.5895273218632,
+              "component_scores": [
+                -1317.5396505674419,
+                -1124.5895273218632
+              ],
+              "identity_error": 9.094947017729282e-12,
+              "mixture_identity": -1125.5895273218632,
+              "regret": 1.000000000009095,
+              "visited_rows": 202
+            },
+            "null0": {
+              "best_per_row": -705.8780490337019,
+              "best_whole": -1328.9319844948814,
+              "component_scores": [
+                -1328.9319844948814,
+                -1388.25356867726
+              ],
+              "identity_error": 3.410605131648481e-12,
+              "mixture_identity": -847.2810777152141,
+              "regret": 141.4030286815156,
+              "visited_rows": 202
+            },
+            "null1": {
+              "best_per_row": -639.338517408345,
+              "best_whole": -1202.8677001663,
+              "component_scores": [
+                -1295.3983648033468,
+                -1202.8677001663
+              ],
+              "identity_error": 1.8189894035458565e-12,
+              "mixture_identity": -780.487574596295,
+              "regret": 141.14905718795183,
+              "visited_rows": 202
+            },
+            "null2": {
+              "best_per_row": -718.9832331490973,
+              "best_whole": -1262.659778221799,
+              "component_scores": [
+                -1378.1803027184992,
+                -1262.659778221799
+              ],
+              "identity_error": 4.547473508864641e-12,
+              "mixture_identity": -857.4425527622531,
+              "regret": 138.45931961316035,
+              "visited_rows": 202
+            },
+            "row": {
+              "best_per_row": -639.7543758687951,
+              "best_whole": -1124.5895273218632,
+              "component_scores": [
+                -1317.5396505674419,
+                -1124.5895273218632
+              ],
+              "identity_error": 4.320099833421409e-12,
+              "mixture_identity": -775.1371540990768,
+              "regret": 135.38277823028602,
+              "visited_rows": 202
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 3117,
+              "B": 2020,
+              "shared": 3049
+            },
+            "last8192": {
+              "A": 3033,
+              "B": 2088,
+              "shared": 3071
+            }
+          }
+        }
+      },
+      "source_bytes": 65536,
+      "source_events": [
+        32756,
+        32756
+      ],
+      "supported_rows": [
+        155,
+        163
+      ],
+      "world": 35
+    },
+    {
+      "bank_bytes": 14080,
+      "regimes": {
+        "mosaic": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -261.923122892525,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -261.923122892525,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -937.2674268705733,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -937.2674268705733,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -856.1527777855292,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -856.1527777855292,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -904.4074168702963,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -904.4074168702963,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -54.64066111865643,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -54.64066111865643,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 474,
+              "active": true,
+              "active_events": 15910,
+              "at8192": 155.47023247358553,
+              "drawdown": 10.930658342555915,
+              "gain": 189.48287429540432,
+              "horizons": {
+                "1024": 21.951492344481807,
+                "16384": 189.48287429540432,
+                "4096": 72.09331787851971,
+                "8192": 155.47023247358553
+              },
+              "inner_score": 223.34293926091627,
+              "minimum": 0.0,
+              "odds": 6.2996860658576415,
+              "peak": 190.75994061106988,
+              "shadow": 223.34293926091627,
+              "tail_gain": 34.01264182181879
+            }
+          },
+          "base_loss": 175342.3661954666,
+          "cold_loss": 98697.08245143216,
+          "max_c_difference": 1.5916157281026244e-12,
+          "max_norm_error": 3.3306690738754696e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 345.4458568469579,
+              "best_whole": -260.9231228925235,
+              "component_scores": [
+                -419.6639972926565,
+                -260.9231228925235
+              ],
+              "identity_error": 1.4779288903810084e-12,
+              "mixture_identity": -261.9231228925235,
+              "regret": 1.000000000001478,
+              "visited_rows": 202
+            },
+            "null0": {
+              "best_per_row": -796.9186790323118,
+              "best_whole": -1425.6252957965487,
+              "component_scores": [
+                -1528.0850926986395,
+                -1425.6252957965487
+              ],
+              "identity_error": 4.547473508864641e-13,
+              "mixture_identity": -937.2674268705738,
+              "regret": 140.3487478382615,
+              "visited_rows": 202
+            },
+            "null1": {
+              "best_per_row": -714.2654505924859,
+              "best_whole": -1349.9960390835847,
+              "component_scores": [
+                -1442.8924287735244,
+                -1349.9960390835847
+              ],
+              "identity_error": 5.5706550483591855e-12,
+              "mixture_identity": -856.1527777855348,
+              "regret": 141.88732719304335,
+              "visited_rows": 202
+            },
+            "null2": {
+              "best_per_row": -763.5129189229768,
+              "best_whole": -1326.0601343532312,
+              "component_scores": [
+                -1490.3922358821949,
+                -1326.0601343532312
+              ],
+              "identity_error": 1.9326762412674725e-12,
+              "mixture_identity": -904.4074168702944,
+              "regret": 140.89449794731945,
+              "visited_rows": 202
+            },
+            "row": {
+              "best_per_row": 345.4458568469579,
+              "best_whole": -260.9231228925235,
+              "component_scores": [
+                -419.6639972926565,
+                -260.9231228925235
+              ],
+              "identity_error": 1.4779288903810084e-12,
+              "mixture_identity": 223.34293926091775,
+              "regret": 122.10291758604163,
+              "visited_rows": 202
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1951,
+              "B": 2509,
+              "shared": 3726
+            },
+            "last8192": {
+              "A": 1884,
+              "B": 2620,
+              "shared": 3688
+            }
+          }
+        },
+        "mosaic_then_unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -372.4359905417303,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -372.4359905417303,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -838.3677836282701,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -838.3677836282701,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -829.8749402218449,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -829.8749402218449,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -773.7134442983876,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -773.7134442983876,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -196.00780556515429,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -196.00780556515429,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 474,
+              "active": true,
+              "active_events": 15910,
+              "at8192": 155.47023247358553,
+              "drawdown": 10.930658342555915,
+              "gain": 152.939240809081,
+              "horizons": {
+                "1024": 21.951492344481807,
+                "16384": 152.939240809081,
+                "4096": 72.09331787851971,
+                "8192": 155.47023247358553
+              },
+              "inner_score": -10.811681951075924,
+              "minimum": 0.0,
+              "odds": -197.62918632771078,
+              "peak": 162.79152700047845,
+              "shadow": -10.811681951075924,
+              "tail_gain": -2.530991664504512
+            }
+          },
+          "base_loss": 175673.33825379005,
+          "cold_loss": 100503.6746840172,
+          "max_c_difference": 2.9558577807620168e-12,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 113.23274279153095,
+              "best_whole": -371.43599054173166,
+              "component_scores": [
+                -656.3037421986626,
+                -371.43599054173166
+              ],
+              "identity_error": 1.3642420526593924e-12,
+              "mixture_identity": -372.43599054173166,
+              "regret": 0.9999999999986358,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -703.7018886859543,
+              "best_whole": -1186.6891781950612,
+              "component_scores": [
+                -1480.2773037678494,
+                -1186.6891781950612
+              ],
+              "identity_error": 2.1600499167107046e-12,
+              "mixture_identity": -838.3677836282723,
+              "regret": 134.66589494231584,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -692.2986020133488,
+              "best_whole": -1317.9587474503655,
+              "component_scores": [
+                -1355.9317531208742,
+                -1317.9587474503655
+              ],
+              "identity_error": 5.115907697472721e-12,
+              "mixture_identity": -829.87494022185,
+              "regret": 137.57633820849605,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -642.058251916857,
+              "best_whole": -1128.128501833588,
+              "component_scores": [
+                -1338.6980879911819,
+                -1128.128501833588
+              ],
+              "identity_error": 3.524291969370097e-12,
+              "mixture_identity": -773.713444298384,
+              "regret": 131.65519238153058,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": 113.23274279153095,
+              "best_whole": -371.43599054173166,
+              "component_scores": [
+                -656.3037421986626,
+                -371.43599054173166
+              ],
+              "identity_error": 8.881784197001252e-13,
+              "mixture_identity": -10.811681951075036,
+              "regret": 124.04442474260688,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1951,
+              "B": 2509,
+              "shared": 3726
+            },
+            "last8192": {
+              "A": 1864,
+              "B": 2262,
+              "shared": 4066
+            }
+          }
+        },
+        "unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1154.3998453984987,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1154.3998453984987,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -942.5706353326307,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -942.5706353326307,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1111.696531942628,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1111.696531942628,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -887.8748187501683,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -887.8748187501683,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1203.1775318006585,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1203.1775318006585,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -827.9888516167546,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -827.9888516167546,
+              "tail_gain": 0.0
+            }
+          },
+          "base_loss": 176028.08612230103,
+          "cold_loss": 99042.79260621278,
+          "max_c_difference": 3.183231456205249e-12,
+          "max_norm_error": 3.3306690738754696e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": -692.4700612624159,
+              "best_whole": -1153.399845398494,
+              "component_scores": [
+                -1570.095854591434,
+                -1153.399845398494
+              ],
+              "identity_error": 4.547473508864641e-12,
+              "mixture_identity": -1154.399845398494,
+              "regret": 1.0000000000045475,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -809.5540100181528,
+              "best_whole": -1270.223402746004,
+              "component_scores": [
+                -1682.6308869561253,
+                -1270.223402746004
+              ],
+              "identity_error": 2.6147972675971687e-12,
+              "mixture_identity": -942.5706353326333,
+              "regret": 133.0166253144779,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -972.5276437461838,
+              "best_whole": -1660.568676536549,
+              "component_scores": [
+                -1672.9542949363217,
+                -1660.568676536549
+              ],
+              "identity_error": 7.275957614183426e-12,
+              "mixture_identity": -1111.6965319426208,
+              "regret": 139.1688881964443,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -753.8921460643043,
+              "best_whole": -1339.3160200925172,
+              "component_scores": [
+                -1514.4652372445717,
+                -1339.3160200925172
+              ],
+              "identity_error": 4.320099833421409e-12,
+              "mixture_identity": -887.8748187501726,
+              "regret": 133.98267268586403,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": -692.4700612624159,
+              "best_whole": -1153.399845398494,
+              "component_scores": [
+                -1570.095854591434,
+                -1153.399845398494
+              ],
+              "identity_error": 4.320099833421409e-12,
+              "mixture_identity": -827.9888516167503,
+              "regret": 135.51879035433865,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1834,
+              "B": 2200,
+              "shared": 4152
+            },
+            "last8192": {
+              "A": 1866,
+              "B": 2260,
+              "shared": 4066
+            }
+          }
+        }
+      },
+      "source_bytes": 65536,
+      "source_events": [
+        32756,
+        32756
+      ],
+      "supported_rows": [
+        144,
+        161
+      ],
+      "world": 36
+    },
+    {
+      "bank_bytes": 14080,
+      "regimes": {
+        "mosaic": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -302.460620861578,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -302.460620861578,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -842.8313549252676,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -842.8313549252676,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -953.439353151259,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -953.439353151259,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1047.8004695643879,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1047.8004695643879,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -119.54891401975864,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -119.54891401975864,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 431,
+              "active": true,
+              "active_events": 15953,
+              "at8192": 175.85671317276305,
+              "drawdown": 8.298736861155021,
+              "gain": 183.856929658989,
+              "horizons": {
+                "1024": 14.903048355304662,
+                "16384": 183.856929658989,
+                "4096": 91.56969553385119,
+                "8192": 175.85671317276305
+              },
+              "inner_score": 197.75856795177043,
+              "minimum": -0.13969150589097357,
+              "odds": -19.7969187378507,
+              "peak": 192.155666130894,
+              "shadow": 197.75856795177043,
+              "tail_gain": 8.000216486225952
+            }
+          },
+          "base_loss": 175160.97450753037,
+          "cold_loss": 98510.1716054662,
+          "max_c_difference": 9.947598300641403e-13,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 323.3904006715935,
+              "best_whole": -301.4606208615762,
+              "component_scores": [
+                -301.4606208615762,
+                -516.4937703765237
+              ],
+              "identity_error": 1.7621459846850485e-12,
+              "mixture_identity": -302.4606208615762,
+              "regret": 1.0000000000017621,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -703.7334497821355,
+              "best_whole": -1369.251524462643,
+              "component_scores": [
+                -1369.251524462643,
+                -1497.2523476041315
+              ],
+              "identity_error": 1.0231815394945443e-12,
+              "mixture_identity": -842.8313549252687,
+              "regret": 139.09790514313215,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -819.7257989931283,
+              "best_whole": -1629.590055983582,
+              "component_scores": [
+                -1696.0469243677192,
+                -1629.590055983582
+              ],
+              "identity_error": 2.0463630789890885e-12,
+              "mixture_identity": -953.439353151261,
+              "regret": 133.7135541581307,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -908.0308222849294,
+              "best_whole": -1514.7614032874803,
+              "component_scores": [
+                -1514.7614032874803,
+                -1779.9815423682348
+              ],
+              "identity_error": 4.774847184307873e-12,
+              "mixture_identity": -1047.8004695643926,
+              "regret": 139.76964727945847,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": 323.3904006715935,
+              "best_whole": -301.4606208615762,
+              "component_scores": [
+                -301.4606208615762,
+                -516.4937703765237
+              ],
+              "identity_error": 9.379164112033322e-13,
+              "mixture_identity": 197.7585679517695,
+              "regret": 125.63183271982308,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2727,
+              "B": 1890,
+              "shared": 3569
+            },
+            "last8192": {
+              "A": 2642,
+              "B": 1839,
+              "shared": 3711
+            }
+          }
+        },
+        "mosaic_then_unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -506.8717315613976,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -506.8717315613976,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -802.7016592311562,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -802.7016592311562,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -860.3114078298028,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -860.3114078298028,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -921.2016177165742,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -921.2016177165742,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -317.3629263287686,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -317.3629263287686,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 431,
+              "active": true,
+              "active_events": 15953,
+              "at8192": 175.85671317276305,
+              "drawdown": 9.311722564781206,
+              "gain": 168.93190285213677,
+              "horizons": {
+                "1024": 14.903048355304662,
+                "16384": 168.93190285213677,
+                "4096": 91.56969553385119,
+                "8192": 175.85671317276305
+              },
+              "inner_score": -111.87367752460563,
+              "minimum": -0.13969150589097357,
+              "odds": -314.50413899124453,
+              "peak": 178.24362541691798,
+              "shadow": -111.87367752460563,
+              "tail_gain": -6.924810320626278
+            }
+          },
+          "base_loss": 174962.27341234242,
+          "cold_loss": 100087.90921806684,
+          "max_c_difference": 7.389644451905042e-13,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 13.616237167828071,
+              "best_whole": -505.8717315613967,
+              "component_scores": [
+                -505.8717315613967,
+                -680.7832909976444
+              ],
+              "identity_error": 9.094947017729282e-13,
+              "mixture_identity": -506.8717315613967,
+              "regret": 1.0000000000009095,
+              "visited_rows": 202
+            },
+            "null0": {
+              "best_per_row": -660.7466886119743,
+              "best_whole": -1350.0105292868463,
+              "component_scores": [
+                -1350.0105292868463,
+                -1350.9233634394757
+              ],
+              "identity_error": 7.958078640513122e-13,
+              "mixture_identity": -802.7016592311554,
+              "regret": 141.95497061918195,
+              "visited_rows": 202
+            },
+            "null1": {
+              "best_per_row": -722.733894575972,
+              "best_whole": -1415.9030194305028,
+              "component_scores": [
+                -1415.9030194305028,
+                -1419.5929203578166
+              ],
+              "identity_error": 5.5706550483591855e-12,
+              "mixture_identity": -860.3114078298083,
+              "regret": 137.57751325383072,
+              "visited_rows": 202
+            },
+            "null2": {
+              "best_per_row": -781.6401052367588,
+              "best_whole": -1299.628920215943,
+              "component_scores": [
+                -1299.628920215943,
+                -1639.516953278189
+              ],
+              "identity_error": 0.0,
+              "mixture_identity": -921.2016177165742,
+              "regret": 139.5615124798154,
+              "visited_rows": 202
+            },
+            "row": {
+              "best_per_row": 13.616237167828071,
+              "best_whole": -505.8717315613967,
+              "component_scores": [
+                -505.8717315613967,
+                -680.7832909976444
+              ],
+              "identity_error": 2.2737367544323206e-13,
+              "mixture_identity": -111.87367752460585,
+              "regret": 125.4899146924337,
+              "visited_rows": 202
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2727,
+              "B": 1890,
+              "shared": 3569
+            },
+            "last8192": {
+              "A": 2471,
+              "B": 2004,
+              "shared": 3717
+            }
+          }
+        },
+        "unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1563.9717679449684,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1563.9717679449684,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1167.6546196439622,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1167.6546196439622,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1041.8104221626083,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1041.8104221626083,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1166.0965407930598,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1166.0965407930598,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1611.4648474509427,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1611.4648474509427,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1046.8374382818151,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1046.8374382818151,
+              "tail_gain": 0.0
+            }
+          },
+          "base_loss": 175698.90637043194,
+          "cold_loss": 97006.5842188921,
+          "max_c_difference": 2.9558577807620168e-12,
+          "max_norm_error": 3.3306690738754696e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": -913.0234775040775,
+              "best_whole": -1562.971767944965,
+              "component_scores": [
+                -1562.971767944965,
+                -1734.639845768457
+              ],
+              "identity_error": 3.410605131648481e-12,
+              "mixture_identity": -1563.971767944965,
+              "regret": 1.0000000000034106,
+              "visited_rows": 200
+            },
+            "null0": {
+              "best_per_row": -1027.7973807340256,
+              "best_whole": -1750.683743788375,
+              "component_scores": [
+                -1750.683743788375,
+                -1775.209256908172
+              ],
+              "identity_error": 8.412825991399586e-12,
+              "mixture_identity": -1167.6546196439706,
+              "regret": 139.85723890993654,
+              "visited_rows": 200
+            },
+            "null1": {
+              "best_per_row": -909.7381586641465,
+              "best_whole": -1487.3039752595266,
+              "component_scores": [
+                -1487.3039752595266,
+                -1698.094060519547
+              ],
+              "identity_error": 6.821210263296962e-13,
+              "mixture_identity": -1041.8104221626077,
+              "regret": 132.0722634984619,
+              "visited_rows": 200
+            },
+            "null2": {
+              "best_per_row": -1028.8742508882713,
+              "best_whole": -1663.049443475592,
+              "component_scores": [
+                -1663.049443475592,
+                -1810.2147976394276
+              ],
+              "identity_error": 7.73070496506989e-12,
+              "mixture_identity": -1166.096540793052,
+              "regret": 137.22228990478857,
+              "visited_rows": 200
+            },
+            "row": {
+              "best_per_row": -913.0234775040775,
+              "best_whole": -1562.971767944965,
+              "component_scores": [
+                -1562.971767944965,
+                -1734.639845768457
+              ],
+              "identity_error": 5.4569682106375694e-12,
+              "mixture_identity": -1046.8374382818206,
+              "regret": 133.81396077773763,
+              "visited_rows": 200
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2534,
+              "B": 1934,
+              "shared": 3718
+            },
+            "last8192": {
+              "A": 2466,
+              "B": 2004,
+              "shared": 3722
+            }
+          }
+        }
+      },
+      "source_bytes": 65536,
+      "source_events": [
+        32756,
+        32756
+      ],
+      "supported_rows": [
+        147,
+        155
+      ],
+      "world": 37
+    },
+    {
+      "bank_bytes": 14080,
+      "regimes": {
+        "mosaic": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -416.97423613565786,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -416.97423613565786,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1289.727344345217,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1289.727344345217,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1101.805426008916,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1101.805426008916,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1424.7044427579744,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1424.7044427579744,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -140.27917401780144,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -140.27917401780144,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 359,
+              "active": true,
+              "active_events": 16025,
+              "at8192": 103.41025984280023,
+              "drawdown": 10.327068207012793,
+              "gain": 164.3519894883895,
+              "horizons": {
+                "1024": 15.946865301836624,
+                "16384": 164.3519894883895,
+                "4096": 46.38543311701817,
+                "8192": 103.41025984280023
+              },
+              "inner_score": 198.02655605601663,
+              "minimum": -0.6788067698630744,
+              "odds": 7.785840665645872,
+              "peak": 164.3519894883895,
+              "shadow": 198.02655605601663,
+              "tail_gain": 60.94172964558928
+            }
+          },
+          "base_loss": 175263.80430715688,
+          "cold_loss": 96990.59609146426,
+          "max_c_difference": 9.663381206337363e-13,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 321.3986589577597,
+              "best_whole": -416.1905031414112,
+              "component_scores": [
+                -418.8188999668746,
+                -416.1905031414112
+              ],
+              "identity_error": 7.958078640513122e-13,
+              "mixture_identity": -416.97423613565866,
+              "regret": 0.783732994246634,
+              "visited_rows": 202
+            },
+            "null0": {
+              "best_per_row": -1152.611494579796,
+              "best_whole": -1767.2353036428344,
+              "component_scores": [
+                -2067.8186449050454,
+                -1767.2353036428344
+              ],
+              "identity_error": 4.547473508864641e-12,
+              "mixture_identity": -1289.7273443452216,
+              "regret": 137.115849765421,
+              "visited_rows": 202
+            },
+            "null1": {
+              "best_per_row": -959.5271897291135,
+              "best_whole": -1706.9850841158102,
+              "component_scores": [
+                -1837.460298747605,
+                -1706.9850841158102
+              ],
+              "identity_error": 3.183231456205249e-12,
+              "mixture_identity": -1101.8054260089127,
+              "regret": 142.2782362798024,
+              "visited_rows": 202
+            },
+            "null2": {
+              "best_per_row": -1287.7499249147754,
+              "best_whole": -1840.7626637939832,
+              "component_scores": [
+                -2093.693252569358,
+                -1840.7626637939832
+              ],
+              "identity_error": 3.637978807091713e-12,
+              "mixture_identity": -1424.704442757978,
+              "regret": 136.95451784319903,
+              "visited_rows": 202
+            },
+            "row": {
+              "best_per_row": 321.3986589577597,
+              "best_whole": -416.1905031414112,
+              "component_scores": [
+                -418.8188999668746,
+                -416.1905031414112
+              ],
+              "identity_error": 1.0516032489249483e-12,
+              "mixture_identity": 198.02655605601558,
+              "regret": 123.37210290174309,
+              "visited_rows": 202
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1811,
+              "B": 2690,
+              "shared": 3685
+            },
+            "last8192": {
+              "A": 1783,
+              "B": 2673,
+              "shared": 3736
+            }
+          }
+        },
+        "mosaic_then_unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -447.03020111931136,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -447.03020111931136,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -958.6832583363121,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -958.6832583363121,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -738.8856017568178,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -738.8856017568178,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1086.6545563575983,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1086.6545563575983,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -201.22031747284925,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -201.22031747284925,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 359,
+              "active": true,
+              "active_events": 16025,
+              "at8192": 103.41025984280023,
+              "drawdown": 10.327068207012793,
+              "gain": 97.17070142476342,
+              "horizons": {
+                "1024": 15.946865301836624,
+                "16384": 97.17070142476342,
+                "4096": 46.38543311701817,
+                "8192": 103.41025984280023
+              },
+              "inner_score": -39.97360361567352,
+              "minimum": -0.6788067698630744,
+              "odds": -170.8253942094538,
+              "peak": 106.42438020413852,
+              "shadow": -39.97360361567352,
+              "tail_gain": -6.2395584180368076
+            }
+          },
+          "base_loss": 175632.4001399245,
+          "cold_loss": 101054.86703640665,
+          "max_c_difference": 1.9895196601282805e-12,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 85.1436339619142,
+              "best_whole": -446.03020111931096,
+              "component_scores": [
+                -527.9680310848933,
+                -446.03020111931096
+              ],
+              "identity_error": 3.979039320256561e-13,
+              "mixture_identity": -447.03020111931096,
+              "regret": 1.000000000000398,
+              "visited_rows": 202
+            },
+            "null0": {
+              "best_per_row": -819.2666548120612,
+              "best_whole": -1342.575508929327,
+              "component_scores": [
+                -1730.5293326950973,
+                -1342.575508929327
+              ],
+              "identity_error": 5.002220859751105e-12,
+              "mixture_identity": -958.6832583363171,
+              "regret": 139.41660352425083,
+              "visited_rows": 202
+            },
+            "null1": {
+              "best_per_row": -603.6319315519785,
+              "best_whole": -1184.7250297201713,
+              "component_scores": [
+                -1351.5291980879874,
+                -1184.7250297201713
+              ],
+              "identity_error": 1.0231815394945443e-12,
+              "mixture_identity": -738.8856017568188,
+              "regret": 135.2536702048393,
+              "visited_rows": 202
+            },
+            "null2": {
+              "best_per_row": -949.3476828566274,
+              "best_whole": -1446.895898506481,
+              "component_scores": [
+                -1674.6046996300279,
+                -1446.895898506481
+              ],
+              "identity_error": 9.322320693172514e-12,
+              "mixture_identity": -1086.654556357589,
+              "regret": 137.30687350097082,
+              "visited_rows": 202
+            },
+            "row": {
+              "best_per_row": 85.1436339619142,
+              "best_whole": -446.03020111931096,
+              "component_scores": [
+                -527.9680310848933,
+                -446.03020111931096
+              ],
+              "identity_error": 3.552713678800501e-13,
+              "mixture_identity": -39.97360361567387,
+              "regret": 125.11723757758773,
+              "visited_rows": 202
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1811,
+              "B": 2690,
+              "shared": 3685
+            },
+            "last8192": {
+              "A": 2431,
+              "B": 2053,
+              "shared": 3708
+            }
+          }
+        },
+        "unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1166.6090297636586,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1166.6090297636586,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -864.9192882009517,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -864.9192882009517,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -681.6964591488501,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -681.6964591488501,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1020.092062194672,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1020.092062194672,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1095.5413301901015,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1095.5413301901015,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -710.0398642169549,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -710.0398642169549,
+              "tail_gain": 0.0
+            }
+          },
+          "base_loss": 175468.27789693268,
+          "cold_loss": 99732.08754658185,
+          "max_c_difference": 1.5916157281026244e-12,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": -573.9725377586947,
+              "best_whole": -1165.609029766537,
+              "component_scores": [
+                -1165.609029766537,
+                -1194.5111708879265
+              ],
+              "identity_error": 2.7284841053187847e-12,
+              "mixture_identity": -1166.6090297636613,
+              "regret": 0.9999999971214493,
+              "visited_rows": 202
+            },
+            "null0": {
+              "best_per_row": -727.6730253763033,
+              "best_whole": -1285.7690139986953,
+              "component_scores": [
+                -1604.232472581699,
+                -1285.7690139986953
+              ],
+              "identity_error": 4.320099833421409e-12,
+              "mixture_identity": -864.919288200956,
+              "regret": 137.2462628246484,
+              "visited_rows": 202
+            },
+            "null1": {
+              "best_per_row": -550.893407239515,
+              "best_whole": -1098.965609134182,
+              "component_scores": [
+                -1098.965609134182,
+                -1196.8584864209186
+              ],
+              "identity_error": 6.821210263296962e-13,
+              "mixture_identity": -681.6964591488507,
+              "regret": 130.80305190933507,
+              "visited_rows": 202
+            },
+            "null2": {
+              "best_per_row": -884.136887358862,
+              "best_whole": -1486.664849468174,
+              "component_scores": [
+                -1559.1780701812709,
+                -1486.664849468174
+              ],
+              "identity_error": 5.229594535194337e-12,
+              "mixture_identity": -1020.0920621946773,
+              "regret": 135.95517483581,
+              "visited_rows": 202
+            },
+            "row": {
+              "best_per_row": -573.9725377586947,
+              "best_whole": -1165.609029766537,
+              "component_scores": [
+                -1165.609029766537,
+                -1194.5111708879265
+              ],
+              "identity_error": 1.7053025658242404e-12,
+              "mixture_identity": -710.0398642169532,
+              "regret": 136.06732645826025,
+              "visited_rows": 202
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2318,
+              "B": 2196,
+              "shared": 3672
+            },
+            "last8192": {
+              "A": 2427,
+              "B": 2052,
+              "shared": 3713
+            }
+          }
+        }
+      },
+      "source_bytes": 65536,
+      "source_events": [
+        32756,
+        32756
+      ],
+      "supported_rows": [
+        152,
+        152
+      ],
+      "world": 38
+    },
+    {
+      "bank_bytes": 14080,
+      "regimes": {
+        "mosaic": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -333.6844967104425,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -333.6844967104425,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1020.214178199823,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1020.214178199823,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1106.592908622089,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1106.592908622089,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1142.6872189818853,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1142.6872189818853,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -125.14207037205655,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -125.14207037205655,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 516,
+              "active": true,
+              "active_events": 15868,
+              "at8192": 136.05493448509583,
+              "drawdown": 8.431461189997833,
+              "gain": 185.80854304027818,
+              "horizons": {
+                "1024": 1.7268406662290747,
+                "16384": 185.80854304027818,
+                "4096": 22.190768083200705,
+                "8192": 136.05493448509583
+              },
+              "inner_score": 219.75293412696416,
+              "minimum": -0.990795769328348,
+              "odds": 5.435303447266171,
+              "peak": 189.35118874006045,
+              "shadow": 219.75293412696416,
+              "tail_gain": 49.75360855518235
+            }
+          },
+          "base_loss": 173990.0183591394,
+          "cold_loss": 97792.33005287604,
+          "max_c_difference": 1.6484591469634324e-12,
+          "max_norm_error": 3.3306690738754696e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 352.07213330196277,
+              "best_whole": -332.68449671044357,
+              "component_scores": [
+                -465.8489595549814,
+                -332.68449671044357
+              ],
+              "identity_error": 1.0800249583553523e-12,
+              "mixture_identity": -333.68449671044357,
+              "regret": 0.99999999999892,
+              "visited_rows": 202
+            },
+            "null0": {
+              "best_per_row": -871.3180831075846,
+              "best_whole": -1591.8910743911476,
+              "component_scores": [
+                -1612.9562765822038,
+                -1591.8910743911476
+              ],
+              "identity_error": 1.1368683772161603e-13,
+              "mixture_identity": -1020.2141781998231,
+              "regret": 148.8960950922384,
+              "visited_rows": 202
+            },
+            "null1": {
+              "best_per_row": -961.9998617616754,
+              "best_whole": -1560.4200696697064,
+              "component_scores": [
+                -1862.1634745455347,
+                -1560.4200696697064
+              ],
+              "identity_error": 2.0463630789890885e-12,
+              "mixture_identity": -1106.592908622087,
+              "regret": 144.59304686041355,
+              "visited_rows": 202
+            },
+            "null2": {
+              "best_per_row": -997.1972760926913,
+              "best_whole": -1617.0383411653208,
+              "component_scores": [
+                -1709.2562862234013,
+                -1617.0383411653208
+              ],
+              "identity_error": 7.73070496506989e-12,
+              "mixture_identity": -1142.687218981893,
+              "regret": 145.48994288919403,
+              "visited_rows": 202
+            },
+            "row": {
+              "best_per_row": 352.07213330196277,
+              "best_whole": -332.68449671044357,
+              "component_scores": [
+                -465.8489595549814,
+                -332.68449671044357
+              ],
+              "identity_error": 2.8421709430404007e-13,
+              "mixture_identity": 219.75293412696388,
+              "regret": 132.3191991749986,
+              "visited_rows": 202
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2087,
+              "B": 2384,
+              "shared": 3715
+            },
+            "last8192": {
+              "A": 2106,
+              "B": 2408,
+              "shared": 3678
+            }
+          }
+        },
+        "mosaic_then_unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -489.88830875494295,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -489.88830875494295,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -880.5521121425282,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -880.5521121425282,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -888.8348096025038,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -888.8348096025038,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1022.6294972384709,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1022.6294972384709,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -275.92681382915447,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -275.92681382915447,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": 516,
+              "active": true,
+              "active_events": 15868,
+              "at8192": 136.05493448509583,
+              "drawdown": 9.624154291145032,
+              "gain": 136.98116843689547,
+              "horizons": {
+                "1024": 1.7268406662290747,
+                "16384": 136.98116843689547,
+                "4096": 22.190768083200705,
+                "8192": 136.05493448509583
+              },
+              "inner_score": -81.00178717096844,
+              "minimum": -0.990795769328348,
+              "odds": -251.9603087613187,
+              "peak": 146.6053227280405,
+              "shadow": -81.00178717096844,
+              "tail_gain": 0.9262339517996452
+            }
+          },
+          "base_loss": 174478.73029392865,
+          "cold_loss": 101174.03752456013,
+          "max_c_difference": 1.1937117960769683e-12,
+          "max_norm_error": 3.3306690738754696e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": 52.85199436846125,
+              "best_whole": -488.88830875494443,
+              "component_scores": [
+                -632.4399490621047,
+                -488.88830875494443
+              ],
+              "identity_error": 1.4779288903810084e-12,
+              "mixture_identity": -489.88830875494443,
+              "regret": 0.9999999999985221,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -735.5309054592926,
+              "best_whole": -1323.3944580703226,
+              "component_scores": [
+                -1410.5025566601546,
+                -1323.3944580703226
+              ],
+              "identity_error": 3.410605131648481e-12,
+              "mixture_identity": -880.5521121425317,
+              "regret": 145.02120668323562,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -744.6932114815871,
+              "best_whole": -1293.9814576941192,
+              "component_scores": [
+                -1534.472991473324,
+                -1293.9814576941192
+              ],
+              "identity_error": 3.865352482534945e-12,
+              "mixture_identity": -888.8348096025077,
+              "regret": 144.14159812091668,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -879.2028355712924,
+              "best_whole": -1425.635861983238,
+              "component_scores": [
+                -1465.394761508636,
+                -1425.635861983238
+              ],
+              "identity_error": 3.979039320256561e-12,
+              "mixture_identity": -1022.6294972384749,
+              "regret": 143.42666166717845,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": 52.85199436846125,
+              "best_whole": -488.88830875494443,
+              "component_scores": [
+                -632.4399490621047,
+                -488.88830875494443
+              ],
+              "identity_error": 5.684341886080802e-14,
+              "mixture_identity": -81.00178717096838,
+              "regret": 133.8537815394297,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 2087,
+              "B": 2384,
+              "shared": 3715
+            },
+            "last8192": {
+              "A": 1956,
+              "B": 2076,
+              "shared": 4160
+            }
+          }
+        },
+        "unrelated": {
+          "arms": {
+            "global": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1514.4841832443929,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1514.4841832443929,
+              "tail_gain": 0.0
+            },
+            "null0": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1017.6392877501005,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1017.6392877501005,
+              "tail_gain": 0.0
+            },
+            "null1": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1075.5253614461415,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1075.5253614461415,
+              "tail_gain": 0.0
+            },
+            "null2": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1035.4001189160251,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1035.4001189160251,
+              "tail_gain": 0.0
+            },
+            "pool": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1385.5129962861447,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1385.5129962861447,
+              "tail_gain": 0.0
+            },
+            "row": {
+              "activation": null,
+              "active": false,
+              "active_events": 0,
+              "at8192": 0.0,
+              "drawdown": 0.0,
+              "gain": 0.0,
+              "horizons": {
+                "1024": 0.0,
+                "16384": 0.0,
+                "4096": 0.0,
+                "8192": 0.0
+              },
+              "inner_score": -1049.2996732414956,
+              "minimum": 0.0,
+              "odds": 0.0,
+              "peak": 0.0,
+              "shadow": -1049.2996732414956,
+              "tail_gain": 0.0
+            }
+          },
+          "base_loss": 174078.7005322078,
+          "cold_loss": 99249.42749175653,
+          "max_c_difference": 2.9558577807620168e-12,
+          "max_norm_error": 2.220446049250313e-16,
+          "oracle": {
+            "global": {
+              "best_per_row": -909.2449388876901,
+              "best_whole": -1513.4841832443858,
+              "component_scores": [
+                -1566.4750114563712,
+                -1513.4841832443858
+              ],
+              "identity_error": 7.048583938740194e-12,
+              "mixture_identity": -1514.4841832443858,
+              "regret": 1.0000000000070486,
+              "visited_rows": 203
+            },
+            "null0": {
+              "best_per_row": -870.9326787392533,
+              "best_whole": -1456.4942601522198,
+              "component_scores": [
+                -1741.4240100591721,
+                -1456.4942601522198
+              ],
+              "identity_error": 3.296918293926865e-12,
+              "mixture_identity": -1017.6392877501038,
+              "regret": 146.70660901084716,
+              "visited_rows": 203
+            },
+            "null1": {
+              "best_per_row": -932.7535365981346,
+              "best_whole": -1534.0345778016344,
+              "component_scores": [
+                -1701.9585152227864,
+                -1534.0345778016344
+              ],
+              "identity_error": 8.185452315956354e-12,
+              "mixture_identity": -1075.5253614461496,
+              "regret": 142.77182484800687,
+              "visited_rows": 203
+            },
+            "null2": {
+              "best_per_row": -894.4048647448386,
+              "best_whole": -1479.0942428160606,
+              "component_scores": [
+                -1627.0672854603483,
+                -1479.0942428160606
+              ],
+              "identity_error": 2.7284841053187847e-12,
+              "mixture_identity": -1035.4001189160278,
+              "regret": 140.9952541711865,
+              "visited_rows": 203
+            },
+            "row": {
+              "best_per_row": -909.2449388876901,
+              "best_whole": -1513.4841832443858,
+              "component_scores": [
+                -1566.4750114563712,
+                -1513.4841832443858
+              ],
+              "identity_error": 8.640199666842818e-12,
+              "mixture_identity": -1049.2996732415043,
+              "regret": 140.05473435380554,
+              "visited_rows": 203
+            }
+          },
+          "raw_routing_visits": {
+            "first8192": {
+              "A": 1871,
+              "B": 2030,
+              "shared": 4285
+            },
+            "last8192": {
+              "A": 1957,
+              "B": 2073,
+              "shared": 4162
+            }
+          }
+        }
+      },
+      "source_bytes": 65536,
+      "source_events": [
+        32756,
+        32756
+      ],
+      "supported_rows": [
+        175,
+        155
+      ],
+      "world": 39
+    }
+  ]
+}
