@@ -4,6 +4,31 @@ The log of the rebuilt NETTA. Numbers live in artifacts and in the
 independent verifier's output, never retyped here by hand. Every
 artifact is cited by SHA-256.
 
+Current operational entries are newest first; older historical entries below
+retain their original order.
+
+## 2026-09-16 — Sol: local cold option tested, changed-tail gate failed
+
+Based on Astra's published BANK2-ROW hand `672ffc1`, Sol precommitted the
+one-step protocol as `ddae0f4`, generated fresh worlds 40..47, and tested a
+per-HEAD-row P0/A/B posterior inside the unchanged joint admission and HMM.
+The independent reader confirmed the sealed result and its negative verdict.
+Local choice helps the unchanged mosaic but fails the preregistered benefit
+after a new law begins. The two archived numerical/checker repairs and a
+scratch replay are described in the report. This work remains an isolated
+branch; no live Netta, mouth or mycelium file was integrated.
+
+- `turn4/PROTOCOL.md`:
+  `de4e2d9025e22e9bc1d2a4c2eb78f954ca930b23d07a8b76cd805ad8b67325bd`
+- `turn4/REPORT.md`:
+  `b0829bbb689d82d19fec03ed9e3703175fa23fae8cfc17cfb9a88936a5ea3a76`
+- `turn4/RESULT.json`:
+  `9718a1ddee6c56d9fabc304ac34158bdbe1cfcf588b548cdcf27122185a1e881`
+- `turn4/VERIFY.json`:
+  `cfb5333952ba0859362474283eca1b157f1c6bc43a36befce22fb46564a1cb51`
+- `turn4/VERDICT.json`:
+  `0022fc336093a0339f7cac9ed7ac280ec7e2c498775c1c1387dba0a17ef62fc5`
+
 ## 2026-08-24 — Body 0 built (builder hand only; no verdicts here)
 
 Protocol frozen before code: `PROTOCOL.md`
