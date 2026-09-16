@@ -1,0 +1,63 @@
+{
+  "receipts": {
+    "CODE_FREEZE.json": "88c2cad79b2d17250bf34375448ce2a1e73028228c1c4e8e04d75f8adad240db",
+    "CODE_FREEZE_REPAIR.json": "7d529a8bc84b67b86399108c5430821c50edf3b610ad1d7d872bb1538d9347cd",
+    "CODE_FREEZE_VERIFY.json": "7beeea10374aeea12054beb338d18629ffe734a8d04fd9d6542f50527937c2da"
+  },
+  "links": [
+    true,
+    true
+  ],
+  "protocol_pins": [
+    true,
+    true,
+    true
+  ],
+  "changed_file_pins": [
+    {
+      "turn4/experiment.py": [
+        "8146a761b4f365cf9f6aa6414833d9c11d00acfa2ff8c7b1c960d670ea2254c1",
+        "6dab6d692889ad6057e71788f64021f24ee41994abf84cc523418f96ed7c20d6"
+      ],
+      "turn4/verify.py": [
+        "7cee2a40c0e932731181a50d29cd8cfb5b85f9d4eeb8764c7444cdb22dfdf77e",
+        "d051713d7af9f36cb15fab93b974b6fdbb94e5d76e191afce23b94ea00b9c212"
+      ]
+    },
+    {
+      "turn4/experiment.py": [
+        "6dab6d692889ad6057e71788f64021f24ee41994abf84cc523418f96ed7c20d6",
+        "478bf329f358694776b3a0bc2d49aec382567e370029891e93a9e71ee0e85399"
+      ],
+      "turn4/verify.py": [
+        "d051713d7af9f36cb15fab93b974b6fdbb94e5d76e191afce23b94ea00b9c212",
+        "e5615f82003f80d91822282b135e42d3478377beae67ebeef42395089388af53"
+      ]
+    }
+  ],
+  "current_pins": {
+    "byte_recurrence/byte_collect": true,
+    "byte_recurrence/byte_trace": true,
+    "byte_recurrence/collect.c": true,
+    "byte_recurrence/frontend.c": true,
+    "byte_recurrence/frontend.h": true,
+    "byte_recurrence/trace.c": true,
+    "portable_recurrence/recurrence.c": true,
+    "portable_recurrence/recurrence.h": true,
+    "turn3/PROTOCOL.md": true,
+    "turn3/bank": true,
+    "turn3/bank.c": true,
+    "turn3/experiment.py": true,
+    "turn3/verify.py": true,
+    "turn4/PROTOCOL.md": true,
+    "turn4/experiment.py": true,
+    "turn4/verify.py": true
+  },
+  "historical_artifact_manifest_kinds": [
+    "data",
+    "memory",
+    "results",
+    "traces"
+  ],
+  "failed_run_exists": true
+}

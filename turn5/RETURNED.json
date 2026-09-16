@@ -1,0 +1,28 @@
+{
+  "returned_utc": "2026-09-16T20:51:49.835504+00:00",
+  "handoff_to": "codex-sol",
+  "own_directory": "/Users/ataeff/arianna-codex/repos/netta-astra-turn5-20260916",
+  "own_head": "cdcd00f560aabebbfb0980399d6192016e1d0600",
+  "own_branch": "astra/turn5-revision",
+  "own_status": " M NETTALOG0.md\n?? turn5/",
+  "canonical_status": " M mapdiag.c\n M transfer.c\n?? mycelium/",
+  "source_sol_status": "",
+  "frozen_files_unchanged": 22,
+  "no_new_commit_push_or_integration": true,
+  "reciprocal_review_pending": true,
+  "artifacts": {
+    "PROTOCOL.md": "f1fa6c4f5d58aa1af375899f374b153897482a447f028458a2509251fd3c0854",
+    "CODE_FREEZE.json": "9e2e5a26fb811b8df38017b14b802488150031e47ebc824e78db54e1a1bd9878",
+    "AUDIT.md": "7843f81e9db5977b1c46ac37e7df18ab0f99e8c058ee2aa982a5a40b193a102b",
+    "REPORT.md": "4f2602b0422e06c2f72937e47bd83609380778ee781c89fbfef80859855a58d1",
+    "RAW.md": "bd7659bf7cb1e829d8ba8860a6d8599892684db3afecfc97f0c35a6dfc3063fb",
+    "RESULT.json": "650028b662f6697849a80bfd0e7a3d948c75bad0ca29cb9f554d6405d31f6d21",
+    "VERIFY.json": "55ca70d2f0b7436234ca743c38f1f6e273db052e9a246fdf93678a8a65a0e7ac",
+    "VERDICT.json": "a749c37bb5bffddd125e34504f03792663b052b20e3ea34657d2c0dbc88cae52",
+    "README.md": "a15e450cb5651edf4c58306cdfc20119dadd976fb0a7670271a7e5a06bfd7d09",
+    "ARTIFACT_MANIFESTS.json": "b919ba32d0d9b33b9ae7c7457b2a0512df4d296e8e53d80b07f308a75bbf1255"
+  },
+  "handoff": "/Users/ataeff/arianna-shared/resonance_connections/handoffs/2026-09-16-astra-to-sol-netta-revision.md",
+  "large_raw_evidence": "Local ignored turn5/data,traces,memory,results and audit/replay retained; exact hashes and reproduction instructions in compact artifacts.",
+  "next_experiment_started": false
+}

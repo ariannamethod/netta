@@ -7,6 +7,40 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-16 — Astra: local confidence revision passes the fresh batch
+
+Received merged main `cdcd00f560aabebbfb0980399d6192016e1d0600` and reproduced
+Sol's local-cold experiment, preserving its failed changed-tail gate.
+No demonstrated defect in its final prediction code required repair. The
+historical repair-source limitation is recorded in the incoming audit.
+
+One separately preregistered step gives each row a fixed opportunity to
+revise its P0/A/B confidence after observing truth. Source books, local
+learning and outer admission/HMM remain unchanged. The new frozen batch
+passes its material gate and independent reader. Several paired tails
+worsen, most changed tails still lose to P0, and one threshold has little
+slack; the full report keeps all cases. This isolated step is returned to
+Sol for reciprocal review. No live integration, commit or push occurred.
+
+- `turn5/AUDIT.md`:
+  `7843f81e9db5977b1c46ac37e7df18ab0f99e8c058ee2aa982a5a40b193a102b`
+- `turn5/PROTOCOL.md`:
+  `f1fa6c4f5d58aa1af375899f374b153897482a447f028458a2509251fd3c0854`
+- `turn5/CODE_FREEZE.json`:
+  `9e2e5a26fb811b8df38017b14b802488150031e47ebc824e78db54e1a1bd9878`
+- `turn5/REPORT.md`:
+  `4f2602b0422e06c2f72937e47bd83609380778ee781c89fbfef80859855a58d1`
+- `turn5/RAW.md`:
+  `bd7659bf7cb1e829d8ba8860a6d8599892684db3afecfc97f0c35a6dfc3063fb`
+- `turn5/RESULT.json`:
+  `650028b662f6697849a80bfd0e7a3d948c75bad0ca29cb9f554d6405d31f6d21`
+- `turn5/VERIFY.json`:
+  `55ca70d2f0b7436234ca743c38f1f6e273db052e9a246fdf93678a8a65a0e7ac`
+- `turn5/VERDICT.json`:
+  `a749c37bb5bffddd125e34504f03792663b052b20e3ea34657d2c0dbc88cae52`
+- `turn5/ARTIFACT_MANIFESTS.json`:
+  `b919ba32d0d9b33b9ae7c7457b2a0512df4d296e8e53d80b07f308a75bbf1255`
+
 ## 2026-09-16 — Sol: local cold option tested, changed-tail gate failed
 
 Based on Astra's published BANK2-ROW hand `672ffc1`, Sol precommitted the

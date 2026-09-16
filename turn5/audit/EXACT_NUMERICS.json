@@ -1,0 +1,146 @@
+{
+  "summary_exact": true,
+  "all_result_values_equal_except_gzip_hashes": true,
+  "differences": [
+    {
+      "path": "/lives/0/event_sha256",
+      "original": "bbcea2e744cc54384b8b1ade351436a81c898e6c85337f2f34876cd7f73121ab",
+      "replay": "daa56f400d65f9ee73ee1ad16052bc5ceea9d5449cb1fddaa1a992a52957d503"
+    },
+    {
+      "path": "/lives/1/event_sha256",
+      "original": "466db7495a7be1d9a9216fe39bc568a113c498d9f2029b5e9d89e1d1e493db3d",
+      "replay": "376677714c546208729e81aaa819f20de3193b9997a210375bdbccb121691917"
+    },
+    {
+      "path": "/lives/2/event_sha256",
+      "original": "3289342d9ba45186982e6178578dad2e417eed84d8c110ed7bc34c89cd2a1923",
+      "replay": "78bafe2908b4043f96b01737ab3f9dd9c3f8a764071148331a5688e522d8c7c0"
+    },
+    {
+      "path": "/lives/3/event_sha256",
+      "original": "db32e01371964b449bfc786295d58491620664311b1ad5b18ad6c285b4628fbc",
+      "replay": "4ac6878ae67ba6d5822d73942456d384790f2e689186a90735f9ef223e1fb314"
+    },
+    {
+      "path": "/lives/4/event_sha256",
+      "original": "3389bab4d4b80273cf9d31a906a84229b32d600110eb67c2cdfec1eff034e307",
+      "replay": "012fdd1035d46f79cb49c8dd5850fe076be8f51f383e22a6b6bcbbe646c39469"
+    },
+    {
+      "path": "/lives/5/event_sha256",
+      "original": "a71d8885895d75c900cc95e1a62c703893e8ca6d8ff5dde86a9b5951df5f56bb",
+      "replay": "e7527a6292a15298a0a756742db6eea865e517d9446e49b2db7f6ed81987968c"
+    },
+    {
+      "path": "/lives/6/event_sha256",
+      "original": "4ce5142adda32172a8220c920604ca7d233435e924b71f24d6f2ecb79bd88187",
+      "replay": "2d847c31a70a84b8e53e2477905eae6bf2481dfef4756ced80c751074e37ead2"
+    },
+    {
+      "path": "/lives/7/event_sha256",
+      "original": "ab9b4372b78e879714ece08f9b9e9fd880b79e00a4dcc91fec71e3339a267908",
+      "replay": "8e4cf03e6dd12f361a0a3cc51401de327bafe8566c99124ddd67c32a572eac22"
+    },
+    {
+      "path": "/lives/8/event_sha256",
+      "original": "4556803a087ebcd4c7465bc28c6c88d279f0a945380e0c8dc4caf6ca09fec2dd",
+      "replay": "0d127d1a274dc5c3128d120410e825800a49396793b2321b5c9fe68cee28d61e"
+    },
+    {
+      "path": "/lives/9/event_sha256",
+      "original": "dfb9387c7f2dd3538323c491e0665c8d18485539453cb5718b4ac4f9a9fb2631",
+      "replay": "5322c4fed8e82d4536312d597dc503296e5e8e68f385da132861f8229ed80c90"
+    },
+    {
+      "path": "/lives/10/event_sha256",
+      "original": "e6bd2a5875420a7a621a88539b74f78e4823410dd300fb101a147e242f04f347",
+      "replay": "4e7ebc761b74678cf1079ef93701c52d855b18f7ceb6c522ebe7c3887a92ae86"
+    },
+    {
+      "path": "/lives/11/event_sha256",
+      "original": "d9958df94b3271976580ac13634ab34fad57913bf0271fd0028e33e46106f1a7",
+      "replay": "15299dd58706d260442e9aa0cb375c0d55bd51c6d4b72858ccbe976e457ff064"
+    },
+    {
+      "path": "/lives/12/event_sha256",
+      "original": "0d5e603cd14ecf8595ae4bfab6a36d1bc997452013a3639075609353fb26e6cb",
+      "replay": "620451eec471131a9de7623a93298d837b74bcd9e9ca13d7d17a633e5c689749"
+    },
+    {
+      "path": "/lives/13/event_sha256",
+      "original": "b4675eb4b60bc72a7783a8456806185f3a51e8e8d9d0c9117458b0c0f11c8b6f",
+      "replay": "ee88d59e01fcd9c87ec6dd80392514e2463f09e5289b8ed5e5775b648314c087"
+    },
+    {
+      "path": "/lives/14/event_sha256",
+      "original": "817aed7e036840233120a15b784b9a9b0c56cb40769838a07bba23b6bc739103",
+      "replay": "64241d508c46b7112b9b67a3c0ad61927d80c6dc40c97c9854589b958beb5b3d"
+    },
+    {
+      "path": "/lives/15/event_sha256",
+      "original": "668688dc1e7359a7f79d764253e5f6492e0bdc83d0ce8b2be427251903b95d92",
+      "replay": "0bfca8b0ae8afc13f977c137b97c4f9582bf0cb4b4ffb64083c4e8a375feae3c"
+    },
+    {
+      "path": "/lives/16/event_sha256",
+      "original": "f9a6d33f7a7baf079f1f160ffcbd52e440da166bbd6da9d937473181e73933eb",
+      "replay": "aec92cb4d14dfd0b997146aa3199337d7e9dc635ed49dc019532fc2c6d7ce082"
+    },
+    {
+      "path": "/lives/17/event_sha256",
+      "original": "a801e794d60bae0eb7957cd17bad0397cef4bf45f59d1d8fd19c8fc1a2cd9a9f",
+      "replay": "45c718ce1c185ffbe4a91775953b51e39436210238c928883b1e569553f1d94f"
+    },
+    {
+      "path": "/lives/18/event_sha256",
+      "original": "131101bdf5d22a93b832dbf9cd1acdee076921c180ebbecf77f479630a76a255",
+      "replay": "c49bca426d9cb34ca1554d3d0ab8dc9b33844c39b0360207e522d6b6028c3b74"
+    },
+    {
+      "path": "/lives/19/event_sha256",
+      "original": "e8746bd9c15b0cb357d4e8937e34d622f98d67a0d649a0b3ab2de3270e0eefac",
+      "replay": "1dfed93812f8d4297107391e709c88ec85fe4fb508b79050c8620610af5242f5"
+    },
+    {
+      "path": "/lives/20/event_sha256",
+      "original": "a2ce2a9cf90a8cb35f0d05cc1ad2ebe10d31d451f06fc32ca31dff12119820e3",
+      "replay": "b3c438f14ea343e141f62a507d2a23aa9ff3f227ca1a299faed4af4e7d50e012"
+    },
+    {
+      "path": "/lives/21/event_sha256",
+      "original": "728a54bde06e18dc3acaded652361ca3d4e7cfa7b36daea365af22f303b6ace3",
+      "replay": "381d63e09b6c9476db91c3fafbb225dfe9ec4072dd1f38f9faa1236fdb356c8a"
+    },
+    {
+      "path": "/lives/22/event_sha256",
+      "original": "147ab53d8088c7a65db15f95d1fcd1ebc88eb06cd925ad7ce7793f08e544fd96",
+      "replay": "d7da7644e2f1fa867bea9a9848a0a1530a256e5cd814550f14376139ce9f14ff"
+    },
+    {
+      "path": "/lives/23/event_sha256",
+      "original": "ee4d39d96b956c00e6b86b6eb4fc03e1731ab337bd08f19d8992dce2a8c42cdd",
+      "replay": "172e0d37fa65a551ee546f35bd2db70f113b5c7ae336f6dc29f7ddef5015dc1c"
+    }
+  ],
+  "summary": {
+    "changed_tail_improved_worlds": 1,
+    "changed_tail_mean_improvement": -1.6574576570508253,
+    "changed_tail_paired_differences": [
+      1.8216727575940581,
+      -3.8468547088246225,
+      -2.3256193250234958,
+      -4.748819886154678,
+      -0.2408898154107817,
+      -1.3848282063763975,
+      -1.7903901000407387,
+      -0.7439319721699462
+    ],
+    "changed_tail_worst_improvement": -1.3848282063763975,
+    "mosaic_gain_bpb": 0.01016610090955697,
+    "mosaic_mean_row2": 154.48540713189277,
+    "mosaic_mean_row3": 166.5613973021814,
+    "mosaic_positive_worlds": 8,
+    "retained_fraction": 1.0781691319231124
+  }
+}
