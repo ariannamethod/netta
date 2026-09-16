@@ -1,0 +1,606 @@
+{
+  "h": 1.52587890625e-05,
+  "law": "HEAD256-v1 plus HMM-16",
+  "lives": [
+    {
+      "activation": 232,
+      "active_events": 16152,
+      "at8192": 352.7928301549237,
+      "drawdown": 10.382524403925672,
+      "extra_loss_bound": 0.3555472622601453,
+      "extra_loss_vs_static": 0.32111845206196676,
+      "gain": 470.09501807964887,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 9.91096919484116,
+        "source_weight": 0.9989623518707595,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 9.932341798243524,
+        "source_weight": 0.9989775950591608,
+        "t": 8191
+      },
+      "regime": "preserved",
+      "static_gain": 470.41613653171083,
+      "tail_gain": 117.30218792472516,
+      "world": 24
+    },
+    {
+      "activation": null,
+      "active_events": 0,
+      "at8192": 0.0,
+      "drawdown": 0.0,
+      "extra_loss_bound": 0.0,
+      "extra_loss_vs_static": 0.0,
+      "gain": 0.0,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8191
+      },
+      "regime": "unrelated",
+      "static_gain": 0.0,
+      "tail_gain": 0.0,
+      "world": 24
+    },
+    {
+      "activation": 232,
+      "active_events": 16152,
+      "at8192": 352.7928301549237,
+      "drawdown": 11.405508842549068,
+      "extra_loss_bound": 0.3555472622601453,
+      "extra_loss_vs_static": -307.51967232269715,
+      "gain": 352.1084939902125,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 9.91096919484116,
+        "source_weight": 0.9989623518707595,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 9.932341798243524,
+        "source_weight": 0.9989775950591608,
+        "t": 8191
+      },
+      "regime": "changed_tail",
+      "static_gain": 44.58882166751535,
+      "tail_gain": -0.684336164711226,
+      "world": 24
+    },
+    {
+      "activation": 168,
+      "active_events": 16216,
+      "at8192": 329.33019571887036,
+      "drawdown": 8.536860783546587,
+      "extra_loss_bound": 0.35695615488503846,
+      "extra_loss_vs_static": 0.3489340015005382,
+      "gain": 423.78079557625125,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 8.412208098360654,
+        "source_weight": 0.9970731527655611,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 8.946230461975633,
+        "source_weight": 0.9979768097082117,
+        "t": 8191
+      },
+      "regime": "preserved",
+      "static_gain": 424.1297295777518,
+      "tail_gain": 94.4505998573809,
+      "world": 25
+    },
+    {
+      "activation": null,
+      "active_events": 0,
+      "at8192": 0.0,
+      "drawdown": 0.0,
+      "extra_loss_bound": 0.0,
+      "extra_loss_vs_static": 0.0,
+      "gain": 0.0,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8191
+      },
+      "regime": "unrelated",
+      "static_gain": 0.0,
+      "tail_gain": 0.0,
+      "world": 25
+    },
+    {
+      "activation": 168,
+      "active_events": 16216,
+      "at8192": 329.33019571887036,
+      "drawdown": 9.519754115735225,
+      "extra_loss_bound": 0.35695615488503846,
+      "extra_loss_vs_static": -226.34498840312375,
+      "gain": 326.95596722357163,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 8.412208098360654,
+        "source_weight": 0.9970731527655611,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 8.946230461975633,
+        "source_weight": 0.9979768097082117,
+        "t": 8191
+      },
+      "regime": "changed_tail",
+      "static_gain": 100.61097882044788,
+      "tail_gain": -2.3742284952987234,
+      "world": 25
+    },
+    {
+      "activation": 231,
+      "active_events": 16153,
+      "at8192": 297.69670067183836,
+      "drawdown": 10.056167798165717,
+      "extra_loss_bound": 0.35556927620740925,
+      "extra_loss_vs_static": 0.3443902136239103,
+      "gain": 447.77303204334385,
+      "minimum": -0.3366708354224688,
+      "post_change": {
+        "odds_before": 11.048939672215496,
+        "source_weight": 0.9995282273046336,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 11.210746181515479,
+        "source_weight": 0.9995782588993417,
+        "t": 8191
+      },
+      "regime": "preserved",
+      "static_gain": 448.11742225696776,
+      "tail_gain": 150.0763313715055,
+      "world": 26
+    },
+    {
+      "activation": null,
+      "active_events": 0,
+      "at8192": 0.0,
+      "drawdown": 0.0,
+      "extra_loss_bound": 0.0,
+      "extra_loss_vs_static": 0.0,
+      "gain": 0.0,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8191
+      },
+      "regime": "unrelated",
+      "static_gain": 0.0,
+      "tail_gain": 0.0,
+      "world": 26
+    },
+    {
+      "activation": 231,
+      "active_events": 16153,
+      "at8192": 297.69670067183836,
+      "drawdown": 10.056167798165717,
+      "extra_loss_bound": 0.35556927620740925,
+      "extra_loss_vs_static": -279.8151742736448,
+      "gain": 292.32520143667364,
+      "minimum": -0.3366708354224688,
+      "post_change": {
+        "odds_before": 11.048939672215496,
+        "source_weight": 0.9995282273046336,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 11.210746181515479,
+        "source_weight": 0.9995782588993417,
+        "t": 8191
+      },
+      "regime": "changed_tail",
+      "static_gain": 12.510027163028845,
+      "tail_gain": -5.37149923516472,
+      "world": 26
+    },
+    {
+      "activation": 266,
+      "active_events": 16118,
+      "at8192": 300.53987221137373,
+      "drawdown": 8.43466541959782,
+      "extra_loss_bound": 0.35479878805317083,
+      "extra_loss_vs_static": 0.3271942862497781,
+      "gain": 426.31300820831643,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 9.336874462110254,
+        "source_weight": 0.9984559916358942,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 9.349745891070757,
+        "source_weight": 0.9984696847067206,
+        "t": 8191
+      },
+      "regime": "preserved",
+      "static_gain": 426.6402024945662,
+      "tail_gain": 125.7731359969427,
+      "world": 27
+    },
+    {
+      "activation": null,
+      "active_events": 0,
+      "at8192": 0.0,
+      "drawdown": 0.0,
+      "extra_loss_bound": 0.0,
+      "extra_loss_vs_static": 0.0,
+      "gain": 0.0,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8191
+      },
+      "regime": "unrelated",
+      "static_gain": 0.0,
+      "tail_gain": 0.0,
+      "world": 27
+    },
+    {
+      "activation": 266,
+      "active_events": 16118,
+      "at8192": 300.53987221137373,
+      "drawdown": 10.257907684540214,
+      "extra_loss_bound": 0.35479878805317083,
+      "extra_loss_vs_static": -295.6139570253934,
+      "gain": 294.6139570253928,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 9.336874462110254,
+        "source_weight": 0.9984559916358942,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 9.349745891070757,
+        "source_weight": 0.9984696847067206,
+        "t": 8191
+      },
+      "regime": "changed_tail",
+      "static_gain": -1.000000000000649,
+      "tail_gain": -5.925915185980955,
+      "world": 27
+    },
+    {
+      "activation": 273,
+      "active_events": 16111,
+      "at8192": 248.197424364076,
+      "drawdown": 9.963002110920229,
+      "extra_loss_bound": 0.3546446904223231,
+      "extra_loss_vs_static": 0.3459286634369505,
+      "gain": 404.1265743343387,
+      "minimum": -0.1034925107177318,
+      "post_change": {
+        "odds_before": 10.404874830794375,
+        "source_weight": 0.9992629442179044,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 10.404377130076787,
+        "source_weight": 0.9992626900921557,
+        "t": 8191
+      },
+      "regime": "preserved",
+      "static_gain": 404.4725029977757,
+      "tail_gain": 155.92914997026273,
+      "world": 28
+    },
+    {
+      "activation": null,
+      "active_events": 0,
+      "at8192": 0.0,
+      "drawdown": 0.0,
+      "extra_loss_bound": 0.0,
+      "extra_loss_vs_static": 0.0,
+      "gain": 0.0,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8191
+      },
+      "regime": "unrelated",
+      "static_gain": 0.0,
+      "tail_gain": 0.0,
+      "world": 28
+    },
+    {
+      "activation": 273,
+      "active_events": 16111,
+      "at8192": 248.197424364076,
+      "drawdown": 10.83659272976908,
+      "extra_loss_bound": 0.3546446904223231,
+      "extra_loss_vs_static": -241.6237919659982,
+      "gain": 240.62379196599915,
+      "minimum": -0.1034925107177318,
+      "post_change": {
+        "odds_before": 10.404874830794375,
+        "source_weight": 0.9992629442179044,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 10.404377130076787,
+        "source_weight": 0.9992626900921557,
+        "t": 8191
+      },
+      "regime": "changed_tail",
+      "static_gain": -0.9999999999990643,
+      "tail_gain": -7.573632398076853,
+      "world": 28
+    },
+    {
+      "activation": 154,
+      "active_events": 16230,
+      "at8192": 348.0151270791228,
+      "drawdown": 6.889825001041288,
+      "extra_loss_bound": 0.35726435014673386,
+      "extra_loss_vs_static": 0.34870566758291943,
+      "gain": 441.4353980633529,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 9.607775519226474,
+        "source_weight": 0.9987199848276166,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 9.625076909672895,
+        "source_weight": 0.9987352243177338,
+        "t": 8191
+      },
+      "regime": "preserved",
+      "static_gain": 441.78410373093584,
+      "tail_gain": 93.42027098423011,
+      "world": 29
+    },
+    {
+      "activation": null,
+      "active_events": 0,
+      "at8192": 0.0,
+      "drawdown": 0.0,
+      "extra_loss_bound": 0.0,
+      "extra_loss_vs_static": 0.0,
+      "gain": 0.0,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8191
+      },
+      "regime": "unrelated",
+      "static_gain": 0.0,
+      "tail_gain": 0.0,
+      "world": 29
+    },
+    {
+      "activation": 154,
+      "active_events": 16230,
+      "at8192": 348.0151270791228,
+      "drawdown": 9.15604355489063,
+      "extra_loss_bound": 0.35726435014673386,
+      "extra_loss_vs_static": -340.53748646101315,
+      "gain": 339.5374864610147,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 9.607775519226474,
+        "source_weight": 0.9987199848276166,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 9.625076909672895,
+        "source_weight": 0.9987352243177338,
+        "t": 8191
+      },
+      "regime": "changed_tail",
+      "static_gain": -0.9999999999984857,
+      "tail_gain": -8.477640618108126,
+      "world": 29
+    },
+    {
+      "activation": 205,
+      "active_events": 16179,
+      "at8192": 330.92361297985235,
+      "drawdown": 5.451810852193589,
+      "extra_loss_bound": 0.3561416388362721,
+      "extra_loss_vs_static": 0.3451301314470925,
+      "gain": 445.58027272719573,
+      "minimum": -0.7066558767283457,
+      "post_change": {
+        "odds_before": 9.955955217512859,
+        "source_weight": 0.9989941764482186,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 9.978009251626293,
+        "source_weight": 0.9990094201222317,
+        "t": 8191
+      },
+      "regime": "preserved",
+      "static_gain": 445.9254028586428,
+      "tail_gain": 114.65665974734338,
+      "world": 30
+    },
+    {
+      "activation": null,
+      "active_events": 0,
+      "at8192": 0.0,
+      "drawdown": 0.0,
+      "extra_loss_bound": 0.0,
+      "extra_loss_vs_static": 0.0,
+      "gain": 0.0,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8191
+      },
+      "regime": "unrelated",
+      "static_gain": 0.0,
+      "tail_gain": 0.0,
+      "world": 30
+    },
+    {
+      "activation": 205,
+      "active_events": 16179,
+      "at8192": 330.92361297985235,
+      "drawdown": 9.949317643485529,
+      "extra_loss_bound": 0.3561416388362721,
+      "extra_loss_vs_static": -325.6080292996852,
+      "gain": 324.63003328652655,
+      "minimum": -0.7066558767283457,
+      "post_change": {
+        "odds_before": 9.955955217512859,
+        "source_weight": 0.9989941764482186,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 9.978009251626293,
+        "source_weight": 0.9990094201222317,
+        "t": 8191
+      },
+      "regime": "changed_tail",
+      "static_gain": -0.977996013158623,
+      "tail_gain": -6.293579693325796,
+      "world": 30
+    },
+    {
+      "activation": 200,
+      "active_events": 16184,
+      "at8192": 300.0877120567016,
+      "drawdown": 8.87986720189518,
+      "extra_loss_bound": 0.35625170857259186,
+      "extra_loss_vs_static": 0.3432970547492573,
+      "gain": 439.1226145697488,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 11.306087442022212,
+        "source_weight": 0.9996052182562699,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 11.362955570701349,
+        "source_weight": 0.9996204712541833,
+        "t": 8191
+      },
+      "regime": "preserved",
+      "static_gain": 439.46591162449806,
+      "tail_gain": 139.0349025130472,
+      "world": 31
+    },
+    {
+      "activation": null,
+      "active_events": 0,
+      "at8192": 0.0,
+      "drawdown": 0.0,
+      "extra_loss_bound": 0.0,
+      "extra_loss_vs_static": 0.0,
+      "gain": 0.0,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 0.0,
+        "source_weight": 0.5,
+        "t": 8191
+      },
+      "regime": "unrelated",
+      "static_gain": 0.0,
+      "tail_gain": 0.0,
+      "world": 31
+    },
+    {
+      "activation": 200,
+      "active_events": 16184,
+      "at8192": 300.0877120567016,
+      "drawdown": 9.56208647190033,
+      "extra_loss_bound": 0.35625170857259186,
+      "extra_loss_vs_static": -270.5005465617704,
+      "gain": 292.5004925070297,
+      "minimum": 0.0,
+      "post_change": {
+        "odds_before": 11.306087442022212,
+        "source_weight": 0.9996052182562699,
+        "t": 8192
+      },
+      "pre_change": {
+        "odds_before": 11.362955570701349,
+        "source_weight": 0.9996204712541833,
+        "t": 8191
+      },
+      "regime": "changed_tail",
+      "static_gain": 21.999945945259327,
+      "tail_gain": -7.587219549671886,
+      "world": 31
+    }
+  ],
+  "material_pass": true,
+  "mean_preserved_gain": 437.27833920027456,
+  "mean_preserved_gain_bpb": 0.026689351757829258,
+  "positive_preserved": 8,
+  "source_books_sha256": {
+    "24": "cd157e255cf589449398a9cf9fe0ea1d62cc83beffc2d4a27e98dd0921915690",
+    "25": "8b7bcefc669a6c99c3c89ffa3c0e5482734ce83b0c993ba1dd75fca5e0e0f4b2",
+    "26": "00af1d4fd99f98f1f9ae82e36e6e93a39305ca43bc1ef75519885b7a09ea7085",
+    "27": "068884f9899e207625c453ee1c25b776a4d997d479430bdfbd3504aa95261f78",
+    "28": "2fb852aa676db25c426c6bd8d794c245fbb4433cdb985a9a04a9729db9810667",
+    "29": "a3e2ec414b11e7646acc67a5696573d82335cbcfd1445a796d1812b8fc050fbd",
+    "30": "60755aafaede58c74d74e33affa99cdcd03de02a1eb9f00c65397a509d780ed3",
+    "31": "aa267bf6fb132df01a398fd4cf65e66da163169b16a22277d49f3b04ffbe123f"
+  },
+  "worlds": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ]
+}

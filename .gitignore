@@ -4,3 +4,8 @@
 __pycache__/
 /.netta-archive/
 /court4/build/
+/byte_recurrence/scratch/
+/byte_recurrence/byte_collect
+/byte_recurrence/byte_live
+/byte_recurrence/byte_trace
+/portable_recurrence/recurrence_test
