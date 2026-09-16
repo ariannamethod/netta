@@ -1,0 +1,34 @@
+{
+  "created_utc": 1789587139.713213,
+  "files": {
+    "byte_recurrence/byte_collect": "40773ec0fe25f77c0e7734f6771b991442b5eacb890d2b583b1bced88990ba2b",
+    "byte_recurrence/byte_trace": "e963ba902bebc7980e5c0c74add49e509118f2ca32ec374a9ab83421345c7b1e",
+    "byte_recurrence/collect.c": "f66e2744fc6c5302fa9944ae21fc8b19088d6dae3ee6926662e3ad0829d03a2c",
+    "byte_recurrence/frontend.c": "598b5aa2301e48029b7d5c2ca89c9d67372b33df9497d8b14d0b0de646ee3d08",
+    "byte_recurrence/frontend.h": "cc84f37ba78962cbfb36abd6ecea07bbabd6fbd5ee2f8dd3755f998f07df804e",
+    "byte_recurrence/trace.c": "c3e4a17960b20e4c6eb103a92b9196d3e695449d5e7a8789a6670e95709c4e94",
+    "portable_recurrence/recurrence.c": "1c14a567b30d376d515c22f6280872e98811956a691958057cfc7ef4b48739d3",
+    "portable_recurrence/recurrence.h": "282f79c3a90680a2bf6fa0b86624995d83a292c4edf5d33393c95d3d1b56b958",
+    "turn3/PROTOCOL.md": "2a97c72e40f8a8a3f7c2c7d45733808015aa601118a8bb043860130cf075df87",
+    "turn3/bank": "095671f8989fa50181c4ce869e3b866ec40da290e7428f8dca45023148ec7567",
+    "turn3/bank.c": "2e1cd35f7e35e42149bf024a6dccf4c6757c3d2233271aff64e283cc367fb93e",
+    "turn3/experiment.py": "a0fea0f6611a882f0b2830e84d214c6467c39acb34b63cc4f1fda118670714d2",
+    "turn3/verify.py": "a644653b7c8a06325b6961d59ac4f5cd69d1bb3185740016007f62c4f2c8507b",
+    "turn4/PROTOCOL.md": "de4e2d9025e22e9bc1d2a4c2eb78f954ca930b23d07a8b76cd805ad8b67325bd",
+    "turn4/experiment.py": "6dab6d692889ad6057e71788f64021f24ee41994abf84cc523418f96ed7c20d6",
+    "turn4/verify.py": "d051713d7af9f36cb15fab93b974b6fdbb94e5d76e191afce23b94ea00b9c212"
+  },
+  "namespace": "netta-cold-v1",
+  "protocol_sha256": "de4e2d9025e22e9bc1d2a4c2eb78f954ca930b23d07a8b76cd805ad8b67325bd",
+  "repaired_from_sha256": "88c2cad79b2d17250bf34375448ce2a1e73028228c1c4e8e04d75f8adad240db",
+  "worlds": [
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "branch": "astra/turn3-memory",
+  "head": "37e9b68c439a4891ca507fc4155c58bd94d64a2e",
+  "frozen_implementation_unchanged": true,
+  "artifact_hashes": {
+    "REPORT.md": "2a2827120e0ba658a32fbc5b69ca88517ff0bf3794755e07acba696ab1abdf38",
+    "RAW.md": "218fd56372a3c7e89fbfed2ce656640c68574a1774056ad488dea04cfbd87b82",
+    "README.md": "8455a51df26cc2930bada852a02129ec8b4df2fdcd026c09709e3986b4ddfdb9",
+    "VERDICT.json": "bc4048a113c580ca072a18fb5e0e44ac879e8b52ca954f9814f71f600441e2c8",
+    "VERIFY.json": "e4802237c81a72834d87f0de2e85bf348be4f9b3518ccaf4a554abf5bdb351d2",
+    "RESULT.json": "603b96c7369bb259808f9a2173287b009809313601533e05da4dd3af1499cc29",
+    "CODE_FREEZE.json": "9327c293890ae6baff5679fcbc99174af473c3663210cde5a6478ba579dac0b5",
+    "PROTOCOL.md": "2a97c72e40f8a8a3f7c2c7d45733808015aa601118a8bb043860130cf075df87",
+    "ARTIFACT_MANIFESTS.json": "cc7c83d32abb18e70647fb8c883ba514892dd91a98386bada2fe816ba1a26a2f",
+    "evidence/mechanism/BANK_CODE_REVIEW.md": "2142d44c3ddaf5ec10695da5d1be16c12ad3635cab94bceea9dcd25ff68fcd4d"
+  },
+  "committed": false,
+  "pushed": false
+}

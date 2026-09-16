@@ -1,0 +1,46 @@
+{
+  "c_prediction_comparisons": 1179648,
+  "changed_tail_negative_worlds": [
+    33,
+    35,
+    36,
+    37,
+    38
+  ],
+  "committed": false,
+  "continued_after_gate": false,
+  "freeze_sha256": "9327c293890ae6baff5679fcbc99174af473c3663210cde5a6478ba579dac0b5",
+  "incoming_sol_audit": "PASS",
+  "independent_checker_sha256": "a644653b7c8a06325b6961d59ac4f5cd69d1bb3185740016007f62c4f2c8507b",
+  "independent_gate_pending": false,
+  "independent_predictions": 2359296,
+  "independent_verify_sha256": "e4802237c81a72834d87f0de2e85bf348be4f9b3518ccaf4a554abf5bdb351d2",
+  "live_integration": false,
+  "maximum_c_difference": 5.6843418860808015e-12,
+  "maximum_drawdown": 10.930658342555915,
+  "maximum_independent_difference": 4.25757207267452e-11,
+  "metrics": {
+    "best_null_contrast_bpb": 0.010388213617020157,
+    "gain_bpb": 0.010388213617020157,
+    "global_contrast_bpb": 0.010388213617020157,
+    "pool_contrast_bpb": 0.010371591602250454
+  },
+  "minimum_full_prefix_gain": -0.990795769328348,
+  "new_recipient_router_bytes": 1624,
+  "original_summary_sha256": "b6935e1837755106478668605938c95acab901991bcf061048c8cf1fc5c44598",
+  "portable_bank_bytes": 14080,
+  "protocol_sha256": "2a97c72e40f8a8a3f7c2c7d45733808015aa601118a8bb043860130cf075df87",
+  "pushed": false,
+  "result_sha256": "603b96c7369bb259808f9a2173287b009809313601533e05da4dd3af1499cc29",
+  "same_past_bytes": 65536,
+  "scope": "Selective use of two partly applicable source histories on exact HEAD256 coordinates, worlds32..39 only.",
+  "step": "BANK2-ROW",
+  "tests": {
+    "all_worlds_positive": true,
+    "mean_vs_best_null": true,
+    "mean_vs_cold": true,
+    "mean_vs_global": true,
+    "mean_vs_pool": true
+  },
+  "verdict": "PASS"
+}

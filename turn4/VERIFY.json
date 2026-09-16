@@ -1,0 +1,34 @@
+{
+  "gate_pass": false,
+  "maximum_normalization_error": 4.440892098500626e-16,
+  "maximum_numeric_error": 1.306034391745925e-09,
+  "predictions": 786432,
+  "result_sha256": "9718a1ddee6c56d9fabc304ac34158bdbe1cfcf588b548cdcf27122185a1e881",
+  "summary": {
+    "changed_tail_improved_worlds": 1,
+    "changed_tail_mean_improvement": -1.6574576570507986,
+    "changed_tail_paired_differences": [
+      1.8216727575942286,
+      -3.8468547088248783,
+      -2.3256193250232258,
+      -4.748819886154877,
+      -0.2408898154110375,
+      -1.3848282063761843,
+      -1.790390100040824,
+      -0.743931972169591
+    ],
+    "changed_tail_worst_improvement": -1.3848282063761843,
+    "mosaic_gain_bpb": 0.010166100909556927,
+    "mosaic_positive_worlds": 8,
+    "retained_fraction": 1.0781691319231097
+  },
+  "tests": {
+    "all_worlds_positive": true,
+    "changed_tail_count": false,
+    "changed_tail_mean": false,
+    "changed_tail_worst": false,
+    "material_gain": true,
+    "retention": true
+  },
+  "verification_pass": true
+}

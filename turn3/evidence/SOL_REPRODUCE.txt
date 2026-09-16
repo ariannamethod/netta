@@ -1,0 +1,105 @@
+COMMAND ['make', '-C', 'portable_recurrence', 'test']
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Werror recurrence.c recurrence_test.c -lm -o recurrence_test
+./recurrence_test
+API regressions: foreign quote and source-sum overflow rejected; recipient unchanged
+HMM-16: gate timing, transition and quote policy PASS
+portable recurrence: PASS
+EXIT 0 elapsed 1.3473438750952482
+COMMAND ['make', '-C', 'byte_recurrence', 'all', 'test']
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Werror frontend.c trace.c -lm -o byte_trace
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Werror frontend.c live.c ../portable_recurrence/recurrence.c -lm -o byte_live
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Werror frontend.c collect.c ../portable_recurrence/recurrence.c -lm -o byte_collect
+./byte_trace --selftest
+HEAD256 fixture PASS: 2051 common-prefix quotes; 1027 learned-unit quotes; 10 explicit core-vector comparisons; max_log2_error=1.7763568394002505e-15
+EXIT 0 elapsed 1.8095454999711365
+COMMAND ['python3', 'byte_recurrence/hmm16.py', 'freeze']
+EXIT 0 elapsed 0.06547233392484486
+COMMAND ['python3', 'byte_recurrence/hmm16.py', 'prepare']
+prepared 24
+prepared 25
+prepared 26
+prepared 27
+prepared 28
+prepared 29
+prepared 30
+prepared 31
+EXIT 0 elapsed 3.6931427919771522
+COMMAND ['python3', 'byte_recurrence/hmm16.py', 'run']
+run 24 preserved static
+run 24 preserved hmm
+run 24 unrelated static
+run 24 unrelated hmm
+run 24 changed_tail static
+run 24 changed_tail hmm
+run 25 preserved static
+run 25 preserved hmm
+run 25 unrelated static
+run 25 unrelated hmm
+run 25 changed_tail static
+run 25 changed_tail hmm
+run 26 preserved static
+run 26 preserved hmm
+run 26 unrelated static
+run 26 unrelated hmm
+run 26 changed_tail static
+run 26 changed_tail hmm
+run 27 preserved static
+run 27 preserved hmm
+run 27 unrelated static
+run 27 unrelated hmm
+run 27 changed_tail static
+run 27 changed_tail hmm
+run 28 preserved static
+run 28 preserved hmm
+run 28 unrelated static
+run 28 unrelated hmm
+run 28 changed_tail static
+run 28 changed_tail hmm
+run 29 preserved static
+run 29 preserved hmm
+run 29 unrelated static
+run 29 unrelated hmm
+run 29 changed_tail static
+run 29 changed_tail hmm
+run 30 preserved static
+run 30 preserved hmm
+run 30 unrelated static
+run 30 unrelated hmm
+run 30 changed_tail static
+run 30 changed_tail hmm
+run 31 preserved static
+run 31 preserved hmm
+run 31 unrelated static
+run 31 unrelated hmm
+run 31 changed_tail static
+run 31 changed_tail hmm
+{
+  "law": "HEAD256-v1 plus HMM-16",
+  "worlds": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "h": 1.52587890625e-05,
+  "source_books_sha256": {
+    "24": "cd157e255cf589449398a9cf9fe0ea1d62cc83beffc2d4a27e98dd0921915690",
+    "25": "8b7bcefc669a6c99c3c89ffa3c0e5482734ce83b0c993ba1dd75fca5e0e0f4b2",
+    "26": "00af1d4fd99f98f1f9ae82e36e6e93a39305ca43bc1ef75519885b7a09ea7085",
+    "27": "068884f9899e207625c453ee1c25b776a4d997d479430bdfbd3504aa95261f78",
+    "28": "2fb852aa676db25c426c6bd8d794c245fbb4433cdb985a9a04a9729db9810667",
+    "29": "a3e2ec414b11e7646acc67a5696573d82335cbcfd1445a796d1812b8fc050fbd",
+    "30": "60755aafaede58c74d74e33affa99cdcd03de02a1eb9f00c65397a509d780ed3",
+    "31": "aa267bf6fb132df01a398fd4cf65e66da163169b16a22277d49f3b04ffbe123f"
+  },
+  "mean_preserved_gain": 437.27833920027456,
+  "mean_preserved_gain_bpb": 0.026689351757829258,
+  "positive_preserved": 8,
+  "material_pass": true
+}
+EXIT 0 elapsed 19.271273917052895
+{"HMM_FREEZE.json": true, "HMM_DATA_MANIFEST.json": true, "HMM_RESULT.json": true}

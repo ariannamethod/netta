@@ -1,0 +1,6 @@
+gate event: cold, admitted next odds=1, no hazard transition
+incomplete selected=0 delta=0 log2_odds=-4.4027558624295995e-05 oracle=-4.4027558624296157e-05 error=1.6263032587282567e-19
+one_class selected=0 delta=0 log2_odds=-8.8054445461863381e-05 oracle=-8.8054445461867908e-05 error=4.526544070126981e-18
+unsupported selected=0 delta=0 log2_odds=-0.00013208066054345264 oracle=-0.00013208066054348034 error=2.7701365507004638e-17
+selected_NEW selected=1 delta=0 log2_odds=-0.00017610620389981238 oracle=-0.00017610620389974809 error=6.4293188828390413e-17
+PASS active_events=4 all_zero_evidence maximum_log2_error=6.4293188828390413e-17

@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-16",
+  "mechanism": "BANK2-COLD-ROW",
+  "scope": "isolated synthetic worlds 40..47; no live Netta integration",
+  "verification_pass": true,
+  "gate_pass": false,
+  "protocol_sha256": "de4e2d9025e22e9bc1d2a4c2eb78f954ca930b23d07a8b76cd805ad8b67325bd",
+  "sealed_result_sha256": "9718a1ddee6c56d9fabc304ac34158bdbe1cfcf588b548cdcf27122185a1e881",
+  "independent_verify_sha256": "cfb5333952ba0859362474283eca1b157f1c6bc43a36befce22fb46564a1cb51",
+  "material_gain_bpb": 0.010166100909556927,
+  "mosaic_positive_worlds": 8,
+  "mosaic_retained_fraction": 1.0781691319231097,
+  "changed_tail_mean_improvement_bits": -1.6574576570507986,
+  "changed_tail_improved_worlds": 1,
+  "changed_tail_worst_improvement_bits": -1.3848282063761843,
+  "reason": "The local cold choice preserved mosaic gain but failed all three preregistered changed-tail criteria."
+}

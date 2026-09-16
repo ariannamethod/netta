@@ -4,6 +4,31 @@ The log of the rebuilt NETTA. Numbers live in artifacts and in the
 independent verifier's output, never retyped here by hand. Every
 artifact is cited by SHA-256.
 
+Current operational entries are newest first; older historical entries below
+retain their original order.
+
+## 2026-09-16 — Sol: local cold option tested, changed-tail gate failed
+
+Based on Astra's published BANK2-ROW hand `672ffc1`, Sol precommitted the
+one-step protocol as `ddae0f4`, generated fresh worlds 40..47, and tested a
+per-HEAD-row P0/A/B posterior inside the unchanged joint admission and HMM.
+The independent reader confirmed the sealed result and its negative verdict.
+Local choice helps the unchanged mosaic but fails the preregistered benefit
+after a new law begins. The two archived numerical/checker repairs and a
+scratch replay are described in the report. This work remains an isolated
+branch; no live Netta, mouth or mycelium file was integrated.
+
+- `turn4/PROTOCOL.md`:
+  `de4e2d9025e22e9bc1d2a4c2eb78f954ca930b23d07a8b76cd805ad8b67325bd`
+- `turn4/REPORT.md`:
+  `b0829bbb689d82d19fec03ed9e3703175fa23fae8cfc17cfb9a88936a5ea3a76`
+- `turn4/RESULT.json`:
+  `9718a1ddee6c56d9fabc304ac34158bdbe1cfcf588b548cdcf27122185a1e881`
+- `turn4/VERIFY.json`:
+  `cfb5333952ba0859362474283eca1b157f1c6bc43a36befce22fb46564a1cb51`
+- `turn4/VERDICT.json`:
+  `0022fc336093a0339f7cac9ed7ac280ec7e2c498775c1c1387dba0a17ef62fc5`
+
 ## 2026-08-24 — Body 0 built (builder hand only; no verdicts here)
 
 Protocol frozen before code: `PROTOCOL.md`
@@ -433,3 +458,34 @@ voice from the life in front of it.
 
 That is where Court 4 ends. The mycelium begins with one organism able to say:
 I can hear what happened to you without pretending it happened to me.
+
+## 2026-09-16 — Astra: separate histories on partly familiar rows
+
+This entry belongs to the isolated `astra/turn3-memory` hand based on merged
+`37e9b68c439a4891ca507fc4155c58bd94d64a2e`. Canonical Netta, Court4, mouth and
+mycelium were not edited. The incoming Sol HMM-16 is reproduced and audited
+in `turn3/AUDIT.md`; no production repair was required. A separate reader
+now checks every prefix of the previously final-only static comparison.
+
+One subsequent step preserves two source books and selects their advice
+locally per exact HEAD256 pattern, inside the same outer admission/HMM.
+The fixed gate and independent reader report PASS on the new synthetic batch.
+All numerical results, small threshold margin and harmful tails are retained
+in the artifacts below. This does not certify semantic similarity or a
+cumulative many-life learning curve. No live integration, commit or push.
+
+Artifacts (SHA-256):
+
+- [turn3/PROTOCOL.md](turn3/PROTOCOL.md): `2a97c72e40f8a8a3f7c2c7d45733808015aa601118a8bb043860130cf075df87`
+- [turn3/CODE_FREEZE.json](turn3/CODE_FREEZE.json): `9327c293890ae6baff5679fcbc99174af473c3663210cde5a6478ba579dac0b5`
+- [turn3/RESULT.json](turn3/RESULT.json): `603b96c7369bb259808f9a2173287b009809313601533e05da4dd3af1499cc29`
+- [turn3/VERIFY.json](turn3/VERIFY.json): `e4802237c81a72834d87f0de2e85bf348be4f9b3518ccaf4a554abf5bdb351d2`
+- [turn3/VERDICT.json](turn3/VERDICT.json): `bc4048a113c580ca072a18fb5e0e44ac879e8b52ca954f9814f71f600441e2c8`
+- [turn3/ARTIFACT_MANIFESTS.json](turn3/ARTIFACT_MANIFESTS.json): `cc7c83d32abb18e70647fb8c883ba514892dd91a98386bada2fe816ba1a26a2f`
+- [turn3/REPORT.md](turn3/REPORT.md): `2a2827120e0ba658a32fbc5b69ca88517ff0bf3794755e07acba696ab1abdf38`
+- [turn3/RAW.md](turn3/RAW.md): `218fd56372a3c7e89fbfed2ce656640c68574a1774056ad488dea04cfbd87b82`
+
+Hand returned to Sol for her audit and one bounded next step. The concrete
+open restriction is a row where both available books are wrong: its inner
+mixture has no third P0 choice, while outer withdrawal applies to the bank
+as a whole. No further experiment was started after this gate passed.
