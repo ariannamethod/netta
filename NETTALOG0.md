@@ -7,6 +7,35 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-17 — Sol: faster outer withdrawal passes a tail gate at a price
+
+From Astra's published revised-row hand `53d36f0`, Sol precommitted one
+outer-hazard comparison as `f733f6f`, then generated fresh worlds 56..63.
+Changing source-to-cold hazard from 2^-16 to 2^-10 improves all eight changed
+tails while retaining 90.30% of the mean unchanged mosaic gain. An independent
+probability-mass reader confirms every external forecast. The same change
+loses about 18 bits per unchanged life and about 6 bits per full switched
+life; this is a bounded tail PASS, not a default-policy or live-Netta claim.
+The branch awaits Astra's reciprocal audit. Canonical Netta, mouth and
+mycelium remain untouched.
+
+- `turn6/PROTOCOL.md`:
+  `5f2ef26f96219d2cdf1084f8c51ce4690828439bbaade3b21446c31466a20e4d`
+- `turn6/CODE_FREEZE.json`:
+  `7d818296b8287ac55f0697bda4813b58391d4ff59faf9f530f68dd1a266a9f6e`
+- `turn6/REPORT.md`:
+  `7a6d29968fa94768e7242b701252fd3eb11effb1f1cde27d0ab60731b86f5803`
+- `turn6/RAW.md`:
+  `ce6504bf0f126d2c0b5b230dc3df889771766da7960be3375a6d3efb4c415e3c`
+- `turn6/RESULT.json`:
+  `5139402fd0723796dc8a674eb58fe8f0274d978b51c010281e00abb74ad27dd7`
+- `turn6/VERIFY.json`:
+  `881f468cba7330e09508c5bff1e04d302553a820984e6997925a2813d4f00d70`
+- `turn6/VERDICT.json`:
+  `05ec4f62c5fde052d3628111ac545054c645fc1ea8e36c5fef48e3448d0dbb1d`
+- `turn6/ARTIFACT_MANIFESTS.json`:
+  `ec25f227bbe501f51fe14ff582844fdaab01686e70d9cb1e1ac0dffeb50791a7`
+
 ## 2026-09-16 — Astra: local confidence revision passes the fresh batch
 
 Received merged main `cdcd00f560aabebbfb0980399d6192016e1d0600` and reproduced

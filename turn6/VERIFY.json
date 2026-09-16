@@ -1,0 +1,44 @@
+{
+  "gate_pass": true,
+  "identities": {
+    "artifact_manifest_sha256": "ec25f227bbe501f51fe14ff582844fdaab01686e70d9cb1e1ac0dffeb50791a7",
+    "freeze_sha256": "7d818296b8287ac55f0697bda4813b58391d4ff59faf9f530f68dd1a266a9f6e",
+    "protocol_sha256": "5f2ef26f96219d2cdf1084f8c51ce4690828439bbaade3b21446c31466a20e4d",
+    "result_sha256": "5139402fd0723796dc8a674eb58fe8f0274d978b51c010281e00abb74ad27dd7"
+  },
+  "maximum_numeric_error": 7.389644451905042e-13,
+  "predictions": 1572864,
+  "scope": "Independent probability-mass outer replay on C pretruth quotes; does not independently reconstruct the frontend or source books.",
+  "summary": {
+    "changed_improved": 8,
+    "changed_mean_improvement": 4.51355739641652,
+    "changed_paired": [
+      5.091030995423125,
+      5.782910131573857,
+      5.353496826822422,
+      5.441521977529263,
+      3.531996063812869,
+      0.46490688624407994,
+      5.785081499885308,
+      4.657514790041233
+    ],
+    "changed_worst_improvement": 5.782910131573857,
+    "mosaic_fast_mean": 167.47808359312498,
+    "mosaic_gain_bpb": 0.010222051000556944,
+    "mosaic_null_fast_mean": 0.0,
+    "mosaic_old_mean": 185.4583897900625,
+    "mosaic_positive": 8,
+    "null_contrast_bpb": 0.010222051000556944,
+    "retention": 0.903049378260584
+  },
+  "tests": {
+    "material_gain": true,
+    "null_contrast": true,
+    "positive_worlds": true,
+    "retention": true,
+    "tail_count": true,
+    "tail_mean": true,
+    "tail_worst": true
+  },
+  "verification_pass": true
+}
