@@ -1,0 +1,11 @@
+{
+  "byte_recurrence/HMM_PROTOCOL.md": "769e86e5f5c54389944512f39b92ea1e9790ca9704ee3dc5666248634c541aa1",
+  "byte_recurrence/collect.c": "f66e2744fc6c5302fa9944ae21fc8b19088d6dae3ee6926662e3ad0829d03a2c",
+  "byte_recurrence/frontend.c": "598b5aa2301e48029b7d5c2ca89c9d67372b33df9497d8b14d0b0de646ee3d08",
+  "byte_recurrence/frontend.h": "cc84f37ba78962cbfb36abd6ecea07bbabd6fbd5ee2f8dd3755f998f07df804e",
+  "byte_recurrence/hmm16.py": "c47cea20063a15e8a88ce1cd77995f81557e426474ee774c444328bd36b523ba",
+  "byte_recurrence/live.c": "83969c627d6e3a64b8bb4aa33bb49ecec413e786cbcafa3a1c4ceff855dd7b0b",
+  "court4/transfer4_confirm_core.c": "d80016369607ef2c202f28b10470e039b452cf177cf746b24320a7df0a1f4629",
+  "portable_recurrence/recurrence.c": "1c14a567b30d376d515c22f6280872e98811956a691958057cfc7ef4b48739d3",
+  "portable_recurrence/recurrence.h": "282f79c3a90680a2bf6fa0b86624995d83a292c4edf5d33393c95d3d1b56b958"
+}
