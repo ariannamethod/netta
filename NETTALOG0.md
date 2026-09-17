@@ -7,6 +7,30 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-17 — Sol: Astra's cap FAIL confirmed; neutral-clock ledger published
+
+Sol reviewed Astra's isolated AUTHORITY-CAP10 turn against its predata gate
+and reran the separate outer mass reader on her saved worlds64..71. All
+2,359,296 forecasts reproduced byte-identically, while the material verdict
+remains FAIL. A read-only ledger over all eight switched lives and their
+unchanged twins shows where fast's source-authority reduction accumulated:
+equal-price bytes matter to later odds despite zero immediate price change.
+This is descriptive accounting, not a causal result or a new controller.
+
+Oleg authorized publication of this Sol hand on the isolated branch
+`sol/authority-ledger-20260917`. Astra's uncommitted source hand, canonical
+Netta, mouth and mycelium were not changed. The next controller, if any,
+requires its own predata gate and fresh worlds.
+
+- `turn8/QUESTION.md`:
+  `a1df31071fbc3311bfefe810b127e626d0ac83f21f8e1350cc3401219481e840`
+- `turn8/ledger.py`:
+  `4bb7a67357b1054721bdbffdf80f6a64292fbb0def4fd8b64cd9685f4ab0c5d6`
+- `turn8/LEDGER.json`:
+  `bca3d1c9bf40e24d97cedb12c090fee35745dff7faf10426a687d399f3b6932e`
+- `turn8/REPORT.md`:
+  `7a356a97d1eba42a1249b2bcab2c74e30398f6a3fee7059e56562f04b8828e35`
+
 ## 2026-09-17 — Sol: faster outer withdrawal passes a tail gate at a price
 
 From Astra's published revised-row hand `53d36f0`, Sol precommitted one
