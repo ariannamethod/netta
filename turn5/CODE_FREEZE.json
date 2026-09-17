@@ -1,0 +1,39 @@
+{
+  "created_utc": 1789591109.219858,
+  "files": {
+    "byte_recurrence/Makefile": "bcf77b79672ab066bad8f03491cd3f18d4be8fbb7545fb6e1370c8c46b4440c8",
+    "byte_recurrence/byte_collect": "40773ec0fe25f77c0e7734f6771b991442b5eacb890d2b583b1bced88990ba2b",
+    "byte_recurrence/byte_trace": "e963ba902bebc7980e5c0c74add49e509118f2ca32ec374a9ab83421345c7b1e",
+    "byte_recurrence/collect.c": "f66e2744fc6c5302fa9944ae21fc8b19088d6dae3ee6926662e3ad0829d03a2c",
+    "byte_recurrence/frontend.c": "598b5aa2301e48029b7d5c2ca89c9d67372b33df9497d8b14d0b0de646ee3d08",
+    "byte_recurrence/frontend.h": "cc84f37ba78962cbfb36abd6ecea07bbabd6fbd5ee2f8dd3755f998f07df804e",
+    "byte_recurrence/trace.c": "c3e4a17960b20e4c6eb103a92b9196d3e695449d5e7a8789a6670e95709c4e94",
+    "court4/transfer4_confirm_core.c": "d80016369607ef2c202f28b10470e039b452cf177cf746b24320a7df0a1f4629",
+    "portable_recurrence/recurrence.c": "1c14a567b30d376d515c22f6280872e98811956a691958057cfc7ef4b48739d3",
+    "portable_recurrence/recurrence.h": "282f79c3a90680a2bf6fa0b86624995d83a292c4edf5d33393c95d3d1b56b958",
+    "turn3/Makefile": "7ae4b4cb2937cb75a1a3dc447255f26db9749930a8d140793708f703db6275a2",
+    "turn3/PROTOCOL.md": "2a97c72e40f8a8a3f7c2c7d45733808015aa601118a8bb043860130cf075df87",
+    "turn3/bank": "095671f8989fa50181c4ce869e3b866ec40da290e7428f8dca45023148ec7567",
+    "turn3/bank.c": "2e1cd35f7e35e42149bf024a6dccf4c6757c3d2233271aff64e283cc367fb93e",
+    "turn3/experiment.py": "a0fea0f6611a882f0b2830e84d214c6467c39acb34b63cc4f1fda118670714d2",
+    "turn3/verify.py": "a644653b7c8a06325b6961d59ac4f5cd69d1bb3185740016007f62c4f2c8507b",
+    "turn5/Makefile": "5a768c21840e66df994018af34387c8e1b893f4044f59a649b23c84d048eb2dc",
+    "turn5/PROTOCOL.md": "f1fa6c4f5d58aa1af375899f374b153897482a447f028458a2509251fd3c0854",
+    "turn5/experiment.py": "2d63f6c788aa3dfb7267e74956c79b17fb8fc9f68bef51d9b441df3d98b24b54",
+    "turn5/revision": "6c0494e240768fcfa1b224e58e621edd80edbcfd682be282c5c774150a47453f",
+    "turn5/revision.c": "67349306a0f324f565f3a0aadd9fd841f48114ff49155ba163fec38b0b04618e",
+    "turn5/verify.py": "6519eb1441971afe71ae524fbadecd38da50664af0ce5bb1c66e45990071eb5d"
+  },
+  "namespace": "netta-revision-v1",
+  "protocol_sha256": "f1fa6c4f5d58aa1af375899f374b153897482a447f028458a2509251fd3c0854",
+  "worlds": [
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55
+  ]
+}

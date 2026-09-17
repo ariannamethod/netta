@@ -7,6 +7,93 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-17 — Sol: Astra's cap FAIL confirmed; neutral-clock ledger published
+
+Sol reviewed Astra's isolated AUTHORITY-CAP10 turn against its predata gate
+and reran the separate outer mass reader on her saved worlds64..71. All
+2,359,296 forecasts reproduced byte-identically, while the material verdict
+remains FAIL. A read-only ledger over all eight switched lives and their
+unchanged twins shows where fast's source-authority reduction accumulated:
+equal-price bytes matter to later odds despite zero immediate price change.
+This is descriptive accounting, not a causal result or a new controller.
+
+Oleg authorized publication of this Sol hand on the isolated branch
+`sol/authority-ledger-20260917`. Astra's uncommitted source hand, canonical
+Netta, mouth and mycelium were not changed. The next controller, if any,
+requires its own predata gate and fresh worlds.
+
+- `turn8/QUESTION.md`:
+  `a1df31071fbc3311bfefe810b127e626d0ac83f21f8e1350cc3401219481e840`
+- `turn8/ledger.py`:
+  `4bb7a67357b1054721bdbffdf80f6a64292fbb0def4fd8b64cd9685f4ab0c5d6`
+- `turn8/LEDGER.json`:
+  `bca3d1c9bf40e24d97cedb12c090fee35745dff7faf10426a687d399f3b6932e`
+- `turn8/REPORT.md`:
+  `7a356a97d1eba42a1249b2bcab2c74e30398f6a3fee7059e56562f04b8828e35`
+
+## 2026-09-17 — Sol: faster outer withdrawal passes a tail gate at a price
+
+From Astra's published revised-row hand `53d36f0`, Sol precommitted one
+outer-hazard comparison as `f733f6f`, then generated fresh worlds 56..63.
+Changing source-to-cold hazard from 2^-16 to 2^-10 improves all eight changed
+tails while retaining 90.30% of the mean unchanged mosaic gain. An independent
+probability-mass reader confirms every external forecast. The same change
+loses about 18 bits per unchanged life and about 6 bits per full switched
+life; this is a bounded tail PASS, not a default-policy or live-Netta claim.
+The branch awaits Astra's reciprocal audit. Canonical Netta, mouth and
+mycelium remain untouched.
+
+- `turn6/PROTOCOL.md`:
+  `5f2ef26f96219d2cdf1084f8c51ce4690828439bbaade3b21446c31466a20e4d`
+- `turn6/CODE_FREEZE.json`:
+  `7d818296b8287ac55f0697bda4813b58391d4ff59faf9f530f68dd1a266a9f6e`
+- `turn6/REPORT.md`:
+  `7a6d29968fa94768e7242b701252fd3eb11effb1f1cde27d0ab60731b86f5803`
+- `turn6/RAW.md`:
+  `ce6504bf0f126d2c0b5b230dc3df889771766da7960be3375a6d3efb4c415e3c`
+- `turn6/RESULT.json`:
+  `5139402fd0723796dc8a674eb58fe8f0274d978b51c010281e00abb74ad27dd7`
+- `turn6/VERIFY.json`:
+  `881f468cba7330e09508c5bff1e04d302553a820984e6997925a2813d4f00d70`
+- `turn6/VERDICT.json`:
+  `05ec4f62c5fde052d3628111ac545054c645fc1ea8e36c5fef48e3448d0dbb1d`
+- `turn6/ARTIFACT_MANIFESTS.json`:
+  `ec25f227bbe501f51fe14ff582844fdaab01686e70d9cb1e1ac0dffeb50791a7`
+
+## 2026-09-16 — Astra: local confidence revision passes the fresh batch
+
+Received merged main `cdcd00f560aabebbfb0980399d6192016e1d0600` and reproduced
+Sol's local-cold experiment, preserving its failed changed-tail gate.
+No demonstrated defect in its final prediction code required repair. The
+historical repair-source limitation is recorded in the incoming audit.
+
+One separately preregistered step gives each row a fixed opportunity to
+revise its P0/A/B confidence after observing truth. Source books, local
+learning and outer admission/HMM remain unchanged. The new frozen batch
+passes its material gate and independent reader. Several paired tails
+worsen, most changed tails still lose to P0, and one threshold has little
+slack; the full report keeps all cases. This isolated step is returned to
+Sol for reciprocal review. No live integration, commit or push occurred.
+
+- `turn5/AUDIT.md`:
+  `7843f81e9db5977b1c46ac37e7df18ab0f99e8c058ee2aa982a5a40b193a102b`
+- `turn5/PROTOCOL.md`:
+  `f1fa6c4f5d58aa1af375899f374b153897482a447f028458a2509251fd3c0854`
+- `turn5/CODE_FREEZE.json`:
+  `9e2e5a26fb811b8df38017b14b802488150031e47ebc824e78db54e1a1bd9878`
+- `turn5/REPORT.md`:
+  `4f2602b0422e06c2f72937e47bd83609380778ee781c89fbfef80859855a58d1`
+- `turn5/RAW.md`:
+  `bd7659bf7cb1e829d8ba8860a6d8599892684db3afecfc97f0c35a6dfc3063fb`
+- `turn5/RESULT.json`:
+  `650028b662f6697849a80bfd0e7a3d948c75bad0ca29cb9f554d6405d31f6d21`
+- `turn5/VERIFY.json`:
+  `55ca70d2f0b7436234ca743c38f1f6e273db052e9a246fdf93678a8a65a0e7ac`
+- `turn5/VERDICT.json`:
+  `a749c37bb5bffddd125e34504f03792663b052b20e3ea34657d2c0dbc88cae52`
+- `turn5/ARTIFACT_MANIFESTS.json`:
+  `b919ba32d0d9b33b9ae7c7457b2a0512df4d296e8e53d80b07f308a75bbf1255`
+
 ## 2026-09-16 — Sol: local cold option tested, changed-tail gate failed
 
 Based on Astra's published BANK2-ROW hand `672ffc1`, Sol precommitted the

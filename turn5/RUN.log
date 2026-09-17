@@ -1,0 +1,189 @@
+RUN ['python3', 'turn5/experiment.py', 'freeze']
+EXIT 0
+RUN ['python3', 'turn5/experiment.py', 'generate']
+generated 48
+generated 49
+generated 50
+generated 51
+generated 52
+generated 53
+generated 54
+generated 55
+EXIT 0
+RUN ['python3', 'turn5/experiment.py', 'extract']
+extracted 48 sourceA0
+extracted 48 sourceA1
+extracted 48 sourceB0
+extracted 48 sourceB1
+extracted 48 mosaic
+extracted 48 unrelated
+extracted 48 mosaic_then_unrelated
+extracted 49 sourceA0
+extracted 49 sourceA1
+extracted 49 sourceB0
+extracted 49 sourceB1
+extracted 49 mosaic
+extracted 49 unrelated
+extracted 49 mosaic_then_unrelated
+extracted 50 sourceA0
+extracted 50 sourceA1
+extracted 50 sourceB0
+extracted 50 sourceB1
+extracted 50 mosaic
+extracted 50 unrelated
+extracted 50 mosaic_then_unrelated
+extracted 51 sourceA0
+extracted 51 sourceA1
+extracted 51 sourceB0
+extracted 51 sourceB1
+extracted 51 mosaic
+extracted 51 unrelated
+extracted 51 mosaic_then_unrelated
+extracted 52 sourceA0
+extracted 52 sourceA1
+extracted 52 sourceB0
+extracted 52 sourceB1
+extracted 52 mosaic
+extracted 52 unrelated
+extracted 52 mosaic_then_unrelated
+extracted 53 sourceA0
+extracted 53 sourceA1
+extracted 53 sourceB0
+extracted 53 sourceB1
+extracted 53 mosaic
+extracted 53 unrelated
+extracted 53 mosaic_then_unrelated
+extracted 54 sourceA0
+extracted 54 sourceA1
+extracted 54 sourceB0
+extracted 54 sourceB1
+extracted 54 mosaic
+extracted 54 unrelated
+extracted 54 mosaic_then_unrelated
+extracted 55 sourceA0
+extracted 55 sourceA1
+extracted 55 sourceB0
+extracted 55 sourceB1
+extracted 55 mosaic
+extracted 55 unrelated
+extracted 55 mosaic_then_unrelated
+collected 48
+collected 49
+collected 50
+collected 51
+collected 52
+collected 53
+collected 54
+collected 55
+EXIT 0
+RUN ['python3', 'turn5/experiment.py', 'evaluate']
+evaluated 51 mosaic 169.37879292387439
+evaluated 50 mosaic 204.69685611234098
+evaluated 49 mosaic 269.3093882124736
+evaluated 48 mosaic 215.9139617443875
+evaluated 51 unrelated 0.0
+evaluated 50 unrelated 0.0
+evaluated 49 unrelated 0.0
+evaluated 48 unrelated 0.0
+evaluated 51 mosaic_then_unrelated 94.80446064556949
+evaluated 50 mosaic_then_unrelated 131.60840270457027
+evaluated 49 mosaic_then_unrelated 216.45060613029165
+evaluated 48 mosaic_then_unrelated 153.18827981187576
+evaluated 52 mosaic 210.34995147658825
+evaluated 53 mosaic 210.1891437297545
+evaluated 55 mosaic 199.44756026269997
+evaluated 54 mosaic 252.3437163605204
+evaluated 52 unrelated 0.0
+evaluated 53 unrelated 0.0
+evaluated 55 unrelated 0.0
+evaluated 54 unrelated 0.0
+evaluated 52 mosaic_then_unrelated 164.92053611202914
+evaluated 53 mosaic_then_unrelated 149.52042386395232
+evaluated 55 mosaic_then_unrelated 152.85665983714978
+evaluated 54 mosaic_then_unrelated 206.92772622534181
+{
+  "summary": {
+    "mosaic_mean_gains": {
+      "row2": 186.10530905012683,
+      "static3": 194.65581043316763,
+      "revise3": 216.45367135282996,
+      "null3": 0.0
+    },
+    "mosaic_gain_bpb": 0.013211283651906125,
+    "mosaic_null_contrast_bpb": 0.013211283651906125,
+    "mosaic_positive_worlds": 8,
+    "retained_fraction": {
+      "row2": 1.1630709110750241,
+      "static3": 1.1119815579671397
+    },
+    "changed_tail": {
+      "row2": {
+        "paired_differences": [
+          -0.04776194197273753,
+          -0.8776839412711297,
+          -0.11417583457425451,
+          0.402349152590304,
+          4.404316047318758,
+          2.1862634698760957,
+          3.0791655318944606,
+          13.1565408159872
+        ],
+        "mean_improvement": 2.773626662481087,
+        "improved_worlds": 5,
+        "worst_improvement": 1.2600157179853113,
+        "candidate_paired_differences": [
+          182.70357656128672,
+          125.44996548028868,
+          194.18398220500518,
+          212.23326097824685,
+          178.14845799310186,
+          227.58158073642903,
+          215.23095540047836,
+          173.48390878307364
+        ],
+        "candidate_mean_improvement": 188.62696101723878
+      },
+      "static3": {
+        "paired_differences": [
+          1.5727197440632779,
+          0.49138457816243886,
+          0.12827499712739154,
+          -0.09302863684206386,
+          4.25003958255985,
+          1.874824789013843,
+          2.9368693757799633,
+          15.09174595097258
+        ],
+        "mean_improvement": 3.28160379760466,
+        "improved_worlds": 7,
+        "worst_improvement": 1.1057392532264032,
+        "candidate_paired_differences": [
+          107.5309102873193,
+          47.05974135500287,
+          79.68189528572654,
+          74.99826165981555,
+          82.04161218537271,
+          107.49593691431014,
+          116.48413987606932,
+          122.69810006976977
+        ],
+        "candidate_mean_improvement": 92.24882470417327
+      }
+    }
+  },
+  "tests": {
+    "material_gain": true,
+    "null_contrast": true,
+    "all_worlds_positive": true,
+    "retention_row2": true,
+    "changed_tail_mean_row2": true,
+    "changed_tail_count_row2": true,
+    "changed_tail_worst_row2": true,
+    "retention_static3": true,
+    "changed_tail_mean_static3": true,
+    "changed_tail_count_static3": true,
+    "changed_tail_worst_static3": true
+  },
+  "gate_pass": true
+}
+EXIT 0

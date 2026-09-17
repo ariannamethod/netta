@@ -1,0 +1,1592 @@
+{
+  "lives": [
+    {
+      "active_events": 15148,
+      "admissions": 1,
+      "odds_gap_at_switch": 6.827685751764429,
+      "odds_gap_final": 8.784609014651245,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.961950272430998,
+            "cap_minus_fast_price": -63.71147090183233,
+            "cap_minus_old_price": -1.0759361254518476,
+            "cap_weight": 2428.92443788827,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 37.24941642770821,
+            "fast_mean_weight": 0.7714916991684599,
+            "fast_weight": 1948.0165404003612,
+            "fast_withdrawal": 37.24941642770821,
+            "n": 2525,
+            "old_mean_weight": 0.9589677474671137,
+            "old_weight": 2421.393562354462
+          },
+          "equal": {
+            "cap_mean_weight": 0.9626051893820268,
+            "cap_minus_fast_price": 2.5091040356528538e-14,
+            "cap_minus_old_price": 1.7541523789077473e-14,
+            "cap_weight": 2413.251209780741,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 39.99108996316494,
+            "fast_mean_weight": 0.7680274222683761,
+            "fast_weight": 1925.4447476268188,
+            "fast_withdrawal": 39.99108996316494,
+            "n": 2507,
+            "old_mean_weight": 0.9592776915208138,
+            "old_weight": 2404.90917264268
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9638562318580702,
+            "cap_minus_fast_price": 73.2804654395822,
+            "cap_minus_old_price": 1.1427802406266339,
+            "cap_weight": 1854.4593900949271,
+            "cap_withdrawal": 106.69809965444544,
+            "extra_fast_withdrawal": -70.41282063910852,
+            "fast_mean_weight": 0.7748906658969245,
+            "fast_weight": 1490.8896411856826,
+            "fast_withdrawal": 36.285279015336805,
+            "n": 1924,
+            "old_mean_weight": 0.9607060807872074,
+            "old_weight": 1848.3984994345872
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.9983991440669904,
+            "cap_minus_fast_price": -38.02597248127728,
+            "cap_minus_old_price": -0.46240666356059856,
+            "cap_weight": 2614.807358311448,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 24.58938438816975,
+            "fast_mean_weight": 0.770296278689039,
+            "fast_weight": 2017.4059538865931,
+            "fast_withdrawal": 24.58938438816975,
+            "n": 2619,
+            "old_mean_weight": 0.9954993355674899,
+            "old_weight": 2607.212759851256
+          },
+          "equal": {
+            "cap_mean_weight": 0.9983985079467481,
+            "cap_minus_fast_price": 2.042810365310288e-14,
+            "cap_minus_old_price": -5.240252676230739e-14,
+            "cap_weight": 2847.4325446641255,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 28.559578860068513,
+            "fast_mean_weight": 0.7730938359871503,
+            "fast_weight": 2204.8636202353528,
+            "fast_withdrawal": 28.559578860068513,
+            "n": 2852,
+            "old_mean_weight": 0.9955447853071439,
+            "old_weight": 2839.293727695974
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9983898834771829,
+            "cap_minus_fast_price": 48.97328498260605,
+            "cap_minus_old_price": 0.5684669899718497,
+            "cap_weight": 2716.618872941415,
+            "cap_withdrawal": 80.09436475214869,
+            "extra_fast_withdrawal": -51.192039985351215,
+            "fast_mean_weight": 0.7720510646575058,
+            "fast_weight": 2100.7509469330735,
+            "fast_withdrawal": 28.90232476679726,
+            "n": 2721,
+            "old_mean_weight": 0.9955324987769001,
+            "old_weight": 2708.843929171945
+          }
+        }
+      },
+      "regime": "mosaic",
+      "trace_sha256": "876878a212d4a10497f369a82092a20b3028f247b6261e15c968e12122ec8468",
+      "world": 64
+    },
+    {
+      "active_events": 15148,
+      "admissions": 1,
+      "odds_gap_at_switch": 6.827685751764429,
+      "odds_gap_final": 17.104513324962426,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.961950272430998,
+            "cap_minus_fast_price": -63.71147090183233,
+            "cap_minus_old_price": -1.0759361254518476,
+            "cap_weight": 2428.92443788827,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 37.24941642770821,
+            "fast_mean_weight": 0.7714916991684599,
+            "fast_weight": 1948.0165404003612,
+            "fast_withdrawal": 37.24941642770821,
+            "n": 2525,
+            "old_mean_weight": 0.9589677474671137,
+            "old_weight": 2421.393562354462
+          },
+          "equal": {
+            "cap_mean_weight": 0.9626051893820268,
+            "cap_minus_fast_price": 2.5091040356528538e-14,
+            "cap_minus_old_price": 1.7541523789077473e-14,
+            "cap_weight": 2413.251209780741,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 39.99108996316494,
+            "fast_mean_weight": 0.7680274222683761,
+            "fast_weight": 1925.4447476268188,
+            "fast_withdrawal": 39.99108996316494,
+            "n": 2507,
+            "old_mean_weight": 0.9592776915208138,
+            "old_weight": 2404.90917264268
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9638562318580702,
+            "cap_minus_fast_price": 73.2804654395822,
+            "cap_minus_old_price": 1.1427802406266339,
+            "cap_weight": 1854.4593900949271,
+            "cap_withdrawal": 106.69809965444544,
+            "extra_fast_withdrawal": -70.41282063910852,
+            "fast_mean_weight": 0.7748906658969245,
+            "fast_weight": 1490.8896411856826,
+            "fast_withdrawal": 36.285279015336805,
+            "n": 1924,
+            "old_mean_weight": 0.9607060807872074,
+            "old_weight": 1848.3984994345872
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.14413468973467394,
+            "cap_minus_fast_price": -44.239680553545654,
+            "cap_minus_old_price": 0.2601525209838049,
+            "cap_weight": 486.02217378532055,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 7.20475208880499,
+            "fast_mean_weight": 0.04716857966303861,
+            "fast_weight": 159.0524506237662,
+            "fast_withdrawal": 7.20475208880499,
+            "n": 3372,
+            "old_mean_weight": 0.14458106999191472,
+            "old_weight": 487.5273680127365
+          },
+          "equal": {
+            "cap_mean_weight": 0.15629176578514123,
+            "cap_minus_fast_price": -3.552713678800501e-14,
+            "cap_minus_old_price": -4.796163466380676e-14,
+            "cap_weight": 448.5573678033553,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 6.295560094788636,
+            "fast_mean_weight": 0.051589415916797145,
+            "fast_weight": 148.0616236812078,
+            "fast_withdrawal": 6.295560094788636,
+            "n": 2870,
+            "old_mean_weight": 0.15673266493674598,
+            "old_weight": 449.82274836846096
+          },
+          "favorable": {
+            "cap_mean_weight": 0.16176818368571252,
+            "cap_minus_fast_price": 38.8259662007068,
+            "cap_minus_old_price": -0.26086530952409726,
+            "cap_weight": 315.4479581871394,
+            "cap_withdrawal": 8.498708840458857,
+            "extra_fast_withdrawal": -3.223484610395632,
+            "fast_mean_weight": 0.05867959599557884,
+            "fast_weight": 114.42521219137875,
+            "fast_withdrawal": 5.275224230063225,
+            "n": 1950,
+            "old_mean_weight": 0.16232253164113786,
+            "old_weight": 316.5289367002188
+          }
+        }
+      },
+      "regime": "mosaic_then_unrelated",
+      "trace_sha256": "5efc6c9f2051c97ba855ca6fc031b6b9e42ffe891f2850096e4c8fb886422223",
+      "world": 64
+    },
+    {
+      "active_events": 16038,
+      "admissions": 1,
+      "odds_gap_at_switch": 7.972474362756966,
+      "odds_gap_final": 9.784859775287659,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9956533801072736,
+            "cap_minus_fast_price": -46.16060676665818,
+            "cap_minus_old_price": -0.2467230529592459,
+            "cap_weight": 2533.937852373011,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 44.8279716440768,
+            "fast_mean_weight": 0.848774197470334,
+            "fast_weight": 2160.130332562,
+            "fast_withdrawal": 44.8279716440768,
+            "n": 2545,
+            "old_mean_weight": 0.9948760011732525,
+            "old_weight": 2531.9594229859276
+          },
+          "equal": {
+            "cap_mean_weight": 0.9933357330957574,
+            "cap_minus_fast_price": -6.661338147750939e-16,
+            "cap_minus_old_price": -8.659739592076221e-15,
+            "cap_weight": 2857.826904116494,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 55.365703817616634,
+            "fast_mean_weight": 0.8473705240384104,
+            "fast_weight": 2437.8849976585066,
+            "fast_withdrawal": 55.365703817616634,
+            "n": 2877,
+            "old_mean_weight": 0.9925679781042045,
+            "old_weight": 2855.6180730057963
+          },
+          "favorable": {
+            "cap_mean_weight": 0.992960536306631,
+            "cap_minus_fast_price": 56.55477143735909,
+            "cap_minus_old_price": 0.3004976955630143,
+            "cap_weight": 2406.9363400072734,
+            "cap_withdrawal": 144.78756893014244,
+            "extra_fast_withdrawal": -92.22120109893655,
+            "fast_mean_weight": 0.8414654727884308,
+            "fast_weight": 2039.7123060391561,
+            "fast_withdrawal": 52.566367831205916,
+            "n": 2424,
+            "old_mean_weight": 0.9920338145766463,
+            "old_weight": 2404.6899665337905
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.9974257933747418,
+            "cap_minus_fast_price": -60.776728064419345,
+            "cap_minus_old_price": -0.8577441730617208,
+            "cap_weight": 2778.8282603420307,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 20.88367500294589,
+            "fast_mean_weight": 0.6924489810518969,
+            "fast_weight": 1929.1628612105849,
+            "fast_withdrawal": 20.88367500294589,
+            "n": 2786,
+            "old_mean_weight": 0.9929745377516377,
+            "old_weight": 2766.4270621760625
+          },
+          "equal": {
+            "cap_mean_weight": 0.9973601877557007,
+            "cap_minus_fast_price": 1.290079154614432e-13,
+            "cap_minus_old_price": 5.639932965095795e-14,
+            "cap_weight": 2849.458056418037,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 22.559459474259985,
+            "fast_mean_weight": 0.6916754757258395,
+            "fast_weight": 1976.1168341487237,
+            "fast_withdrawal": 22.559459474259985,
+            "n": 2857,
+            "old_mean_weight": 0.9928981595280602,
+            "old_weight": 2836.710041771668
+          },
+          "favorable": {
+            "cap_mean_weight": 0.997395694089417,
+            "cap_minus_fast_price": 71.10483673258703,
+            "cap_minus_old_price": 0.9611451591886238,
+            "cap_weight": 2542.361624233924,
+            "cap_withdrawal": 64.5421010469577,
+            "extra_fast_withdrawal": -41.63074906467529,
+            "fast_mean_weight": 0.697304759191571,
+            "fast_weight": 1777.4298311793145,
+            "fast_withdrawal": 22.911351982282486,
+            "n": 2549,
+            "old_mean_weight": 0.9931226613104845,
+            "old_weight": 2531.469663680425
+          }
+        }
+      },
+      "regime": "mosaic",
+      "trace_sha256": "ffd591a857cf141d64db3d846561d65435f39d3de469b7c6fa930908e37331a7",
+      "world": 65
+    },
+    {
+      "active_events": 16038,
+      "admissions": 1,
+      "odds_gap_at_switch": 7.972474362756966,
+      "odds_gap_final": 17.442307850163353,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9956533801072736,
+            "cap_minus_fast_price": -46.16060676665818,
+            "cap_minus_old_price": -0.2467230529592459,
+            "cap_weight": 2533.937852373011,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 44.8279716440768,
+            "fast_mean_weight": 0.848774197470334,
+            "fast_weight": 2160.130332562,
+            "fast_withdrawal": 44.8279716440768,
+            "n": 2545,
+            "old_mean_weight": 0.9948760011732525,
+            "old_weight": 2531.9594229859276
+          },
+          "equal": {
+            "cap_mean_weight": 0.9933357330957574,
+            "cap_minus_fast_price": -6.661338147750939e-16,
+            "cap_minus_old_price": -8.659739592076221e-15,
+            "cap_weight": 2857.826904116494,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 55.365703817616634,
+            "fast_mean_weight": 0.8473705240384104,
+            "fast_weight": 2437.8849976585066,
+            "fast_withdrawal": 55.365703817616634,
+            "n": 2877,
+            "old_mean_weight": 0.9925679781042045,
+            "old_weight": 2855.6180730057963
+          },
+          "favorable": {
+            "cap_mean_weight": 0.992960536306631,
+            "cap_minus_fast_price": 56.55477143735909,
+            "cap_minus_old_price": 0.3004976955630143,
+            "cap_weight": 2406.9363400072734,
+            "cap_withdrawal": 144.78756893014244,
+            "extra_fast_withdrawal": -92.22120109893655,
+            "fast_mean_weight": 0.8414654727884308,
+            "fast_weight": 2039.7123060391561,
+            "fast_withdrawal": 52.566367831205916,
+            "n": 2424,
+            "old_mean_weight": 0.9920338145766463,
+            "old_weight": 2404.6899665337905
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.11114685684901753,
+            "cap_minus_fast_price": -39.86816054267903,
+            "cap_minus_old_price": -2.7464783276929907,
+            "cap_weight": 382.0117469900732,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 6.854547872624133,
+            "fast_mean_weight": 0.0512421142063794,
+            "fast_weight": 176.119146527326,
+            "fast_withdrawal": 6.854547872624133,
+            "n": 3437,
+            "old_mean_weight": 0.10650647593354995,
+            "old_weight": 366.0627577836112
+          },
+          "equal": {
+            "cap_mean_weight": 0.12949493595096398,
+            "cap_minus_fast_price": 3.1086244689504383e-15,
+            "cap_minus_old_price": 6.661338147750939e-15,
+            "cap_weight": 381.103596503687,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 6.760049990756561,
+            "fast_mean_weight": 0.06307633089320974,
+            "fast_weight": 185.63364181871626,
+            "fast_withdrawal": 6.760049990756561,
+            "n": 2943,
+            "old_mean_weight": 0.12462025515855372,
+            "old_weight": 366.7574109316236
+          },
+          "favorable": {
+            "cap_mean_weight": 0.15871091756376207,
+            "cap_minus_fast_price": 34.51712861972463,
+            "cap_minus_old_price": 2.252370045922603,
+            "cap_weight": 287.58418262553687,
+            "cap_withdrawal": 8.987315309978262,
+            "extra_fast_withdrawal": -4.144764375974296,
+            "fast_mean_weight": 0.079654364109508,
+            "fast_weight": 144.33370776642852,
+            "fast_withdrawal": 4.8425509340039685,
+            "n": 1812,
+            "old_mean_weight": 0.153619568861041,
+            "old_weight": 278.3586587762063
+          }
+        }
+      },
+      "regime": "mosaic_then_unrelated",
+      "trace_sha256": "6bc366b8044a66ed6e53a286ca5750c09f4a787f6af2718332e30e8e8433d0bc",
+      "world": 65
+    },
+    {
+      "active_events": 15943,
+      "admissions": 1,
+      "odds_gap_at_switch": 5.601525594522348,
+      "odds_gap_final": 7.821217024192849,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9961576929234259,
+            "cap_minus_fast_price": -42.111092893436954,
+            "cap_minus_old_price": -0.0356610607514094,
+            "cap_weight": 2504.340440009493,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 47.203966375183974,
+            "fast_mean_weight": 0.8681435343905034,
+            "fast_weight": 2182.5128454577257,
+            "fast_withdrawal": 47.203966375183974,
+            "n": 2514,
+            "old_mean_weight": 0.9958137238272509,
+            "old_weight": 2503.4757017017087
+          },
+          "equal": {
+            "cap_mean_weight": 0.9947424520757102,
+            "cap_minus_fast_price": 7.216449660063518e-14,
+            "cap_minus_old_price": -4.440892098500626e-16,
+            "cap_weight": 2819.100109182563,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 59.79260324169475,
+            "fast_mean_weight": 0.8706164972270398,
+            "fast_weight": 2467.3271531414307,
+            "fast_withdrawal": 59.79260324169475,
+            "n": 2834,
+            "old_mean_weight": 0.9944697309974756,
+            "old_weight": 2818.327217646846
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9941378783640115,
+            "cap_minus_fast_price": 52.84437628524925,
+            "cap_minus_old_price": 0.07993412183824233,
+            "cap_weight": 2388.9133217087196,
+            "cap_withdrawal": 161.068128141626,
+            "extra_fast_withdrawal": -101.3950440223563,
+            "fast_mean_weight": 0.8652233170037816,
+            "fast_weight": 2079.1316307600873,
+            "fast_withdrawal": 59.673084119269554,
+            "n": 2403,
+            "old_mean_weight": 0.9937980672555033,
+            "old_weight": 2388.0967556149744
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.9982064284048285,
+            "cap_minus_fast_price": -47.95504652830614,
+            "cap_minus_old_price": -0.6388639935421252,
+            "cap_weight": 2788.988760963091,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 25.143261017502123,
+            "fast_mean_weight": 0.7358313893740379,
+            "fast_weight": 2055.912901911062,
+            "fast_withdrawal": 25.143261017502123,
+            "n": 2794,
+            "old_mean_weight": 0.9945069587270223,
+            "old_weight": 2778.6524426833003
+          },
+          "equal": {
+            "cap_mean_weight": 0.998189712959687,
+            "cap_minus_fast_price": 6.505906924303417e-14,
+            "cap_minus_old_price": 8.881784197001252e-15,
+            "cap_weight": 2853.824389351745,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 27.03706048034761,
+            "fast_mean_weight": 0.7315436925294626,
+            "fast_weight": 2091.4834169417336,
+            "fast_withdrawal": 27.03706048034761,
+            "n": 2859,
+            "old_mean_weight": 0.9944122126015438,
+            "old_weight": 2843.0245158278135
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9982043154665561,
+            "cap_minus_fast_price": 59.20011779525622,
+            "cap_minus_old_price": 0.7505929469515662,
+            "cap_weight": 2534.440756969586,
+            "cap_withdrawal": 76.65991897387447,
+            "extra_fast_withdrawal": -49.96063006817935,
+            "fast_mean_weight": 0.746605925911282,
+            "fast_weight": 1895.632445888745,
+            "fast_withdrawal": 26.699288905695365,
+            "n": 2539,
+            "old_mean_weight": 0.9947976915827984,
+            "old_weight": 2525.791338928725
+          }
+        }
+      },
+      "regime": "mosaic",
+      "trace_sha256": "323d0efeb5d11803fa803916f55802ce086e720de17f7d68e6bf496d169cb08a",
+      "world": 66
+    },
+    {
+      "active_events": 15943,
+      "admissions": 1,
+      "odds_gap_at_switch": 5.601525594522348,
+      "odds_gap_final": 12.772414180400643,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9961576929234259,
+            "cap_minus_fast_price": -42.111092893436954,
+            "cap_minus_old_price": -0.0356610607514094,
+            "cap_weight": 2504.340440009493,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 47.203966375183974,
+            "fast_mean_weight": 0.8681435343905034,
+            "fast_weight": 2182.5128454577257,
+            "fast_withdrawal": 47.203966375183974,
+            "n": 2514,
+            "old_mean_weight": 0.9958137238272509,
+            "old_weight": 2503.4757017017087
+          },
+          "equal": {
+            "cap_mean_weight": 0.9947424520757102,
+            "cap_minus_fast_price": 7.216449660063518e-14,
+            "cap_minus_old_price": -4.440892098500626e-16,
+            "cap_weight": 2819.100109182563,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 59.79260324169475,
+            "fast_mean_weight": 0.8706164972270398,
+            "fast_weight": 2467.3271531414307,
+            "fast_withdrawal": 59.79260324169475,
+            "n": 2834,
+            "old_mean_weight": 0.9944697309974756,
+            "old_weight": 2818.327217646846
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9941378783640115,
+            "cap_minus_fast_price": 52.84437628524925,
+            "cap_minus_old_price": 0.07993412183824233,
+            "cap_weight": 2388.9133217087196,
+            "cap_withdrawal": 161.068128141626,
+            "extra_fast_withdrawal": -101.3950440223563,
+            "fast_mean_weight": 0.8652233170037816,
+            "fast_weight": 2079.1316307600873,
+            "fast_withdrawal": 59.673084119269554,
+            "n": 2403,
+            "old_mean_weight": 0.9937980672555033,
+            "old_weight": 2388.0967556149744
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.9823561222465943,
+            "cap_minus_fast_price": -137.2949032410291,
+            "cap_minus_old_price": -12.897071591108602,
+            "cap_weight": 2986.362611629647,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 16.576813239615632,
+            "fast_mean_weight": 0.39832818091651884,
+            "fast_weight": 1210.9176699862173,
+            "fast_withdrawal": 16.576813239615632,
+            "n": 3040,
+            "old_mean_weight": 0.9219549331572513,
+            "old_weight": 2802.742996798044
+          },
+          "equal": {
+            "cap_mean_weight": 0.9835342613547655,
+            "cap_minus_fast_price": 3.68594044175552e-14,
+            "cap_minus_old_price": 2.6645352591003757e-14,
+            "cap_weight": 2836.512809747144,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 17.6974313948556,
+            "fast_mean_weight": 0.42230239765517336,
+            "fast_weight": 1217.92011483752,
+            "fast_withdrawal": 17.6974313948556,
+            "n": 2884,
+            "old_mean_weight": 0.9288975436656037,
+            "old_weight": 2678.940515931601
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9827588031265162,
+            "cap_minus_fast_price": 140.8296046644735,
+            "cap_minus_old_price": 12.675186190407711,
+            "cap_weight": 2228.896965490939,
+            "cap_withdrawal": 44.24283017076169,
+            "extra_fast_withdrawal": -27.103356048592957,
+            "fast_mean_weight": 0.456001784272197,
+            "fast_weight": 1034.2120467293428,
+            "fast_withdrawal": 17.139474122168757,
+            "n": 2268,
+            "old_mean_weight": 0.9290362773566571,
+            "old_weight": 2107.0542770448983
+          }
+        }
+      },
+      "regime": "mosaic_then_unrelated",
+      "trace_sha256": "1254f66f0a09ba3ed4b75645ea466bf31fe34cd6d92db5d903a3604eafb0a823",
+      "world": 66
+    },
+    {
+      "active_events": 15687,
+      "admissions": 1,
+      "odds_gap_at_switch": 7.545675874788734,
+      "odds_gap_final": 8.94515916211591,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9930811561373927,
+            "cap_minus_fast_price": -56.90814888049406,
+            "cap_minus_old_price": -0.6562060109137602,
+            "cap_weight": 2656.4920926675254,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 34.40905973117114,
+            "fast_mean_weight": 0.7984401486659005,
+            "fast_weight": 2135.827397681284,
+            "fast_withdrawal": 34.40905973117114,
+            "n": 2675,
+            "old_mean_weight": 0.991066433855457,
+            "old_weight": 2651.1027105633475
+          },
+          "equal": {
+            "cap_mean_weight": 0.9907167640870971,
+            "cap_minus_fast_price": 4.6407322429331543e-14,
+            "cap_minus_old_price": 9.50350909079134e-14,
+            "cap_weight": 2672.953829506988,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 37.664783308734556,
+            "fast_mean_weight": 0.7921504476612823,
+            "fast_weight": 2137.2219077901395,
+            "fast_withdrawal": 37.664783308734556,
+            "n": 2698,
+            "old_mean_weight": 0.9884252457880752,
+            "old_weight": 2666.771313136227
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9916168543622002,
+            "cap_minus_fast_price": 66.9502695837822,
+            "cap_minus_old_price": 0.7379914811414121,
+            "cap_weight": 2104.2109649565887,
+            "cap_withdrawal": 99.54320918409178,
+            "extra_fast_withdrawal": -64.52816716511695,
+            "fast_mean_weight": 0.7953103970995671,
+            "fast_weight": 1687.6486626452813,
+            "fast_withdrawal": 35.01504201897491,
+            "n": 2122,
+            "old_mean_weight": 0.9896010162049571,
+            "old_weight": 2099.933356386919
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.9974680757158043,
+            "cap_minus_fast_price": -56.613222739939815,
+            "cap_minus_old_price": -0.9885800087841037,
+            "cap_weight": 2630.323315662576,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 21.358549465331276,
+            "fast_mean_weight": 0.6765910971903383,
+            "fast_weight": 1784.170723290922,
+            "fast_withdrawal": 21.358549465331276,
+            "n": 2637,
+            "old_mean_weight": 0.9918958583777904,
+            "old_weight": 2615.629378542233
+          },
+          "equal": {
+            "cap_mean_weight": 0.9973164128001599,
+            "cap_minus_fast_price": 6.306066779870889e-14,
+            "cap_minus_old_price": 3.952393967665557e-14,
+            "cap_weight": 2928.1209879812695,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 24.485638843659938,
+            "fast_mean_weight": 0.6670024594036013,
+            "fast_weight": 1958.3192208089733,
+            "fast_withdrawal": 24.485638843659938,
+            "n": 2936,
+            "old_mean_weight": 0.991282294215654,
+            "old_weight": 2910.40481581716
+          },
+          "favorable": {
+            "cap_mean_weight": 0.997368875484137,
+            "cap_minus_fast_price": 67.93830653078626,
+            "cap_minus_old_price": 1.1090152701526055,
+            "cap_weight": 2612.109084892955,
+            "cap_withdrawal": 67.85618027357417,
+            "extra_fast_withdrawal": -44.44470502166421,
+            "fast_mean_weight": 0.6708349801357082,
+            "fast_weight": 1756.9168129754198,
+            "fast_withdrawal": 23.411475251910115,
+            "n": 2619,
+            "old_mean_weight": 0.9914357103215419,
+            "old_weight": 2596.570125332118
+          }
+        }
+      },
+      "regime": "mosaic",
+      "trace_sha256": "ca9edb4017fc591e1be6ee378e663734c4218d0077ba50cc4cef138f459935da",
+      "world": 67
+    },
+    {
+      "active_events": 15687,
+      "admissions": 1,
+      "odds_gap_at_switch": 7.545675874788734,
+      "odds_gap_final": 17.56746878022959,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9930811561373927,
+            "cap_minus_fast_price": -56.90814888049406,
+            "cap_minus_old_price": -0.6562060109137602,
+            "cap_weight": 2656.4920926675254,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 34.40905973117114,
+            "fast_mean_weight": 0.7984401486659005,
+            "fast_weight": 2135.827397681284,
+            "fast_withdrawal": 34.40905973117114,
+            "n": 2675,
+            "old_mean_weight": 0.991066433855457,
+            "old_weight": 2651.1027105633475
+          },
+          "equal": {
+            "cap_mean_weight": 0.9907167640870971,
+            "cap_minus_fast_price": 4.6407322429331543e-14,
+            "cap_minus_old_price": 9.50350909079134e-14,
+            "cap_weight": 2672.953829506988,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 37.664783308734556,
+            "fast_mean_weight": 0.7921504476612823,
+            "fast_weight": 2137.2219077901395,
+            "fast_withdrawal": 37.664783308734556,
+            "n": 2698,
+            "old_mean_weight": 0.9884252457880752,
+            "old_weight": 2666.771313136227
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9916168543622002,
+            "cap_minus_fast_price": 66.9502695837822,
+            "cap_minus_old_price": 0.7379914811414121,
+            "cap_weight": 2104.2109649565887,
+            "cap_withdrawal": 99.54320918409178,
+            "extra_fast_withdrawal": -64.52816716511695,
+            "fast_mean_weight": 0.7953103970995671,
+            "fast_weight": 1687.6486626452813,
+            "fast_withdrawal": 35.01504201897491,
+            "n": 2122,
+            "old_mean_weight": 0.9896010162049571,
+            "old_weight": 2099.933356386919
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.3554960148976936,
+            "cap_minus_fast_price": -87.40430606537521,
+            "cap_minus_old_price": -18.48192080952424,
+            "cap_weight": 1054.0456841716616,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 8.190432977693472,
+            "fast_mean_weight": 0.12749197689004776,
+            "fast_weight": 378.0137114789916,
+            "fast_withdrawal": 8.190432977693472,
+            "n": 2965,
+            "old_mean_weight": 0.3019549430451214,
+            "old_weight": 895.296406128785
+          },
+          "equal": {
+            "cap_mean_weight": 0.3683257840881271,
+            "cap_minus_fast_price": 2.731148640577885e-14,
+            "cap_minus_old_price": 5.750955267558311e-14,
+            "cap_weight": 1086.9293888440632,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 8.980387036534143,
+            "fast_mean_weight": 0.13713071014047332,
+            "fast_weight": 404.6727256245367,
+            "fast_withdrawal": 8.980387036534143,
+            "n": 2951,
+            "old_mean_weight": 0.31644241282307417,
+            "old_weight": 933.8215602408919
+          },
+          "favorable": {
+            "cap_mean_weight": 0.39866142681692396,
+            "cap_minus_fast_price": 81.82085680205306,
+            "cap_minus_old_price": 16.94879791810214,
+            "cap_weight": 907.3534074353189,
+            "cap_withdrawal": 14.836182269262048,
+            "extra_fast_withdrawal": -7.149027108786779,
+            "fast_mean_weight": 0.1507246883697773,
+            "fast_weight": 343.0493907296131,
+            "fast_withdrawal": 7.687155160475269,
+            "n": 2276,
+            "old_mean_weight": 0.3441452616410861,
+            "old_weight": 783.274615495112
+          }
+        }
+      },
+      "regime": "mosaic_then_unrelated",
+      "trace_sha256": "36fe879861aaad4476c085e83d857036b75ad344b67fd3c9f3be35e641ca5c02",
+      "world": 67
+    },
+    {
+      "active_events": 15669,
+      "admissions": 1,
+      "odds_gap_at_switch": 6.61408442051217,
+      "odds_gap_final": 12.1691573954743,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9965786843631393,
+            "cap_minus_fast_price": -42.477490447061236,
+            "cap_minus_old_price": -0.25592863929424325,
+            "cap_weight": 2396.77173589335,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 54.056439528036954,
+            "fast_mean_weight": 0.8720815504117182,
+            "fast_weight": 2097.356128740182,
+            "fast_withdrawal": 54.056439528036954,
+            "n": 2405,
+            "old_mean_weight": 0.996021888123491,
+            "old_weight": 2395.432640936996
+          },
+          "equal": {
+            "cap_mean_weight": 0.9956403092308499,
+            "cap_minus_fast_price": 8.43769498715119e-14,
+            "cap_minus_old_price": 4.6629367034256575e-14,
+            "cap_weight": 2719.093684509451,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 67.01682984108625,
+            "fast_mean_weight": 0.8734130729474906,
+            "fast_weight": 2385.2911022195967,
+            "fast_withdrawal": 67.01682984108625,
+            "n": 2731,
+            "old_mean_weight": 0.9950960143414731,
+            "old_weight": 2717.607215166563
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9954691665319614,
+            "cap_minus_fast_price": 52.742093269927814,
+            "cap_minus_old_price": 0.2756896961875821,
+            "cap_weight": 2330.3933188513215,
+            "cap_withdrawal": 182.52818249373777,
+            "extra_fast_withdrawal": -114.45918494861101,
+            "fast_mean_weight": 0.872889349012446,
+            "fast_weight": 2043.433966038136,
+            "fast_withdrawal": 68.06899754512646,
+            "n": 2341,
+            "old_mean_weight": 0.9949292839453096,
+            "old_weight": 2329.1294537159697
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.986412861165906,
+            "cap_minus_fast_price": -104.07291984466747,
+            "cap_minus_old_price": -7.430083274442499,
+            "cap_weight": 2852.7059944918,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 13.356917708780582,
+            "fast_mean_weight": 0.45458646988862783,
+            "fast_weight": 1314.6640709179117,
+            "fast_withdrawal": 13.356917708780582,
+            "n": 2892,
+            "old_mean_weight": 0.9477627447419331,
+            "old_weight": 2740.9298577936706
+          },
+          "equal": {
+            "cap_mean_weight": 0.9874690083951864,
+            "cap_minus_fast_price": 9.992007221626409e-15,
+            "cap_minus_old_price": 2.353672812205332e-14,
+            "cap_weight": 2881.434566497154,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 15.088255073878603,
+            "fast_mean_weight": 0.4683735249811258,
+            "fast_weight": 1366.713945894925,
+            "fast_withdrawal": 15.088255073878603,
+            "n": 2918,
+            "old_mean_weight": 0.9505218451422132,
+            "old_weight": 2773.622744124978
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9873161608720009,
+            "cap_minus_fast_price": 109.17477913817908,
+            "cap_minus_old_price": 7.365951490182157,
+            "cap_weight": 2351.7870951971063,
+            "cap_withdrawal": 36.315232294855846,
+            "extra_fast_withdrawal": -22.89009980769703,
+            "fast_mean_weight": 0.46922906771522543,
+            "fast_weight": 1117.703639297667,
+            "fast_withdrawal": 13.425132487158827,
+            "n": 2382,
+            "old_mean_weight": 0.950892162047916,
+            "old_weight": 2265.025129998136
+          }
+        }
+      },
+      "regime": "mosaic",
+      "trace_sha256": "5135e1a947a0eba3c4a462ec2f55091616bbc32239d1dabc548e85f98fa16dac",
+      "world": 68
+    },
+    {
+      "active_events": 15669,
+      "admissions": 1,
+      "odds_gap_at_switch": 6.61408442051217,
+      "odds_gap_final": 18.44547912411509,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9965786843631393,
+            "cap_minus_fast_price": -42.477490447061236,
+            "cap_minus_old_price": -0.25592863929424325,
+            "cap_weight": 2396.77173589335,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 54.056439528036954,
+            "fast_mean_weight": 0.8720815504117182,
+            "fast_weight": 2097.356128740182,
+            "fast_withdrawal": 54.056439528036954,
+            "n": 2405,
+            "old_mean_weight": 0.996021888123491,
+            "old_weight": 2395.432640936996
+          },
+          "equal": {
+            "cap_mean_weight": 0.9956403092308499,
+            "cap_minus_fast_price": 8.43769498715119e-14,
+            "cap_minus_old_price": 4.6629367034256575e-14,
+            "cap_weight": 2719.093684509451,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 67.01682984108625,
+            "fast_mean_weight": 0.8734130729474906,
+            "fast_weight": 2385.2911022195967,
+            "fast_withdrawal": 67.01682984108625,
+            "n": 2731,
+            "old_mean_weight": 0.9950960143414731,
+            "old_weight": 2717.607215166563
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9954691665319614,
+            "cap_minus_fast_price": 52.742093269927814,
+            "cap_minus_old_price": 0.2756896961875821,
+            "cap_weight": 2330.3933188513215,
+            "cap_withdrawal": 182.52818249373777,
+            "extra_fast_withdrawal": -114.45918494861101,
+            "fast_mean_weight": 0.872889349012446,
+            "fast_weight": 2043.433966038136,
+            "fast_withdrawal": 68.06899754512646,
+            "n": 2341,
+            "old_mean_weight": 0.9949292839453096,
+            "old_weight": 2329.1294537159697
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.07398471902352427,
+            "cap_minus_fast_price": -26.781282329754312,
+            "cap_minus_old_price": -2.736859749040629,
+            "cap_weight": 260.2042568057349,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 5.629984785909961,
+            "fast_mean_weight": 0.02823961803786761,
+            "fast_weight": 99.31873663918039,
+            "fast_withdrawal": 5.629984785909961,
+            "n": 3517,
+            "old_mean_weight": 0.06873863894345338,
+            "old_weight": 241.7537931641255
+          },
+          "equal": {
+            "cap_mean_weight": 0.08723446535472168,
+            "cap_minus_fast_price": 1.7763568394002505e-15,
+            "cap_minus_old_price": 1.0658141036401503e-14,
+            "cap_weight": 259.1735965688781,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 4.824112950575932,
+            "fast_mean_weight": 0.03218801565656008,
+            "fast_weight": 95.63059451564,
+            "fast_withdrawal": 4.824112950575932,
+            "n": 2971,
+            "old_mean_weight": 0.08153328366686144,
+            "old_weight": 242.23538577424532
+          },
+          "favorable": {
+            "cap_mean_weight": 0.12052713045886387,
+            "cap_minus_fast_price": 20.011954982222303,
+            "cap_minus_old_price": 1.663924597352877,
+            "cap_weight": 205.37823030190404,
+            "cap_withdrawal": 1.7455574999081787,
+            "extra_fast_withdrawal": 1.3772969671170072,
+            "fast_mean_weight": 0.04972959784237494,
+            "fast_weight": 84.7392347234069,
+            "fast_withdrawal": 3.122854467025186,
+            "n": 1704,
+            "old_mean_weight": 0.11394715037246211,
+            "old_weight": 194.16594423467544
+          }
+        }
+      },
+      "regime": "mosaic_then_unrelated",
+      "trace_sha256": "889847e0988d82f63859421fea104fe666db4951e4b614cc8c798a17cb72528c",
+      "world": 68
+    },
+    {
+      "active_events": 15653,
+      "admissions": 1,
+      "odds_gap_at_switch": 5.910741461986132,
+      "odds_gap_final": 5.9885094513418995,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9827812865625739,
+            "cap_minus_fast_price": -73.46157443149092,
+            "cap_minus_old_price": -1.4821539628230562,
+            "cap_weight": 2811.737260855524,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 40.84502545423568,
+            "fast_mean_weight": 0.7874890324184255,
+            "fast_weight": 2253.006121749115,
+            "fast_withdrawal": 40.84502545423568,
+            "n": 2861,
+            "old_mean_weight": 0.9797885935422129,
+            "old_weight": 2803.175166124271
+          },
+          "equal": {
+            "cap_mean_weight": 0.9771828702109158,
+            "cap_minus_fast_price": -3.774758283725532e-14,
+            "cap_minus_old_price": 2.4424906541753444e-15,
+            "cap_weight": 2698.9790875225494,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 41.02122970539601,
+            "fast_mean_weight": 0.7731752883944831,
+            "fast_weight": 2135.5101465455623,
+            "fast_withdrawal": 41.02122970539601,
+            "n": 2762,
+            "old_mean_weight": 0.973033319017461,
+            "old_weight": 2687.5180271262275
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9672998656563255,
+            "cap_minus_fast_price": 83.80939535955038,
+            "cap_minus_old_price": 1.5631243310801377,
+            "cap_weight": 1777.8971530763263,
+            "cap_withdrawal": 108.5265592876067,
+            "extra_fast_withdrawal": -75.9555136976453,
+            "fast_mean_weight": 0.7388361789523069,
+            "fast_weight": 1357.98089691434,
+            "fast_withdrawal": 32.57104558996134,
+            "n": 1838,
+            "old_mean_weight": 0.9619814896422945,
+            "old_weight": 1768.1219779625371
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.9974135109701012,
+            "cap_minus_fast_price": -58.3869841904938,
+            "cap_minus_old_price": -0.7109034185348397,
+            "cap_weight": 3103.950846138955,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 23.54056815021136,
+            "fast_mean_weight": 0.6993280356700994,
+            "fast_weight": 2176.3088470053494,
+            "fast_withdrawal": 23.54056815021136,
+            "n": 3112,
+            "old_mean_weight": 0.993719745540429,
+            "old_weight": 3092.455848121815
+          },
+          "equal": {
+            "cap_mean_weight": 0.9975157142563352,
+            "cap_minus_fast_price": -1.7763568394002505e-14,
+            "cap_minus_old_price": 1.5987211554602254e-14,
+            "cap_weight": 2876.8353199152707,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 23.013565559047862,
+            "fast_mean_weight": 0.7029109683564614,
+            "fast_weight": 2027.1952327400347,
+            "fast_withdrawal": 23.013565559047862,
+            "n": 2884,
+            "old_mean_weight": 0.9938680508554474,
+            "old_weight": 2866.3154586671103
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9975914572327991,
+            "cap_minus_fast_price": 69.7898225845514,
+            "cap_minus_old_price": 0.836517872720441,
+            "cap_weight": 2190.7108400832267,
+            "cap_withdrawal": 66.0055178772551,
+            "extra_fast_withdrawal": -46.476365719903335,
+            "fast_mean_weight": 0.7100841479061705,
+            "fast_weight": 1559.3447888019502,
+            "fast_withdrawal": 19.529152157351703,
+            "n": 2196,
+            "old_mean_weight": 0.9940351400099582,
+            "old_weight": 2182.901167461868
+          }
+        }
+      },
+      "regime": "mosaic",
+      "trace_sha256": "ede245e902372df390014bbf79abfb1ff69762a9bdcf2c8455acc930f13872bf",
+      "world": 69
+    },
+    {
+      "active_events": 15653,
+      "admissions": 1,
+      "odds_gap_at_switch": 5.910741461986132,
+      "odds_gap_final": 15.936417736820218,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9827812865625739,
+            "cap_minus_fast_price": -73.46157443149092,
+            "cap_minus_old_price": -1.4821539628230562,
+            "cap_weight": 2811.737260855524,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 40.84502545423568,
+            "fast_mean_weight": 0.7874890324184255,
+            "fast_weight": 2253.006121749115,
+            "fast_withdrawal": 40.84502545423568,
+            "n": 2861,
+            "old_mean_weight": 0.9797885935422129,
+            "old_weight": 2803.175166124271
+          },
+          "equal": {
+            "cap_mean_weight": 0.9771828702109158,
+            "cap_minus_fast_price": -3.774758283725532e-14,
+            "cap_minus_old_price": 2.4424906541753444e-15,
+            "cap_weight": 2698.9790875225494,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 41.02122970539601,
+            "fast_mean_weight": 0.7731752883944831,
+            "fast_weight": 2135.5101465455623,
+            "fast_withdrawal": 41.02122970539601,
+            "n": 2762,
+            "old_mean_weight": 0.973033319017461,
+            "old_weight": 2687.5180271262275
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9672998656563255,
+            "cap_minus_fast_price": 83.80939535955038,
+            "cap_minus_old_price": 1.5631243310801377,
+            "cap_weight": 1777.8971530763263,
+            "cap_withdrawal": 108.5265592876067,
+            "extra_fast_withdrawal": -75.9555136976453,
+            "fast_mean_weight": 0.7388361789523069,
+            "fast_weight": 1357.98089691434,
+            "fast_withdrawal": 32.57104558996134,
+            "n": 1838,
+            "old_mean_weight": 0.9619814896422945,
+            "old_weight": 1768.1219779625371
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.4354985073593636,
+            "cap_minus_fast_price": -95.01713242295453,
+            "cap_minus_old_price": -10.782495515637162,
+            "cap_weight": 1429.3061011534312,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 13.30224766514488,
+            "fast_mean_weight": 0.18396539728165032,
+            "fast_weight": 603.7744338783764,
+            "fast_withdrawal": 13.30224766514488,
+            "n": 3282,
+            "old_mean_weight": 0.40363490672775243,
+            "old_weight": 1324.7297638804835
+          },
+          "equal": {
+            "cap_mean_weight": 0.4856086279136031,
+            "cap_minus_fast_price": 2.2648549702353193e-14,
+            "cap_minus_old_price": 3.730349362740526e-14,
+            "cap_weight": 1416.0347589960666,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 13.402086608929022,
+            "fast_mean_weight": 0.2015575458656733,
+            "fast_weight": 587.7418037443033,
+            "fast_withdrawal": 13.402086608929022,
+            "n": 2916,
+            "old_mean_weight": 0.4531587333794366,
+            "old_weight": 1321.410866534437
+          },
+          "favorable": {
+            "cap_mean_weight": 0.4857275125588333,
+            "cap_minus_fast_price": 90.69022279508378,
+            "cap_minus_old_price": 8.832169839351005,
+            "cap_weight": 968.5406600423136,
+            "cap_withdrawal": 29.35318056576805,
+            "extra_fast_withdrawal": -16.678657999239785,
+            "fast_mean_weight": 0.2151295895069961,
+            "fast_weight": 428.9684014769502,
+            "fast_withdrawal": 12.67452256652821,
+            "n": 1994,
+            "old_mean_weight": 0.4534111428544753,
+            "old_weight": 904.1018188518237
+          }
+        }
+      },
+      "regime": "mosaic_then_unrelated",
+      "trace_sha256": "6245db2c9788ad748b01b170791b83fd79eed87bb4c4ec4b620b35c018623159",
+      "world": 69
+    },
+    {
+      "active_events": 15395,
+      "admissions": 1,
+      "odds_gap_at_switch": 6.949979410633411,
+      "odds_gap_final": 7.049882431028747,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.989818881296939,
+            "cap_minus_fast_price": -40.137284887519456,
+            "cap_minus_old_price": -0.2751896057116514,
+            "cap_weight": 2343.8911109111514,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 47.86879481147094,
+            "fast_mean_weight": 0.8656909862331267,
+            "fast_weight": 2049.956255400044,
+            "fast_withdrawal": 47.86879481147094,
+            "n": 2368,
+            "old_mean_weight": 0.9891878179459294,
+            "old_weight": 2342.3967528959606
+          },
+          "equal": {
+            "cap_mean_weight": 0.9871142220023059,
+            "cap_minus_fast_price": 1.0680345496894006e-13,
+            "cap_minus_old_price": 2.7755575615628914e-14,
+            "cap_weight": 2601.045974976076,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 55.95208601213485,
+            "fast_mean_weight": 0.8627824827710224,
+            "fast_weight": 2273.431842101644,
+            "fast_withdrawal": 55.95208601213485,
+            "n": 2635,
+            "old_mean_weight": 0.98658512479412,
+            "old_weight": 2599.651803832506
+          },
+          "favorable": {
+            "cap_mean_weight": 0.987635061079042,
+            "cap_minus_fast_price": 49.93118070789819,
+            "cap_minus_old_price": 0.30922965841149286,
+            "cap_weight": 2172.7971343738923,
+            "cap_withdrawal": 152.53419940720994,
+            "extra_fast_withdrawal": -96.87090141297247,
+            "fast_mean_weight": 0.8593774379763983,
+            "fast_weight": 1890.6303635480763,
+            "fast_withdrawal": 55.6632979942378,
+            "n": 2200,
+            "old_mean_weight": 0.9867904264368587,
+            "old_weight": 2170.938938161089
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.9978479153673062,
+            "cap_minus_fast_price": -62.385492622399546,
+            "cap_minus_old_price": -0.8166175958786228,
+            "cap_weight": 2701.174306899298,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 19.713760302417878,
+            "fast_mean_weight": 0.7036612716538991,
+            "fast_weight": 1904.811062367105,
+            "fast_withdrawal": 19.713760302417878,
+            "n": 2707,
+            "old_mean_weight": 0.993931468228647,
+            "old_weight": 2690.5724844949473
+          },
+          "equal": {
+            "cap_mean_weight": 0.9977928240156263,
+            "cap_minus_fast_price": 9.14823772291129e-14,
+            "cap_minus_old_price": 7.505107646466058e-14,
+            "cap_weight": 2898.5881537653945,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 22.372674177200466,
+            "fast_mean_weight": 0.7059425287265425,
+            "fast_weight": 2050.763045950606,
+            "fast_withdrawal": 22.372674177200466,
+            "n": 2905,
+            "old_mean_weight": 0.9939219095337514,
+            "old_weight": 2887.3431471955478
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9978389568189465,
+            "cap_minus_fast_price": 73.88027618036597,
+            "cap_minus_old_price": 0.9446547669771168,
+            "cap_weight": 2574.424508592882,
+            "cap_withdrawal": 63.28860543913704,
+            "extra_fast_withdrawal": -41.986531459223066,
+            "fast_mean_weight": 0.7060886370576124,
+            "fast_weight": 1821.70868360864,
+            "fast_withdrawal": 21.302073979913963,
+            "n": 2580,
+            "old_mean_weight": 0.993988693559665,
+            "old_weight": 2564.4908293839358
+          }
+        }
+      },
+      "regime": "mosaic",
+      "trace_sha256": "329e45d18bb553760088996234dfb4b5088fe1f7fe00a4f623944ec8be9b6144",
+      "world": 70
+    },
+    {
+      "active_events": 15395,
+      "admissions": 1,
+      "odds_gap_at_switch": 6.949979410633411,
+      "odds_gap_final": 10.351882651229934,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.989818881296939,
+            "cap_minus_fast_price": -40.137284887519456,
+            "cap_minus_old_price": -0.2751896057116514,
+            "cap_weight": 2343.8911109111514,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 47.86879481147094,
+            "fast_mean_weight": 0.8656909862331267,
+            "fast_weight": 2049.956255400044,
+            "fast_withdrawal": 47.86879481147094,
+            "n": 2368,
+            "old_mean_weight": 0.9891878179459294,
+            "old_weight": 2342.3967528959606
+          },
+          "equal": {
+            "cap_mean_weight": 0.9871142220023059,
+            "cap_minus_fast_price": 1.0680345496894006e-13,
+            "cap_minus_old_price": 2.7755575615628914e-14,
+            "cap_weight": 2601.045974976076,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 55.95208601213485,
+            "fast_mean_weight": 0.8627824827710224,
+            "fast_weight": 2273.431842101644,
+            "fast_withdrawal": 55.95208601213485,
+            "n": 2635,
+            "old_mean_weight": 0.98658512479412,
+            "old_weight": 2599.651803832506
+          },
+          "favorable": {
+            "cap_mean_weight": 0.987635061079042,
+            "cap_minus_fast_price": 49.93118070789819,
+            "cap_minus_old_price": 0.30922965841149286,
+            "cap_weight": 2172.7971343738923,
+            "cap_withdrawal": 152.53419940720994,
+            "extra_fast_withdrawal": -96.87090141297247,
+            "fast_mean_weight": 0.8593774379763983,
+            "fast_weight": 1890.6303635480763,
+            "fast_withdrawal": 55.6632979942378,
+            "n": 2200,
+            "old_mean_weight": 0.9867904264368587,
+            "old_weight": 2170.938938161089
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.9902383393721954,
+            "cap_minus_fast_price": -149.76397542271454,
+            "cap_minus_old_price": -9.079454773996417,
+            "cap_weight": 3269.7669966069893,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 13.288340450068592,
+            "fast_mean_weight": 0.4582224503708024,
+            "fast_weight": 1513.0505311243894,
+            "fast_withdrawal": 13.288340450068592,
+            "n": 3302,
+            "old_mean_weight": 0.9609482799170516,
+            "old_weight": 3173.051220286104
+          },
+          "equal": {
+            "cap_mean_weight": 0.9899892536282159,
+            "cap_minus_fast_price": 7.993605777301127e-15,
+            "cap_minus_old_price": -7.105427357601002e-15,
+            "cap_weight": 2863.0489214928,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 12.40125083856376,
+            "fast_mean_weight": 0.4580661238696519,
+            "fast_weight": 1324.7272302310332,
+            "fast_withdrawal": 12.40125083856376,
+            "n": 2892,
+            "old_mean_weight": 0.9596412021850879,
+            "old_weight": 2775.282356719274
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9895017844648979,
+            "cap_minus_fast_price": 158.19183915375075,
+            "cap_minus_old_price": 9.181670777624934,
+            "cap_weight": 1977.024565360866,
+            "cap_withdrawal": 31.73383483506113,
+            "extra_fast_withdrawal": -22.287688048035847,
+            "fast_mean_weight": 0.45632509322033943,
+            "fast_weight": 911.7375362542382,
+            "fast_withdrawal": 9.4461467870253,
+            "n": 1998,
+            "old_mean_weight": 0.9590443438726377,
+            "old_weight": 1916.1705990575301
+          }
+        }
+      },
+      "regime": "mosaic_then_unrelated",
+      "trace_sha256": "6f5a448c0f77fdd9f41f20d1a38a9d0520a10ecc00a82b6ffc130c9b0e6a3906",
+      "world": 70
+    },
+    {
+      "active_events": 16073,
+      "admissions": 1,
+      "odds_gap_at_switch": 8.132538149197428,
+      "odds_gap_final": 14.719293048253885,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9962681353652074,
+            "cap_minus_fast_price": -49.14035564800039,
+            "cap_minus_old_price": -0.39189692579980373,
+            "cap_weight": 1749.4468457013043,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 25.20830868113276,
+            "fast_mean_weight": 0.7792035124824258,
+            "fast_weight": 1368.2813679191397,
+            "fast_withdrawal": 25.20830868113276,
+            "n": 1756,
+            "old_mean_weight": 0.9941716395422591,
+            "old_weight": 1745.7653990362069
+          },
+          "equal": {
+            "cap_mean_weight": 0.9959695084638517,
+            "cap_minus_fast_price": 5.928590951498336e-14,
+            "cap_minus_old_price": 8.526512829121202e-14,
+            "cap_weight": 2864.4083063420376,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 52.71629887302752,
+            "fast_mean_weight": 0.804289934608766,
+            "fast_weight": 2313.137851934811,
+            "fast_withdrawal": 52.71629887302752,
+            "n": 2876,
+            "old_mean_weight": 0.9942614371238685,
+            "old_weight": 2859.495893168246
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9960521390296825,
+            "cap_minus_fast_price": 59.75850996728417,
+            "cap_minus_old_price": 0.4517015000097373,
+            "cap_weight": 3236.1733997074384,
+            "cap_withdrawal": 134.28539533413772,
+            "extra_fast_withdrawal": -69.79206940496262,
+            "fast_mean_weight": 0.8086240052766183,
+            "fast_weight": 2627.2193931437328,
+            "fast_withdrawal": 64.49332592917519,
+            "n": 3249,
+            "old_mean_weight": 0.994405491316723,
+            "old_weight": 3230.823441288033
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.9331879736501518,
+            "cap_minus_fast_price": -100.26317195402459,
+            "cap_minus_old_price": -15.663216226454335,
+            "cap_weight": 2425.3555435167445,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 8.23577779028255,
+            "fast_mean_weight": 0.2610031590799338,
+            "fast_weight": 678.347210448748,
+            "fast_withdrawal": 8.23577779028255,
+            "n": 2599,
+            "old_mean_weight": 0.8093768153667668,
+            "old_weight": 2103.5703431382267
+          },
+          "equal": {
+            "cap_mean_weight": 0.9317886712182916,
+            "cap_minus_fast_price": -7.571721027943568e-14,
+            "cap_minus_old_price": -5.040412531798211e-14,
+            "cap_weight": 2683.55137310868,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 9.58403424625142,
+            "fast_mean_weight": 0.27053132375386263,
+            "fast_weight": 779.1302124111244,
+            "fast_withdrawal": 9.58403424625142,
+            "n": 2880,
+            "old_mean_weight": 0.8078364178142664,
+            "old_weight": 2326.568883305087
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9368369347837627,
+            "cap_minus_fast_price": 102.30200171872094,
+            "cap_minus_old_price": 15.54694836363357,
+            "cap_weight": 2541.6386040683483,
+            "cap_withdrawal": 21.276397755722574,
+            "extra_fast_withdrawal": -11.23305713747751,
+            "fast_mean_weight": 0.3019032670134848,
+            "fast_weight": 819.0635634075843,
+            "fast_withdrawal": 10.04334061824506,
+            "n": 2713,
+            "old_mean_weight": 0.8273063811005464,
+            "old_weight": 2244.4822119257824
+          }
+        }
+      },
+      "regime": "mosaic",
+      "trace_sha256": "3eeed0c02798f593020ae3d2e29e69835147cf432bafa46062a3e203e032a132",
+      "world": 71
+    },
+    {
+      "active_events": 16073,
+      "admissions": 1,
+      "odds_gap_at_switch": 8.132538149197428,
+      "odds_gap_final": 17.617259115779206,
+      "phase": {
+        "first": {
+          "adverse": {
+            "cap_mean_weight": 0.9962681353652074,
+            "cap_minus_fast_price": -49.14035564800039,
+            "cap_minus_old_price": -0.39189692579980373,
+            "cap_weight": 1749.4468457013043,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 25.20830868113276,
+            "fast_mean_weight": 0.7792035124824258,
+            "fast_weight": 1368.2813679191397,
+            "fast_withdrawal": 25.20830868113276,
+            "n": 1756,
+            "old_mean_weight": 0.9941716395422591,
+            "old_weight": 1745.7653990362069
+          },
+          "equal": {
+            "cap_mean_weight": 0.9959695084638517,
+            "cap_minus_fast_price": 5.928590951498336e-14,
+            "cap_minus_old_price": 8.526512829121202e-14,
+            "cap_weight": 2864.4083063420376,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 52.71629887302752,
+            "fast_mean_weight": 0.804289934608766,
+            "fast_weight": 2313.137851934811,
+            "fast_withdrawal": 52.71629887302752,
+            "n": 2876,
+            "old_mean_weight": 0.9942614371238685,
+            "old_weight": 2859.495893168246
+          },
+          "favorable": {
+            "cap_mean_weight": 0.9960521390296825,
+            "cap_minus_fast_price": 59.75850996728417,
+            "cap_minus_old_price": 0.4517015000097373,
+            "cap_weight": 3236.1733997074384,
+            "cap_withdrawal": 134.28539533413772,
+            "extra_fast_withdrawal": -69.79206940496262,
+            "fast_mean_weight": 0.8086240052766183,
+            "fast_weight": 2627.2193931437328,
+            "fast_withdrawal": 64.49332592917519,
+            "n": 3249,
+            "old_mean_weight": 0.994405491316723,
+            "old_weight": 3230.823441288033
+          }
+        },
+        "last": {
+          "adverse": {
+            "cap_mean_weight": 0.45656555550230704,
+            "cap_minus_fast_price": -160.91455814488245,
+            "cap_minus_old_price": -22.600909894435937,
+            "cap_weight": 1517.1673409341663,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 5.772765374024632,
+            "fast_mean_weight": 0.0865950840343756,
+            "fast_weight": 287.75546424623013,
+            "fast_withdrawal": 5.772765374024632,
+            "n": 3323,
+            "old_mean_weight": 0.39290026944192796,
+            "old_weight": 1305.6075953555267
+          },
+          "equal": {
+            "cap_mean_weight": 0.4532362663861953,
+            "cap_minus_fast_price": 1.84297022087776e-14,
+            "cap_minus_old_price": 1.865174681370263e-14,
+            "cap_weight": 1332.9678594418003,
+            "cap_withdrawal": 0.0,
+            "extra_fast_withdrawal": 5.2685980417950375,
+            "fast_mean_weight": 0.08704950521406327,
+            "fast_weight": 256.01259483456005,
+            "fast_withdrawal": 5.2685980417950375,
+            "n": 2941,
+            "old_mean_weight": 0.3894034643130918,
+            "old_weight": 1145.235588544803
+          },
+          "favorable": {
+            "cap_mean_weight": 0.4977563806698351,
+            "cap_minus_fast_price": 155.22080315923714,
+            "cap_minus_old_price": 20.82054764220337,
+            "cap_weight": 959.6743019314421,
+            "cap_withdrawal": 5.217885828301371,
+            "extra_fast_withdrawal": -1.5566424492378972,
+            "fast_mean_weight": 0.09275362657516459,
+            "fast_weight": 178.82899203691733,
+            "fast_withdrawal": 3.6612433790634786,
+            "n": 1928,
+            "old_mean_weight": 0.4304237649065296,
+            "old_weight": 829.857018739789
+          }
+        }
+      },
+      "regime": "mosaic_then_unrelated",
+      "trace_sha256": "fa0808be3c11d9ce2230fc78e6da1343661acde55f0a3c40b652fb63525b4e81",
+      "world": 71
+    }
+  ],
+  "result_sha256": "de1d82df3b16c1860448b12ebaef3a7b050c8e042830578a0cb4681fe130b854",
+  "scope": "descriptive saved states; no causal ablation or new worlds",
+  "verdict": "turn7 material FAIL unchanged",
+  "verdict_sha256": "023b5422d1b988755dddfc7a5a82d7c2884e76639febaf8da7cd65f26745d4f7"
+}

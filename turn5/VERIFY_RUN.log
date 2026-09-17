@@ -1,0 +1,92 @@
+{
+  "verification_pass": true,
+  "gate_pass": true,
+  "arm_lives": 96,
+  "predictions": 1572864,
+  "maximum_numeric_error": 4.3087311496492475e-11,
+  "maximum_normalization_error": 4.440892098500626e-16,
+  "maximum_candidate_bound_excess": 0.0,
+  "minimum_revision_floor_slack": 7.615911840105547e-05,
+  "summary": {
+    "mosaic_mean_gains": {
+      "row2": 186.1053090501264,
+      "static3": 194.65581043316698,
+      "revise3": 216.45367135282967,
+      "null3": 0.0
+    },
+    "mosaic_gain_bpb": 0.013211283651906108,
+    "mosaic_null_contrast_bpb": 0.013211283651906108,
+    "mosaic_positive_worlds": 8,
+    "retained_fraction": {
+      "row2": 1.1630709110750252,
+      "static3": 1.111981557967142
+    },
+    "changed_tail": {
+      "row2": {
+        "paired_differences": [
+          -0.047761941972794375,
+          -0.8776839412711581,
+          -0.11417583457429714,
+          0.40234915259060244,
+          4.404316047318559,
+          2.1862634698753567,
+          3.0791655318946596,
+          13.156540815987327
+        ],
+        "mean_improvement": 2.773626662481032,
+        "improved_worlds": 5,
+        "worst_improvement": 1.2600157179851976,
+        "candidate_paired_differences": [
+          182.70357656128692,
+          125.44996548028888,
+          194.18398220500563,
+          212.23326097824736,
+          178.14845799310194,
+          227.5815807364296,
+          215.23095540047862,
+          173.48390878307177
+        ],
+        "candidate_mean_improvement": 188.62696101723884
+      },
+      "static3": {
+        "paired_differences": [
+          1.5727197440634768,
+          0.49138457816243886,
+          0.1282749971273347,
+          -0.09302863684216334,
+          4.250039582559737,
+          1.8748247890129903,
+          2.9368693757801054,
+          15.091745950972808
+        ],
+        "mean_improvement": 3.281603797604591,
+        "improved_worlds": 7,
+        "worst_improvement": 1.1057392532263748,
+        "candidate_paired_differences": [
+          107.53091028731949,
+          47.059741355002586,
+          79.68189528572721,
+          74.99826165981524,
+          82.04161218537291,
+          107.49593691431014,
+          116.48413987606867,
+          122.69810006977019
+        ],
+        "candidate_mean_improvement": 92.2488247041733
+      }
+    }
+  },
+  "tests": {
+    "material_gain": true,
+    "null_contrast": true,
+    "all_worlds_positive": true,
+    "retention_row2": true,
+    "changed_tail_mean_row2": true,
+    "changed_tail_count_row2": true,
+    "changed_tail_worst_row2": true,
+    "retention_static3": true,
+    "changed_tail_mean_static3": true,
+    "changed_tail_count_static3": true,
+    "changed_tail_worst_static3": true
+  }
+}

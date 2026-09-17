@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "scope": "One preregistered synthetic outer-hazard batch, worlds 56..63; no live integration",
+  "predata_protocol_commit": "f733f6f",
+  "worlds": [56, 57, 58, 59, 60, 61, 62, 63],
+  "new_hazard": 0.0009765625,
+  "old_hazard": 0.0000152587890625,
+  "writer_gate_pass": true,
+  "independent_verification_pass": true,
+  "predictions_checked": 1572864,
+  "maximum_numeric_error_bits": 7.389644451905042e-13,
+  "mosaic_old_mean_bits": 185.4583897900624,
+  "mosaic_fast_mean_bits": 167.4780835931253,
+  "retained_mosaic_fraction": 0.9030493782605862,
+  "changed_tail_mean_improvement_bits": 4.513557396416411,
+  "changed_tails_improved": 8,
+  "changed_tails_total": 8,
+  "whole_switched_life_mean_old_bits": 142.16474368797165,
+  "whole_switched_life_mean_fast_bits": 136.0685764683572,
+  "limitations": [
+    "The faster controller loses 17.980306 bits per unchanged mosaic life on average.",
+    "Its whole switched life is 6.096167 bits worse on average despite a better changed tail.",
+    "Three fast changed tails remain negative against P0.",
+    "The reader independently reconstructs the outer HMM but uses the audited C candidate quote.",
+    "No semantic matching, fifty-life accumulation, natural-language behavior or live integration was tested."
+  ],
+  "sha256": {
+    "PROTOCOL.md": "5f2ef26f96219d2cdf1084f8c51ce4690828439bbaade3b21446c31466a20e4d",
+    "CODE_FREEZE.json": "7d818296b8287ac55f0697bda4813b58391d4ff59faf9f530f68dd1a266a9f6e",
+    "RESULT.json": "5139402fd0723796dc8a674eb58fe8f0274d978b51c010281e00abb74ad27dd7",
+    "VERIFY.json": "881f468cba7330e09508c5bff1e04d302553a820984e6997925a2813d4f00d70",
+    "ARTIFACT_MANIFESTS.json": "ec25f227bbe501f51fe14ff582844fdaab01686e70d9cb1e1ac0dffeb50791a7"
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "command": [
+      "python3",
+      "turn5/experiment.py",
+      "freeze"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.06649112701416016
+  },
+  {
+    "command": [
+      "python3",
+      "turn5/experiment.py",
+      "generate"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 4.096522092819214
+  },
+  {
+    "command": [
+      "python3",
+      "turn5/experiment.py",
+      "extract"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 52.974173069000244
+  },
+  {
+    "command": [
+      "python3",
+      "turn5/experiment.py",
+      "evaluate"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 80.8158540725708
+  }
+]

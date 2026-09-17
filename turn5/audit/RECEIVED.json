@@ -1,0 +1,9 @@
+{
+  "base": "cdcd00f560aabebbfb0980399d6192016e1d0600",
+  "branch": "astra/turn5-revision",
+  "source_sol_commit": "8f267f9e96eb8de09a0e7148c76d31e4a6383005",
+  "own_status": "?? turn5/\n",
+  "source_sol_status": "",
+  "canonical_status": " M mapdiag.c\n M transfer.c\n?? mycelium/\n",
+  "authority": "own isolated research only, no canonical writes, no commit/push"
+}

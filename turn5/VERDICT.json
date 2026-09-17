@@ -1,0 +1,128 @@
+{
+  "created_utc": "2026-09-16T20:49:43.040867+00:00",
+  "status": "PASS",
+  "scope": "One preregistered synthetic batch, worlds48..55; incoming Sol FAIL preserved; reciprocal Sol review pending.",
+  "base_commit": "cdcd00f560aabebbfb0980399d6192016e1d0600",
+  "branch": "astra/turn5-revision",
+  "artifacts": {
+    "PROTOCOL.md": "f1fa6c4f5d58aa1af375899f374b153897482a447f028458a2509251fd3c0854",
+    "CODE_FREEZE.json": "9e2e5a26fb811b8df38017b14b802488150031e47ebc824e78db54e1a1bd9878",
+    "RESULT.json": "650028b662f6697849a80bfd0e7a3d948c75bad0ca29cb9f554d6405d31f6d21",
+    "VERIFY.json": "55ca70d2f0b7436234ca743c38f1f6e273db052e9a246fdf93678a8a65a0e7ac",
+    "ARTIFACT_MANIFESTS.json": "b919ba32d0d9b33b9ae7c7457b2a0512df4d296e8e53d80b07f308a75bbf1255"
+  },
+  "verification_pass": true,
+  "material_gate_pass": true,
+  "tests": {
+    "all_worlds_positive": true,
+    "changed_tail_count_row2": true,
+    "changed_tail_count_static3": true,
+    "changed_tail_mean_row2": true,
+    "changed_tail_mean_static3": true,
+    "changed_tail_worst_row2": true,
+    "changed_tail_worst_static3": true,
+    "material_gain": true,
+    "null_contrast": true,
+    "retention_row2": true,
+    "retention_static3": true
+  },
+  "independent_reader": {
+    "predictions": 1572864,
+    "source_lives": 32,
+    "arm_lives": 96,
+    "c_arm_lives": 72,
+    "maximum_numeric_error": 4.3087311496492475e-11,
+    "maximum_normalization_error": 4.440892098500626e-16,
+    "maximum_candidate_bound_excess": 0.0,
+    "minimum_revision_floor_slack": 7.615911840105547e-05,
+    "scope": "Independent source recount, bank decoding, chronological HEAD256 trace contract, component laws, three-state revision, outer HMM, all-prefix bounds and live gate. No reconstruction of frontend BPE training."
+  },
+  "summary": {
+    "changed_tail": {
+      "row2": {
+        "candidate_mean_improvement": 188.62696101723884,
+        "candidate_paired_differences": [
+          182.70357656128692,
+          125.44996548028888,
+          194.18398220500563,
+          212.23326097824736,
+          178.14845799310194,
+          227.5815807364296,
+          215.23095540047862,
+          173.48390878307177
+        ],
+        "improved_worlds": 5,
+        "mean_improvement": 2.773626662481032,
+        "paired_differences": [
+          -0.047761941972794375,
+          -0.8776839412711581,
+          -0.11417583457429714,
+          0.40234915259060244,
+          4.404316047318559,
+          2.1862634698753567,
+          3.0791655318946596,
+          13.156540815987327
+        ],
+        "worst_improvement": 1.2600157179851976
+      },
+      "static3": {
+        "candidate_mean_improvement": 92.2488247041733,
+        "candidate_paired_differences": [
+          107.53091028731949,
+          47.059741355002586,
+          79.68189528572721,
+          74.99826165981524,
+          82.04161218537291,
+          107.49593691431014,
+          116.48413987606867,
+          122.69810006977019
+        ],
+        "improved_worlds": 7,
+        "mean_improvement": 3.281603797604591,
+        "paired_differences": [
+          1.5727197440634768,
+          0.49138457816243886,
+          0.1282749971273347,
+          -0.09302863684216334,
+          4.250039582559737,
+          1.8748247890129903,
+          2.9368693757801054,
+          15.091745950972808
+        ],
+        "worst_improvement": 1.1057392532263748
+      }
+    },
+    "mosaic_gain_bpb": 0.013211283651906108,
+    "mosaic_mean_gains": {
+      "null3": 0.0,
+      "revise3": 216.45367135282967,
+      "row2": 186.1053090501264,
+      "static3": 194.65581043316698
+    },
+    "mosaic_null_contrast_bpb": 0.013211283651906108,
+    "mosaic_positive_worlds": 8,
+    "retained_fraction": {
+      "row2": 1.1630709110750252,
+      "static3": 1.111981557967142
+    }
+  },
+  "resources": {
+    "source_lives": 4,
+    "source_bytes": 65536,
+    "bank_bytes": 14080,
+    "recipient_router_bytes": 3248
+  },
+  "limits": [
+    "Seven of eight revised changed tails remain negative against P0.",
+    "Five of eight changed tails improve against row2, exactly the required count.",
+    "Worst-tail improvement against static3 clears its one-bit threshold by only 0.1057392532263748 bits.",
+    "World55 supplies 15.091745950972808 of the summed 26.252830380836728-bit changed-tail improvement over static3.",
+    "Admission matches static3 in all eight mosaics; mean gain at1024/4096 bytes is slightly lower.",
+    "Null3 is admitted late in world55 changed stream, after15795 bytes; gains2.931141198917441 bits.",
+    "Independent reader uses audited frontend trace primitives, not a new implementation of BPE training.",
+    "No functional/semantic matching, source-family discovery, fifty-life accumulation or live integration was tested."
+  ],
+  "result_pending_flag": "RESULT.json is immutable; its independent_gate_pending=true records creation before the reader. This verdict and VERIFY.json close that pending check.",
+  "retuning_or_additional_batches": false,
+  "commit_push_integration_performed": false
+}

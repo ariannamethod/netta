@@ -1,0 +1,66 @@
+[
+  {
+    "command": [
+      "make",
+      "-C",
+      "/Users/ataeff/arianna-codex/repos/netta-astra-turn5-20260916/turn5/audit/replay/byte_recurrence",
+      "all"
+    ],
+    "exit_code": 0,
+    "seconds": 1.8692977919708937
+  },
+  {
+    "command": [
+      "make",
+      "-C",
+      "/Users/ataeff/arianna-codex/repos/netta-astra-turn5-20260916/turn5/audit/replay/turn3",
+      "bank"
+    ],
+    "exit_code": 0,
+    "seconds": 0.5224266250152141
+  },
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/ataeff/arianna-codex/repos/netta-astra-turn5-20260916/turn5/audit/replay/turn4/experiment.py",
+      "freeze"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06496387510560453
+  },
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/ataeff/arianna-codex/repos/netta-astra-turn5-20260916/turn5/audit/replay/turn4/experiment.py",
+      "generate"
+    ],
+    "exit_code": 0,
+    "seconds": 3.800544915953651
+  },
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/ataeff/arianna-codex/repos/netta-astra-turn5-20260916/turn5/audit/replay/turn4/experiment.py",
+      "extract"
+    ],
+    "exit_code": 0,
+    "seconds": 48.97838216694072
+  },
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/ataeff/arianna-codex/repos/netta-astra-turn5-20260916/turn5/audit/replay/turn4/experiment.py",
+      "evaluate"
+    ],
+    "exit_code": 0,
+    "seconds": 36.09907954186201
+  },
+  {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/ataeff/arianna-codex/repos/netta-astra-turn5-20260916/turn5/audit/replay/turn4/verify.py"
+    ],
+    "exit_code": 0,
+    "seconds": 198.194306707941
+  }
+]
