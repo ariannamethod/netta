@@ -1,0 +1,2638 @@
+{
+  "reader_sha256": "5ee11785f14c6aca879903bce19a086952b387b35de276f1866227d54abfb0e3",
+  "scope": "source-only grammar-prefix immediate continuation feasibility; no target quote or gate",
+  "worlds": [
+    {
+      "distinct_proper_prefixes": 134,
+      "exact_all_rows_bytes_with_grammar": 6477,
+      "exact_usable_rows_bytes_with_grammar": 4318,
+      "portable_bytes": 527,
+      "positive_mdl_rows": 141,
+      "prefix_k_rows": 365,
+      "rule_definitions": 64,
+      "selected": [
+        {
+          "counts": [
+            1677,
+            1316,
+            2882,
+            202,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            3
+          ],
+          "rule_id": 8,
+          "source_score_bits": 1796.9242323556382
+        },
+        {
+          "counts": [
+            15,
+            12,
+            915,
+            16,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 5,
+          "prefix": [
+            3,
+            1,
+            1,
+            3,
+            1
+          ],
+          "rule_id": 52,
+          "source_score_bits": 1412.0274907125313
+        },
+        {
+          "counts": [
+            21,
+            68,
+            997,
+            24,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            1,
+            3,
+            1
+          ],
+          "rule_id": 57,
+          "source_score_bits": 1349.5522528724232
+        },
+        {
+          "counts": [
+            107,
+            1418,
+            1153,
+            143,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            3,
+            1
+          ],
+          "rule_id": 23,
+          "source_score_bits": 1261.4210724255158
+        },
+        {
+          "counts": [
+            46,
+            958,
+            50,
+            13,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 4,
+          "prefix": [
+            3,
+            1,
+            1,
+            3
+          ],
+          "rule_id": 52,
+          "source_score_bits": 1217.6950257537949
+        },
+        {
+          "counts": [
+            365,
+            1079,
+            64,
+            54,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 3,
+          "prefix": [
+            3,
+            2,
+            0
+          ],
+          "rule_id": 28,
+          "source_score_bits": 1178.0898827690035
+        },
+        {
+          "counts": [
+            20,
+            1111,
+            95,
+            66,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            2,
+            3,
+            1
+          ],
+          "rule_id": 47,
+          "source_score_bits": 1162.1301619951907
+        },
+        {
+          "counts": [
+            11,
+            7,
+            759,
+            14,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 9,
+          "prefix": [
+            2,
+            0,
+            2,
+            0,
+            3,
+            1,
+            1,
+            3,
+            1
+          ],
+          "rule_id": 36,
+          "source_score_bits": 1159.030557667038
+        },
+        {
+          "counts": [
+            19,
+            853,
+            12,
+            15,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 7,
+          "prefix": [
+            3,
+            0,
+            1,
+            2,
+            3,
+            2,
+            3
+          ],
+          "rule_id": 29,
+          "source_score_bits": 1156.75306134769
+        },
+        {
+          "counts": [
+            22,
+            903,
+            26,
+            20,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            2,
+            0,
+            2,
+            0,
+            3
+          ],
+          "rule_id": 30,
+          "source_score_bits": 1134.9187331121009
+        },
+        {
+          "counts": [
+            1186,
+            282,
+            130,
+            924,
+            0,
+            0,
+            0
+          ],
+          "k": 5,
+          "length": 2,
+          "prefix": [
+            0,
+            0
+          ],
+          "rule_id": 67,
+          "source_score_bits": 1105.7566748079357
+        },
+        {
+          "counts": [
+            42,
+            29,
+            34,
+            971,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 4,
+          "prefix": [
+            2,
+            0,
+            2,
+            0
+          ],
+          "rule_id": 30,
+          "source_score_bits": 1085.7693807298585
+        },
+        {
+          "counts": [
+            769,
+            1684,
+            2277,
+            745,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 1,
+          "prefix": [
+            1
+          ],
+          "rule_id": 7,
+          "source_score_bits": 1072.6770319333614
+        },
+        {
+          "counts": [
+            13,
+            791,
+            14,
+            11,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 8,
+          "prefix": [
+            2,
+            0,
+            2,
+            0,
+            3,
+            1,
+            1,
+            3
+          ],
+          "rule_id": 36,
+          "source_score_bits": 1064.805254887084
+        },
+        {
+          "counts": [
+            16,
+            800,
+            12,
+            14,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 7,
+          "prefix": [
+            3,
+            2,
+            0,
+            1,
+            2,
+            3,
+            0
+          ],
+          "rule_id": 32,
+          "source_score_bits": 1050.4275703030128
+        }
+      ],
+      "selected_rows": 15,
+      "selected_source_repeat_coverage": 15400,
+      "selected_source_repeat_fraction": 0.31787313971969366,
+      "source_archive_sha256": "58d9b28b925ad46f84c7fe2ee194592f4c69fa59c568f3048a2573e958273cbd",
+      "source_repeat_events": 48447,
+      "source_trace_sha256": {
+        "sourceAB": "9ec20657f84286cb6405161d35d2c478287aba0c85fe393a03f5d163465038f5",
+        "sourceBA": "59cee0a5b7e18e073e83999eed503d7fade030d0f5d1ae08b3b4bdf77b22783a",
+        "sourceCD": "952656b3154cf4791612a5fc5e498735a921a5a8e55ab6143981b104bc117769",
+        "sourceDC": "49631e7979447c318cda42eda439098dd2d3271d7a561e67f718b8602b8c5649"
+      },
+      "usable_prefix_k_rows": 238,
+      "world": 80
+    },
+    {
+      "distinct_proper_prefixes": 152,
+      "exact_all_rows_bytes_with_grammar": 6681,
+      "exact_usable_rows_bytes_with_grammar": 4675,
+      "portable_bytes": 527,
+      "positive_mdl_rows": 147,
+      "prefix_k_rows": 377,
+      "rule_definitions": 64,
+      "selected": [
+        {
+          "counts": [
+            54,
+            48,
+            43,
+            1275,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            0,
+            2
+          ],
+          "rule_id": 13,
+          "source_score_bits": 1390.115630307389
+        },
+        {
+          "counts": [
+            24,
+            27,
+            973,
+            23,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 4,
+          "prefix": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "rule_id": 25,
+          "source_score_bits": 1389.13262438283
+        },
+        {
+          "counts": [
+            51,
+            17,
+            21,
+            1017,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 4,
+          "prefix": [
+            1,
+            3,
+            1,
+            0
+          ],
+          "rule_id": 55,
+          "source_score_bits": 1366.8582229974425
+        },
+        {
+          "counts": [
+            2285,
+            344,
+            1853,
+            2091,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 1,
+          "prefix": [
+            1
+          ],
+          "rule_id": 7,
+          "source_score_bits": 1299.523108157524
+        },
+        {
+          "counts": [
+            30,
+            990,
+            29,
+            30,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 4,
+          "prefix": [
+            0,
+            3,
+            0,
+            3
+          ],
+          "rule_id": 30,
+          "source_score_bits": 1249.2476842322485
+        },
+        {
+          "counts": [
+            192,
+            35,
+            22,
+            987,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 3,
+          "prefix": [
+            0,
+            3,
+            0
+          ],
+          "rule_id": 21,
+          "source_score_bits": 1247.942090570373
+        },
+        {
+          "counts": [
+            167,
+            84,
+            2072,
+            1177,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            0,
+            1
+          ],
+          "rule_id": 11,
+          "source_score_bits": 1239.2438757686218
+        },
+        {
+          "counts": [
+            13,
+            19,
+            15,
+            905,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            3,
+            2,
+            0,
+            3,
+            0
+          ],
+          "rule_id": 64,
+          "source_score_bits": 1201.8030522661259
+        },
+        {
+          "counts": [
+            1169,
+            1988,
+            1154,
+            166,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            0,
+            3
+          ],
+          "rule_id": 21,
+          "source_score_bits": 1192.623609510364
+        },
+        {
+          "counts": [
+            163,
+            1982,
+            162,
+            375,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            2,
+            2
+          ],
+          "rule_id": 57,
+          "source_score_bits": 1187.038234051704
+        },
+        {
+          "counts": [
+            10,
+            914,
+            21,
+            23,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            1,
+            0,
+            2,
+            3,
+            0
+          ],
+          "rule_id": 28,
+          "source_score_bits": 1182.4221190933338
+        },
+        {
+          "counts": [
+            18,
+            12,
+            15,
+            856,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 7,
+          "prefix": [
+            0,
+            2,
+            3,
+            1,
+            3,
+            1,
+            0
+          ],
+          "rule_id": 32,
+          "source_score_bits": 1150.7468489426115
+        },
+        {
+          "counts": [
+            22,
+            910,
+            40,
+            18,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            0,
+            3,
+            0,
+            3,
+            1
+          ],
+          "rule_id": 30,
+          "source_score_bits": 1126.5865683440857
+        },
+        {
+          "counts": [
+            23,
+            21,
+            26,
+            973,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            1,
+            0,
+            2
+          ],
+          "rule_id": 20,
+          "source_score_bits": 1109.909283959578
+        },
+        {
+          "counts": [
+            17,
+            25,
+            17,
+            864,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 6,
+          "prefix": [
+            0,
+            1,
+            2,
+            3,
+            2,
+            0
+          ],
+          "rule_id": 33,
+          "source_score_bits": 1103.909075088901
+        }
+      ],
+      "selected_rows": 15,
+      "selected_source_repeat_coverage": 20768,
+      "selected_source_repeat_fraction": 0.4256871707627032,
+      "source_archive_sha256": "2cdf49e8e982fafdc9330321cbf338832788e7e14d4a387badcaddfcd06bacf2",
+      "source_repeat_events": 48787,
+      "source_trace_sha256": {
+        "sourceAB": "44aecbb195fccfe19ef44fcfc6795c1ef8ede6f87e02cddbee509232df7aa9b9",
+        "sourceBA": "1c906316a0c2bba2fa7224376394f059bc985bbf8a74704f663b436492cdd711",
+        "sourceCD": "7da0fc0cec161d3dd43331c9df186d29f4bc967fba50211c70d494a851b35b86",
+        "sourceDC": "abf1ff71325bc41b23a45a5a0961f1b5160a3e8721caaed08bc5d014a275c339"
+      },
+      "usable_prefix_k_rows": 259,
+      "world": 81
+    },
+    {
+      "distinct_proper_prefixes": 161,
+      "exact_all_rows_bytes_with_grammar": 7038,
+      "exact_usable_rows_bytes_with_grammar": 4777,
+      "portable_bytes": 527,
+      "positive_mdl_rows": 156,
+      "prefix_k_rows": 398,
+      "rule_definitions": 64,
+      "selected": [
+        {
+          "counts": [
+            1215,
+            4303,
+            1196,
+            196,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            2,
+            3
+          ],
+          "rule_id": 9,
+          "source_score_bits": 3832.6886542251073
+        },
+        {
+          "counts": [
+            70,
+            2193,
+            96,
+            64,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            3,
+            2,
+            3
+          ],
+          "rule_id": 35,
+          "source_score_bits": 2861.732649673602
+        },
+        {
+          "counts": [
+            2554,
+            4548,
+            2073,
+            508,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 1,
+          "prefix": [
+            3
+          ],
+          "rule_id": 14,
+          "source_score_bits": 2796.698616227802
+        },
+        {
+          "counts": [
+            959,
+            84,
+            2897,
+            381,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            2,
+            3,
+            1
+          ],
+          "rule_id": 12,
+          "source_score_bits": 2390.567113794357
+        },
+        {
+          "counts": [
+            285,
+            173,
+            497,
+            2743,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            2
+          ],
+          "rule_id": 7,
+          "source_score_bits": 1952.1438949422018
+        },
+        {
+          "counts": [
+            1500,
+            256,
+            3351,
+            1622,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 1,
+          "prefix": [
+            1
+          ],
+          "rule_id": 54,
+          "source_score_bits": 1662.437470623515
+        },
+        {
+          "counts": [
+            2864,
+            2954,
+            1119,
+            602,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            0
+          ],
+          "rule_id": 8,
+          "source_score_bits": 1619.6752673163815
+        },
+        {
+          "counts": [
+            26,
+            1067,
+            24,
+            22,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 4,
+          "prefix": [
+            2,
+            3,
+            2,
+            3
+          ],
+          "rule_id": 22,
+          "source_score_bits": 1439.303054003947
+        },
+        {
+          "counts": [
+            50,
+            41,
+            1790,
+            317,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 4,
+          "prefix": [
+            3,
+            2,
+            3,
+            1
+          ],
+          "rule_id": 35,
+          "source_score_bits": 1363.856716754156
+        },
+        {
+          "counts": [
+            31,
+            973,
+            16,
+            28,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 4,
+          "prefix": [
+            2,
+            1,
+            3,
+            0
+          ],
+          "rule_id": 24,
+          "source_score_bits": 1332.369522640237
+        },
+        {
+          "counts": [
+            1111,
+            140,
+            1325,
+            1169,
+            0,
+            0,
+            0
+          ],
+          "k": 5,
+          "length": 1,
+          "prefix": [
+            1
+          ],
+          "rule_id": 54,
+          "source_score_bits": 1266.6190956119551
+        },
+        {
+          "counts": [
+            2206,
+            2734,
+            232,
+            572,
+            0,
+            0,
+            0
+          ],
+          "k": 5,
+          "length": 1,
+          "prefix": [
+            0
+          ],
+          "rule_id": 8,
+          "source_score_bits": 1253.8825640281998
+        },
+        {
+          "counts": [
+            18,
+            886,
+            13,
+            24,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 6,
+          "prefix": [
+            3,
+            2,
+            2,
+            1,
+            3,
+            0
+          ],
+          "rule_id": 36,
+          "source_score_bits": 1213.78771812116
+        },
+        {
+          "counts": [
+            49,
+            935,
+            20,
+            40,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            2,
+            3,
+            1,
+            2,
+            0
+          ],
+          "rule_id": 30,
+          "source_score_bits": 1210.44308953558
+        },
+        {
+          "counts": [
+            17,
+            19,
+            796,
+            36,
+            0,
+            0,
+            0
+          ],
+          "k": 6,
+          "length": 4,
+          "prefix": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "rule_id": 48,
+          "source_score_bits": 1186.926204476215
+        }
+      ],
+      "selected_rows": 15,
+      "selected_source_repeat_coverage": 27469,
+      "selected_source_repeat_fraction": 0.5604088460910723,
+      "source_archive_sha256": "61f3393e6545b1fbbd2dd5946ca669ebc64c1e9d899b2cc27a5ccbdc44068f21",
+      "source_repeat_events": 49016,
+      "source_trace_sha256": {
+        "sourceAB": "9101b17ec44a87263c67a05f5a5f29aa4c22729f0454312c7b9aba67e3a7db08",
+        "sourceBA": "6bb29e80a7bc9315696827018d6ae0cd2282b9085b88be34747c6439746daf55",
+        "sourceCD": "62db86a2668b6b6301a68c504c2450590f3eec745c0ccb7c95dee346c88e7505",
+        "sourceDC": "27e047b67bc4e8d6b83123ee80d51d079ba26ce9703b630c9479fa539a79f686"
+      },
+      "usable_prefix_k_rows": 265,
+      "world": 82
+    },
+    {
+      "distinct_proper_prefixes": 165,
+      "exact_all_rows_bytes_with_grammar": 6664,
+      "exact_usable_rows_bytes_with_grammar": 4658,
+      "portable_bytes": 527,
+      "positive_mdl_rows": 155,
+      "prefix_k_rows": 376,
+      "rule_definitions": 64,
+      "selected": [
+        {
+          "counts": [
+            313,
+            1447,
+            222,
+            4469,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            2
+          ],
+          "rule_id": 7,
+          "source_score_bits": 2804.332270888487
+        },
+        {
+          "counts": [
+            1975,
+            172,
+            142,
+            1796,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            1,
+            2
+          ],
+          "rule_id": 9,
+          "source_score_bits": 2324.585759775934
+        },
+        {
+          "counts": [
+            828,
+            112,
+            84,
+            1549,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            3,
+            1,
+            2
+          ],
+          "rule_id": 26,
+          "source_score_bits": 2175.57857220393
+        },
+        {
+          "counts": [
+            3102,
+            274,
+            2884,
+            1441,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 1,
+          "prefix": [
+            1
+          ],
+          "rule_id": 8,
+          "source_score_bits": 2143.6213868667405
+        },
+        {
+          "counts": [
+            3514,
+            2718,
+            2951,
+            454,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            0
+          ],
+          "rule_id": 10,
+          "source_score_bits": 2102.429702242297
+        },
+        {
+          "counts": [
+            2300,
+            3733,
+            370,
+            2239,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 1,
+          "prefix": [
+            2
+          ],
+          "rule_id": 7,
+          "source_score_bits": 1973.43270155265
+        },
+        {
+          "counts": [
+            783,
+            115,
+            1652,
+            64,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            3,
+            1
+          ],
+          "rule_id": 21,
+          "source_score_bits": 1886.7636420023257
+        },
+        {
+          "counts": [
+            124,
+            81,
+            68,
+            1901,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            1,
+            2
+          ],
+          "rule_id": 9,
+          "source_score_bits": 1834.7497092617423
+        },
+        {
+          "counts": [
+            2329,
+            309,
+            3067,
+            1293,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            1
+          ],
+          "rule_id": 8,
+          "source_score_bits": 1830.1362958837776
+        },
+        {
+          "counts": [
+            728,
+            56,
+            46,
+            1162,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 5,
+          "prefix": [
+            1,
+            2,
+            3,
+            1,
+            2
+          ],
+          "rule_id": 18,
+          "source_score_bits": 1731.3889333065406
+        },
+        {
+          "counts": [
+            48,
+            22,
+            15,
+            939,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 5,
+          "prefix": [
+            2,
+            3,
+            3,
+            2,
+            1
+          ],
+          "rule_id": 55,
+          "source_score_bits": 1540.8095840931187
+        },
+        {
+          "counts": [
+            1638,
+            129,
+            1583,
+            117,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            3,
+            1
+          ],
+          "rule_id": 21,
+          "source_score_bits": 1447.0951420086426
+        },
+        {
+          "counts": [
+            15,
+            13,
+            13,
+            831,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 7,
+          "prefix": [
+            0,
+            3,
+            1,
+            2,
+            3,
+            1,
+            2
+          ],
+          "rule_id": 64,
+          "source_score_bits": 1378.0425852137018
+        },
+        {
+          "counts": [
+            262,
+            41,
+            1218,
+            41,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 4,
+          "prefix": [
+            1,
+            2,
+            3,
+            1
+          ],
+          "rule_id": 18,
+          "source_score_bits": 1376.35871330331
+        },
+        {
+          "counts": [
+            33,
+            33,
+            22,
+            888,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 6,
+          "prefix": [
+            3,
+            1,
+            2,
+            3,
+            1,
+            2
+          ],
+          "rule_id": 26,
+          "source_score_bits": 1370.4102115664878
+        }
+      ],
+      "selected_rows": 15,
+      "selected_source_repeat_coverage": 27871,
+      "selected_source_repeat_fraction": 0.5680655483765771,
+      "source_archive_sha256": "db0c0939edce098876b7df3c51d0d00b2819e000d8393cd0ba4c2d0027854751",
+      "source_repeat_events": 49063,
+      "source_trace_sha256": {
+        "sourceAB": "65fa78229d4331a0746c137d87e62fb2fba8940d13430573f6aeb1a1563179eb",
+        "sourceBA": "94443a407d1bc1439e9d5c65b043a9fff1b875192ff8306ba95918ada4e8058d",
+        "sourceCD": "a7499b082130cf14d77c23d65fc8e018056a9690076bd3fd1fc6ba2167f993d4",
+        "sourceDC": "fcc9ee9b5e3861e5066dae94a009280fe2078d5c9f0ccbae9f7377868494f044"
+      },
+      "usable_prefix_k_rows": 258,
+      "world": 83
+    },
+    {
+      "distinct_proper_prefixes": 164,
+      "exact_all_rows_bytes_with_grammar": 6902,
+      "exact_usable_rows_bytes_with_grammar": 4913,
+      "portable_bytes": 527,
+      "positive_mdl_rows": 151,
+      "prefix_k_rows": 390,
+      "rule_definitions": 64,
+      "selected": [
+        {
+          "counts": [
+            1386,
+            2271,
+            2027,
+            214,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            2
+          ],
+          "rule_id": 8,
+          "source_score_bits": 1656.0239339955083
+        },
+        {
+          "counts": [
+            1256,
+            2468,
+            159,
+            141,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            1,
+            3
+          ],
+          "rule_id": 18,
+          "source_score_bits": 1448.751117698972
+        },
+        {
+          "counts": [
+            987,
+            1873,
+            1056,
+            130,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            0,
+            2
+          ],
+          "rule_id": 36,
+          "source_score_bits": 1444.3322036775774
+        },
+        {
+          "counts": [
+            72,
+            45,
+            929,
+            1002,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 4,
+          "prefix": [
+            2,
+            1,
+            3,
+            1
+          ],
+          "rule_id": 24,
+          "source_score_bits": 1380.994245845983
+        },
+        {
+          "counts": [
+            70,
+            2048,
+            87,
+            85,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            2,
+            1,
+            3
+          ],
+          "rule_id": 14,
+          "source_score_bits": 1370.3984288758988
+        },
+        {
+          "counts": [
+            17,
+            924,
+            24,
+            30,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            2,
+            0,
+            3,
+            3,
+            0
+          ],
+          "rule_id": 31,
+          "source_score_bits": 1296.576199425107
+        },
+        {
+          "counts": [
+            3930,
+            4012,
+            1363,
+            355,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 1,
+          "prefix": [
+            2
+          ],
+          "rule_id": 8,
+          "source_score_bits": 1290.0195019841428
+        },
+        {
+          "counts": [
+            1095,
+            66,
+            52,
+            1017,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            3,
+            2,
+            1
+          ],
+          "rule_id": 57,
+          "source_score_bits": 1247.3898906128522
+        },
+        {
+          "counts": [
+            3204,
+            1343,
+            2280,
+            2778,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 1,
+          "prefix": [
+            1
+          ],
+          "rule_id": 13,
+          "source_score_bits": 1237.8401940826348
+        },
+        {
+          "counts": [
+            14,
+            843,
+            16,
+            24,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 7,
+          "prefix": [
+            2,
+            2,
+            0,
+            3,
+            1,
+            0,
+            3
+          ],
+          "rule_id": 62,
+          "source_score_bits": 1207.5741085337572
+        },
+        {
+          "counts": [
+            56,
+            973,
+            43,
+            67,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            1,
+            3
+          ],
+          "rule_id": 18,
+          "source_score_bits": 1206.7286057024946
+        },
+        {
+          "counts": [
+            443,
+            159,
+            1382,
+            2217,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            1,
+            0
+          ],
+          "rule_id": 13,
+          "source_score_bits": 1130.6144946901368
+        },
+        {
+          "counts": [
+            15,
+            22,
+            20,
+            948,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            2,
+            0,
+            2,
+            2,
+            0
+          ],
+          "rule_id": 22,
+          "source_score_bits": 1126.799962305862
+        },
+        {
+          "counts": [
+            13,
+            753,
+            10,
+            16,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            1,
+            0,
+            3,
+            1,
+            3
+          ],
+          "rule_id": 25,
+          "source_score_bits": 1104.8540671083945
+        },
+        {
+          "counts": [
+            208,
+            2192,
+            360,
+            86,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            3,
+            2
+          ],
+          "rule_id": 57,
+          "source_score_bits": 1076.1510036334573
+        }
+      ],
+      "selected_rows": 15,
+      "selected_source_repeat_coverage": 27103,
+      "selected_source_repeat_fraction": 0.5527163716453218,
+      "source_archive_sha256": "4f7109b9ad5f09695d5918c0311cfb39a061bd04ecc5db19f098e78d64148e6f",
+      "source_repeat_events": 49036,
+      "source_trace_sha256": {
+        "sourceAB": "07b7cc7a339242f16245c63cda81db00f2446dc8d82218720d267b99ed5ff986",
+        "sourceBA": "3ed8ab698270e837e08016cc0579cdfa091cc317df8a982ff94788f19f4f19e7",
+        "sourceCD": "07a68498bd3a090f675de61a980776e95901d02fc17533508b86cd419ae73ca5",
+        "sourceDC": "0089b41029d4be883c2f4ad3dd4ee83779892ec35e2df4e992177311caa99f06"
+      },
+      "usable_prefix_k_rows": 273,
+      "world": 84
+    },
+    {
+      "distinct_proper_prefixes": 172,
+      "exact_all_rows_bytes_with_grammar": 7531,
+      "exact_usable_rows_bytes_with_grammar": 5610,
+      "portable_bytes": 527,
+      "positive_mdl_rows": 197,
+      "prefix_k_rows": 427,
+      "rule_definitions": 64,
+      "selected": [
+        {
+          "counts": [
+            158,
+            117,
+            3220,
+            128,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            1,
+            3
+          ],
+          "rule_id": 10,
+          "source_score_bits": 2708.5273856877197
+        },
+        {
+          "counts": [
+            1490,
+            2834,
+            2557,
+            273,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            3
+          ],
+          "rule_id": 9,
+          "source_score_bits": 2447.706037271545
+        },
+        {
+          "counts": [
+            1303,
+            2631,
+            1327,
+            186,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            0,
+            3
+          ],
+          "rule_id": 15,
+          "source_score_bits": 1903.9341446359902
+        },
+        {
+          "counts": [
+            48,
+            47,
+            2047,
+            49,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            1,
+            1,
+            3
+          ],
+          "rule_id": 13,
+          "source_score_bits": 1863.319695023076
+        },
+        {
+          "counts": [
+            33,
+            1409,
+            31,
+            31,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            0,
+            0,
+            3,
+            2,
+            1
+          ],
+          "rule_id": 16,
+          "source_score_bits": 1674.5093837276675
+        },
+        {
+          "counts": [
+            198,
+            1387,
+            57,
+            34,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 4,
+          "prefix": [
+            3,
+            2,
+            0,
+            3
+          ],
+          "rule_id": 60,
+          "source_score_bits": 1547.5062638340842
+        },
+        {
+          "counts": [
+            35,
+            1692,
+            283,
+            61,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 4,
+          "prefix": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "rule_id": 16,
+          "source_score_bits": 1491.531762633524
+        },
+        {
+          "counts": [
+            154,
+            1787,
+            316,
+            89,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            3,
+            2
+          ],
+          "rule_id": 60,
+          "source_score_bits": 1482.486938525915
+        },
+        {
+          "counts": [
+            75,
+            49,
+            49,
+            1483,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            0,
+            0
+          ],
+          "rule_id": 11,
+          "source_score_bits": 1455.055741276455
+        },
+        {
+          "counts": [
+            1024,
+            60,
+            1089,
+            56,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 3,
+          "prefix": [
+            0,
+            0,
+            3
+          ],
+          "rule_id": 14,
+          "source_score_bits": 1434.9896090281027
+        },
+        {
+          "counts": [
+            20,
+            885,
+            50,
+            70,
+            0,
+            0,
+            0
+          ],
+          "k": 5,
+          "length": 3,
+          "prefix": [
+            0,
+            1,
+            0
+          ],
+          "rule_id": 25,
+          "source_score_bits": 1419.372391666609
+        },
+        {
+          "counts": [
+            65,
+            43,
+            45,
+            1416,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 3,
+          "prefix": [
+            2,
+            0,
+            0
+          ],
+          "rule_id": 24,
+          "source_score_bits": 1402.2166999774192
+        },
+        {
+          "counts": [
+            16,
+            15,
+            875,
+            11,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 6,
+          "prefix": [
+            0,
+            0,
+            3,
+            0,
+            3,
+            1
+          ],
+          "rule_id": 58,
+          "source_score_bits": 1368.9018654411377
+        },
+        {
+          "counts": [
+            33,
+            22,
+            919,
+            23,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            1,
+            2,
+            0,
+            0,
+            3
+          ],
+          "rule_id": 38,
+          "source_score_bits": 1367.9302379804865
+        },
+        {
+          "counts": [
+            116,
+            101,
+            81,
+            1604,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            1,
+            2
+          ],
+          "rule_id": 20,
+          "source_score_bits": 1361.5875998482006
+        }
+      ],
+      "selected_rows": 15,
+      "selected_source_repeat_coverage": 18065,
+      "selected_source_repeat_fraction": 0.36796757241210737,
+      "source_archive_sha256": "f7ac8cee5cc3906dfad9ea7337d592da2e880a877daf4e4109ffb952e24f020a",
+      "source_repeat_events": 49094,
+      "source_trace_sha256": {
+        "sourceAB": "3da5417a0ec83d8e314a38df1b1445c8fd632c0e0278cc5c81666d2470402be0",
+        "sourceBA": "f37dc9aaa1fc08115fed990ae3ebc721cf12d8c9a7f52befad8dcbf06f1d2bd9",
+        "sourceCD": "c6a3ef4af8726cc539cb7ef7f8dd91fa373352995bb21721df382024622dbf25",
+        "sourceDC": "33aed04276b976af51ae9aad488c679635311f77f22c690c719d0a1c00aaaf86"
+      },
+      "usable_prefix_k_rows": 314,
+      "world": 85
+    },
+    {
+      "distinct_proper_prefixes": 150,
+      "exact_all_rows_bytes_with_grammar": 6375,
+      "exact_usable_rows_bytes_with_grammar": 4454,
+      "portable_bytes": 527,
+      "positive_mdl_rows": 143,
+      "prefix_k_rows": 359,
+      "rule_definitions": 64,
+      "selected": [
+        {
+          "counts": [
+            3628,
+            519,
+            3547,
+            1476,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            1
+          ],
+          "rule_id": 7,
+          "source_score_bits": 2307.256349176417
+        },
+        {
+          "counts": [
+            851,
+            329,
+            3190,
+            1304,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 1,
+          "prefix": [
+            1
+          ],
+          "rule_id": 7,
+          "source_score_bits": 2068.016612081796
+        },
+        {
+          "counts": [
+            85,
+            32,
+            1304,
+            71,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            3,
+            2,
+            1
+          ],
+          "rule_id": 16,
+          "source_score_bits": 1689.8275699390174
+        },
+        {
+          "counts": [
+            2070,
+            2851,
+            310,
+            2518,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 1,
+          "prefix": [
+            2
+          ],
+          "rule_id": 69,
+          "source_score_bits": 1663.009079448663
+        },
+        {
+          "counts": [
+            415,
+            1710,
+            42,
+            54,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 3,
+          "prefix": [
+            1,
+            0,
+            2
+          ],
+          "rule_id": 26,
+          "source_score_bits": 1596.1423486051317
+        },
+        {
+          "counts": [
+            131,
+            1375,
+            87,
+            151,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            3,
+            2
+          ],
+          "rule_id": 16,
+          "source_score_bits": 1535.513273346067
+        },
+        {
+          "counts": [
+            358,
+            3133,
+            234,
+            1221,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            3,
+            0
+          ],
+          "rule_id": 52,
+          "source_score_bits": 1503.9069082555766
+        },
+        {
+          "counts": [
+            2382,
+            3234,
+            267,
+            1448,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            2
+          ],
+          "rule_id": 69,
+          "source_score_bits": 1496.9813366311362
+        },
+        {
+          "counts": [
+            79,
+            1002,
+            13,
+            48,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 4,
+          "prefix": [
+            1,
+            2,
+            3,
+            3
+          ],
+          "rule_id": 60,
+          "source_score_bits": 1408.2093426538909
+        },
+        {
+          "counts": [
+            22,
+            14,
+            963,
+            14,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 5,
+          "prefix": [
+            1,
+            0,
+            3,
+            3,
+            3
+          ],
+          "rule_id": 30,
+          "source_score_bits": 1396.083908309295
+        },
+        {
+          "counts": [
+            37,
+            933,
+            11,
+            25,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 5,
+          "prefix": [
+            0,
+            1,
+            2,
+            3,
+            3
+          ],
+          "rule_id": 63,
+          "source_score_bits": 1377.9884722577515
+        },
+        {
+          "counts": [
+            21,
+            909,
+            17,
+            18,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 6,
+          "prefix": [
+            1,
+            0,
+            3,
+            3,
+            3,
+            2
+          ],
+          "rule_id": 30,
+          "source_score_bits": 1338.8529900836477
+        },
+        {
+          "counts": [
+            51,
+            61,
+            1094,
+            51,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 3,
+          "prefix": [
+            3,
+            3,
+            1
+          ],
+          "rule_id": 27,
+          "source_score_bits": 1322.1325106556633
+        },
+        {
+          "counts": [
+            21,
+            27,
+            15,
+            894,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 6,
+          "prefix": [
+            0,
+            2,
+            3,
+            3,
+            0,
+            1
+          ],
+          "rule_id": 55,
+          "source_score_bits": 1310.7064854091916
+        },
+        {
+          "counts": [
+            42,
+            32,
+            66,
+            983,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 4,
+          "prefix": [
+            3,
+            3,
+            0,
+            1
+          ],
+          "rule_id": 42,
+          "source_score_bits": 1291.6962526707593
+        }
+      ],
+      "selected_rows": 15,
+      "selected_source_repeat_coverage": 27635,
+      "selected_source_repeat_fraction": 0.5638760227713278,
+      "source_archive_sha256": "ff46c402c4165664f0907b5d5769c718bef7f8dd5b19aee3814983064bb94832",
+      "source_repeat_events": 49009,
+      "source_trace_sha256": {
+        "sourceAB": "c3c54d028f942b4a451a118f3c56e79cdf463a8af7d6d3fc8a4825f5d045ddcf",
+        "sourceBA": "63c3f07f14367605fadad848a382e099f0ea69745513374f14b44f2aa1e8ff3d",
+        "sourceCD": "af26d9950f9466dae18287b46d5608be0ad6d0a8749ee146fd08a01a0001e4ca",
+        "sourceDC": "319bc1ebf69dfdc796f8080aa8669533c2747d1ab6300d6fbcb3036f3ac1cf56"
+      },
+      "usable_prefix_k_rows": 246,
+      "world": 86
+    },
+    {
+      "distinct_proper_prefixes": 157,
+      "exact_all_rows_bytes_with_grammar": 6919,
+      "exact_usable_rows_bytes_with_grammar": 5134,
+      "portable_bytes": 527,
+      "positive_mdl_rows": 157,
+      "prefix_k_rows": 391,
+      "rule_definitions": 64,
+      "selected": [
+        {
+          "counts": [
+            1622,
+            2517,
+            5412,
+            1584,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            0
+          ],
+          "rule_id": 7,
+          "source_score_bits": 1657.7329755694855
+        },
+        {
+          "counts": [
+            35,
+            920,
+            44,
+            27,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 4,
+          "prefix": [
+            1,
+            1,
+            3,
+            3
+          ],
+          "rule_id": 29,
+          "source_score_bits": 1423.8228604810176
+        },
+        {
+          "counts": [
+            214,
+            1130,
+            151,
+            100,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            3,
+            3
+          ],
+          "rule_id": 16,
+          "source_score_bits": 1362.2397407028518
+        },
+        {
+          "counts": [
+            790,
+            90,
+            96,
+            1230,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 2,
+          "prefix": [
+            1,
+            1
+          ],
+          "rule_id": 29,
+          "source_score_bits": 1260.3556587563085
+        },
+        {
+          "counts": [
+            1739,
+            3329,
+            655,
+            1005,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 1,
+          "prefix": [
+            3
+          ],
+          "rule_id": 8,
+          "source_score_bits": 1249.5999543119665
+        },
+        {
+          "counts": [
+            19,
+            13,
+            59,
+            980,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 4,
+          "prefix": [
+            1,
+            3,
+            0,
+            1
+          ],
+          "rule_id": 59,
+          "source_score_bits": 1216.821085528797
+        },
+        {
+          "counts": [
+            22,
+            17,
+            17,
+            866,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 6,
+          "prefix": [
+            2,
+            1,
+            0,
+            2,
+            3,
+            0
+          ],
+          "rule_id": 31,
+          "source_score_bits": 1145.5169345705453
+        },
+        {
+          "counts": [
+            43,
+            22,
+            972,
+            21,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 4,
+          "prefix": [
+            3,
+            3,
+            1,
+            2
+          ],
+          "rule_id": 25,
+          "source_score_bits": 1134.2535456856945
+        },
+        {
+          "counts": [
+            22,
+            24,
+            930,
+            32,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 5,
+          "prefix": [
+            2,
+            0,
+            2,
+            3,
+            0
+          ],
+          "rule_id": 28,
+          "source_score_bits": 1100.3776606662573
+        },
+        {
+          "counts": [
+            16,
+            13,
+            18,
+            829,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 7,
+          "prefix": [
+            3,
+            0,
+            2,
+            1,
+            3,
+            0,
+            1
+          ],
+          "rule_id": 53,
+          "source_score_bits": 1098.35205725401
+        },
+        {
+          "counts": [
+            53,
+            79,
+            72,
+            1065,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 3,
+          "prefix": [
+            3,
+            0,
+            1
+          ],
+          "rule_id": 24,
+          "source_score_bits": 1096.486469061119
+        },
+        {
+          "counts": [
+            14,
+            20,
+            13,
+            832,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 7,
+          "prefix": [
+            2,
+            0,
+            2,
+            3,
+            0,
+            2,
+            1
+          ],
+          "rule_id": 33,
+          "source_score_bits": 1094.2306249072617
+        },
+        {
+          "counts": [
+            25,
+            21,
+            873,
+            15,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 6,
+          "prefix": [
+            0,
+            3,
+            2,
+            2,
+            3,
+            0
+          ],
+          "rule_id": 32,
+          "source_score_bits": 1085.9304123256077
+        },
+        {
+          "counts": [
+            387,
+            195,
+            1333,
+            93,
+            0,
+            0,
+            0
+          ],
+          "k": 3,
+          "length": 2,
+          "prefix": [
+            3,
+            1
+          ],
+          "rule_id": 18,
+          "source_score_bits": 1082.284714480431
+        },
+        {
+          "counts": [
+            29,
+            102,
+            20,
+            976,
+            0,
+            0,
+            0
+          ],
+          "k": 4,
+          "length": 4,
+          "prefix": [
+            3,
+            0,
+            2,
+            1
+          ],
+          "rule_id": 53,
+          "source_score_bits": 1071.5685647040361
+        }
+      ],
+      "selected_rows": 15,
+      "selected_source_repeat_coverage": 22249,
+      "selected_source_repeat_fraction": 0.45382967873533914,
+      "source_archive_sha256": "45dfad5ce9b1413c0c05ea97a3af9ad048ee31f2790850c237e55951271bae5e",
+      "source_repeat_events": 49025,
+      "source_trace_sha256": {
+        "sourceAB": "bc3322680991f48a256c2d2bdb344e7f856ac3da62f639cc21c08c8d6c5e651b",
+        "sourceBA": "c3be54c7f3c2df5dc69b213f39efc9019505b69f6faf8a374ed6f2d487e83f79",
+        "sourceCD": "7340ad3f4f45d6a55235d657899ed9ceb8b16346ccaf6dbb18cdbe362a847560",
+        "sourceDC": "2784212a68577926fc6366cf85b9cfd6eca6ce40d8cbea2ca1a0e0e0621ff298"
+      },
+      "usable_prefix_k_rows": 286,
+      "world": 87
+    }
+  ]
+}

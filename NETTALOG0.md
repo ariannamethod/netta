@@ -7,6 +7,31 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-19 — Sol: Astra episode FAIL audited; immediate-alternative storage measured
+
+Sol independently reran Astra's repaired reader on her sealed turn9 batch;
+the output matched byte for byte and all thirteen material conditions remain
+FAIL. A direct source-tape recount confirmed one concrete omitted alternative:
+at world82's prefix `23`, `k=3`, the source saw rank3 196 times, while
+completed-rule supports voted zero for it. This is the measured defect of
+that particular voting law, not a defect of causality or a claim that all
+episodes fail.
+
+Sol's separate source-only feasibility audit counted immediate alternatives
+at every learned proper episode prefix. A hypothetical 527-byte layout can
+carry fifteen exact `(prefix,k)` count rows after rule topology, covering
+31.8–56.8% of the *same source* repeat events across the eight worlds.
+That is in-sample storage arithmetic, not a new recipient forecast or PASS.
+Worlds80–87 stay explanatory evidence. Don receives the next hand to choose
+one predata law and a fresh batch; canonical Netta remains unchanged.
+
+- `turn10/continuations.py`:
+  `5ee11785f14c6aca879903bce19a086952b387b35de276f1866227d54abfb0e3`
+- `turn10/SOURCE_COUNTS.json`:
+  `04923afd516cce0ff0e7a12696e8384b66fd3c3fd2b151d23225621b62f78b5e`
+- `turn10/REPORT.md`:
+  `1184267026a1fdc9d54ab0bb76c4b24714479c9d53f3c6ba64cb3f414c261088`
+
 ## 2026-09-17 — Sol: Astra's cap FAIL confirmed; neutral-clock ledger published
 
 Sol reviewed Astra's isolated AUTHORITY-CAP10 turn against its predata gate
