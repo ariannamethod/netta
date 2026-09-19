@@ -1,0 +1,169 @@
+{
+  "equivariance": {
+    "slow": {
+      "episode": [
+        0.0,
+        0.0
+      ],
+      "isolated": [
+        0.0,
+        0.0
+      ],
+      "frequency": [
+        0.0,
+        0.0
+      ],
+      "reverse": [
+        0.0,
+        0.0
+      ],
+      "permuted": [
+        0.0,
+        0.0
+      ],
+      "flat": [
+        0.0,
+        0.0
+      ],
+      "row": [
+        0.0,
+        0.0
+      ]
+    },
+    "fast": {
+      "episode": [
+        0.0,
+        0.0
+      ],
+      "isolated": [
+        0.0,
+        0.0
+      ],
+      "frequency": [
+        0.0,
+        0.0
+      ],
+      "reverse": [
+        0.0,
+        0.0
+      ],
+      "permuted": [
+        0.0,
+        0.0
+      ],
+      "flat": [
+        0.0,
+        0.0
+      ],
+      "row": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "surface": {
+    "fast_changed_tails": [
+      350.9043333828247,
+      1014.5565343884366,
+      607.3708630494102,
+      1.6905594203261671,
+      887.911410375274,
+      338.95695612885913,
+      910.2991922565591,
+      630.6540005909833
+    ],
+    "fast_changed_tail_mean": 592.7929811990841,
+    "fast_changed_tail_positive": 8,
+    "fast_full_gains": [
+      1463.7651015198164,
+      2454.079594134582,
+      1939.5075336184498,
+      432.3000621511162,
+      2496.919365551872,
+      924.319461701255,
+      2279.309271191935,
+      1678.321499641708
+    ],
+    "fast_full_gain_bpb": 0.10428254615410411,
+    "fast_full_positive": 8,
+    "slow_changed_tails": [
+      355.7545220447382,
+      1021.2126623423067,
+      618.554284840804,
+      16.30539971347997,
+      893.2604010056664,
+      346.0378462118722,
+      921.5622853297873,
+      641.8375972308465
+    ],
+    "slow_changed_tail_mean": 601.8156248399376,
+    "slow_full_gains": [
+      1479.6594440391048,
+      2471.9273386075215,
+      1961.8554094453455,
+      451.88151487393293,
+      2513.468680377286,
+      942.5505859816215,
+      2301.8150109893577,
+      1700.674807555344
+    ],
+    "slow_full_gain_bpb": 0.10546747430320369,
+    "episode_admissions": {
+      "slow": [
+        126,
+        120,
+        131,
+        130,
+        101,
+        149,
+        83,
+        106
+      ],
+      "fast": [
+        126,
+        120,
+        131,
+        130,
+        101,
+        149,
+        83,
+        106
+      ]
+    },
+    "early_prefix_deltas": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "bounds": {
+    "worst_prefix_gain": -0.9994519360420762,
+    "worst_fast_drawdown": 8.939953270717865,
+    "worst_slow_drawdown": 14.936315621750737,
+    "permuted_admissions": 0
+  },
+  "tests": {
+    "c1_prefix_identity": true,
+    "c1_mid_divergence": true,
+    "c1_whole_divergence": true,
+    "c1_bijection": true,
+    "c2_equivariance_full": true,
+    "c2_equivariance_early": true,
+    "c2_equivariance_admission": true,
+    "c3_recovery_tail_mean": true,
+    "c3_recovery_tail_count": true,
+    "c4_whole_life_gain": true,
+    "c4_whole_life_positive": true,
+    "c5_permuted_never_admitted": true,
+    "c6_prefix_bound": true,
+    "c6_fast_drawdown": true,
+    "c6_slow_drawdown": true,
+    "c6_normalized_new_exact": true
+  },
+  "gate_pass": true
+}
