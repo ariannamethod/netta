@@ -1,0 +1,21 @@
+{
+  "source_functions": {
+    "seed": "929e82fccedf503331877442b6c9d6bd018a098dd4c488dd7b80911d98a3fc27",
+    "generate_world": "7ff0161c9f4540c1d05371b91979cdc5509e778e107d65024804e25dad86d23c",
+    "emit": "1f37e01c1e7d5e52fa847b1dde07fe60987242297fef4a866b8a7f455b011b07",
+    "extract_world": "43ce4980b2f6d0bf5e66d115d517d3475c9506da0892e3b1ddfb6af78c28c579",
+    "source_tapes": "b85d7d968d049e574df805701614cef602748f8dd3cedc17a84f969359c621a3",
+    "patterns": "945f8ecae988f7a8b4635e2357431c36f3be398cf46a3148989e1fd2957ad374",
+    "count_pairs": "79541e9ea479e82e8496b540334aadc2b49d8d3f41dc40152a0a79718a26c11b",
+    "grow": "314d01c70491d9bfc724fdb78eea8a0214bfa54bc2fd77214654aa9e1479c785",
+    "expand_children": "f2f5d088a38a26e5a1b917911e6b506295a7bb0921551c7601512300d72e4753",
+    "information": "4b2d3d09d264ff1f778e04febc05bbea02b2a2168d215156e085f0d2481fcabb",
+    "branch_candidates": "9a81841547374422d3103f9cbd521e5f6190221861bc0c45b1ca2d885f8a20e5",
+    "select_branches": "4bf79ae5a14987bd97dfa135d041e33662708395d12caed579f77fa248709a7d",
+    "rotate_records": "6818889d9cfcf893970b247c7f73902f7ff6edf4acd856f2000b3cfd11aad7d3",
+    "branch_archive": "19b3a2b6a9d2e61bfdcde4f6bd2c6a2792b3f96dbc0cd395e67291ee6ffe4d35",
+    "learn_flat": "cd19c3fb69af0eb94d7913c29e8cbaa022e52ebe8ccf1059b850d314fa3aa004"
+  },
+  "unchanged": true,
+  "world_constants_and_namespace": "Changed per new protocol only"
+}

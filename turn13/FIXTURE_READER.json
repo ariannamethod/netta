@@ -1,0 +1,26 @@
+{
+  "adapter_correction": {
+    "correction": "Only the ad hoc fixture comparator changed; selected score independently equals isolated information-minus128.",
+    "field": "joint_selected[7].score",
+    "first_assumption": "joint marginal gain",
+    "first_attempt_exit": 1,
+    "fixture_changed": false,
+    "fixture_value": -36.29219252210005,
+    "marginal_value": 76.6194333469459,
+    "reader_changed": false
+  },
+  "archive_bytes": 452,
+  "archive_sha256": "5a5cb211fc598f136b27c4468f6d0f99372a639a07585d151f1b748daa0714dd",
+  "capacity": 24,
+  "exact_archive": true,
+  "fixture_sha256": "cc401c6f18e6480da99fa5086ea744d8f60042cf9b3e706d3c0e3be6835ac199",
+  "maximum_step_error": 0.0,
+  "reader_sha256": "293d897e9f70a817015a2d72834f025713f85ad864668c293417a33fff8f951f",
+  "rules": 29,
+  "scope": "Single supplied disjoint source fixture; complete joint choice/order/steps and exact archive. No protocol worlds or recipient forecasts.",
+  "selected_records": 20,
+  "selected_score_semantics": "Unchanged isolated information-minus128; marginal scores are joint_steps.marginal_gain.",
+  "source_events": 3072,
+  "source_gain": 4381.504334658306,
+  "verification_pass": true
+}

@@ -1,0 +1,9 @@
+{
+  "from": "astra turn12, retained locally; Oleg explicitly asks Astra for the next step",
+  "base_commit": "148bee15247840df38626373b819fd4c77e86a87",
+  "branch": "astra/turn12-information",
+  "previous_step": "../turn12",
+  "previous_verdict_sha256": "ab63a057c0409ebdc67dacaf9eff1c8c865f5fae5437291e3be5fd58383556e1",
+  "frozen_previous_code_unchanged": 11,
+  "scope": "One additional archive selection step in own existing worktree; previous artifacts sealed; no publication or live integration."
+}

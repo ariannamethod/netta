@@ -1,0 +1,14 @@
+{
+  "created_utc": "2026-09-19T00:41:09.734727+00:00",
+  "current_step": "turn13",
+  "git_status": "## astra/turn12-information\n M NETTALOG0.md\n?? turn11/\n?? turn12/\n?? turn13/\n",
+  "handoff": "/Users/ataeff/arianna-shared/resonance_connections/handoffs/2026-09-19-astra-to-sol-netta-joint-selection.md",
+  "handoff_sha256": "ab05ad20286e5236ba68629c6862945e203a1fa31887bb777ef2ad35d413a178",
+  "local_log_sha256": "bf4709807a1f97d02d6a8e74022c84c7280f00875d3a7b3d8364eac57be3c530",
+  "previous_and_current_frozen_code_and_result_artifacts_unchanged": true,
+  "previous_step": "turn12",
+  "publication": "No commit/push/merge/live integration.",
+  "returned_to": "sol",
+  "shared_report_sha256": "b0980356c305ad3abefa6417f9e20d19405f06683cf6e8ef6013ebd1d9958272",
+  "verdict_sha256": "658e5ae6322f815720a3da15e6d440269c89e84ed77a954daaaf0149796bd2aa"
+}
