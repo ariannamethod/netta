@@ -1,0 +1,3800 @@
+{
+  "gate_pass": true,
+  "independent_reader_pending": true,
+  "lives": [
+    {
+      "arms": {
+        "episode": {
+          "activation": 123,
+          "candidate_gain": 2348.1381370326094,
+          "gain": 2314.6756174310663,
+          "horizons": {
+            "1024": 0.7171893913719809,
+            "16384": 2314.6756174310663,
+            "4096": 481.40354465698215,
+            "8192": 1036.6208303032502
+          },
+          "matched_events": 13452,
+          "max_drawdown": 13.3545381466663,
+          "max_matched_length": 9,
+          "minimum": -0.2240177122133289,
+          "peak": 2315.204262147101,
+          "tail": 1278.0547871278116
+        },
+        "flat": {
+          "activation": 162,
+          "candidate_gain": 1545.2938008766455,
+          "gain": 1511.6367071524191,
+          "horizons": {
+            "1024": -0.9988800889583174,
+            "16384": 1511.6367071524191,
+            "4096": 282.77269438827835,
+            "8192": 614.4954321880906
+          },
+          "matched_events": 13190,
+          "max_drawdown": 13.874833496153656,
+          "max_matched_length": 5,
+          "minimum": -0.9988800889583207,
+          "peak": 1511.7196316167426,
+          "tail": 897.1412749643251
+        },
+        "frequency": {
+          "activation": 2667,
+          "candidate_gain": 1507.117882852692,
+          "gain": 1473.2353253853787,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 1473.2353253853787,
+            "4096": 189.20479391937232,
+            "8192": 591.3798184046937
+          },
+          "matched_events": 14661,
+          "max_drawdown": 12.891459781724109,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 1474.3786634676298,
+          "tail": 881.8555069806815
+        },
+        "isolated": {
+          "activation": 111,
+          "candidate_gain": 2341.8239937621925,
+          "gain": 2307.7961175392666,
+          "horizons": {
+            "1024": 31.42724904310739,
+            "16384": 2307.7961175392666,
+            "4096": 503.0799342739336,
+            "8192": 1035.9032466788306
+          },
+          "matched_events": 12362,
+          "max_drawdown": 13.08541199019129,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 2308.324763257906,
+          "tail": 1271.892870860434
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -38585.91327342662,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13452,
+          "max_drawdown": 0.0,
+          "max_matched_length": 9,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": 2480,
+          "candidate_gain": 1418.2661735845518,
+          "gain": 1384.6973031693747,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 1384.6973031693747,
+            "4096": 159.96560107877153,
+            "8192": 458.12611118908757
+          },
+          "matched_events": 15047,
+          "max_drawdown": 14.250862799174854,
+          "max_matched_length": 5,
+          "minimum": -0.5621410550234147,
+          "peak": 1391.3802612988125,
+          "tail": 926.5711919802886
+        },
+        "row": {
+          "activation": 1114,
+          "candidate_gain": 354.03110786787386,
+          "gain": 320.61639431775467,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 320.61639431775467,
+            "4096": 186.48783445480797,
+            "8192": 272.35357561650807
+          },
+          "matched_events": 0,
+          "max_drawdown": 9.154006689581792,
+          "max_matched_length": 0,
+          "minimum": -0.8157018068290276,
+          "peak": 320.61639431775467,
+          "tail": 48.26281870124674
+        }
+      },
+      "episode_match_lengths": {
+        "0": 2932,
+        "1": 5577,
+        "2": 2060,
+        "3": 2378,
+        "4": 1346,
+        "5": 904,
+        "6": 415,
+        "7": 221,
+        "8": 382,
+        "9": 169
+      },
+      "max_norm_error": 1.2212453270876722e-14,
+      "regime": "recombined",
+      "trace_sha256": "100a1a00dac5891108cd4c9ef947ec7ccc542fbbca57acc65f722b7f56245646",
+      "world": 128
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": null,
+          "candidate_gain": -2918.9784860603045,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11042,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "flat": {
+          "activation": null,
+          "candidate_gain": -6734.295010711218,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 12708,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "frequency": {
+          "activation": null,
+          "candidate_gain": -2977.902745689467,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13619,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "activation": null,
+          "candidate_gain": -3255.502159138186,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 10958,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -29049.492296227465,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11042,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -4284.620877400566,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13937,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": null,
+          "candidate_gain": -255.89058585123234,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 0,
+          "max_drawdown": 0.0,
+          "max_matched_length": 0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "episode_match_lengths": {
+        "0": 5342,
+        "1": 7463,
+        "2": 1947,
+        "3": 1264,
+        "4": 310,
+        "5": 53,
+        "6": 5
+      },
+      "max_norm_error": 1.1324274851176597e-14,
+      "regime": "unrelated",
+      "trace_sha256": "1e679bdc38935f9345b57e6c01f33c753d3aee99a8a90efc63aeb0b3e7de9e0d",
+      "world": 128
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 123,
+          "candidate_gain": 220.27702983919968,
+          "gain": 1066.4927513853456,
+          "horizons": {
+            "1024": 0.7171893913719809,
+            "16384": 1066.4927513853456,
+            "4096": 481.40354465698215,
+            "8192": 1036.6208303032502
+          },
+          "matched_events": 12141,
+          "max_drawdown": 13.713182159822509,
+          "max_matched_length": 9,
+          "minimum": -0.2240177122133289,
+          "peak": 1078.879543711998,
+          "tail": 29.87192108209394
+        },
+        "flat": {
+          "activation": 162,
+          "candidate_gain": -2071.229144620988,
+          "gain": 602.8340678501563,
+          "horizons": {
+            "1024": -0.9988800889583174,
+            "16384": 602.8340678501563,
+            "4096": 282.77269438827835,
+            "8192": 614.4954321880906
+          },
+          "matched_events": 12926,
+          "max_drawdown": 13.057882661006488,
+          "max_matched_length": 5,
+          "minimum": -0.9988800889583207,
+          "peak": 614.7329989636664,
+          "tail": -11.661364337933922
+        },
+        "frequency": {
+          "activation": 2667,
+          "candidate_gain": -168.22554913566327,
+          "gain": 600.9914538775859,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 600.9914538775859,
+            "4096": 189.20479391937232,
+            "8192": 591.3798184046937
+          },
+          "matched_events": 14096,
+          "max_drawdown": 13.11892577962226,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 613.9360654268869,
+          "tail": 9.611635472891473
+        },
+        "isolated": {
+          "activation": 111,
+          "candidate_gain": 32.711983395809526,
+          "gain": 1042.8319304950992,
+          "horizons": {
+            "1024": 31.42724904310739,
+            "16384": 1042.8319304950992,
+            "4096": 503.0799342739336,
+            "8192": 1035.9032466788306
+          },
+          "matched_events": 11562,
+          "max_drawdown": 13.382768601735052,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 1055.3621812218057,
+          "tail": 6.928683816271102
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -33216.24912637418,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 12141,
+          "max_drawdown": 0.0,
+          "max_matched_length": 9,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": 2480,
+          "candidate_gain": -949.5753696664636,
+          "gain": 457.73008996586464,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 457.73008996586464,
+            "4096": 159.96560107877153,
+            "8192": 458.12611118908757
+          },
+          "matched_events": 14452,
+          "max_drawdown": 14.250862799174854,
+          "max_matched_length": 5,
+          "minimum": -0.5621410550234147,
+          "peak": 471.2963007723407,
+          "tail": -0.3960212232233126
+        },
+        "row": {
+          "activation": 1114,
+          "candidate_gain": 211.09276546419557,
+          "gain": 266.24109508406485,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 266.24109508406485,
+            "4096": 186.48783445480797,
+            "8192": 272.35357561650807
+          },
+          "matched_events": 0,
+          "max_drawdown": 9.936397116912929,
+          "max_matched_length": 0,
+          "minimum": -0.8157018068290276,
+          "peak": 275.88191317761425,
+          "tail": -6.112480532442957
+        }
+      },
+      "episode_match_lengths": {
+        "0": 4243,
+        "1": 6527,
+        "2": 1984,
+        "3": 1781,
+        "4": 812,
+        "5": 460,
+        "6": 199,
+        "7": 116,
+        "8": 184,
+        "9": 78
+      },
+      "max_norm_error": 1.2212453270876722e-14,
+      "regime": "switched",
+      "trace_sha256": "796020887b6c1597ee842528092be13e2416ff6ce20e99ba97913d33f8165bab",
+      "world": 128
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 191,
+          "candidate_gain": 1726.2533126959522,
+          "gain": 1692.5990689488958,
+          "horizons": {
+            "1024": -0.9807065401027992,
+            "16384": 1692.5990689488958,
+            "4096": 202.7271143325544,
+            "8192": 546.7179966868115
+          },
+          "matched_events": 13838,
+          "max_drawdown": 14.733174854111667,
+          "max_matched_length": 10,
+          "minimum": -0.9807065401027992,
+          "peak": 1695.00809363674,
+          "tail": 1145.8810722620829
+        },
+        "flat": {
+          "activation": 4863,
+          "candidate_gain": 934.6711870380402,
+          "gain": 901.002185494759,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 901.002185494759,
+            "4096": 0.0,
+            "8192": 128.1612496387966
+          },
+          "matched_events": 14250,
+          "max_drawdown": 13.18014884855996,
+          "max_matched_length": 5,
+          "minimum": -0.9988192934766249,
+          "peak": 905.4227306807169,
+          "tail": 772.840935855962
+        },
+        "frequency": {
+          "activation": 12386,
+          "candidate_gain": 355.94005147248004,
+          "gain": 325.3084844700406,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 325.3084844700406,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 16383,
+          "max_drawdown": 13.464553146288225,
+          "max_matched_length": 4,
+          "minimum": -0.07416004502900853,
+          "peak": 338.2597630545358,
+          "tail": 325.3084844700406
+        },
+        "isolated": {
+          "activation": 3450,
+          "candidate_gain": 801.0193460750435,
+          "gain": 767.724857197955,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 767.724857197955,
+            "4096": -0.987514335290915,
+            "8192": 89.12321642970599
+          },
+          "matched_events": 14289,
+          "max_drawdown": 14.313694119665513,
+          "max_matched_length": 7,
+          "minimum": -0.9875143353125391,
+          "peak": 774.7396412424731,
+          "tail": 678.6016407682488
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -38493.06148560647,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13838,
+          "max_drawdown": 0.0,
+          "max_matched_length": 10,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": 7.005774871018595,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 14031,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": 1153,
+          "candidate_gain": 328.9875663252047,
+          "gain": 294.6452476507542,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 294.6452476507542,
+            "4096": 143.08423278077953,
+            "8192": 251.03287148310974
+          },
+          "matched_events": 0,
+          "max_drawdown": 6.837946755775063,
+          "max_matched_length": 0,
+          "minimum": -0.6628723880400411,
+          "peak": 294.76660705352697,
+          "tail": 43.612376167644946
+        }
+      },
+      "episode_match_lengths": {
+        "0": 2546,
+        "1": 2176,
+        "2": 5882,
+        "3": 2346,
+        "4": 1417,
+        "5": 782,
+        "6": 477,
+        "8": 390,
+        "9": 187,
+        "10": 181
+      },
+      "max_norm_error": 1.2434497875801753e-14,
+      "regime": "recombined",
+      "trace_sha256": "71a41f29dbc5af70c758862febab20602f7494c16b40f314c683da6bfbdaae61",
+      "world": 129
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": null,
+          "candidate_gain": -3150.089294517891,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9422,
+          "max_drawdown": 0.0,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "flat": {
+          "activation": null,
+          "candidate_gain": -4316.094754305638,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13008,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "frequency": {
+          "activation": null,
+          "candidate_gain": -4302.354572999049,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 16383,
+          "max_drawdown": 0.0,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "activation": null,
+          "candidate_gain": -4113.045159380718,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 12897,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -22863.500683696384,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9422,
+          "max_drawdown": 0.0,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -2516.3634378796473,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13040,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": null,
+          "candidate_gain": -345.01626052993004,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 0,
+          "max_drawdown": 0.0,
+          "max_matched_length": 0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "episode_match_lengths": {
+        "0": 6962,
+        "1": 2803,
+        "2": 4935,
+        "3": 1366,
+        "4": 253,
+        "5": 54,
+        "6": 10,
+        "8": 1
+      },
+      "max_norm_error": 1.176836406102666e-14,
+      "regime": "unrelated",
+      "trace_sha256": "000df45e99d2c844287a2d1a0dc091210f483a6b773b81e15e477963b72db117",
+      "world": 129
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 191,
+          "candidate_gain": -393.5999503000186,
+          "gain": 545.9688312103116,
+          "horizons": {
+            "1024": -0.9807065401027992,
+            "16384": 545.9688312103116,
+            "4096": 202.7271143325544,
+            "8192": 546.7179966868115
+          },
+          "matched_events": 11592,
+          "max_drawdown": 14.733174854111667,
+          "max_matched_length": 10,
+          "minimum": -0.9807065401027992,
+          "peak": 560.6891003953243,
+          "tail": -0.7491654765007506
+        },
+        "flat": {
+          "activation": 4863,
+          "candidate_gain": -1247.8132270123572,
+          "gain": 128.1611654254795,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 128.1611654254795,
+            "4096": 0.0,
+            "8192": 128.1612496387966
+          },
+          "matched_events": 13590,
+          "max_drawdown": 13.18014884855996,
+          "max_matched_length": 5,
+          "minimum": -0.9988192934766249,
+          "peak": 141.02284021767736,
+          "tail": -8.421331703642454e-05
+        },
+        "frequency": {
+          "activation": null,
+          "candidate_gain": -1350.127680269489,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 16383,
+          "max_drawdown": 0.0,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "activation": 3450,
+          "candidate_gain": -1177.46585241761,
+          "gain": 89.12199088165092,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 89.12199088165092,
+            "4096": -0.987514335290915,
+            "8192": 89.12321642970599
+          },
+          "matched_events": 13563,
+          "max_drawdown": 14.31369896592092,
+          "max_matched_length": 7,
+          "minimum": -0.9875143353125391,
+          "peak": 103.43568984724556,
+          "tail": -0.0012255480551585929
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -30321.593163859256,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11592,
+          "max_drawdown": 0.0,
+          "max_matched_length": 10,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -870.592455578848,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13548,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": 1153,
+          "candidate_gain": 220.6239027359931,
+          "gain": 244.34247997710202,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 244.34247997710202,
+            "4096": 143.08423278077953,
+            "8192": 251.03287148310974
+          },
+          "matched_events": 0,
+          "max_drawdown": 8.861102808559622,
+          "max_matched_length": 0,
+          "minimum": -0.6628723880400411,
+          "peak": 253.20358278566158,
+          "tail": -6.690391506007401
+        }
+      },
+      "episode_match_lengths": {
+        "0": 4792,
+        "1": 2503,
+        "2": 5392,
+        "3": 1843,
+        "4": 837,
+        "5": 410,
+        "6": 240,
+        "8": 185,
+        "9": 91,
+        "10": 91
+      },
+      "max_norm_error": 1.2434497875801753e-14,
+      "regime": "switched",
+      "trace_sha256": "a4564fb3077a660345637ec645cdc4bb15ee6785d592a52c423296100382b50a",
+      "world": 129
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 106,
+          "candidate_gain": 1725.5625592129552,
+          "gain": 1691.4144029726313,
+          "horizons": {
+            "1024": 1.9001393656571397,
+            "16384": 1691.4144029726313,
+            "4096": 126.99262227167127,
+            "8192": 568.0842089470233
+          },
+          "matched_events": 12900,
+          "max_drawdown": 13.560614036128754,
+          "max_matched_length": 7,
+          "minimum": -0.9299473752934575,
+          "peak": 1692.124240962281,
+          "tail": 1123.3301940256092
+        },
+        "flat": {
+          "activation": 227,
+          "candidate_gain": 743.8578286398503,
+          "gain": 710.4682410115038,
+          "horizons": {
+            "1024": -0.9987213046166816,
+            "16384": 710.4682410115038,
+            "4096": -0.99872130296487,
+            "8192": 169.58463154168322
+          },
+          "matched_events": 13456,
+          "max_drawdown": 13.138850774364442,
+          "max_matched_length": 5,
+          "minimum": -0.9987213046166818,
+          "peak": 711.4790469042014,
+          "tail": 540.8836094698196
+        },
+        "frequency": {
+          "activation": 215,
+          "candidate_gain": 3.94106994112658,
+          "gain": -0.9950776390891127,
+          "horizons": {
+            "1024": -0.9950776416231968,
+            "16384": -0.9950776390891127,
+            "4096": -0.9950776416231968,
+            "8192": -0.9950776416231968
+          },
+          "matched_events": 16383,
+          "max_drawdown": 4.486950550796592,
+          "max_matched_length": 4,
+          "minimum": -0.9950776416231981,
+          "peak": 3.4918729091733938,
+          "tail": 2.5340839981957686e-09
+        },
+        "isolated": {
+          "activation": 6996,
+          "candidate_gain": 537.195846080559,
+          "gain": 503.88973345733376,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 503.88973345733376,
+            "4096": 0.0,
+            "8192": 16.646151891938157
+          },
+          "matched_events": 12472,
+          "max_drawdown": 13.325922929760083,
+          "max_matched_length": 6,
+          "minimum": -0.5234385457863107,
+          "peak": 503.88973345733376,
+          "tail": 487.2435815653956
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -38260.25592388385,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 12900,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -698.6699041362459,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 16383,
+          "max_drawdown": 0.0,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": 258,
+          "candidate_gain": 339.64357651917925,
+          "gain": 306.15739620655125,
+          "horizons": {
+            "1024": 0.25133611561177127,
+            "16384": 306.15739620655125,
+            "4096": 173.16137486894098,
+            "8192": 258.8459901608571
+          },
+          "matched_events": 0,
+          "max_drawdown": 6.609732118591557,
+          "max_matched_length": 0,
+          "minimum": -0.9899297303535732,
+          "peak": 306.7232956933323,
+          "tail": 47.31140604569438
+        }
+      },
+      "episode_match_lengths": {
+        "0": 3484,
+        "1": 1413,
+        "2": 6606,
+        "3": 1535,
+        "4": 554,
+        "5": 1247,
+        "6": 1103,
+        "7": 442
+      },
+      "max_norm_error": 1.2878587085651816e-14,
+      "regime": "recombined",
+      "trace_sha256": "f5b58d2f737406cff82f166d825815efe74728c158ad2c4564f6ba7e4c699888",
+      "world": 130
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": null,
+          "candidate_gain": -2531.2144919794036,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9820,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "flat": {
+          "activation": null,
+          "candidate_gain": -3435.765089735671,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11604,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "frequency": {
+          "activation": null,
+          "candidate_gain": -3482.8352186605407,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 16383,
+          "max_drawdown": 0.0,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "activation": null,
+          "candidate_gain": -3085.2134036657285,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 10670,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -25024.174610878385,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9820,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -2723.973890319715,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 16383,
+          "max_drawdown": 0.0,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": null,
+          "candidate_gain": -257.6150997702554,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 0,
+          "max_drawdown": 0.0,
+          "max_matched_length": 0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "episode_match_lengths": {
+        "0": 6564,
+        "1": 2777,
+        "2": 5994,
+        "3": 801,
+        "4": 124,
+        "5": 100,
+        "6": 21,
+        "7": 3
+      },
+      "max_norm_error": 1.1546319456101628e-14,
+      "regime": "unrelated",
+      "trace_sha256": "38d9e7649b409a5af5a2961c398aff5f397d4f943eddfc4203f32507031b2770",
+      "world": 130
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 106,
+          "candidate_gain": -130.9941410642091,
+          "gain": 585.4303089073758,
+          "horizons": {
+            "1024": 1.9001393656571397,
+            "16384": 585.4303089073758,
+            "4096": 126.99262227167127,
+            "8192": 568.0842089470233
+          },
+          "matched_events": 11370,
+          "max_drawdown": 13.490986817801854,
+          "max_matched_length": 7,
+          "minimum": -0.9299473752934575,
+          "peak": 596.4364197225027,
+          "tail": 17.346099960353214
+        },
+        "flat": {
+          "activation": 227,
+          "candidate_gain": -952.8667790167137,
+          "gain": 168.85976026646037,
+          "horizons": {
+            "1024": -0.9987213046166816,
+            "16384": 168.85976026646037,
+            "4096": -0.99872130296487,
+            "8192": 169.58463154168322
+          },
+          "matched_events": 12510,
+          "max_drawdown": 12.813510745626601,
+          "max_matched_length": 5,
+          "minimum": -0.9987213046166818,
+          "peak": 180.18683644063418,
+          "tail": -0.7248712752225983
+        },
+        "frequency": {
+          "activation": 215,
+          "candidate_gain": -1135.7961401853527,
+          "gain": -0.9950776416231968,
+          "horizons": {
+            "1024": -0.9950776416231968,
+            "16384": -0.9950776416231968,
+            "4096": -0.9950776416231968,
+            "8192": -0.9950776416231968
+          },
+          "matched_events": 16383,
+          "max_drawdown": 4.486950550796591,
+          "max_matched_length": 4,
+          "minimum": -0.9950776416231968,
+          "peak": 3.4918729091733938,
+          "tail": 0.0
+        },
+        "isolated": {
+          "activation": 6996,
+          "candidate_gain": -924.295805170848,
+          "gain": 31.237005545593117,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 31.237005545593117,
+            "4096": 0.0,
+            "8192": 16.646151891938157
+          },
+          "matched_events": 11580,
+          "max_drawdown": 13.619613285244906,
+          "max_matched_length": 6,
+          "minimum": -0.5234385457863107,
+          "peak": 44.74033690881964,
+          "tail": 14.59085365365498
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -31271.29590626848,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11370,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -1204.6538066857563,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 16383,
+          "max_drawdown": 0.0,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": 258,
+          "candidate_gain": 220.74282984243493,
+          "gain": 267.2039651720229,
+          "horizons": {
+            "1024": 0.25133611561177127,
+            "16384": 267.2039651720229,
+            "4096": 173.16137486894098,
+            "8192": 258.8459901608571
+          },
+          "matched_events": 0,
+          "max_drawdown": 9.262877183264095,
+          "max_matched_length": 0,
+          "minimum": -0.9899297303535732,
+          "peak": 276.4668423552868,
+          "tail": 8.35797501116545
+        }
+      },
+      "episode_match_lengths": {
+        "0": 5014,
+        "1": 2068,
+        "2": 6331,
+        "3": 1176,
+        "4": 347,
+        "5": 663,
+        "6": 559,
+        "7": 226
+      },
+      "max_norm_error": 1.2878587085651816e-14,
+      "regime": "switched",
+      "trace_sha256": "9011d8bf52037c092b5dc17dc131af7a8a0de3109875fd983c32d570b77936ba",
+      "world": 130
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 160,
+          "candidate_gain": 3592.5315069298404,
+          "gain": 3557.546231139424,
+          "horizons": {
+            "1024": 17.899006042109136,
+            "16384": 3557.546231139424,
+            "4096": 590.3546814626992,
+            "8192": 1450.5914038325523
+          },
+          "matched_events": 13150,
+          "max_drawdown": 12.57842975081553,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 3557.546231139424,
+          "tail": 2106.9548273068567
+        },
+        "flat": {
+          "activation": 199,
+          "candidate_gain": 2844.0446989132097,
+          "gain": 2810.317748917211,
+          "horizons": {
+            "1024": -0.9969482917458172,
+            "16384": 2810.317748917211,
+            "4096": 310.9784862279084,
+            "8192": 953.5409745628735
+          },
+          "matched_events": 12700,
+          "max_drawdown": 14.32648611876175,
+          "max_matched_length": 5,
+          "minimum": -0.9990491328655142,
+          "peak": 2813.639689313849,
+          "tail": 1856.776774354342
+        },
+        "frequency": {
+          "activation": 3068,
+          "candidate_gain": 1972.8062427314082,
+          "gain": 1939.3502853153427,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 1939.3502853153427,
+            "4096": 99.78990733832366,
+            "8192": 523.3995036641107
+          },
+          "matched_events": 16383,
+          "max_drawdown": 14.96572547399819,
+          "max_matched_length": 5,
+          "minimum": -0.9986622071689741,
+          "peak": 1939.7745359435305,
+          "tail": 1415.9507816512296
+        },
+        "isolated": {
+          "activation": 199,
+          "candidate_gain": 2786.0149980101887,
+          "gain": 2750.952002103835,
+          "horizons": {
+            "1024": 1.859105067334313,
+            "16384": 2750.952002103835,
+            "4096": 375.98819771601865,
+            "8192": 995.6077597308458
+          },
+          "matched_events": 12233,
+          "max_drawdown": 12.747984153193329,
+          "max_matched_length": 6,
+          "minimum": -0.07018202775837179,
+          "peak": 2751.605890688097,
+          "tail": 1755.3442423729869
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -41486.85544777837,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13150,
+          "max_drawdown": 0.0,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": 1714,
+          "candidate_gain": 1692.7743902302175,
+          "gain": 1659.443701598957,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 1659.443701598957,
+            "4096": 175.35635975712745,
+            "8192": 535.4747108497062
+          },
+          "matched_events": 10968,
+          "max_drawdown": 13.458086217712264,
+          "max_matched_length": 6,
+          "minimum": -0.9227268144726428,
+          "peak": 1661.362110191723,
+          "tail": 1123.9689907492507
+        },
+        "row": {
+          "activation": 371,
+          "candidate_gain": 349.39648459180665,
+          "gain": 315.9893793345805,
+          "horizons": {
+            "1024": 15.616007206459122,
+            "16384": 315.9893793345805,
+            "4096": 204.00964235028846,
+            "8192": 276.7773526477901
+          },
+          "matched_events": 0,
+          "max_drawdown": 9.172368441214068,
+          "max_matched_length": 0,
+          "minimum": -0.6379570333397238,
+          "peak": 316.0682951270621,
+          "tail": 39.21202668678745
+        }
+      },
+      "episode_match_lengths": {
+        "0": 3234,
+        "1": 3821,
+        "2": 3233,
+        "3": 1484,
+        "4": 1396,
+        "5": 1532,
+        "6": 1456,
+        "8": 228
+      },
+      "max_norm_error": 1.2212453270876722e-14,
+      "regime": "recombined",
+      "trace_sha256": "41ad98c7e8c554f4582b8fee422d5134a22dd60a9edcaece7ee711e65e315c50",
+      "world": 131
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": null,
+          "candidate_gain": -3472.6884402423134,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9121,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "flat": {
+          "activation": null,
+          "candidate_gain": -5785.563886292546,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13333,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "frequency": {
+          "activation": null,
+          "candidate_gain": -3756.1138113307643,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 16383,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "activation": null,
+          "candidate_gain": -3097.656233701732,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 10011,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -22400.58683673824,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9121,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -3642.5153110679066,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9930,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": null,
+          "candidate_gain": -325.91005328012955,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 0,
+          "max_drawdown": 0.0,
+          "max_matched_length": 0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "episode_match_lengths": {
+        "0": 7263,
+        "1": 3893,
+        "2": 4126,
+        "3": 749,
+        "4": 243,
+        "5": 85,
+        "6": 25
+      },
+      "max_norm_error": 1.1102230246251565e-14,
+      "regime": "unrelated",
+      "trace_sha256": "f8f9419c101261c2bed456cbca3e27bc16c1c5d0853ec5503c46a2200e1e8173",
+      "world": 131
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 160,
+          "candidate_gain": 59.98802173302782,
+          "gain": 1452.864909534959,
+          "horizons": {
+            "1024": 17.899006042109136,
+            "16384": 1452.864909534959,
+            "4096": 590.3546814626992,
+            "8192": 1450.5914038325523
+          },
+          "matched_events": 11207,
+          "max_drawdown": 14.221672058750983,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 1467.08658159371,
+          "tail": 2.273505702406477
+        },
+        "flat": {
+          "activation": 199,
+          "candidate_gain": -1458.990582399719,
+          "gain": 952.0174202968493,
+          "horizons": {
+            "1024": -0.9969482917458172,
+            "16384": 952.0174202968493,
+            "4096": 310.9784862279084,
+            "8192": 953.5409745628735
+          },
+          "matched_events": 12984,
+          "max_drawdown": 14.32648611876175,
+          "max_matched_length": 5,
+          "minimum": -0.9990491328655142,
+          "peak": 964.2751196802446,
+          "tail": -1.523554266024013
+        },
+        "frequency": {
+          "activation": 3068,
+          "candidate_gain": -641.54489523716,
+          "gain": 537.5507025772586,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 537.5507025772586,
+            "4096": 99.78990733832366,
+            "8192": 523.3995036641107
+          },
+          "matched_events": 16383,
+          "max_drawdown": 13.97128920488312,
+          "max_matched_length": 5,
+          "minimum": -0.9986622071689741,
+          "peak": 550.6215711667995,
+          "tail": 14.151198913146164
+        },
+        "isolated": {
+          "activation": 199,
+          "candidate_gain": -175.56495317106797,
+          "gain": 999.00110858363,
+          "horizons": {
+            "1024": 1.859105067334313,
+            "16384": 999.00110858363,
+            "4096": 375.98819771601865,
+            "8192": 995.6077597308458
+          },
+          "matched_events": 11177,
+          "max_drawdown": 13.155868020838625,
+          "max_matched_length": 6,
+          "minimum": -0.07018202775837179,
+          "peak": 1012.1569766044686,
+          "tail": 3.3933488527832893
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -32310.55190352479,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11207,
+          "max_drawdown": 0.0,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": 1714,
+          "candidate_gain": -921.7224762838323,
+          "gain": 548.5257307441964,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 548.5257307441964,
+            "4096": 175.35635975712745,
+            "8192": 535.4747108497062
+          },
+          "matched_events": 10471,
+          "max_drawdown": 13.458086217712264,
+          "max_matched_length": 6,
+          "minimum": -0.9227268144726428,
+          "peak": 561.9098701383385,
+          "tail": 13.051019894490553
+        },
+        "row": {
+          "activation": 371,
+          "candidate_gain": 221.52854338099337,
+          "gain": 272.69167144939945,
+          "horizons": {
+            "1024": 15.616007206459122,
+            "16384": 272.69167144939945,
+            "4096": 204.00964235028846,
+            "8192": 276.7773526477901
+          },
+          "matched_events": 0,
+          "max_drawdown": 9.172368441214068,
+          "max_matched_length": 0,
+          "minimum": -0.6379570333397238,
+          "peak": 281.54204633456015,
+          "tail": -4.085681198390244
+        }
+      },
+      "episode_match_lengths": {
+        "0": 5177,
+        "1": 3890,
+        "2": 3690,
+        "3": 1133,
+        "4": 812,
+        "5": 815,
+        "6": 755,
+        "8": 112
+      },
+      "max_norm_error": 1.2212453270876722e-14,
+      "regime": "switched",
+      "trace_sha256": "2b74bd6fb9924ea1820aab3522a292535c8d8950ccb24075463e9e06a0a1a7aa",
+      "world": 131
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 121,
+          "candidate_gain": 2861.307907604424,
+          "gain": 2826.3976565916373,
+          "horizons": {
+            "1024": 13.922467261805224,
+            "16384": 2826.3976565916373,
+            "4096": 484.11617232129817,
+            "8192": 1129.501573950774
+          },
+          "matched_events": 12438,
+          "max_drawdown": 12.79975618506171,
+          "max_matched_length": 8,
+          "minimum": -0.2477229806140302,
+          "peak": 2829.2588422370054,
+          "tail": 1696.8960826408766
+        },
+        "flat": {
+          "activation": 140,
+          "candidate_gain": 1922.2860477885476,
+          "gain": 1887.567282521622,
+          "horizons": {
+            "1024": 11.420184536827861,
+            "16384": 1887.567282521622,
+            "4096": 291.84523803434854,
+            "8192": 692.7012686096879
+          },
+          "matched_events": 13236,
+          "max_drawdown": 13.979768128050296,
+          "max_matched_length": 5,
+          "minimum": -0.564155974174346,
+          "peak": 1890.3083418339481,
+          "tail": 1194.866013911942
+        },
+        "frequency": {
+          "activation": 132,
+          "candidate_gain": 1274.470957356941,
+          "gain": 1239.9766860420764,
+          "horizons": {
+            "1024": 6.011142227859432,
+            "16384": 1239.9766860420764,
+            "4096": 147.59397459378008,
+            "8192": 391.1097846745754
+          },
+          "matched_events": 15845,
+          "max_drawdown": 12.815291229789864,
+          "max_matched_length": 5,
+          "minimum": -0.9931482600367016,
+          "peak": 1244.531555561705,
+          "tail": 848.8669013675034
+        },
+        "isolated": {
+          "activation": 160,
+          "candidate_gain": 1609.808029510465,
+          "gain": 1575.3481333862592,
+          "horizons": {
+            "1024": 2.29747102976752,
+            "16384": 1575.3481333862592,
+            "4096": 246.8774284467909,
+            "8192": 566.1828061844917
+          },
+          "matched_events": 14073,
+          "max_drawdown": 13.8477874677003,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 1582.5610897839058,
+          "tail": 1009.1653272017649
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -40424.659728553714,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 12438,
+          "max_drawdown": 0.0,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": 159,
+          "candidate_gain": 381.58761016600846,
+          "gain": 346.99815920255554,
+          "horizons": {
+            "1024": -0.9245399824610743,
+            "16384": 346.99815920255554,
+            "4096": -0.9238988836083467,
+            "8192": -0.9242050732440911
+          },
+          "matched_events": 15201,
+          "max_drawdown": 12.521101512273368,
+          "max_matched_length": 4,
+          "minimum": -0.9245399824610745,
+          "peak": 352.79244765711627,
+          "tail": 347.92236427579957
+        },
+        "row": {
+          "activation": 233,
+          "candidate_gain": 377.0916564387737,
+          "gain": 343.65644186722335,
+          "horizons": {
+            "1024": 0.5680664687584098,
+            "16384": 343.65644186722335,
+            "4096": 202.79963855700362,
+            "8192": 284.58530518185444
+          },
+          "matched_events": 0,
+          "max_drawdown": 10.03732014895711,
+          "max_matched_length": 0,
+          "minimum": -0.9596815932098306,
+          "peak": 343.7182411495963,
+          "tail": 59.07113668537003
+        }
+      },
+      "episode_match_lengths": {
+        "0": 3946,
+        "1": 2080,
+        "2": 3420,
+        "3": 3145,
+        "4": 1668,
+        "5": 863,
+        "6": 659,
+        "7": 392,
+        "8": 211
+      },
+      "max_norm_error": 1.2878587085651816e-14,
+      "regime": "recombined",
+      "trace_sha256": "0a6453c3a766d0b436ab80dda2ea1a2edcae15590ae6ff1bcd015669db544b8f",
+      "world": 132
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": null,
+          "candidate_gain": -3599.866123172577,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 8744,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "flat": {
+          "activation": null,
+          "candidate_gain": -4504.76560232824,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 12326,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "frequency": {
+          "activation": null,
+          "candidate_gain": -3854.39211978344,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 14617,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "activation": null,
+          "candidate_gain": -3489.8280748942475,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11597,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -19685.317556865775,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 8744,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -3609.5693445862494,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 14451,
+          "max_drawdown": 0.0,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": null,
+          "candidate_gain": -218.97700999082238,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 0,
+          "max_drawdown": 0.0,
+          "max_matched_length": 0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "episode_match_lengths": {
+        "0": 7640,
+        "1": 3713,
+        "2": 3089,
+        "3": 1539,
+        "4": 352,
+        "5": 40,
+        "6": 10,
+        "7": 1
+      },
+      "max_norm_error": 1.0769163338864018e-14,
+      "regime": "unrelated",
+      "trace_sha256": "588070c8996b0d2ea325f20fde857a34380c36730000e06324bfd48e5278170e",
+      "world": 132
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 121,
+          "candidate_gain": 36.69655824728014,
+          "gain": 1117.0428299556704,
+          "horizons": {
+            "1024": 13.922467261805224,
+            "16384": 1117.0428299556704,
+            "4096": 484.11617232129817,
+            "8192": 1129.501573950774
+          },
+          "matched_events": 10542,
+          "max_drawdown": 12.79975618506171,
+          "max_matched_length": 8,
+          "minimum": -0.2477229806140302,
+          "peak": 1129.501573950774,
+          "tail": -12.458743995104046
+        },
+        "flat": {
+          "activation": 140,
+          "candidate_gain": -692.4928780022606,
+          "gain": 684.8798174150241,
+          "horizons": {
+            "1024": 11.420184536827861,
+            "16384": 684.8798174150241,
+            "4096": 291.84523803434854,
+            "8192": 692.7012686096879
+          },
+          "matched_events": 12763,
+          "max_drawdown": 13.846548602359448,
+          "max_matched_length": 5,
+          "minimum": -0.564155974174346,
+          "peak": 697.966156470417,
+          "tail": -7.821451194663478
+        },
+        "frequency": {
+          "activation": 132,
+          "candidate_gain": -482.09443133214074,
+          "gain": 432.1779764831362,
+          "horizons": {
+            "1024": 6.011142227859432,
+            "16384": 432.1779764831362,
+            "4096": 147.59397459378008,
+            "8192": 391.1097846745754
+          },
+          "matched_events": 15230,
+          "max_drawdown": 14.59170135568013,
+          "max_matched_length": 5,
+          "minimum": -0.9931482600367016,
+          "peak": 446.7696778388163,
+          "tail": 41.068191808560805
+        },
+        "isolated": {
+          "activation": 160,
+          "candidate_gain": -313.1424195803701,
+          "gain": 588.7906049031614,
+          "horizons": {
+            "1024": 2.29747102976752,
+            "16384": 588.7906049031614,
+            "4096": 246.8774284467909,
+            "8192": 566.1828061844917
+          },
+          "matched_events": 12799,
+          "max_drawdown": 13.833107724514775,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 600.9299019262002,
+          "tail": 22.60779871867025
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -29922.71964622197,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 10542,
+          "max_drawdown": 0.0,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": 159,
+          "candidate_gain": -923.4958786982301,
+          "gain": 5.263785542815022,
+          "horizons": {
+            "1024": -0.9245399824610743,
+            "16384": 5.263785542815022,
+            "4096": -0.9238988836083467,
+            "8192": -0.9242050732440911
+          },
+          "matched_events": 14828,
+          "max_drawdown": 13.230078731220804,
+          "max_matched_length": 4,
+          "minimum": -0.9245399824610745,
+          "peak": 18.493864274033285,
+          "tail": 6.187990616059107
+        },
+        "row": {
+          "activation": 233,
+          "candidate_gain": 209.25449195445833,
+          "gain": 282.99696936775246,
+          "horizons": {
+            "1024": 0.5680664687584098,
+            "16384": 282.99696936775246,
+            "4096": 202.79963855700362,
+            "8192": 284.58530518185444
+          },
+          "matched_events": 0,
+          "max_drawdown": 10.03732014895711,
+          "max_matched_length": 0,
+          "minimum": -0.9596815932098306,
+          "peak": 291.567416422772,
+          "tail": -1.5883358141012176
+        }
+      },
+      "episode_match_lengths": {
+        "0": 5842,
+        "1": 2868,
+        "2": 3238,
+        "3": 2317,
+        "4": 1008,
+        "5": 471,
+        "6": 339,
+        "7": 195,
+        "8": 106
+      },
+      "max_norm_error": 1.2878587085651816e-14,
+      "regime": "switched",
+      "trace_sha256": "0c1df45ca3130639ec4dd71f66454b708427ec6d0b9f8914838de278b397b086",
+      "world": 132
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 114,
+          "candidate_gain": 2445.41261504778,
+          "gain": 2412.036320822852,
+          "horizons": {
+            "1024": 8.730362941645131,
+            "16384": 2412.036320822852,
+            "4096": 336.7061008025406,
+            "8192": 878.9852318546077
+          },
+          "matched_events": 13098,
+          "max_drawdown": 13.47644199839658,
+          "max_matched_length": 11,
+          "minimum": 0.0,
+          "peak": 2412.1124037938343,
+          "tail": 1533.0510889682544
+        },
+        "flat": {
+          "activation": 109,
+          "candidate_gain": 1699.1002212251337,
+          "gain": 1664.7352044050037,
+          "horizons": {
+            "1024": 3.3791017775080316,
+            "16384": 1664.7352044050037,
+            "4096": 183.6056972655948,
+            "8192": 530.2422130011622
+          },
+          "matched_events": 15093,
+          "max_drawdown": 14.321286138060202,
+          "max_matched_length": 5,
+          "minimum": -0.6889367465246914,
+          "peak": 1666.3292269250442,
+          "tail": 1134.4929914038455
+        },
+        "frequency": {
+          "activation": 116,
+          "candidate_gain": 2399.407048071674,
+          "gain": 2365.40827820068,
+          "horizons": {
+            "1024": 4.474116194397899,
+            "16384": 2365.40827820068,
+            "4096": 293.82211899761757,
+            "8192": 843.172319707321
+          },
+          "matched_events": 16383,
+          "max_drawdown": 14.438154338831055,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 2366.1474963193273,
+          "tail": 1522.2359584933395
+        },
+        "isolated": {
+          "activation": 121,
+          "candidate_gain": 2327.5659353336428,
+          "gain": 2294.0189559525684,
+          "horizons": {
+            "1024": 5.641627347237929,
+            "16384": 2294.0189559525684,
+            "4096": 309.9098333697742,
+            "8192": 800.4720674490678
+          },
+          "matched_events": 13470,
+          "max_drawdown": 14.58036776088042,
+          "max_matched_length": 6,
+          "minimum": -0.46092652878987117,
+          "peak": 2295.6022578349457,
+          "tail": 1493.5468885035214
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -53965.060633228284,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13098,
+          "max_drawdown": 0.0,
+          "max_matched_length": 11,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": 2.253094708170172,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 15949,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": 224,
+          "candidate_gain": 323.8393966985697,
+          "gain": 290.40187254346375,
+          "horizons": {
+            "1024": -0.9892426405347088,
+            "16384": 290.40187254346375,
+            "4096": 192.2233399299187,
+            "8192": 250.89389924400268
+          },
+          "matched_events": 0,
+          "max_drawdown": 6.486565898389308,
+          "max_matched_length": 0,
+          "minimum": -0.9892431438415227,
+          "peak": 290.4081652454334,
+          "tail": 39.50797329946132
+        }
+      },
+      "episode_match_lengths": {
+        "0": 3286,
+        "1": 2736,
+        "2": 3910,
+        "3": 3320,
+        "4": 999,
+        "5": 676,
+        "6": 444,
+        "7": 239,
+        "8": 334,
+        "9": 158,
+        "10": 149,
+        "11": 133
+      },
+      "max_norm_error": 1.3322676295501878e-14,
+      "regime": "recombined",
+      "trace_sha256": "0f2c198c09d64fc799df047913a263bdab0b15bcf72067a42859b4b6a35e723c",
+      "world": 133
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": null,
+          "candidate_gain": -3500.4455843419755,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9128,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "flat": {
+          "activation": null,
+          "candidate_gain": -5158.563209666487,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13749,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "frequency": {
+          "activation": null,
+          "candidate_gain": -4333.545809296922,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 16383,
+          "max_drawdown": 0.0,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "activation": null,
+          "candidate_gain": -3985.897446638776,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11062,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -23571.97015774541,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9128,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -2165.8772454686455,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 15306,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": null,
+          "candidate_gain": -246.41490503216102,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 0,
+          "max_drawdown": 0.0,
+          "max_matched_length": 0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "episode_match_lengths": {
+        "0": 7256,
+        "1": 3838,
+        "2": 3754,
+        "3": 1332,
+        "4": 162,
+        "5": 39,
+        "6": 2,
+        "7": 1
+      },
+      "max_norm_error": 1.176836406102666e-14,
+      "regime": "unrelated",
+      "trace_sha256": "f677d9af5918e52711d37a689f661a663a19858f33f6b6b0c2a4f789cb973937",
+      "world": 133
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 114,
+          "candidate_gain": -368.8285515301512,
+          "gain": 872.3334189768505,
+          "horizons": {
+            "1024": 8.730362941645131,
+            "16384": 872.3334189768505,
+            "4096": 336.7061008025406,
+            "8192": 878.9852318546077
+          },
+          "matched_events": 11047,
+          "max_drawdown": 13.192564846142588,
+          "max_matched_length": 11,
+          "minimum": 0.0,
+          "peak": 885.1175970827899,
+          "tail": -6.651812877757434
+        },
+        "flat": {
+          "activation": 109,
+          "candidate_gain": -1259.6587311875949,
+          "gain": 529.0637098634652,
+          "horizons": {
+            "1024": 3.3791017775080316,
+            "16384": 529.0637098634652,
+            "4096": 183.6056972655948,
+            "8192": 530.2422130011622
+          },
+          "matched_events": 14469,
+          "max_drawdown": 14.321286138060202,
+          "max_matched_length": 5,
+          "minimum": -0.6889367465246914,
+          "peak": 541.6727559517241,
+          "tail": -1.178503137697169
+        },
+        "frequency": {
+          "activation": 116,
+          "candidate_gain": -584.3199873337626,
+          "gain": 855.0952281156053,
+          "horizons": {
+            "1024": 4.474116194397899,
+            "16384": 855.0952281156053,
+            "4096": 293.82211899761757,
+            "8192": 843.172319707321
+          },
+          "matched_events": 16383,
+          "max_drawdown": 14.300025682152551,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 867.6892591612313,
+          "tail": 11.922908408284023
+        },
+        "isolated": {
+          "activation": 121,
+          "candidate_gain": -611.0348123812571,
+          "gain": 796.0863970293788,
+          "horizons": {
+            "1024": 5.641627347237929,
+            "16384": 796.0863970293788,
+            "4096": 309.9098333697742,
+            "8192": 800.4720674490678
+          },
+          "matched_events": 12232,
+          "max_drawdown": 14.58036776088042,
+          "max_matched_length": 6,
+          "minimum": -0.46092652878987117,
+          "peak": 809.0372190759258,
+          "tail": -4.3856704196889575
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -38609.77510445302,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11047,
+          "max_drawdown": 0.0,
+          "max_matched_length": 11,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -547.9533460302473,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 15642,
+          "max_drawdown": 0.0,
+          "max_matched_length": 7,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": 224,
+          "candidate_gain": 187.45375073977283,
+          "gain": 252.69576819193588,
+          "horizons": {
+            "1024": -0.9892426405347088,
+            "16384": 252.69576819193588,
+            "4096": 192.2233399299187,
+            "8192": 250.89389924400268
+          },
+          "matched_events": 0,
+          "max_drawdown": 9.893137970939335,
+          "max_matched_length": 0,
+          "minimum": -0.9892431438415227,
+          "peak": 262.58890616287516,
+          "tail": 1.8018689479327983
+        }
+      },
+      "episode_match_lengths": {
+        "0": 5337,
+        "1": 3275,
+        "2": 3846,
+        "3": 2306,
+        "4": 573,
+        "5": 343,
+        "6": 218,
+        "7": 115,
+        "8": 163,
+        "9": 72,
+        "10": 67,
+        "11": 69
+      },
+      "max_norm_error": 1.3322676295501878e-14,
+      "regime": "switched",
+      "trace_sha256": "7ec373ddd6cb007699f96fe551ac3df2cb2afe980e28a181f5b4903a26418f55",
+      "world": 133
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 183,
+          "candidate_gain": 2839.5336960402715,
+          "gain": 2806.115092378282,
+          "horizons": {
+            "1024": -0.9945411044308936,
+            "16384": 2806.115092378282,
+            "4096": 475.0526961141698,
+            "8192": 1107.56156086575
+          },
+          "matched_events": 15047,
+          "max_drawdown": 12.356185585147728,
+          "max_matched_length": 9,
+          "minimum": -0.994541104430914,
+          "peak": 2806.6642226179797,
+          "tail": 1698.5535315125396
+        },
+        "flat": {
+          "activation": 2736,
+          "candidate_gain": 1564.987882174239,
+          "gain": 1530.577880164252,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 1530.577880164252,
+            "4096": 148.20045388682,
+            "8192": 525.8195537442543
+          },
+          "matched_events": 16383,
+          "max_drawdown": 14.20540975662584,
+          "max_matched_length": 6,
+          "minimum": -0.9706900499080062,
+          "peak": 1530.577880164252,
+          "tail": 1004.7583264199956
+        },
+        "frequency": {
+          "activation": 2521,
+          "candidate_gain": 1325.7088008631654,
+          "gain": 1292.3869317325982,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 1292.3869317325982,
+            "4096": 146.5410840441171,
+            "8192": 389.65631187998764
+          },
+          "matched_events": 16192,
+          "max_drawdown": 13.650653819668733,
+          "max_matched_length": 5,
+          "minimum": -0.02680250913075488,
+          "peak": 1293.1364722652002,
+          "tail": 902.730619852609
+        },
+        "isolated": {
+          "activation": 2528,
+          "candidate_gain": 1272.9394449830984,
+          "gain": 1239.3054897320637,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 1239.3054897320637,
+            "4096": 135.61531319763898,
+            "8192": 374.78797770966906
+          },
+          "matched_events": 15585,
+          "max_drawdown": 13.723003350589579,
+          "max_matched_length": 6,
+          "minimum": -0.9265142394105166,
+          "peak": 1239.679958487158,
+          "tail": 864.517512022397
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -45609.40932647969,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 15047,
+          "max_drawdown": 0.0,
+          "max_matched_length": 9,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -355.7339632739722,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 15536,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": 1150,
+          "candidate_gain": 331.8870320464667,
+          "gain": 297.81987981845566,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 297.81987981845566,
+            "4096": 185.85747152045928,
+            "8192": 244.310020519505
+          },
+          "matched_events": 0,
+          "max_drawdown": 7.399222158095938,
+          "max_matched_length": 0,
+          "minimum": -0.3089788568471663,
+          "peak": 297.81987981845566,
+          "tail": 53.50985929895008
+        }
+      },
+      "episode_match_lengths": {
+        "0": 1337,
+        "1": 4517,
+        "2": 4249,
+        "3": 2824,
+        "4": 1634,
+        "5": 796,
+        "6": 366,
+        "7": 200,
+        "8": 172,
+        "9": 289
+      },
+      "max_norm_error": 1.2878587085651816e-14,
+      "regime": "recombined",
+      "trace_sha256": "7f78bc62288cfddb1f19ca2a9f6fe5e770faddb67f630f1ef0744a1170222d56",
+      "world": 134
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": null,
+          "candidate_gain": -2997.18062204821,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11542,
+          "max_drawdown": 0.0,
+          "max_matched_length": 9,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "flat": {
+          "activation": null,
+          "candidate_gain": -4583.950673251778,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 16383,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "frequency": {
+          "activation": null,
+          "candidate_gain": -4384.351958090732,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 15571,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "activation": null,
+          "candidate_gain": -3822.402779067375,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 14224,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -29019.696127034014,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11542,
+          "max_drawdown": 0.0,
+          "max_matched_length": 9,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -3595.45984281365,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13584,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": null,
+          "candidate_gain": -257.19277081628235,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 0,
+          "max_drawdown": 0.0,
+          "max_matched_length": 0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "episode_match_lengths": {
+        "0": 4842,
+        "1": 6862,
+        "2": 3052,
+        "3": 1216,
+        "4": 342,
+        "5": 55,
+        "6": 12,
+        "7": 1,
+        "8": 1,
+        "9": 1
+      },
+      "max_norm_error": 1.176836406102666e-14,
+      "regime": "unrelated",
+      "trace_sha256": "8adc961caadfaf64e3fc7f1bf6e6fb4c54e6d1395ed9a1ee17368b72d049b60e",
+      "world": 134
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 183,
+          "candidate_gain": 241.34556218056056,
+          "gain": 1103.9624653334372,
+          "horizons": {
+            "1024": -0.9945411044308936,
+            "16384": 1103.9624653334372,
+            "4096": 475.0526961141698,
+            "8192": 1107.56156086575
+          },
+          "matched_events": 13241,
+          "max_drawdown": 12.356185585147728,
+          "max_matched_length": 9,
+          "minimum": -0.994541104430914,
+          "peak": 1115.3786133333138,
+          "tail": -3.5990955323121456
+        },
+        "flat": {
+          "activation": 2736,
+          "candidate_gain": -947.6415970449272,
+          "gain": 525.8710603117217,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 525.8710603117217,
+            "4096": 148.20045388682,
+            "8192": 525.8195537442543
+          },
+          "matched_events": 16383,
+          "max_drawdown": 13.637468914602081,
+          "max_matched_length": 6,
+          "minimum": -0.9706900499080062,
+          "peak": 538.1545304614789,
+          "tail": 0.051506567467558995
+        },
+        "frequency": {
+          "activation": 2521,
+          "candidate_gain": -1071.97024381926,
+          "gain": 389.7681287438088,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 389.7681287438088,
+            "4096": 146.5410840441171,
+            "8192": 389.65631187998764
+          },
+          "matched_events": 15861,
+          "max_drawdown": 13.650653819668733,
+          "max_matched_length": 5,
+          "minimum": -0.02680250913075488,
+          "peak": 401.28193048408156,
+          "tail": 0.11181686382068245
+        },
+        "isolated": {
+          "activation": 2528,
+          "candidate_gain": -825.1536648114749,
+          "gain": 375.0577924702386,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 375.0577924702386,
+            "4096": 135.61531319763898,
+            "8192": 374.78797770966906
+          },
+          "matched_events": 14854,
+          "max_drawdown": 13.396588127669872,
+          "max_matched_length": 6,
+          "minimum": -0.9265142394105166,
+          "peak": 386.50320329833096,
+          "tail": 0.26981476057006637
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -36653.42548811677,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13241,
+          "max_drawdown": 0.0,
+          "max_matched_length": 9,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -1538.615213444845,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 14503,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": 1150,
+          "candidate_gain": 194.29555826578078,
+          "gain": 238.93147257557803,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 238.93147257557803,
+            "4096": 185.85747152045928,
+            "8192": 244.310020519505
+          },
+          "matched_events": 0,
+          "max_drawdown": 8.989687357507052,
+          "max_matched_length": 0,
+          "minimum": -0.3089788568471663,
+          "peak": 247.72350240715963,
+          "tail": -5.378547943926796
+        }
+      },
+      "episode_match_lengths": {
+        "0": 3143,
+        "1": 5763,
+        "2": 3604,
+        "3": 1972,
+        "4": 985,
+        "5": 422,
+        "6": 183,
+        "7": 93,
+        "8": 84,
+        "9": 135
+      },
+      "max_norm_error": 1.2878587085651816e-14,
+      "regime": "switched",
+      "trace_sha256": "5b14b7861bcd4e66667b2690c34c6d4a5ff9db4749dd18f73e3f28e53befe12b",
+      "world": 134
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 61,
+          "candidate_gain": 3370.1705360960123,
+          "gain": 3336.6068491284996,
+          "horizons": {
+            "1024": 30.093023219032247,
+            "16384": 3336.6068491284996,
+            "4096": 669.1539215065244,
+            "8192": 1461.3503744975417
+          },
+          "matched_events": 12945,
+          "max_drawdown": 11.900803510676933,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 3336.721146144983,
+          "tail": 1875.2564746309472
+        },
+        "flat": {
+          "activation": 59,
+          "candidate_gain": 2829.3159561427756,
+          "gain": 2795.336651486571,
+          "horizons": {
+            "1024": 38.45909851872855,
+            "16384": 2795.336651486571,
+            "4096": 550.2290017608141,
+            "8192": 1213.1934298582207
+          },
+          "matched_events": 12575,
+          "max_drawdown": 13.055705666249878,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 2795.4509484662394,
+          "tail": 1582.1432216283636
+        },
+        "frequency": {
+          "activation": 65,
+          "candidate_gain": 2141.4661198680133,
+          "gain": 2107.5575020629635,
+          "horizons": {
+            "1024": 16.063563932744202,
+            "16384": 2107.5575020629635,
+            "4096": 334.84890858671605,
+            "8192": 813.4681359589766
+          },
+          "matched_events": 16215,
+          "max_drawdown": 13.912717172677276,
+          "max_matched_length": 5,
+          "minimum": -0.3573901064425944,
+          "peak": 2107.6717982043538,
+          "tail": 1294.0893661039888
+        },
+        "isolated": {
+          "activation": 118,
+          "candidate_gain": 2901.655918534556,
+          "gain": 2867.757715770524,
+          "horizons": {
+            "1024": 30.453000082953828,
+            "16384": 2867.757715770524,
+            "4096": 578.1223043199914,
+            "8192": 1224.0787995274889
+          },
+          "matched_events": 9472,
+          "max_drawdown": 12.980497502387266,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 2867.872012557554,
+          "tail": 1643.6789162430246
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -41378.600799853615,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 12945,
+          "max_drawdown": 0.0,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": 2237,
+          "candidate_gain": 1954.752209452378,
+          "gain": 1921.20398911708,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 1921.20398911708,
+            "4096": 280.6506990420388,
+            "8192": 743.0709370450606
+          },
+          "matched_events": 14450,
+          "max_drawdown": 15.218300974801025,
+          "max_matched_length": 4,
+          "minimum": -0.12341930188753025,
+          "peak": 1921.20398911708,
+          "tail": 1178.1330520720187
+        },
+        "row": {
+          "activation": 1160,
+          "candidate_gain": 376.41759106931465,
+          "gain": 343.0245536429101,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 343.0245536429101,
+            "4096": 218.243873480711,
+            "8192": 289.1684514122379
+          },
+          "matched_events": 0,
+          "max_drawdown": 4.709701313875144,
+          "max_matched_length": 0,
+          "minimum": -0.31454401259877995,
+          "peak": 343.1750617930248,
+          "tail": 53.85610223067299
+        }
+      },
+      "episode_match_lengths": {
+        "0": 3439,
+        "1": 2136,
+        "2": 4005,
+        "3": 3157,
+        "4": 1654,
+        "5": 761,
+        "6": 707,
+        "7": 162,
+        "8": 363
+      },
+      "max_norm_error": 1.176836406102666e-14,
+      "regime": "recombined",
+      "trace_sha256": "6bbe389ac9e27f60b44ff63603b21a9703397bf0be800f36d4ca2cfc0bb80f26",
+      "world": 135
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": null,
+          "candidate_gain": -3471.1619770490674,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9105,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "flat": {
+          "activation": null,
+          "candidate_gain": -7621.565166706725,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 12503,
+          "max_drawdown": 0.0,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "frequency": {
+          "activation": null,
+          "candidate_gain": -3459.591852564275,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 15349,
+          "max_drawdown": 0.0,
+          "max_matched_length": 5,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "activation": null,
+          "candidate_gain": -3295.9283466253087,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 5419,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -23126.524828671587,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 9105,
+          "max_drawdown": 0.0,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": null,
+          "candidate_gain": -5145.66827750246,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 13813,
+          "max_drawdown": 0.0,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "activation": null,
+          "candidate_gain": -239.3790367051526,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 0,
+          "max_drawdown": 0.0,
+          "max_matched_length": 0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "episode_match_lengths": {
+        "0": 7279,
+        "1": 3445,
+        "2": 3818,
+        "3": 1486,
+        "4": 319,
+        "5": 28,
+        "6": 9
+      },
+      "max_norm_error": 1.176836406102666e-14,
+      "regime": "unrelated",
+      "trace_sha256": "3cb5f40dec39eb86c6ad896af1b97208cc83ee3daa6654380c90063e53fc516f",
+      "world": 135
+    },
+    {
+      "arms": {
+        "episode": {
+          "activation": 61,
+          "candidate_gain": 364.0384988103733,
+          "gain": 1453.0877676986884,
+          "horizons": {
+            "1024": 30.093023219032247,
+            "16384": 1453.0877676986884,
+            "4096": 669.1539215065244,
+            "8192": 1461.3503744975417
+          },
+          "matched_events": 11030,
+          "max_drawdown": 13.11103961075355,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 1466.1666879642542,
+          "tail": -8.262606798853753
+        },
+        "flat": {
+          "activation": 59,
+          "candidate_gain": -1853.4462116298066,
+          "gain": 1207.0834491051612,
+          "horizons": {
+            "1024": 38.45909851872855,
+            "16384": 1207.0834491051612,
+            "4096": 550.2290017608141,
+            "8192": 1213.1934298582207
+          },
+          "matched_events": 12565,
+          "max_drawdown": 12.629294057635661,
+          "max_matched_length": 4,
+          "minimum": 0.0,
+          "peak": 1219.2920083294425,
+          "tail": -6.109980753059027
+        },
+        "frequency": {
+          "activation": 65,
+          "candidate_gain": 0.8537850173103951,
+          "gain": 841.7488582383355,
+          "horizons": {
+            "1024": 16.063563932744202,
+            "16384": 841.7488582383355,
+            "4096": 334.84890858671605,
+            "8192": 813.4681359589766
+          },
+          "matched_events": 15742,
+          "max_drawdown": 13.738378873240208,
+          "max_matched_length": 5,
+          "minimum": -0.3573901064425944,
+          "peak": 854.26678007097,
+          "tail": 28.280722279358358
+        },
+        "isolated": {
+          "activation": 118,
+          "candidate_gain": 30.014566881497938,
+          "gain": 1218.6364061137863,
+          "horizons": {
+            "1024": 30.453000082953828,
+            "16384": 1218.6364061137863,
+            "4096": 578.1223043199914,
+            "8192": 1224.0787995274889
+          },
+          "matched_events": 7482,
+          "max_drawdown": 12.980497502387266,
+          "max_matched_length": 6,
+          "minimum": 0.0,
+          "peak": 1229.1842841160376,
+          "tail": -5.442393413702032
+        },
+        "permuted": {
+          "activation": null,
+          "candidate_gain": -32016.53230857589,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "matched_events": 11030,
+          "max_drawdown": 0.0,
+          "max_matched_length": 8,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "activation": 2237,
+          "candidate_gain": -1064.2235071437424,
+          "gain": 736.4526529325815,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 736.4526529325815,
+            "4096": 280.6506990420388,
+            "8192": 743.0709370450606
+          },
+          "matched_events": 14099,
+          "max_drawdown": 15.218300974801025,
+          "max_matched_length": 4,
+          "minimum": -0.12341930188753025,
+          "peak": 748.8948556655037,
+          "tail": -6.618284112478998
+        },
+        "row": {
+          "activation": 1160,
+          "candidate_gain": 233.60326953698174,
+          "gain": 299.2698096460755,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 299.2698096460755,
+            "4096": 218.243873480711,
+            "8192": 289.1684514122379
+          },
+          "matched_events": 0,
+          "max_drawdown": 8.795679319354349,
+          "max_matched_length": 0,
+          "minimum": -0.31454401259877995,
+          "peak": 308.0654889654298,
+          "tail": 10.101358233838226
+        }
+      },
+      "episode_match_lengths": {
+        "0": 5354,
+        "1": 2746,
+        "2": 3958,
+        "3": 2326,
+        "4": 985,
+        "5": 387,
+        "6": 357,
+        "7": 85,
+        "8": 186
+      },
+      "max_norm_error": 1.176836406102666e-14,
+      "regime": "switched",
+      "trace_sha256": "8892f398c1b267d8098f62314f981ee13b69b16a273272f02eb628fcd50bbf05",
+      "world": 135
+    }
+  ],
+  "namespace": "netta-joint-prefix-v1",
+  "protocol_sha256": "ec37980efb94865e6699cb8abe954fddf779924fc3fa5c2fa5f15d659a9594d4",
+  "summary": {
+    "early_differences": {
+      "flat": [
+        198.6308502687038,
+        202.7271143325544,
+        127.99134357463613,
+        279.3761952347908,
+        192.27093428694963,
+        153.1004035369458,
+        326.85224222734985,
+        118.92491974571033
+      ],
+      "frequency": [
+        292.1987507376098,
+        202.7271143325544,
+        127.98769991329446,
+        490.56477412437556,
+        336.5221977275181,
+        42.88398180492305,
+        328.5116120700527,
+        334.30501291980835
+      ],
+      "permuted": [
+        481.40354465698215,
+        202.7271143325544,
+        126.99262227167127,
+        590.3546814626992,
+        484.11617232129817,
+        336.7061008025406,
+        475.0526961141698,
+        669.1539215065244
+      ],
+      "reverse": [
+        321.4379435782106,
+        202.7271143325544,
+        126.99262227167127,
+        414.99832170557175,
+        485.0400712049065,
+        336.7061008025406,
+        475.0526961141698,
+        388.5032224644856
+      ],
+      "row": [
+        294.9157102021742,
+        59.64288155177488,
+        -46.168752597269716,
+        386.34503911241075,
+        281.31653376429455,
+        144.48276087262192,
+        289.1952245937105,
+        450.9100480258134
+      ]
+    },
+    "early_gain_bpb": 0.10273763590907105,
+    "early_gains": [
+      481.40354465698215,
+      202.7271143325544,
+      126.99262227167127,
+      590.3546814626992,
+      484.11617232129817,
+      336.7061008025406,
+      475.0526961141698,
+      669.1539215065244
+    ],
+    "isolated_differences": {
+      "recombined": {
+        "candidate_gain": [
+          6.314143270416935,
+          925.2339666209087,
+          1188.3667131323962,
+          806.5165089196516,
+          1251.499878093959,
+          117.84667971413728,
+          1566.594251057173,
+          468.51461756145636
+        ],
+        "early": [
+          -21.67638961695144,
+          203.71462866784532,
+          126.99262227167127,
+          214.36648374668056,
+          237.23874387450726,
+          26.7962674327664,
+          339.43738291653085,
+          91.03161718653303
+        ],
+        "gain": [
+          6.879499891799696,
+          924.8742117509408,
+          1187.5246695152975,
+          806.5942290355888,
+          1251.0495232053781,
+          118.01736487028347,
+          1566.8096026462183,
+          468.84913335797546
+        ],
+        "horizons": {
+          "1024": [
+            -30.71005965173541,
+            -0.9807065401027992,
+            1.9001393656571397,
+            16.039900974774824,
+            11.624996232037704,
+            3.0887355944072024,
+            -0.9945411044308936,
+            -0.359976863921581
+          ],
+          "16384": [
+            6.879499891799696,
+            924.8742117509408,
+            1187.5246695152975,
+            806.5942290355888,
+            1251.0495232053781,
+            118.01736487028347,
+            1566.8096026462183,
+            468.84913335797546
+          ],
+          "4096": [
+            -21.67638961695144,
+            203.71462866784532,
+            126.99262227167127,
+            214.36648374668056,
+            237.23874387450726,
+            26.7962674327664,
+            339.43738291653085,
+            91.03161718653303
+          ],
+          "8192": [
+            0.7175836244196034,
+            457.5947802571055,
+            551.4380570550851,
+            454.98364410170643,
+            563.3187677662822,
+            78.5131644055399,
+            732.7735831560808,
+            237.27157497005282
+          ]
+        },
+        "tail": [
+          6.161916267377592,
+          467.27943149383407,
+          636.0866124602137,
+          351.61058493386986,
+          687.7307554391117,
+          39.504200464733,
+          834.0360194901426,
+          231.57755838792264
+        ]
+      },
+      "switched": {
+        "candidate_gain": [
+          187.56504644339014,
+          783.8659021175914,
+          793.3016641066389,
+          235.55297490409578,
+          349.8389778276502,
+          242.20626085110592,
+          1066.4992269920353,
+          334.02393192887536
+        ],
+        "early": [
+          -21.67638961695144,
+          203.71462866784532,
+          126.99262227167127,
+          214.36648374668056,
+          237.23874387450726,
+          26.7962674327664,
+          339.43738291653085,
+          91.03161718653303
+        ],
+        "gain": [
+          23.66082089024644,
+          456.8468403286607,
+          554.1933033617827,
+          453.86380095132904,
+          528.2522250525091,
+          76.2470219474717,
+          728.9046728631986,
+          234.4513615849021
+        ],
+        "horizons": {
+          "1024": [
+            -30.71005965173541,
+            -0.9807065401027992,
+            1.9001393656571397,
+            16.039900974774824,
+            11.624996232037704,
+            3.0887355944072024,
+            -0.9945411044308936,
+            -0.359976863921581
+          ],
+          "16384": [
+            23.66082089024644,
+            456.8468403286607,
+            554.1933033617827,
+            453.86380095132904,
+            528.2522250525091,
+            76.2470219474717,
+            728.9046728631986,
+            234.4513615849021
+          ],
+          "4096": [
+            -21.67638961695144,
+            203.71462866784532,
+            126.99262227167127,
+            214.36648374668056,
+            237.23874387450726,
+            26.7962674327664,
+            339.43738291653085,
+            91.03161718653303
+          ],
+          "8192": [
+            0.7175836244196034,
+            457.5947802571055,
+            551.4380570550851,
+            454.98364410170643,
+            563.3187677662822,
+            78.5131644055399,
+            732.7735831560808,
+            237.27157497005282
+          ]
+        },
+        "tail": [
+          22.943237265822837,
+          -0.747939928445592,
+          2.7552463066982344,
+          -1.1198431503768123,
+          -35.0665427137743,
+          -2.266142458068477,
+          -3.868910292882212,
+          -2.820213385151721
+        ]
+      },
+      "unrelated": {
+        "candidate_gain": [
+          336.52367307788154,
+          962.9558648628272,
+          553.9989116863248,
+          -375.0322065405812,
+          -110.03804827832937,
+          485.4518622968003,
+          825.222157019165,
+          -175.23363042375877
+        ],
+        "early": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "gain": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizons": {
+          "1024": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "16384": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "4096": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "8192": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "means": {
+      "recombined": {
+        "episode": {
+          "candidate_gain": 2613.6137838324807,
+          "gain": 2579.673904926661,
+          "tail": 1557.2472573093723
+        },
+        "flat": {
+          "candidate_gain": 1760.4447028498053,
+          "gain": 1726.4552376441677,
+          "tail": 1122.9878935010745
+        },
+        "frequency": {
+          "candidate_gain": 1372.6072716446877,
+          "gain": 1342.7785519462489,
+          "tail": 898.8797023652409
+        },
+        "isolated": {
+          "candidate_gain": 1822.2529390362183,
+          "gain": 1788.3491256424757,
+          "tail": 1150.4988724422217
+        },
+        "permuted": {
+          "candidate_gain": -42275.47707735133,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "candidate_gain": 550.2794232002658,
+          "gain": 664.0428941359959,
+          "tail": 447.0744498846697
+        },
+        "row": {
+          "candidate_gain": 347.66180144464863,
+          "gain": 314.0388956727117,
+          "tail": 48.04296238947849
+        }
+      },
+      "switched": {
+        "episode": {
+          "candidate_gain": 3.615378489507835,
+          "gain": 1024.6479103753297,
+          "tail": 2.221262758040688
+        },
+        "flat": {
+          "candidate_gain": -1310.5173938642959,
+          "gain": 599.8463063167898,
+          "tail": -3.6210378263062104
+        },
+        "frequency": {
+          "candidate_gain": -679.1531427869397,
+          "gain": 457.0421587992634,
+          "tail": 13.143309218257688
+        },
+        "isolated": {
+          "candidate_gain": -495.4913696569151,
+          "gain": 642.5954045028172,
+          "tail": 4.745151302562943
+        },
+        "permuted": {
+          "candidate_gain": -33040.2678309243,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "candidate_gain": -1002.6040066914957,
+          "gain": 218.49653239818218,
+          "tail": 1.5280881468559186
+        },
+        "row": {
+          "candidate_gain": 212.32438899007633,
+          "gain": 265.5466539329914,
+          "tail": -0.44927935024151755
+        }
+      },
+      "unrelated": {
+        "episode": {
+          "candidate_gain": -3205.2031274264677,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "flat": {
+          "candidate_gain": -5267.570424124788,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "frequency": {
+          "candidate_gain": -3818.886011051899,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "candidate_gain": -3518.1842003890088,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "permuted": {
+          "candidate_gain": -24342.65788723216,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "candidate_gain": -3460.506028379855,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "candidate_gain": -268.29946524699574,
+          "gain": 0.0,
+          "tail": 0.0
+        }
+      }
+    },
+    "switched_differences": [
+      800.2516563012807,
+      301.62635123320956,
+      318.2263437353529,
+      1180.1732380855597,
+      834.045860587918,
+      619.6376507849145,
+      865.0309927578592,
+      1153.817958052613
+    ],
+    "tail_differences": [
+      35.9844016145369,
+      5.941226029506651,
+      8.988124949187764,
+      6.359186900796721,
+      -10.870408181002828,
+      -8.453681825690232,
+      1.77945241161465,
+      -18.36396503269198
+    ]
+  },
+  "tests": {
+    "early_gain": true,
+    "early_positive": true,
+    "flat_early_count": true,
+    "flat_early_mean": true,
+    "frequency_early_count": true,
+    "frequency_early_mean": true,
+    "full_gain": true,
+    "full_positive": true,
+    "permuted_early_count": true,
+    "permuted_early_mean": true,
+    "reverse_early_count": true,
+    "reverse_early_mean": true,
+    "row_early_count": true,
+    "row_early_mean": true,
+    "switched_count": true,
+    "switched_mean": true,
+    "tail_tolerance": true
+  },
+  "worlds": [
+    128,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134,
+    135
+  ]
+}

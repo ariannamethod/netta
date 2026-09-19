@@ -1,0 +1,22 @@
+{
+  "artifact_sha256": {
+    "DATA_MANIFEST.json": "f44dd0c46fb3c7231da8da7e284f08f4a2e981e889e91d82dad7079def3b7c42",
+    "FREEZE.json": "3c61dc18cec4701a83e0adce29de354e5ce7c7210db70d95888a0b64bf5c3bcc",
+    "INCOMING_AUDIT.md": "7e47aa633f537d94ddb0df827b75ebb03afa44eae74ffb483e32e5d9c57c4e23",
+    "MEMORY_MANIFEST.json": "c5bba87e5e0e1038032fa07cf7cd83e4d80d5cc30ae82d1862183e818fbb91d2",
+    "PROTOCOL.md": "4ec41f05589cc5720ed3bff521c21f12776cabd43c34e6337bd27f640b5d7cbe",
+    "RAW.md": "e1db7238914f6673bcd86f00f6c6d213dc71b2da1eedfd9113be97c41f503d17",
+    "README.md": "e8f80795859d8067a7adb208fd5f4545df205677172acd3a7abc9f6ca206d594",
+    "REPORT.md": "c62d92ab38f3e6f708a975daa28744d5ba1d94b2a26117e05845a5411f6fcf4b",
+    "RESULT.json": "74fb30eb6d877940b5d877bf16c240c72dea822e1d79d44e78723c35e3c52775",
+    "RESULTS_MANIFEST.json": "85dbc397e144612427ff3b2fb257fd1f2b57d47b0809bed5f8c7645a0184b4e8",
+    "VERDICT.json": "bf87fbec0b2c7e7a1410fd24983d60a192aa858fba1069c1e13d426715265933",
+    "VERIFY.json": "3defd8829b0b48b0de71f1341b9a207cff5f94a5d4b182192f370a3156ad0af9"
+  },
+  "branch": "sol/joint-fast-withdrawal-20260919",
+  "gate_pass": true,
+  "independent_verification_pass": true,
+  "publication": "No commit, push, merge or live integration.",
+  "rotation": "Sol -> Don -> Astra -> Sol",
+  "worktree": "/Users/ataeff/arianna-codex/repos/netta-sol-turn14-20260919"
+}

@@ -1,0 +1,6846 @@
+{
+  "gate_pass": true,
+  "identities": {
+    "DATA_MANIFEST.json": "d6006249f71ecb4f7fd39ad59e65c060b4826e028e2b731d4d3069a22c08e395",
+    "MEMORY_MANIFEST.json": "da7763631f2e5401d4b7d41cfe63ab0a8b083cdfcb6459ff48cceb6590cfeecb",
+    "RESULTS_MANIFEST.json": "042966f146614dd8fb888fbb70b6757e2ccf7c8d11229fb30a51a962fa95328f",
+    "freeze_sha256": "a4e856b1601a9104e4e896c81845e85586a6a27054d951b8256fb4a62dfe838a",
+    "protocol_sha256": "ec37980efb94865e6699cb8abe954fddf779924fc3fa5c2fa5f15d659a9594d4",
+    "reader_sha256": "293d897e9f70a817015a2d72834f025713f85ad864668c293417a33fff8f951f",
+    "result_sha256": "c84263e33008843ed3dad8d93967db1dcead2b18a45573ed089e59a728fbb764"
+  },
+  "masked_longest_matches": [
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 4,
+        "frequency": 5,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 5
+      },
+      "regime": "recombined",
+      "world": 128
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 4,
+        "frequency": 5,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 5
+      },
+      "regime": "unrelated",
+      "world": 128
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 4,
+        "frequency": 5,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 5
+      },
+      "regime": "switched",
+      "world": 128
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 0,
+        "frequency": 5,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 5
+      },
+      "regime": "recombined",
+      "world": 129
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 0,
+        "frequency": 5,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 5
+      },
+      "regime": "unrelated",
+      "world": 129
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 0,
+        "frequency": 5,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 5
+      },
+      "regime": "switched",
+      "world": 129
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 5,
+        "frequency": 5,
+        "isolated": 5,
+        "permuted": 0,
+        "reverse": 5
+      },
+      "regime": "recombined",
+      "world": 130
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 5,
+        "frequency": 5,
+        "isolated": 5,
+        "permuted": 0,
+        "reverse": 5
+      },
+      "regime": "unrelated",
+      "world": 130
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 5,
+        "frequency": 5,
+        "isolated": 5,
+        "permuted": 0,
+        "reverse": 5
+      },
+      "regime": "switched",
+      "world": 130
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 4,
+        "frequency": 5,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 4
+      },
+      "regime": "recombined",
+      "world": 131
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 4,
+        "frequency": 5,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 4
+      },
+      "regime": "unrelated",
+      "world": 131
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 4,
+        "frequency": 5,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 4
+      },
+      "regime": "switched",
+      "world": 131
+    },
+    {
+      "arms": {
+        "episode": 3,
+        "flat": 3,
+        "frequency": 5,
+        "isolated": 3,
+        "permuted": 3,
+        "reverse": 0
+      },
+      "regime": "recombined",
+      "world": 132
+    },
+    {
+      "arms": {
+        "episode": 3,
+        "flat": 3,
+        "frequency": 5,
+        "isolated": 3,
+        "permuted": 3,
+        "reverse": 0
+      },
+      "regime": "unrelated",
+      "world": 132
+    },
+    {
+      "arms": {
+        "episode": 3,
+        "flat": 3,
+        "frequency": 5,
+        "isolated": 3,
+        "permuted": 3,
+        "reverse": 0
+      },
+      "regime": "switched",
+      "world": 132
+    },
+    {
+      "arms": {
+        "episode": 5,
+        "flat": 5,
+        "frequency": 5,
+        "isolated": 5,
+        "permuted": 5,
+        "reverse": 5
+      },
+      "regime": "recombined",
+      "world": 133
+    },
+    {
+      "arms": {
+        "episode": 5,
+        "flat": 5,
+        "frequency": 5,
+        "isolated": 5,
+        "permuted": 5,
+        "reverse": 5
+      },
+      "regime": "unrelated",
+      "world": 133
+    },
+    {
+      "arms": {
+        "episode": 5,
+        "flat": 5,
+        "frequency": 5,
+        "isolated": 5,
+        "permuted": 5,
+        "reverse": 5
+      },
+      "regime": "switched",
+      "world": 133
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 5,
+        "frequency": 0,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 4
+      },
+      "regime": "recombined",
+      "world": 134
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 5,
+        "frequency": 0,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 4
+      },
+      "regime": "unrelated",
+      "world": 134
+    },
+    {
+      "arms": {
+        "episode": 0,
+        "flat": 5,
+        "frequency": 0,
+        "isolated": 0,
+        "permuted": 0,
+        "reverse": 4
+      },
+      "regime": "switched",
+      "world": 134
+    },
+    {
+      "arms": {
+        "episode": 4,
+        "flat": 4,
+        "frequency": 5,
+        "isolated": 4,
+        "permuted": 4,
+        "reverse": 0
+      },
+      "regime": "recombined",
+      "world": 135
+    },
+    {
+      "arms": {
+        "episode": 4,
+        "flat": 4,
+        "frequency": 5,
+        "isolated": 4,
+        "permuted": 4,
+        "reverse": 0
+      },
+      "regime": "unrelated",
+      "world": 135
+    },
+    {
+      "arms": {
+        "episode": 4,
+        "flat": 4,
+        "frequency": 5,
+        "isolated": 4,
+        "permuted": 4,
+        "reverse": 0
+      },
+      "regime": "switched",
+      "world": 135
+    }
+  ],
+  "maximum_normalization_error": 1.3322676295501878e-14,
+  "maximum_numeric_error": 1.3164935808163136e-10,
+  "predictions": 2752512,
+  "scope": "Independent source BPE/overlapping recount, own rolling-code recount of the seven immediate-continuation counts at every own-prefix content, exact archives for all seven arms; complete greedy joint source selection, isolated/frequency and flat MDL; expanded literal copies matching tree records, actual role tapes, stored matches, all rank probabilities, row P2, prospective authority and material gates. Inherited HEAD256 bindings and sparse P0 are supplied, not independently retrained; full 256-byte normalization/NEW checks come from the C quote path.",
+  "source_books": [
+    {
+      "branch_capacity": 24,
+      "branch_prefix_lengths": {
+        "1": 2,
+        "2": 2,
+        "3": 5,
+        "4": 5,
+        "5": 4,
+        "6": 2,
+        "7": 1,
+        "8": 2,
+        "9": 1
+      },
+      "branch_records": 24,
+      "branch_totals": [
+        16425,
+        1140,
+        3851,
+        6417,
+        2415,
+        1355,
+        1017,
+        1012,
+        916,
+        1131,
+        15825,
+        2392,
+        1149,
+        1168,
+        903,
+        887,
+        2200,
+        721,
+        723,
+        1123,
+        939,
+        1141,
+        821,
+        846
+      ],
+      "episode_bytes": 528,
+      "expanded_literal_bytes": {
+        "episode": 481,
+        "frequency": 445,
+        "isolated": 465,
+        "permuted": 481,
+        "reverse": 369
+      },
+      "expanded_rule_lengths": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        3,
+        4,
+        3,
+        4,
+        5,
+        5,
+        3,
+        5,
+        4,
+        6,
+        4,
+        8,
+        8,
+        6,
+        8,
+        12,
+        12,
+        12,
+        12,
+        2,
+        2
+      ],
+      "expansion_content_payloads": {
+        "episode": {
+          "expanded_rule_terminal_bytes": 156,
+          "selected_prefix_terminal_bytes": 105
+        },
+        "frequency": {
+          "expanded_rule_terminal_bytes": 156,
+          "selected_prefix_terminal_bytes": 69
+        },
+        "isolated": {
+          "expanded_rule_terminal_bytes": 156,
+          "selected_prefix_terminal_bytes": 89
+        },
+        "permuted": {
+          "expanded_rule_terminal_bytes": 156,
+          "selected_prefix_terminal_bytes": 105
+        },
+        "reverse": {
+          "expanded_rule_terminal_bytes": 156,
+          "selected_prefix_terminal_bytes": 53
+        }
+      },
+      "flat_bytes": 517,
+      "frequency_branch_totals": [
+        16910,
+        16425,
+        15825,
+        6446,
+        6417,
+        5250,
+        4974,
+        3851,
+        2415,
+        2392,
+        2200,
+        1355,
+        1350,
+        1289,
+        1191,
+        1178,
+        1168,
+        1149,
+        1141,
+        1140,
+        1131,
+        1123,
+        1041,
+        1024
+      ],
+      "frequency_bytes": 528,
+      "frequency_records": 24,
+      "hashes": {
+        "episodes.bin": "6b4c5f6c40e1f6e867f2f26da3573e00ab446a06546e5c78a8505472264ec8cd",
+        "flat.bin": "47df7d9d990b30bc065e5f112348cdc8caad83a42b390293395752622be00518",
+        "frequency.bin": "cf91450c6f4dac24e3b33a08ecc6c08c711e4b8412fd4b0664d12889d9f8bf11",
+        "isolated.bin": "355cdba944302a014545f1cdb59bf10eeec09399e4e1f449257f3de193cdaa57",
+        "permuted.bin": "930ff1eb43f4c212df00285610d96df574c6c4736c1c377020fb7c944c29838d",
+        "reverse.bin": "f5420b475e209693082497f267dc7e5c8288b101026d788255172ceca5c4a7c5",
+        "row.bin": "34b7b3972894989c77b414aa45cdd334410d40b0c164ac81d7abd97ebcb9247f"
+      },
+      "isolated_branch_totals": [
+        16425,
+        3851,
+        6417,
+        2415,
+        1355,
+        1017,
+        1289,
+        1012,
+        1141,
+        15825,
+        1131,
+        1140,
+        2392,
+        960,
+        1149,
+        964,
+        1350,
+        1168,
+        1024,
+        2200,
+        1041,
+        1178,
+        908,
+        876
+      ],
+      "isolated_bytes": 528,
+      "isolated_records": 24,
+      "joint_forward": [
+        {
+          "affected_events": 16425,
+          "marginal_gain": 3704.0481950400886,
+          "prefix": [
+            1
+          ],
+          "source_gain_after": 3832.0481950400886
+        },
+        {
+          "affected_events": 1140,
+          "marginal_gain": 2574.0714455593006,
+          "prefix": [
+            1,
+            0,
+            3,
+            1
+          ],
+          "source_gain_after": 6534.119640599389
+        },
+        {
+          "affected_events": 3851,
+          "marginal_gain": 2029.8964797888993,
+          "prefix": [
+            3,
+            0
+          ],
+          "source_gain_after": 8692.016120388289
+        },
+        {
+          "affected_events": 6417,
+          "marginal_gain": 1729.4311681045979,
+          "prefix": [
+            1,
+            0
+          ],
+          "source_gain_after": 10549.447288492887
+        },
+        {
+          "affected_events": 2415,
+          "marginal_gain": 1550.5946850207822,
+          "prefix": [
+            1,
+            0,
+            3
+          ],
+          "source_gain_after": 12228.04197351367
+        },
+        {
+          "affected_events": 1355,
+          "marginal_gain": 1521.282321387026,
+          "prefix": [
+            1,
+            0,
+            0
+          ],
+          "source_gain_after": 13877.324294900696
+        },
+        {
+          "affected_events": 1017,
+          "marginal_gain": 1518.128724156246,
+          "prefix": [
+            1,
+            0,
+            3,
+            3,
+            2
+          ],
+          "source_gain_after": 15523.453019056942
+        },
+        {
+          "affected_events": 1012,
+          "marginal_gain": 1515.1688569074734,
+          "prefix": [
+            1,
+            0,
+            3,
+            1,
+            3
+          ],
+          "source_gain_after": 17166.621875964414
+        },
+        {
+          "affected_events": 916,
+          "marginal_gain": 1469.3545008380324,
+          "prefix": [
+            3,
+            3,
+            3,
+            1,
+            0
+          ],
+          "source_gain_after": 18763.976376802446
+        },
+        {
+          "affected_events": 1131,
+          "marginal_gain": 1453.7661160224447,
+          "prefix": [
+            1,
+            0,
+            3,
+            3
+          ],
+          "source_gain_after": 20345.74249282489
+        },
+        {
+          "affected_events": 11267,
+          "marginal_gain": 1510.0248766911056,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 21983.767369515997
+        },
+        {
+          "affected_events": 2392,
+          "marginal_gain": 1426.7082447241478,
+          "prefix": [
+            1,
+            0,
+            2
+          ],
+          "source_gain_after": 23538.475614240146
+        },
+        {
+          "affected_events": 1149,
+          "marginal_gain": 1379.49407186625,
+          "prefix": [
+            3,
+            0,
+            0
+          ],
+          "source_gain_after": 25045.969686106397
+        },
+        {
+          "affected_events": 1168,
+          "marginal_gain": 1345.8566220818757,
+          "prefix": [
+            1,
+            0,
+            0,
+            2
+          ],
+          "source_gain_after": 26519.826308188272
+        },
+        {
+          "affected_events": 903,
+          "marginal_gain": 1283.5569525725234,
+          "prefix": [
+            1,
+            0,
+            3,
+            1,
+            3,
+            1,
+            2
+          ],
+          "source_gain_after": 27931.383260760795
+        },
+        {
+          "affected_events": 887,
+          "marginal_gain": 1199.3242010963388,
+          "prefix": [
+            3,
+            3,
+            0,
+            1,
+            2
+          ],
+          "source_gain_after": 29258.707461857135
+        },
+        {
+          "affected_events": 2200,
+          "marginal_gain": 1083.0674404528222,
+          "prefix": [
+            1,
+            2,
+            3
+          ],
+          "source_gain_after": 30469.774902309957
+        },
+        {
+          "affected_events": 721,
+          "marginal_gain": 1053.4662238585436,
+          "prefix": [
+            1,
+            0,
+            3,
+            1,
+            3,
+            1,
+            2,
+            2,
+            3
+          ],
+          "source_gain_after": 31651.2411261685
+        },
+        {
+          "affected_events": 723,
+          "marginal_gain": 1020.0961938800817,
+          "prefix": [
+            3,
+            1,
+            1,
+            0,
+            2,
+            2,
+            3,
+            3
+          ],
+          "source_gain_after": 32799.33732004858
+        },
+        {
+          "affected_events": 1123,
+          "marginal_gain": 1012.7713721811126,
+          "prefix": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "source_gain_after": 33940.108692229696
+        },
+        {
+          "affected_events": 939,
+          "marginal_gain": 987.5582372802619,
+          "prefix": [
+            3,
+            1,
+            1,
+            0,
+            2,
+            2
+          ],
+          "source_gain_after": 35055.66692950996
+        },
+        {
+          "affected_events": 1141,
+          "marginal_gain": 968.0401548148079,
+          "prefix": [
+            3,
+            1,
+            1,
+            0
+          ],
+          "source_gain_after": 36151.707084324764
+        },
+        {
+          "affected_events": 821,
+          "marginal_gain": 957.5933561373465,
+          "prefix": [
+            1,
+            2,
+            1,
+            2,
+            3,
+            3
+          ],
+          "source_gain_after": 37237.30044046211
+        },
+        {
+          "affected_events": 846,
+          "marginal_gain": 934.4986875435716,
+          "prefix": [
+            1,
+            0,
+            3,
+            1,
+            3,
+            1,
+            2,
+            2
+          ],
+          "source_gain_after": 38299.79912800568
+        }
+      ],
+      "joint_reverse": [
+        {
+          "affected_events": 16425,
+          "marginal_gain": 3704.0481950400886,
+          "prefix": [
+            1
+          ],
+          "source_gain_after": 3832.0481950400886
+        },
+        {
+          "affected_events": 4681,
+          "marginal_gain": 2761.573432682481,
+          "prefix": [
+            2,
+            3
+          ],
+          "source_gain_after": 6721.621627722569
+        },
+        {
+          "affected_events": 2408,
+          "marginal_gain": 2378.454098852833,
+          "prefix": [
+            2,
+            1,
+            2
+          ],
+          "source_gain_after": 9228.075726575402
+        },
+        {
+          "affected_events": 2955,
+          "marginal_gain": 2157.0669885484995,
+          "prefix": [
+            2,
+            2
+          ],
+          "source_gain_after": 11513.1427151239
+        },
+        {
+          "affected_events": 4380,
+          "marginal_gain": 2147.966978340602,
+          "prefix": [
+            0,
+            3
+          ],
+          "source_gain_after": 13789.109693464503
+        },
+        {
+          "affected_events": 1117,
+          "marginal_gain": 1528.6400647463977,
+          "prefix": [
+            0,
+            2,
+            1,
+            0
+          ],
+          "source_gain_after": 15445.7497582109
+        },
+        {
+          "affected_events": 1240,
+          "marginal_gain": 1515.5348656851515,
+          "prefix": [
+            3,
+            1,
+            3
+          ],
+          "source_gain_after": 17089.284623896052
+        },
+        {
+          "affected_events": 1106,
+          "marginal_gain": 1501.6423712624742,
+          "prefix": [
+            2,
+            0,
+            1,
+            2
+          ],
+          "source_gain_after": 18718.926995158527
+        },
+        {
+          "affected_events": 5224,
+          "marginal_gain": 1408.9603105190606,
+          "prefix": [
+            0,
+            2
+          ],
+          "source_gain_after": 20255.88730567759
+        },
+        {
+          "affected_events": 998,
+          "marginal_gain": 1229.6001891462229,
+          "prefix": [
+            2,
+            3,
+            3,
+            0
+          ],
+          "source_gain_after": 21613.48749482381
+        },
+        {
+          "affected_events": 2144,
+          "marginal_gain": 1198.1118831339645,
+          "prefix": [
+            2,
+            3,
+            3
+          ],
+          "source_gain_after": 22939.599377957777
+        },
+        {
+          "affected_events": 5250,
+          "marginal_gain": 1165.295604810356,
+          "prefix": [
+            3,
+            1
+          ],
+          "source_gain_after": 24232.89498276813
+        },
+        {
+          "affected_events": 3446,
+          "marginal_gain": 1154.7611029852833,
+          "prefix": [
+            2,
+            0
+          ],
+          "source_gain_after": 25515.656085753413
+        },
+        {
+          "affected_events": 1235,
+          "marginal_gain": 894.6596611253669,
+          "prefix": [
+            2,
+            0,
+            1
+          ],
+          "source_gain_after": 26538.31574687878
+        },
+        {
+          "affected_events": 5290,
+          "marginal_gain": 447.725617185434,
+          "prefix": [
+            2,
+            1
+          ],
+          "source_gain_after": 27114.041364064215
+        },
+        {
+          "affected_events": 1020,
+          "marginal_gain": 430.11129759257403,
+          "prefix": [
+            0,
+            2,
+            1,
+            0,
+            3
+          ],
+          "source_gain_after": 27672.15266165679
+        },
+        {
+          "affected_events": 11349,
+          "marginal_gain": 257.09901471621333,
+          "prefix": [
+            0
+          ],
+          "source_gain_after": 28057.251676373002
+        },
+        {
+          "affected_events": 1288,
+          "marginal_gain": 197.72460909246098,
+          "prefix": [
+            0,
+            2,
+            0
+          ],
+          "source_gain_after": 28382.976285465462
+        },
+        {
+          "affected_events": 448,
+          "marginal_gain": 64.9443070693458,
+          "prefix": [
+            2,
+            2,
+            0
+          ],
+          "source_gain_after": 28575.920592534807
+        },
+        {
+          "affected_events": 2830,
+          "marginal_gain": 9.95594868859314,
+          "prefix": [
+            3,
+            3
+          ],
+          "source_gain_after": 28713.8765412234
+        }
+      ],
+      "permuted_bytes": 528,
+      "portable_cap": 528,
+      "reverse_branch_totals": [
+        16425,
+        4681,
+        2408,
+        2955,
+        4380,
+        1117,
+        1240,
+        1106,
+        5224,
+        998,
+        2144,
+        5250,
+        3446,
+        1235,
+        5290,
+        1020,
+        16910,
+        1288,
+        448,
+        4974
+      ],
+      "reverse_bytes": 464,
+      "reverse_records": 20,
+      "row_bytes": 7032,
+      "rule_merge_supports": [
+        6447,
+        6417,
+        3852,
+        2713,
+        2616,
+        2411,
+        2392,
+        1471,
+        1339,
+        1197,
+        1168,
+        1116,
+        1102,
+        1088,
+        1025,
+        1017,
+        1015,
+        1005,
+        946,
+        940,
+        924,
+        874,
+        846,
+        830,
+        794,
+        737,
+        598,
+        594,
+        580,
+        545,
+        459,
+        255
+      ],
+      "rule_overlapping_supports": [
+        6447,
+        6417,
+        3852,
+        4974,
+        5224,
+        5252,
+        2392,
+        1557,
+        1339,
+        1238,
+        1168,
+        1178,
+        1102,
+        1240,
+        1025,
+        1017,
+        1033,
+        1191,
+        1012,
+        1016,
+        939,
+        1123,
+        846,
+        850,
+        827,
+        762,
+        598,
+        609,
+        587,
+        563,
+        1747,
+        3192
+      ],
+      "rules": 32,
+      "source_bytes": 65536,
+      "source_roles": [
+        {
+          "0": 4173,
+          "1": 4113,
+          "2": 4092,
+          "3": 4006
+        },
+        {
+          "0": 4214,
+          "1": 4134,
+          "2": 4074,
+          "3": 3962
+        },
+        {
+          "0": 4265,
+          "1": 4084,
+          "2": 4059,
+          "3": 3976
+        },
+        {
+          "0": 4259,
+          "1": 4096,
+          "2": 4148,
+          "3": 3881
+        }
+      ],
+      "world": 128
+    },
+    {
+      "branch_capacity": 24,
+      "branch_prefix_lengths": {
+        "1": 1,
+        "10": 1,
+        "2": 5,
+        "3": 5,
+        "4": 4,
+        "5": 3,
+        "6": 2,
+        "8": 2,
+        "9": 1
+      },
+      "branch_records": 24,
+      "branch_totals": [
+        6120,
+        6571,
+        3443,
+        4108,
+        5261,
+        1109,
+        1064,
+        1019,
+        1478,
+        988,
+        1275,
+        2187,
+        2426,
+        928,
+        1120,
+        954,
+        1325,
+        16171,
+        2946,
+        1233,
+        811,
+        734,
+        767,
+        758
+      ],
+      "episode_bytes": 528,
+      "expanded_literal_bytes": {
+        "episode": 480,
+        "frequency": 434,
+        "isolated": 455,
+        "permuted": 480,
+        "reverse": 336
+      },
+      "expanded_rule_lengths": [
+        2,
+        2,
+        3,
+        2,
+        2,
+        2,
+        3,
+        2,
+        3,
+        3,
+        3,
+        4,
+        4,
+        3,
+        4,
+        4,
+        6,
+        6,
+        6,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12,
+        12,
+        12,
+        12,
+        2,
+        2,
+        10,
+        11
+      ],
+      "expansion_content_payloads": {
+        "episode": {
+          "expanded_rule_terminal_bytes": 174,
+          "selected_prefix_terminal_bytes": 104
+        },
+        "frequency": {
+          "expanded_rule_terminal_bytes": 174,
+          "selected_prefix_terminal_bytes": 58
+        },
+        "isolated": {
+          "expanded_rule_terminal_bytes": 174,
+          "selected_prefix_terminal_bytes": 79
+        },
+        "permuted": {
+          "expanded_rule_terminal_bytes": 174,
+          "selected_prefix_terminal_bytes": 104
+        },
+        "reverse": {
+          "expanded_rule_terminal_bytes": 174,
+          "selected_prefix_terminal_bytes": 50
+        }
+      },
+      "flat_bytes": 525,
+      "frequency_branch_totals": [
+        16569,
+        16429,
+        16363,
+        16171,
+        6575,
+        6571,
+        6120,
+        5278,
+        5261,
+        4108,
+        3443,
+        2988,
+        2946,
+        2426,
+        2187,
+        2112,
+        1478,
+        1385,
+        1350,
+        1325,
+        1311,
+        1275,
+        1237,
+        1233
+      ],
+      "frequency_bytes": 528,
+      "frequency_records": 24,
+      "hashes": {
+        "episodes.bin": "243a958c277a20b8862f9412d7fa3141085fa8753304cab4dc3127ce266a4bff",
+        "flat.bin": "a59386f87e52f08a7ba8593c02d2bdb73f5b848fc9e846c3726ad97fb599c5f1",
+        "frequency.bin": "5d8363dd1348376d3d2100a2f2febb06c2b222e4578b497f5814681a437b54a5",
+        "isolated.bin": "cb4efc455832e12244e9b2997643cb4e9b7cd9c6f00730adc248f43bf5e668f8",
+        "permuted.bin": "27b599861eb8869075820c41d9c29eb990db8a03645b0b4751893edc24776c39",
+        "reverse.bin": "073a1627e9d18197d231c1c9c8589f490b5acc1700a9ecfbaaaa6216c1f2a79f",
+        "row.bin": "28467fd2561e4f2e78d183e9abab3e92b3c8e3811ac665c33f8807bd4dea4a18"
+      },
+      "isolated_branch_totals": [
+        6120,
+        16363,
+        6571,
+        3443,
+        2112,
+        4108,
+        16429,
+        5261,
+        1066,
+        1172,
+        1008,
+        16171,
+        1109,
+        1064,
+        1019,
+        1478,
+        1385,
+        988,
+        1275,
+        1311,
+        2187,
+        1350,
+        2426,
+        916
+      ],
+      "isolated_bytes": 528,
+      "isolated_records": 24,
+      "joint_forward": [
+        {
+          "affected_events": 6120,
+          "marginal_gain": 5352.013836925456,
+          "prefix": [
+            1,
+            2
+          ],
+          "source_gain_after": 5480.013836925456
+        },
+        {
+          "affected_events": 6571,
+          "marginal_gain": 3359.864063854132,
+          "prefix": [
+            3,
+            2
+          ],
+          "source_gain_after": 8967.87790077959
+        },
+        {
+          "affected_events": 3443,
+          "marginal_gain": 2580.065130306276,
+          "prefix": [
+            3,
+            2,
+            0
+          ],
+          "source_gain_after": 11675.943031085866
+        },
+        {
+          "affected_events": 4108,
+          "marginal_gain": 2423.878758099043,
+          "prefix": [
+            3,
+            1
+          ],
+          "source_gain_after": 14227.821789184909
+        },
+        {
+          "affected_events": 5261,
+          "marginal_gain": 1817.9090842933135,
+          "prefix": [
+            0,
+            3
+          ],
+          "source_gain_after": 16173.730873478222
+        },
+        {
+          "affected_events": 1109,
+          "marginal_gain": 1502.7491598993058,
+          "prefix": [
+            3,
+            1,
+            1,
+            1
+          ],
+          "source_gain_after": 17804.480033377527
+        },
+        {
+          "affected_events": 1064,
+          "marginal_gain": 1483.3237587371393,
+          "prefix": [
+            3,
+            2,
+            0,
+            1,
+            0
+          ],
+          "source_gain_after": 19415.803792114668
+        },
+        {
+          "affected_events": 1019,
+          "marginal_gain": 1465.884406803698,
+          "prefix": [
+            2,
+            0,
+            2,
+            0,
+            0
+          ],
+          "source_gain_after": 21009.688198918368
+        },
+        {
+          "affected_events": 1478,
+          "marginal_gain": 1465.5026532019506,
+          "prefix": [
+            2,
+            0,
+            2
+          ],
+          "source_gain_after": 22603.19085212032
+        },
+        {
+          "affected_events": 988,
+          "marginal_gain": 1445.062205986624,
+          "prefix": [
+            2,
+            1,
+            2,
+            3,
+            0
+          ],
+          "source_gain_after": 24176.253058106944
+        },
+        {
+          "affected_events": 1275,
+          "marginal_gain": 1417.246419816217,
+          "prefix": [
+            0,
+            3,
+            0
+          ],
+          "source_gain_after": 25721.49947792316
+        },
+        {
+          "affected_events": 2187,
+          "marginal_gain": 1398.9154323822513,
+          "prefix": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "source_gain_after": 27248.41491030541
+        },
+        {
+          "affected_events": 2426,
+          "marginal_gain": 1357.2176832064642,
+          "prefix": [
+            3,
+            1,
+            1
+          ],
+          "source_gain_after": 28733.632593511877
+        },
+        {
+          "affected_events": 928,
+          "marginal_gain": 1330.2361712297925,
+          "prefix": [
+            2,
+            1,
+            2,
+            3,
+            0,
+            3
+          ],
+          "source_gain_after": 30191.86876474167
+        },
+        {
+          "affected_events": 1120,
+          "marginal_gain": 1311.5508236277374,
+          "prefix": [
+            2,
+            1,
+            2,
+            3
+          ],
+          "source_gain_after": 31631.41958836941
+        },
+        {
+          "affected_events": 954,
+          "marginal_gain": 1288.220575884244,
+          "prefix": [
+            3,
+            2,
+            0,
+            1,
+            2,
+            3
+          ],
+          "source_gain_after": 33047.64016425365
+        },
+        {
+          "affected_events": 1325,
+          "marginal_gain": 1251.4470313659797,
+          "prefix": [
+            1,
+            1,
+            0
+          ],
+          "source_gain_after": 34427.08719561963
+        },
+        {
+          "affected_events": 8836,
+          "marginal_gain": 1248.6391920549686,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 35803.7263876746
+        },
+        {
+          "affected_events": 2946,
+          "marginal_gain": 1229.4394756712554,
+          "prefix": [
+            2,
+            1
+          ],
+          "source_gain_after": 37161.16586334586
+        },
+        {
+          "affected_events": 1233,
+          "marginal_gain": 1225.0641320090795,
+          "prefix": [
+            2,
+            0,
+            2,
+            0
+          ],
+          "source_gain_after": 38514.22999535494
+        },
+        {
+          "affected_events": 811,
+          "marginal_gain": 1175.245068216747,
+          "prefix": [
+            2,
+            1,
+            2,
+            3,
+            0,
+            3,
+            0,
+            0
+          ],
+          "source_gain_after": 39817.475063571685
+        },
+        {
+          "affected_events": 734,
+          "marginal_gain": 1075.6520813848622,
+          "prefix": [
+            3,
+            2,
+            0,
+            1,
+            2,
+            3,
+            1,
+            1,
+            0,
+            0
+          ],
+          "source_gain_after": 41021.12714495655
+        },
+        {
+          "affected_events": 767,
+          "marginal_gain": 1036.012134166518,
+          "prefix": [
+            2,
+            1,
+            2,
+            3,
+            0,
+            3,
+            0,
+            0,
+            1
+          ],
+          "source_gain_after": 42185.13927912306
+        },
+        {
+          "affected_events": 758,
+          "marginal_gain": 944.1976953237076,
+          "prefix": [
+            3,
+            1,
+            1,
+            1,
+            2,
+            3,
+            2,
+            0
+          ],
+          "source_gain_after": 43257.33697444677
+        }
+      ],
+      "joint_reverse": [
+        {
+          "affected_events": 6571,
+          "marginal_gain": 3359.864063854132,
+          "prefix": [
+            3,
+            2
+          ],
+          "source_gain_after": 3487.864063854132
+        },
+        {
+          "affected_events": 3443,
+          "marginal_gain": 2580.065130306276,
+          "prefix": [
+            3,
+            2,
+            0
+          ],
+          "source_gain_after": 6195.929194160408
+        },
+        {
+          "affected_events": 4108,
+          "marginal_gain": 2423.878758099043,
+          "prefix": [
+            3,
+            1
+          ],
+          "source_gain_after": 8747.80795225945
+        },
+        {
+          "affected_events": 1083,
+          "marginal_gain": 1630.4974682977168,
+          "prefix": [
+            1,
+            1,
+            0,
+            0
+          ],
+          "source_gain_after": 10506.305420557168
+        },
+        {
+          "affected_events": 3106,
+          "marginal_gain": 1521.5177242534758,
+          "prefix": [
+            0,
+            2
+          ],
+          "source_gain_after": 12155.823144810643
+        },
+        {
+          "affected_events": 16171,
+          "marginal_gain": 1515.8492130930113,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 13799.672357903655
+        },
+        {
+          "affected_events": 1281,
+          "marginal_gain": 1479.3620236267006,
+          "prefix": [
+            3,
+            0,
+            0
+          ],
+          "source_gain_after": 15407.034381530357
+        },
+        {
+          "affected_events": 1255,
+          "marginal_gain": 1358.3722776755849,
+          "prefix": [
+            0,
+            0,
+            1
+          ],
+          "source_gain_after": 16893.406659205943
+        },
+        {
+          "affected_events": 2388,
+          "marginal_gain": 1330.2575882460192,
+          "prefix": [
+            3,
+            2,
+            1
+          ],
+          "source_gain_after": 18351.66424745196
+        },
+        {
+          "affected_events": 1325,
+          "marginal_gain": 1251.4470313659797,
+          "prefix": [
+            1,
+            1,
+            0
+          ],
+          "source_gain_after": 19731.11127881794
+        },
+        {
+          "affected_events": 9437,
+          "marginal_gain": 1229.5843904106373,
+          "prefix": [
+            0
+          ],
+          "source_gain_after": 21088.69566922858
+        },
+        {
+          "affected_events": 1301,
+          "marginal_gain": 1033.4466928115185,
+          "prefix": [
+            0,
+            0,
+            3
+          ],
+          "source_gain_after": 22250.142362040096
+        },
+        {
+          "affected_events": 1307,
+          "marginal_gain": 855.8108285915616,
+          "prefix": [
+            3,
+            1,
+            2
+          ],
+          "source_gain_after": 23233.95319063166
+        },
+        {
+          "affected_events": 1077,
+          "marginal_gain": 832.9298301246961,
+          "prefix": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "source_gain_after": 24194.883020756355
+        },
+        {
+          "affected_events": 2897,
+          "marginal_gain": 779.0242513374692,
+          "prefix": [
+            3,
+            0
+          ],
+          "source_gain_after": 25101.907272093824
+        },
+        {
+          "affected_events": 4201,
+          "marginal_gain": 474.21617533203107,
+          "prefix": [
+            1,
+            1
+          ],
+          "source_gain_after": 25704.123447425856
+        },
+        {
+          "affected_events": 358,
+          "marginal_gain": 326.0008246661745,
+          "prefix": [
+            3,
+            1,
+            2,
+            3
+          ],
+          "source_gain_after": 26158.12427209203
+        },
+        {
+          "affected_events": 276,
+          "marginal_gain": 232.86194779657342,
+          "prefix": [
+            0,
+            0,
+            1,
+            1,
+            3
+          ],
+          "source_gain_after": 26518.986219888604
+        }
+      ],
+      "permuted_bytes": 528,
+      "portable_cap": 528,
+      "reverse_branch_totals": [
+        6571,
+        3443,
+        4108,
+        1083,
+        3106,
+        16171,
+        1281,
+        1255,
+        2388,
+        1325,
+        16569,
+        1301,
+        1307,
+        1077,
+        2897,
+        5278,
+        358,
+        276
+      ],
+      "reverse_bytes": 432,
+      "reverse_records": 18,
+      "row_bytes": 7032,
+      "rule_merge_supports": [
+        6577,
+        6273,
+        4482,
+        3876,
+        3098,
+        2513,
+        2242,
+        1650,
+        1173,
+        1171,
+        1137,
+        1120,
+        1114,
+        1057,
+        992,
+        975,
+        945,
+        922,
+        917,
+        861,
+        805,
+        798,
+        733,
+        714,
+        560,
+        493,
+        491,
+        465,
+        310,
+        269,
+        246,
+        202
+      ],
+      "rule_overlapping_supports": [
+        6577,
+        6273,
+        4482,
+        5261,
+        5279,
+        4105,
+        3445,
+        2947,
+        1356,
+        1219,
+        2426,
+        1120,
+        1116,
+        1237,
+        1083,
+        1101,
+        954,
+        952,
+        983,
+        1816,
+        850,
+        811,
+        786,
+        734,
+        590,
+        497,
+        501,
+        465,
+        2042,
+        2988,
+        713,
+        703
+      ],
+      "rules": 32,
+      "source_bytes": 65536,
+      "source_roles": [
+        {
+          "0": 4127,
+          "1": 4090,
+          "2": 4064,
+          "3": 4103
+        },
+        {
+          "0": 4105,
+          "1": 4136,
+          "2": 4081,
+          "3": 4062
+        },
+        {
+          "0": 4164,
+          "1": 4097,
+          "2": 4140,
+          "3": 3983
+        },
+        {
+          "0": 4175,
+          "1": 4108,
+          "2": 4078,
+          "3": 4023
+        }
+      ],
+      "world": 129
+    },
+    {
+      "branch_capacity": 24,
+      "branch_prefix_lengths": {
+        "1": 1,
+        "2": 6,
+        "3": 3,
+        "4": 2,
+        "5": 5,
+        "6": 5,
+        "7": 2
+      },
+      "branch_records": 24,
+      "branch_totals": [
+        5405,
+        4317,
+        6370,
+        6488,
+        2494,
+        5304,
+        16336,
+        1116,
+        1017,
+        1282,
+        1027,
+        952,
+        984,
+        1031,
+        921,
+        892,
+        2327,
+        959,
+        1104,
+        967,
+        960,
+        5171,
+        1016,
+        897
+      ],
+      "episode_bytes": 528,
+      "expanded_literal_bytes": {
+        "episode": 475,
+        "frequency": 436,
+        "isolated": 463,
+        "permuted": 475,
+        "reverse": 327
+      },
+      "expanded_rule_lengths": [
+        2,
+        2,
+        2,
+        3,
+        3,
+        2,
+        3,
+        3,
+        4,
+        2,
+        2,
+        4,
+        4,
+        5,
+        5,
+        5,
+        6,
+        7,
+        5,
+        8,
+        9,
+        7,
+        12,
+        12,
+        2,
+        12,
+        12,
+        3,
+        2,
+        3,
+        3,
+        24
+      ],
+      "expansion_content_payloads": {
+        "episode": {
+          "expanded_rule_terminal_bytes": 178,
+          "selected_prefix_terminal_bytes": 99
+        },
+        "frequency": {
+          "expanded_rule_terminal_bytes": 178,
+          "selected_prefix_terminal_bytes": 60
+        },
+        "isolated": {
+          "expanded_rule_terminal_bytes": 178,
+          "selected_prefix_terminal_bytes": 87
+        },
+        "permuted": {
+          "expanded_rule_terminal_bytes": 178,
+          "selected_prefix_terminal_bytes": 99
+        },
+        "reverse": {
+          "expanded_rule_terminal_bytes": 178,
+          "selected_prefix_terminal_bytes": 41
+        }
+      },
+      "flat_bytes": 527,
+      "frequency_branch_totals": [
+        16689,
+        16400,
+        16336,
+        16107,
+        6488,
+        6370,
+        5405,
+        5304,
+        5171,
+        4317,
+        3220,
+        2999,
+        2582,
+        2494,
+        2436,
+        2327,
+        1372,
+        1356,
+        1327,
+        1282,
+        1250,
+        1132,
+        1120,
+        1116
+      ],
+      "frequency_bytes": 528,
+      "frequency_records": 24,
+      "hashes": {
+        "episodes.bin": "57d2933ffbbdf09c132743a6a6885ce49da6e017853f41a304ceff4a43831d10",
+        "flat.bin": "b7f6844d28e79e0aea1ad98743cfe74a63c4fc8588f8d6baac79b897f967af61",
+        "frequency.bin": "af1b1eff01bb3464fbabf226da6d5e8790d134b9d23269ca36f88e8dc2d4cd64",
+        "isolated.bin": "14032c7d7e38188649d6bb7fab011721dc2bef8b0340ecbf326fb0133f580c48",
+        "permuted.bin": "e53357097d0165739520ee24d8ba79c9bf299fabab0bf1d447df59dd0f966b1a",
+        "reverse.bin": "1e0f9aa3cf7cd44012f4ac0e7d77d1419d018f9f69f3b924f17429002f7ae78e",
+        "row.bin": "537f8ace7d5c7bdbfa3580c421a745a027b42af1d5c8b504370eae2b87169996"
+      },
+      "isolated_branch_totals": [
+        5405,
+        2582,
+        4317,
+        16689,
+        6370,
+        1098,
+        6488,
+        5304,
+        1109,
+        1132,
+        1116,
+        16400,
+        1032,
+        1017,
+        1250,
+        1282,
+        1120,
+        1085,
+        1027,
+        985,
+        984,
+        923,
+        952,
+        1031
+      ],
+      "isolated_bytes": 528,
+      "isolated_records": 24,
+      "joint_forward": [
+        {
+          "affected_events": 5405,
+          "marginal_gain": 3321.2755340831663,
+          "prefix": [
+            0,
+            1
+          ],
+          "source_gain_after": 3449.2755340831663
+        },
+        {
+          "affected_events": 4317,
+          "marginal_gain": 2559.2673557181033,
+          "prefix": [
+            2,
+            0
+          ],
+          "source_gain_after": 6136.54288980127
+        },
+        {
+          "affected_events": 6370,
+          "marginal_gain": 1872.7320093960302,
+          "prefix": [
+            2,
+            2
+          ],
+          "source_gain_after": 8137.2748991973
+        },
+        {
+          "affected_events": 6488,
+          "marginal_gain": 1553.145627611531,
+          "prefix": [
+            0,
+            3
+          ],
+          "source_gain_after": 9818.420526808832
+        },
+        {
+          "affected_events": 2494,
+          "marginal_gain": 1663.9846693214627,
+          "prefix": [
+            1,
+            0,
+            3
+          ],
+          "source_gain_after": 11610.405196130294
+        },
+        {
+          "affected_events": 5304,
+          "marginal_gain": 1549.226023497006,
+          "prefix": [
+            1,
+            0
+          ],
+          "source_gain_after": 13287.6312196273
+        },
+        {
+          "affected_events": 9966,
+          "marginal_gain": 1511.0013015091952,
+          "prefix": [
+            2
+          ],
+          "source_gain_after": 14926.632521136495
+        },
+        {
+          "affected_events": 1116,
+          "marginal_gain": 1497.5241510474568,
+          "prefix": [
+            3,
+            3,
+            2,
+            3
+          ],
+          "source_gain_after": 16552.15667218395
+        },
+        {
+          "affected_events": 1017,
+          "marginal_gain": 1474.9008159705263,
+          "prefix": [
+            1,
+            0,
+            0,
+            3,
+            3
+          ],
+          "source_gain_after": 18155.057488154478
+        },
+        {
+          "affected_events": 1282,
+          "marginal_gain": 1463.0229003078323,
+          "prefix": [
+            1,
+            0,
+            0
+          ],
+          "source_gain_after": 19746.08038846231
+        },
+        {
+          "affected_events": 1027,
+          "marginal_gain": 1434.0579275613131,
+          "prefix": [
+            3,
+            3,
+            2,
+            3,
+            0
+          ],
+          "source_gain_after": 21308.138316023622
+        },
+        {
+          "affected_events": 952,
+          "marginal_gain": 1412.0224911355638,
+          "prefix": [
+            0,
+            0,
+            2,
+            2,
+            1,
+            0
+          ],
+          "source_gain_after": 22848.160807159187
+        },
+        {
+          "affected_events": 984,
+          "marginal_gain": 1407.1565395522016,
+          "prefix": [
+            2,
+            2,
+            0,
+            3,
+            3
+          ],
+          "source_gain_after": 24383.31734671139
+        },
+        {
+          "affected_events": 1031,
+          "marginal_gain": 1386.878799455148,
+          "prefix": [
+            0,
+            0,
+            2,
+            2,
+            1
+          ],
+          "source_gain_after": 25898.196146166538
+        },
+        {
+          "affected_events": 921,
+          "marginal_gain": 1374.1815681244398,
+          "prefix": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            2
+          ],
+          "source_gain_after": 27400.37771429098
+        },
+        {
+          "affected_events": 892,
+          "marginal_gain": 1372.240912010609,
+          "prefix": [
+            1,
+            0,
+            0,
+            3,
+            3,
+            0,
+            1
+          ],
+          "source_gain_after": 28900.618626301588
+        },
+        {
+          "affected_events": 2327,
+          "marginal_gain": 1365.0069884294585,
+          "prefix": [
+            3,
+            3,
+            2
+          ],
+          "source_gain_after": 30393.625614731045
+        },
+        {
+          "affected_events": 959,
+          "marginal_gain": 1364.984311297179,
+          "prefix": [
+            3,
+            3,
+            2,
+            3,
+            0,
+            0
+          ],
+          "source_gain_after": 31886.609926028224
+        },
+        {
+          "affected_events": 1104,
+          "marginal_gain": 1335.125414573201,
+          "prefix": [
+            1,
+            0,
+            3,
+            2
+          ],
+          "source_gain_after": 33349.73534060142
+        },
+        {
+          "affected_events": 967,
+          "marginal_gain": 1332.1974283772975,
+          "prefix": [
+            2,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "source_gain_after": 34809.93276897872
+        },
+        {
+          "affected_events": 960,
+          "marginal_gain": 1329.4816964693673,
+          "prefix": [
+            1,
+            0,
+            0,
+            3,
+            3,
+            0
+          ],
+          "source_gain_after": 36267.414465448084
+        },
+        {
+          "affected_events": 3170,
+          "marginal_gain": 1328.5199164308601,
+          "prefix": [
+            3,
+            3
+          ],
+          "source_gain_after": 37723.93438187894
+        },
+        {
+          "affected_events": 1016,
+          "marginal_gain": 1316.832147500345,
+          "prefix": [
+            0,
+            1,
+            2,
+            2,
+            1
+          ],
+          "source_gain_after": 39168.76652937929
+        },
+        {
+          "affected_events": 897,
+          "marginal_gain": 1311.444810139005,
+          "prefix": [
+            2,
+            2,
+            2,
+            0,
+            1,
+            1,
+            1
+          ],
+          "source_gain_after": 40608.2113395183
+        }
+      ],
+      "joint_reverse": [
+        {
+          "affected_events": 16689,
+          "marginal_gain": 2490.1331470876385,
+          "prefix": [
+            0
+          ],
+          "source_gain_after": 2618.1331470876385
+        },
+        {
+          "affected_events": 4078,
+          "marginal_gain": 1934.4126554192494,
+          "prefix": [
+            1,
+            2
+          ],
+          "source_gain_after": 4680.545802506887
+        },
+        {
+          "affected_events": 16400,
+          "marginal_gain": 1484.044085749288,
+          "prefix": [
+            1
+          ],
+          "source_gain_after": 6292.589888256175
+        },
+        {
+          "affected_events": 1278,
+          "marginal_gain": 1450.2245294341215,
+          "prefix": [
+            3,
+            0,
+            1
+          ],
+          "source_gain_after": 7870.814417690297
+        },
+        {
+          "affected_events": 2381,
+          "marginal_gain": 1447.9368630668196,
+          "prefix": [
+            1,
+            2,
+            2
+          ],
+          "source_gain_after": 9446.751280757117
+        },
+        {
+          "affected_events": 1256,
+          "marginal_gain": 1367.6649713119637,
+          "prefix": [
+            3,
+            2,
+            3
+          ],
+          "source_gain_after": 10942.41625206908
+        },
+        {
+          "affected_events": 1118,
+          "marginal_gain": 1334.554910329225,
+          "prefix": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "source_gain_after": 12404.971162398306
+        },
+        {
+          "affected_events": 1744,
+          "marginal_gain": 1318.1028512934456,
+          "prefix": [
+            1,
+            3
+          ],
+          "source_gain_after": 13851.074013691752
+        },
+        {
+          "affected_events": 5171,
+          "marginal_gain": 1245.0559448372271,
+          "prefix": [
+            3,
+            3
+          ],
+          "source_gain_after": 15224.12995852898
+        },
+        {
+          "affected_events": 9877,
+          "marginal_gain": 885.7457506840663,
+          "prefix": [
+            2
+          ],
+          "source_gain_after": 16237.875709213045
+        },
+        {
+          "affected_events": 1363,
+          "marginal_gain": 855.1485996795941,
+          "prefix": [
+            3,
+            3,
+            0
+          ],
+          "source_gain_after": 17221.02430889264
+        },
+        {
+          "affected_events": 1344,
+          "marginal_gain": 813.7892730101456,
+          "prefix": [
+            1,
+            1,
+            0
+          ],
+          "source_gain_after": 18162.813581902785
+        },
+        {
+          "affected_events": 1120,
+          "marginal_gain": 741.7114950083901,
+          "prefix": [
+            1,
+            2,
+            2,
+            0
+          ],
+          "source_gain_after": 19032.525076911174
+        },
+        {
+          "affected_events": 4092,
+          "marginal_gain": 642.9274679270077,
+          "prefix": [
+            3,
+            2
+          ],
+          "source_gain_after": 19803.452544838183
+        },
+        {
+          "affected_events": 7936,
+          "marginal_gain": 548.8511581201943,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 20480.303702958376
+        },
+        {
+          "affected_events": 5272,
+          "marginal_gain": 484.0246080276802,
+          "prefix": [
+            1,
+            1
+          ],
+          "source_gain_after": 21092.328310986057
+        },
+        {
+          "affected_events": 2702,
+          "marginal_gain": 412.31062762368424,
+          "prefix": [
+            3,
+            0
+          ],
+          "source_gain_after": 21632.63893860974
+        },
+        {
+          "affected_events": 3960,
+          "marginal_gain": 59.16868807904979,
+          "prefix": [
+            1,
+            0
+          ],
+          "source_gain_after": 21819.80762668879
+        }
+      ],
+      "permuted_bytes": 528,
+      "portable_cap": 528,
+      "reverse_branch_totals": [
+        16689,
+        4078,
+        16400,
+        1278,
+        2381,
+        1256,
+        1118,
+        1744,
+        5171,
+        16336,
+        1363,
+        1344,
+        1120,
+        4092,
+        16107,
+        5272,
+        4065,
+        5304
+      ],
+      "reverse_bytes": 432,
+      "reverse_records": 18,
+      "row_bytes": 7032,
+      "rule_merge_supports": [
+        6488,
+        5405,
+        5092,
+        3484,
+        3220,
+        2581,
+        2339,
+        2181,
+        2074,
+        1400,
+        1334,
+        1098,
+        1018,
+        1016,
+        1003,
+        968,
+        939,
+        867,
+        857,
+        823,
+        752,
+        748,
+        633,
+        621,
+        543,
+        488,
+        485,
+        330,
+        235,
+        211,
+        179,
+        169
+      ],
+      "rule_overlapping_supports": [
+        6488,
+        5405,
+        6371,
+        3484,
+        3220,
+        2704,
+        2406,
+        2494,
+        2183,
+        5171,
+        3000,
+        1128,
+        1116,
+        1016,
+        1031,
+        984,
+        967,
+        879,
+        1017,
+        845,
+        798,
+        748,
+        671,
+        630,
+        2944,
+        552,
+        499,
+        2582,
+        5272,
+        553,
+        1372,
+        240
+      ],
+      "rules": 32,
+      "source_bytes": 65536,
+      "source_roles": [
+        {
+          "0": 4112,
+          "1": 4098,
+          "2": 4087,
+          "3": 4087
+        },
+        {
+          "0": 4124,
+          "1": 4098,
+          "2": 4095,
+          "3": 4067
+        },
+        {
+          "0": 4234,
+          "1": 4077,
+          "2": 4089,
+          "3": 3984
+        },
+        {
+          "0": 4220,
+          "1": 4127,
+          "2": 4067,
+          "3": 3970
+        }
+      ],
+      "world": 130
+    },
+    {
+      "branch_capacity": 24,
+      "branch_prefix_lengths": {
+        "1": 1,
+        "2": 4,
+        "3": 3,
+        "4": 4,
+        "5": 5,
+        "6": 6,
+        "8": 1
+      },
+      "branch_records": 24,
+      "branch_totals": [
+        2327,
+        2369,
+        2153,
+        3046,
+        4093,
+        16259,
+        1030,
+        4091,
+        1115,
+        1212,
+        1102,
+        2006,
+        969,
+        953,
+        917,
+        1010,
+        926,
+        1012,
+        967,
+        1095,
+        925,
+        2913,
+        829,
+        958
+      ],
+      "episode_bytes": 528,
+      "expanded_literal_bytes": {
+        "episode": 479,
+        "frequency": 436,
+        "isolated": 466,
+        "permuted": 479,
+        "reverse": 321
+      },
+      "expanded_rule_lengths": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        5,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        7,
+        8,
+        8,
+        8,
+        12,
+        12,
+        12,
+        12,
+        2,
+        3,
+        3,
+        3
+      ],
+      "expansion_content_payloads": {
+        "episode": {
+          "expanded_rule_terminal_bytes": 155,
+          "selected_prefix_terminal_bytes": 103
+        },
+        "frequency": {
+          "expanded_rule_terminal_bytes": 155,
+          "selected_prefix_terminal_bytes": 60
+        },
+        "isolated": {
+          "expanded_rule_terminal_bytes": 155,
+          "selected_prefix_terminal_bytes": 90
+        },
+        "permuted": {
+          "expanded_rule_terminal_bytes": 155,
+          "selected_prefix_terminal_bytes": 103
+        },
+        "reverse": {
+          "expanded_rule_terminal_bytes": 155,
+          "selected_prefix_terminal_bytes": 50
+        }
+      },
+      "flat_bytes": 519,
+      "frequency_branch_totals": [
+        16539,
+        16373,
+        16361,
+        16259,
+        6389,
+        5276,
+        5213,
+        4093,
+        4091,
+        3046,
+        2913,
+        2425,
+        2369,
+        2327,
+        2186,
+        2153,
+        2140,
+        2006,
+        1742,
+        1735,
+        1561,
+        1258,
+        1212,
+        1128
+      ],
+      "frequency_bytes": 528,
+      "frequency_records": 24,
+      "hashes": {
+        "episodes.bin": "84e8c2c37961eba9dadf7848a989b059f76d51ceee033891f46285c4d5fdd43f",
+        "flat.bin": "ea57237bc7c3f5615a9a65b12f12c6408a11a62c08b6199a1b3ee78c5de91646",
+        "frequency.bin": "2e7f08786f5b15210fea115a90c4c8f4377d5937d4ac4dbb7ced346e8169db89",
+        "isolated.bin": "b5d5a78097ee4a96900f46f5640b358918fe0a1de0f83ace4ca03f6123f83b9d",
+        "permuted.bin": "efdaed0702589a3988852c50b9f80e95bda4121541031c1fe4bf24b766107806",
+        "reverse.bin": "8edd8dc00c98a7395bc9eeb4fa8907021a054cb0711076bda3106933a4c0be0a",
+        "row.bin": "99bd91a62ddd14ceadbcfa1c1143f2016fa1d3d472fec9e5be5af963c8503d05"
+      },
+      "isolated_branch_totals": [
+        2327,
+        2369,
+        2153,
+        3046,
+        4093,
+        16259,
+        4091,
+        16373,
+        1115,
+        1076,
+        5276,
+        1128,
+        2140,
+        1212,
+        1258,
+        1035,
+        957,
+        1030,
+        1102,
+        2006,
+        969,
+        953,
+        958,
+        917
+      ],
+      "isolated_bytes": 528,
+      "isolated_records": 24,
+      "joint_forward": [
+        {
+          "affected_events": 2327,
+          "marginal_gain": 3319.420954163114,
+          "prefix": [
+            2,
+            0,
+            2
+          ],
+          "source_gain_after": 3447.420954163114
+        },
+        {
+          "affected_events": 2369,
+          "marginal_gain": 3240.061370541196,
+          "prefix": [
+            3,
+            0,
+            0
+          ],
+          "source_gain_after": 6815.48232470431
+        },
+        {
+          "affected_events": 2153,
+          "marginal_gain": 3183.9039017345094,
+          "prefix": [
+            3,
+            0,
+            0,
+            1
+          ],
+          "source_gain_after": 10127.386226438819
+        },
+        {
+          "affected_events": 3046,
+          "marginal_gain": 2439.9721085943916,
+          "prefix": [
+            2,
+            0
+          ],
+          "source_gain_after": 12695.35833503321
+        },
+        {
+          "affected_events": 4093,
+          "marginal_gain": 2364.082550901888,
+          "prefix": [
+            1,
+            1
+          ],
+          "source_gain_after": 15187.440885935099
+        },
+        {
+          "affected_events": 16259,
+          "marginal_gain": 2361.0438537899586,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 17676.484739725056
+        },
+        {
+          "affected_events": 1030,
+          "marginal_gain": 2563.6539908126683,
+          "prefix": [
+            3,
+            3,
+            0,
+            2,
+            3
+          ],
+          "source_gain_after": 20368.138730537725
+        },
+        {
+          "affected_events": 4091,
+          "marginal_gain": 2272.516422480735,
+          "prefix": [
+            2,
+            1
+          ],
+          "source_gain_after": 22768.65515301846
+        },
+        {
+          "affected_events": 1115,
+          "marginal_gain": 1548.892948864763,
+          "prefix": [
+            3,
+            3,
+            0,
+            2
+          ],
+          "source_gain_after": 24445.54810188322
+        },
+        {
+          "affected_events": 1212,
+          "marginal_gain": 1475.9372855683214,
+          "prefix": [
+            3,
+            2,
+            2
+          ],
+          "source_gain_after": 26049.485387451543
+        },
+        {
+          "affected_events": 1102,
+          "marginal_gain": 1408.1010995095628,
+          "prefix": [
+            3,
+            3,
+            1,
+            2
+          ],
+          "source_gain_after": 27585.586486961107
+        },
+        {
+          "affected_events": 2006,
+          "marginal_gain": 1391.4869167030545,
+          "prefix": [
+            3,
+            0,
+            0,
+            1,
+            2
+          ],
+          "source_gain_after": 29105.073403664162
+        },
+        {
+          "affected_events": 969,
+          "marginal_gain": 1382.4487309820825,
+          "prefix": [
+            3,
+            1,
+            1,
+            2,
+            2
+          ],
+          "source_gain_after": 30615.522134646246
+        },
+        {
+          "affected_events": 953,
+          "marginal_gain": 1368.93528178518,
+          "prefix": [
+            3,
+            3,
+            0,
+            2,
+            3,
+            2
+          ],
+          "source_gain_after": 32112.457416431425
+        },
+        {
+          "affected_events": 917,
+          "marginal_gain": 1358.6856831830046,
+          "prefix": [
+            3,
+            3,
+            1,
+            2,
+            3,
+            0
+          ],
+          "source_gain_after": 33599.14309961443
+        },
+        {
+          "affected_events": 1010,
+          "marginal_gain": 1347.5374903892603,
+          "prefix": [
+            3,
+            2,
+            2,
+            1,
+            0
+          ],
+          "source_gain_after": 35074.68059000369
+        },
+        {
+          "affected_events": 926,
+          "marginal_gain": 1345.237722887377,
+          "prefix": [
+            2,
+            0,
+            2,
+            3,
+            0,
+            1
+          ],
+          "source_gain_after": 36547.918312891066
+        },
+        {
+          "affected_events": 1012,
+          "marginal_gain": 1342.4195214725944,
+          "prefix": [
+            2,
+            0,
+            2,
+            3,
+            0
+          ],
+          "source_gain_after": 38018.33783436366
+        },
+        {
+          "affected_events": 967,
+          "marginal_gain": 1317.7930968760334,
+          "prefix": [
+            3,
+            0,
+            0,
+            1,
+            2,
+            2
+          ],
+          "source_gain_after": 39464.13093123969
+        },
+        {
+          "affected_events": 1095,
+          "marginal_gain": 1301.9743969030094,
+          "prefix": [
+            3,
+            1,
+            1,
+            2
+          ],
+          "source_gain_after": 40894.1053281427
+        },
+        {
+          "affected_events": 925,
+          "marginal_gain": 1270.3076945056937,
+          "prefix": [
+            3,
+            2,
+            2,
+            1,
+            0,
+            1
+          ],
+          "source_gain_after": 42292.4130226484
+        },
+        {
+          "affected_events": 2913,
+          "marginal_gain": 1251.9358897117233,
+          "prefix": [
+            3,
+            1
+          ],
+          "source_gain_after": 43672.34891236012
+        },
+        {
+          "affected_events": 829,
+          "marginal_gain": 1202.8634690802126,
+          "prefix": [
+            3,
+            0,
+            0,
+            1,
+            2,
+            1,
+            1,
+            2
+          ],
+          "source_gain_after": 45003.21238144033
+        },
+        {
+          "affected_events": 958,
+          "marginal_gain": 1150.2455358411094,
+          "prefix": [
+            3,
+            0,
+            0,
+            1,
+            2,
+            1
+          ],
+          "source_gain_after": 46281.45791728144
+        }
+      ],
+      "joint_reverse": [
+        {
+          "affected_events": 2327,
+          "marginal_gain": 3319.420954163114,
+          "prefix": [
+            2,
+            0,
+            2
+          ],
+          "source_gain_after": 3447.420954163114
+        },
+        {
+          "affected_events": 2994,
+          "marginal_gain": 2936.1044789174057,
+          "prefix": [
+            0,
+            0
+          ],
+          "source_gain_after": 6511.52543308052
+        },
+        {
+          "affected_events": 3046,
+          "marginal_gain": 2439.9721085943916,
+          "prefix": [
+            2,
+            0
+          ],
+          "source_gain_after": 9079.497541674911
+        },
+        {
+          "affected_events": 16259,
+          "marginal_gain": 2361.0438537899586,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 11568.54139546487
+        },
+        {
+          "affected_events": 4091,
+          "marginal_gain": 2272.516422480735,
+          "prefix": [
+            2,
+            1
+          ],
+          "source_gain_after": 13969.057817945606
+        },
+        {
+          "affected_events": 1080,
+          "marginal_gain": 1619.420350452847,
+          "prefix": [
+            0,
+            1,
+            1,
+            0
+          ],
+          "source_gain_after": 15716.478168398453
+        },
+        {
+          "affected_events": 5276,
+          "marginal_gain": 1548.5950780325368,
+          "prefix": [
+            0,
+            1
+          ],
+          "source_gain_after": 17393.07324643099
+        },
+        {
+          "affected_events": 4167,
+          "marginal_gain": 1494.8884375638609,
+          "prefix": [
+            0,
+            3
+          ],
+          "source_gain_after": 19015.96168399485
+        },
+        {
+          "affected_events": 1139,
+          "marginal_gain": 1481.88153344682,
+          "prefix": [
+            0,
+            1,
+            2,
+            2
+          ],
+          "source_gain_after": 20625.84321744167
+        },
+        {
+          "affected_events": 1283,
+          "marginal_gain": 1410.7008851731562,
+          "prefix": [
+            2,
+            1,
+            1
+          ],
+          "source_gain_after": 22164.544102614826
+        },
+        {
+          "affected_events": 954,
+          "marginal_gain": 1405.6121818583922,
+          "prefix": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            0
+          ],
+          "source_gain_after": 23698.156284473218
+        },
+        {
+          "affected_events": 2432,
+          "marginal_gain": 1338.592011530122,
+          "prefix": [
+            0,
+            1,
+            2
+          ],
+          "source_gain_after": 25164.74829600334
+        },
+        {
+          "affected_events": 1327,
+          "marginal_gain": 1262.167611847763,
+          "prefix": [
+            0,
+            1,
+            1
+          ],
+          "source_gain_after": 26554.915907851104
+        },
+        {
+          "affected_events": 1017,
+          "marginal_gain": 925.2875689638263,
+          "prefix": [
+            0,
+            3,
+            1
+          ],
+          "source_gain_after": 27608.20347681493
+        },
+        {
+          "affected_events": 1435,
+          "marginal_gain": 614.9449895290518,
+          "prefix": [
+            2,
+            1,
+            0
+          ],
+          "source_gain_after": 28351.148466343984
+        },
+        {
+          "affected_events": 5213,
+          "marginal_gain": 442.8376667244328,
+          "prefix": [
+            3,
+            3
+          ],
+          "source_gain_after": 28921.986133068418
+        },
+        {
+          "affected_events": 1033,
+          "marginal_gain": 389.98388534263745,
+          "prefix": [
+            0,
+            1,
+            2,
+            2,
+            1
+          ],
+          "source_gain_after": 29439.970018411055
+        }
+      ],
+      "permuted_bytes": 528,
+      "portable_cap": 528,
+      "reverse_branch_totals": [
+        2327,
+        2994,
+        3046,
+        16259,
+        4091,
+        1080,
+        5276,
+        4167,
+        1139,
+        1283,
+        954,
+        2432,
+        1327,
+        1017,
+        2389,
+        5213,
+        1033
+      ],
+      "reverse_bytes": 416,
+      "reverse_records": 17,
+      "row_bytes": 7032,
+      "rule_merge_supports": [
+        6438,
+        6389,
+        4106,
+        2599,
+        2479,
+        2425,
+        2310,
+        2233,
+        2006,
+        1599,
+        1344,
+        1278,
+        1153,
+        1125,
+        1080,
+        1078,
+        1064,
+        1019,
+        991,
+        917,
+        870,
+        827,
+        792,
+        767,
+        640,
+        626,
+        620,
+        594,
+        302,
+        215,
+        214,
+        202
+      ],
+      "rule_overlapping_supports": [
+        6438,
+        6389,
+        4106,
+        5215,
+        4101,
+        2425,
+        2369,
+        2389,
+        2006,
+        1742,
+        1365,
+        1278,
+        1292,
+        2327,
+        1115,
+        1102,
+        1095,
+        1035,
+        1010,
+        1012,
+        903,
+        827,
+        807,
+        829,
+        654,
+        636,
+        636,
+        643,
+        3046,
+        2432,
+        1292,
+        256
+      ],
+      "rules": 32,
+      "source_bytes": 65536,
+      "source_roles": [
+        {
+          "0": 4121,
+          "1": 4113,
+          "2": 4105,
+          "3": 4045
+        },
+        {
+          "0": 4110,
+          "1": 4071,
+          "2": 4074,
+          "3": 4129
+        },
+        {
+          "0": 4159,
+          "1": 4096,
+          "2": 4077,
+          "3": 4052
+        },
+        {
+          "0": 4149,
+          "1": 4094,
+          "2": 4105,
+          "3": 4036
+        }
+      ],
+      "world": 131
+    },
+    {
+      "branch_capacity": 24,
+      "branch_prefix_lengths": {
+        "1": 1,
+        "2": 3,
+        "3": 6,
+        "4": 5,
+        "5": 3,
+        "6": 3,
+        "7": 2,
+        "8": 1
+      },
+      "branch_records": 24,
+      "branch_totals": [
+        3903,
+        2389,
+        7529,
+        3034,
+        4068,
+        2559,
+        1344,
+        2462,
+        1118,
+        1232,
+        1029,
+        1173,
+        16335,
+        950,
+        668,
+        962,
+        1122,
+        2358,
+        895,
+        843,
+        1041,
+        711,
+        1375,
+        749
+      ],
+      "episode_bytes": 528,
+      "expanded_literal_bytes": {
+        "episode": 476,
+        "frequency": 444,
+        "isolated": 464,
+        "permuted": 476,
+        "reverse": 418
+      },
+      "expanded_rule_lengths": [
+        2,
+        2,
+        2,
+        2,
+        4,
+        3,
+        3,
+        5,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        2,
+        7,
+        7,
+        9,
+        5,
+        12,
+        12,
+        7,
+        12,
+        12,
+        2,
+        3,
+        5,
+        3
+      ],
+      "expansion_content_payloads": {
+        "episode": {
+          "expanded_rule_terminal_bytes": 157,
+          "selected_prefix_terminal_bytes": 100
+        },
+        "frequency": {
+          "expanded_rule_terminal_bytes": 157,
+          "selected_prefix_terminal_bytes": 68
+        },
+        "isolated": {
+          "expanded_rule_terminal_bytes": 157,
+          "selected_prefix_terminal_bytes": 88
+        },
+        "permuted": {
+          "expanded_rule_terminal_bytes": 157,
+          "selected_prefix_terminal_bytes": 100
+        },
+        "reverse": {
+          "expanded_rule_terminal_bytes": 157,
+          "selected_prefix_terminal_bytes": 57
+        }
+      },
+      "flat_bytes": 527,
+      "frequency_branch_totals": [
+        16948,
+        16335,
+        15860,
+        7529,
+        5699,
+        5288,
+        4068,
+        3903,
+        3034,
+        2978,
+        2559,
+        2462,
+        2389,
+        2358,
+        2182,
+        2150,
+        1700,
+        1375,
+        1344,
+        1232,
+        1173,
+        1122,
+        1118,
+        1093
+      ],
+      "frequency_bytes": 528,
+      "frequency_records": 24,
+      "hashes": {
+        "episodes.bin": "eaa97a2c5ca8cdb9da13a10d4f0beceda2928c9173ef6bb68775c8b3ad445525",
+        "flat.bin": "43cef643b4c40e460e749f430481c7b794c16e91748f3d216b95c5f042c2a4a1",
+        "frequency.bin": "c1b715f6c1f56b72375b3a40eb9f7b524b48c4f349ee28e3d0b18b3eac1cb5c3",
+        "isolated.bin": "d7771825f44a99f31716c3a241a0c9442f9f80404b6c0c02781d6d051a83b580",
+        "permuted.bin": "d1264971aea32002a7d16e8f0cb0b165b0edbff745d627cba7a49356ceca37df",
+        "reverse.bin": "bf3d80e0d8f21c9adb8f6de821d05183009dfd3a875b0042c8abf7730b9a79b4",
+        "row.bin": "f8aa9bb0c849eed4ac9d6df877c478fc0c9be47729cd782e62583c1224e5d46f"
+      },
+      "isolated_branch_totals": [
+        3903,
+        2389,
+        16335,
+        7529,
+        3034,
+        4068,
+        2559,
+        1344,
+        2462,
+        1118,
+        1059,
+        1232,
+        1029,
+        1173,
+        1122,
+        962,
+        15860,
+        2182,
+        950,
+        940,
+        1041,
+        5699,
+        843,
+        2358
+      ],
+      "isolated_bytes": 528,
+      "isolated_records": 24,
+      "joint_forward": [
+        {
+          "affected_events": 3903,
+          "marginal_gain": 3191.4221399774633,
+          "prefix": [
+            2,
+            1,
+            0
+          ],
+          "source_gain_after": 3319.4221399774633
+        },
+        {
+          "affected_events": 2389,
+          "marginal_gain": 3151.008021780219,
+          "prefix": [
+            0,
+            3,
+            2
+          ],
+          "source_gain_after": 6598.430161757682
+        },
+        {
+          "affected_events": 7529,
+          "marginal_gain": 2570.9444371693303,
+          "prefix": [
+            2,
+            1
+          ],
+          "source_gain_after": 9297.374598927012
+        },
+        {
+          "affected_events": 3034,
+          "marginal_gain": 2560.916955413657,
+          "prefix": [
+            2,
+            0
+          ],
+          "source_gain_after": 11986.291554340669
+        },
+        {
+          "affected_events": 4068,
+          "marginal_gain": 2528.736247719208,
+          "prefix": [
+            2,
+            3
+          ],
+          "source_gain_after": 14643.027802059878
+        },
+        {
+          "affected_events": 2559,
+          "marginal_gain": 1719.4887042840528,
+          "prefix": [
+            2,
+            1,
+            0,
+            3
+          ],
+          "source_gain_after": 16490.51650634393
+        },
+        {
+          "affected_events": 1344,
+          "marginal_gain": 1576.0715809028868,
+          "prefix": [
+            0,
+            3,
+            1
+          ],
+          "source_gain_after": 18194.58808724682
+        },
+        {
+          "affected_events": 2462,
+          "marginal_gain": 1541.7074327583475,
+          "prefix": [
+            2,
+            3,
+            0
+          ],
+          "source_gain_after": 19864.295520005166
+        },
+        {
+          "affected_events": 1118,
+          "marginal_gain": 1527.561280489971,
+          "prefix": [
+            2,
+            0,
+            1,
+            0
+          ],
+          "source_gain_after": 21519.856800495138
+        },
+        {
+          "affected_events": 1232,
+          "marginal_gain": 1493.9040979354806,
+          "prefix": [
+            0,
+            0,
+            0
+          ],
+          "source_gain_after": 23141.760898430617
+        },
+        {
+          "affected_events": 1029,
+          "marginal_gain": 1474.5588198803614,
+          "prefix": [
+            2,
+            0,
+            1,
+            0,
+            1
+          ],
+          "source_gain_after": 24744.319718310977
+        },
+        {
+          "affected_events": 1173,
+          "marginal_gain": 1462.9813509853873,
+          "prefix": [
+            0,
+            3,
+            1,
+            2
+          ],
+          "source_gain_after": 26335.301069296365
+        },
+        {
+          "affected_events": 12773,
+          "marginal_gain": 1829.240277017724,
+          "prefix": [
+            2
+          ],
+          "source_gain_after": 28292.54134631409
+        },
+        {
+          "affected_events": 950,
+          "marginal_gain": 1748.149651933301,
+          "prefix": [
+            2,
+            1,
+            0,
+            3,
+            3,
+            2
+          ],
+          "source_gain_after": 30168.69099824739
+        },
+        {
+          "affected_events": 668,
+          "marginal_gain": 1716.5753744434421,
+          "prefix": [
+            0,
+            0,
+            0,
+            1,
+            2,
+            1,
+            2
+          ],
+          "source_gain_after": 32013.266372690832
+        },
+        {
+          "affected_events": 962,
+          "marginal_gain": 1406.0023483630787,
+          "prefix": [
+            2,
+            0,
+            1,
+            0,
+            1,
+            2
+          ],
+          "source_gain_after": 33547.26872105391
+        },
+        {
+          "affected_events": 1122,
+          "marginal_gain": 1390.0019170574133,
+          "prefix": [
+            2,
+            3,
+            0,
+            2
+          ],
+          "source_gain_after": 35065.270638111324
+        },
+        {
+          "affected_events": 2358,
+          "marginal_gain": 1301.0030800763495,
+          "prefix": [
+            2,
+            0,
+            1
+          ],
+          "source_gain_after": 36494.27371818767
+        },
+        {
+          "affected_events": 895,
+          "marginal_gain": 1297.042837175683,
+          "prefix": [
+            0,
+            3,
+            1,
+            2,
+            0,
+            1,
+            1
+          ],
+          "source_gain_after": 37919.31655536336
+        },
+        {
+          "affected_events": 843,
+          "marginal_gain": 1289.4053743536658,
+          "prefix": [
+            0,
+            3,
+            1,
+            2,
+            0,
+            1,
+            1,
+            2
+          ],
+          "source_gain_after": 39336.72192971702
+        },
+        {
+          "affected_events": 1041,
+          "marginal_gain": 1264.6943698879063,
+          "prefix": [
+            0,
+            3,
+            2,
+            1,
+            0
+          ],
+          "source_gain_after": 40729.41629960493
+        },
+        {
+          "affected_events": 711,
+          "marginal_gain": 1153.7436052046078,
+          "prefix": [
+            0,
+            0,
+            0,
+            1,
+            2,
+            1
+          ],
+          "source_gain_after": 42011.15990480954
+        },
+        {
+          "affected_events": 1375,
+          "marginal_gain": 1008.0450320347115,
+          "prefix": [
+            2,
+            1,
+            0,
+            3,
+            3
+          ],
+          "source_gain_after": 43147.204936844246
+        },
+        {
+          "affected_events": 749,
+          "marginal_gain": 984.9815674184122,
+          "prefix": [
+            2,
+            1,
+            3,
+            3
+          ],
+          "source_gain_after": 44260.18650426266
+        }
+      ],
+      "joint_reverse": [
+        {
+          "affected_events": 5213,
+          "marginal_gain": 3660.7611048734943,
+          "prefix": [
+            3,
+            2
+          ],
+          "source_gain_after": 3788.7611048734943
+        },
+        {
+          "affected_events": 16389,
+          "marginal_gain": 2679.7310952854405,
+          "prefix": [
+            1
+          ],
+          "source_gain_after": 6596.492200158935
+        },
+        {
+          "affected_events": 5677,
+          "marginal_gain": 1998.7862704707572,
+          "prefix": [
+            1,
+            0
+          ],
+          "source_gain_after": 8723.278470629692
+        },
+        {
+          "affected_events": 3506,
+          "marginal_gain": 1498.1778679584734,
+          "prefix": [
+            3,
+            2,
+            1
+          ],
+          "source_gain_after": 10349.456338588165
+        },
+        {
+          "affected_events": 15860,
+          "marginal_gain": 1436.3710857346346,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 11913.827424322799
+        },
+        {
+          "affected_events": 5699,
+          "marginal_gain": 1949.7738146203683,
+          "prefix": [
+            0,
+            3
+          ],
+          "source_gain_after": 13991.601238943167
+        },
+        {
+          "affected_events": 1272,
+          "marginal_gain": 1405.1835685470726,
+          "prefix": [
+            3,
+            2,
+            0
+          ],
+          "source_gain_after": 15524.78480749024
+        },
+        {
+          "affected_events": 5255,
+          "marginal_gain": 1363.1688119329458,
+          "prefix": [
+            3,
+            0
+          ],
+          "source_gain_after": 17015.953619423184
+        },
+        {
+          "affected_events": 1250,
+          "marginal_gain": 1483.017187674818,
+          "prefix": [
+            3,
+            3,
+            0
+          ],
+          "source_gain_after": 18626.970807098
+        },
+        {
+          "affected_events": 2182,
+          "marginal_gain": 1358.09492153649,
+          "prefix": [
+            0,
+            1,
+            2
+          ],
+          "source_gain_after": 20113.06572863449
+        },
+        {
+          "affected_events": 1313,
+          "marginal_gain": 1287.5642903379248,
+          "prefix": [
+            3,
+            1,
+            2
+          ],
+          "source_gain_after": 21528.630018972413
+        },
+        {
+          "affected_events": 1658,
+          "marginal_gain": 854.3871219036629,
+          "prefix": [
+            2,
+            1,
+            2
+          ],
+          "source_gain_after": 22511.017140876076
+        },
+        {
+          "affected_events": 5969,
+          "marginal_gain": 1779.2460893989646,
+          "prefix": [
+            2
+          ],
+          "source_gain_after": 24418.263230275043
+        },
+        {
+          "affected_events": 2191,
+          "marginal_gain": 694.3443285344083,
+          "prefix": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "source_gain_after": 25240.60755880945
+        },
+        {
+          "affected_events": 2501,
+          "marginal_gain": 624.2486050102459,
+          "prefix": [
+            1,
+            3
+          ],
+          "source_gain_after": 25992.856163819695
+        },
+        {
+          "affected_events": 884,
+          "marginal_gain": 612.9856340509285,
+          "prefix": [
+            3,
+            3,
+            3
+          ],
+          "source_gain_after": 26733.841797870624
+        },
+        {
+          "affected_events": 5288,
+          "marginal_gain": 529.3877588768697,
+          "prefix": [
+            0,
+            1
+          ],
+          "source_gain_after": 27391.229556747494
+        },
+        {
+          "affected_events": 1798,
+          "marginal_gain": 519.2736960494868,
+          "prefix": [
+            3,
+            1
+          ],
+          "source_gain_after": 28038.50325279698
+        },
+        {
+          "affected_events": 1136,
+          "marginal_gain": 508.4581469390031,
+          "prefix": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "source_gain_after": 28674.961399735985
+        },
+        {
+          "affected_events": 1774,
+          "marginal_gain": 457.0427076554232,
+          "prefix": [
+            1,
+            1
+          ],
+          "source_gain_after": 29260.004107391407
+        },
+        {
+          "affected_events": 204,
+          "marginal_gain": 44.63082525176952,
+          "prefix": [
+            3,
+            1,
+            0
+          ],
+          "source_gain_after": 29432.634932643177
+        },
+        {
+          "affected_events": 341,
+          "marginal_gain": 44.63030785640015,
+          "prefix": [
+            2,
+            1,
+            2,
+            1
+          ],
+          "source_gain_after": 29605.26524049958
+        },
+        {
+          "affected_events": 3682,
+          "marginal_gain": 198.87655907903547,
+          "prefix": [
+            2,
+            1
+          ],
+          "source_gain_after": 29932.141799578614
+        }
+      ],
+      "permuted_bytes": 528,
+      "portable_cap": 528,
+      "reverse_branch_totals": [
+        5213,
+        16389,
+        5677,
+        3506,
+        15860,
+        5699,
+        1272,
+        5255,
+        1250,
+        2182,
+        1313,
+        1658,
+        16335,
+        2191,
+        2501,
+        884,
+        5288,
+        1798,
+        1136,
+        1774,
+        204,
+        341,
+        7529
+      ],
+      "reverse_bytes": 512,
+      "reverse_records": 23,
+      "row_bytes": 7032,
+      "rule_merge_supports": [
+        7529,
+        5699,
+        5288,
+        4068,
+        2559,
+        2358,
+        1700,
+        1375,
+        1356,
+        1242,
+        1218,
+        1163,
+        1141,
+        1070,
+        1068,
+        1042,
+        975,
+        964,
+        916,
+        895,
+        878,
+        757,
+        683,
+        649,
+        635,
+        618,
+        470,
+        396,
+        304,
+        267,
+        265,
+        254
+      ],
+      "rule_overlapping_supports": [
+        7529,
+        5699,
+        5288,
+        4068,
+        2559,
+        2358,
+        1700,
+        1375,
+        2978,
+        1345,
+        3904,
+        2462,
+        1658,
+        1070,
+        1136,
+        1093,
+        1004,
+        1041,
+        3592,
+        905,
+        895,
+        777,
+        683,
+        657,
+        667,
+        668,
+        476,
+        403,
+        3034,
+        267,
+        276,
+        1665
+      ],
+      "rules": 32,
+      "source_bytes": 65536,
+      "source_roles": [
+        {
+          "0": 4143,
+          "1": 4078,
+          "2": 4089,
+          "3": 4074
+        },
+        {
+          "0": 4152,
+          "1": 4093,
+          "2": 4081,
+          "3": 4058
+        },
+        {
+          "0": 4331,
+          "1": 4102,
+          "2": 4106,
+          "3": 3845
+        },
+        {
+          "0": 4323,
+          "1": 4117,
+          "2": 4061,
+          "3": 3883
+        }
+      ],
+      "world": 132
+    },
+    {
+      "branch_capacity": 24,
+      "branch_prefix_lengths": {
+        "1": 1,
+        "10": 1,
+        "11": 1,
+        "2": 4,
+        "3": 5,
+        "4": 3,
+        "5": 3,
+        "6": 2,
+        "7": 1,
+        "8": 2,
+        "9": 1
+      },
+      "branch_records": 24,
+      "branch_totals": [
+        6395,
+        5307,
+        3512,
+        4008,
+        16471,
+        2098,
+        1417,
+        1060,
+        4404,
+        1158,
+        2209,
+        2375,
+        1036,
+        2074,
+        1039,
+        1063,
+        977,
+        923,
+        1003,
+        857,
+        735,
+        797,
+        865,
+        733
+      ],
+      "episode_bytes": 528,
+      "expanded_literal_bytes": {
+        "episode": 492,
+        "frequency": 437,
+        "isolated": 459,
+        "permuted": 492,
+        "reverse": 375
+      },
+      "expanded_rule_lengths": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        4,
+        2,
+        2,
+        4,
+        3,
+        4,
+        2,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        6,
+        5,
+        8,
+        8,
+        10,
+        9,
+        12,
+        12,
+        12,
+        12,
+        2,
+        6,
+        2
+      ],
+      "expansion_content_payloads": {
+        "episode": {
+          "expanded_rule_terminal_bytes": 162,
+          "selected_prefix_terminal_bytes": 116
+        },
+        "frequency": {
+          "expanded_rule_terminal_bytes": 162,
+          "selected_prefix_terminal_bytes": 61
+        },
+        "isolated": {
+          "expanded_rule_terminal_bytes": 162,
+          "selected_prefix_terminal_bytes": 83
+        },
+        "permuted": {
+          "expanded_rule_terminal_bytes": 162,
+          "selected_prefix_terminal_bytes": 116
+        },
+        "reverse": {
+          "expanded_rule_terminal_bytes": 162,
+          "selected_prefix_terminal_bytes": 59
+        }
+      },
+      "flat_bytes": 513,
+      "frequency_branch_totals": [
+        16471,
+        16423,
+        16370,
+        16268,
+        6395,
+        5307,
+        5297,
+        5033,
+        4404,
+        4156,
+        4008,
+        3512,
+        2375,
+        2299,
+        2218,
+        2209,
+        2098,
+        2074,
+        1520,
+        1417,
+        1360,
+        1324,
+        1158,
+        1108
+      ],
+      "frequency_bytes": 528,
+      "frequency_records": 24,
+      "hashes": {
+        "episodes.bin": "adf1ccaa3e382a824503cacd88e85d679159744dc3a42f275cb21ff93c4fc0e6",
+        "flat.bin": "302315da450a1bee21e65750a4c3eb9c3cba3f171076b0dc9625453a36997431",
+        "frequency.bin": "d7beacb2272515414238f22fe5c4700faa11d31fcb72667d911ed9e3e4816e9a",
+        "isolated.bin": "3b154f692bb08665b1af50754d46be5de701c83366228c15f0deeb6a7dd6d2a7",
+        "permuted.bin": "99df2a8d136ead8d421665f81bc86f114e7eeb03216dfbee9273d9531dd1ce3d",
+        "reverse.bin": "828aba14c93c1313135676f8fe3c02ad56ddc2f5cf7502783e2b0cdbe8519200",
+        "row.bin": "3aaf9b6749e9eaedb2d3796654d944849afe8122c9e00e918c6122e2653b85c2"
+      },
+      "isolated_branch_totals": [
+        6395,
+        5307,
+        16268,
+        3512,
+        4008,
+        1520,
+        16471,
+        1108,
+        1060,
+        4404,
+        1158,
+        2209,
+        2375,
+        1036,
+        2074,
+        1039,
+        1417,
+        1063,
+        2299,
+        977,
+        2098,
+        985,
+        2218,
+        1046
+      ],
+      "isolated_bytes": 528,
+      "isolated_records": 24,
+      "joint_forward": [
+        {
+          "affected_events": 6395,
+          "marginal_gain": 4583.559602742832,
+          "prefix": [
+            0,
+            3
+          ],
+          "source_gain_after": 4711.559602742832
+        },
+        {
+          "affected_events": 5307,
+          "marginal_gain": 3846.163382826453,
+          "prefix": [
+            2,
+            1
+          ],
+          "source_gain_after": 8685.722985569286
+        },
+        {
+          "affected_events": 3512,
+          "marginal_gain": 2766.814202526558,
+          "prefix": [
+            2,
+            1,
+            3
+          ],
+          "source_gain_after": 11580.537188095845
+        },
+        {
+          "affected_events": 4008,
+          "marginal_gain": 2090.102557850923,
+          "prefix": [
+            2,
+            3
+          ],
+          "source_gain_after": 13798.639745946768
+        },
+        {
+          "affected_events": 16471,
+          "marginal_gain": 1844.199370378826,
+          "prefix": [
+            0
+          ],
+          "source_gain_after": 15770.839116325595
+        },
+        {
+          "affected_events": 2098,
+          "marginal_gain": 2133.748502964398,
+          "prefix": [
+            2,
+            0,
+            0
+          ],
+          "source_gain_after": 18032.587619289992
+        },
+        {
+          "affected_events": 1417,
+          "marginal_gain": 1811.3392018764866,
+          "prefix": [
+            2,
+            0,
+            3
+          ],
+          "source_gain_after": 19971.92682116648
+        },
+        {
+          "affected_events": 1060,
+          "marginal_gain": 1580.2014226856118,
+          "prefix": [
+            2,
+            1,
+            3,
+            1,
+            1
+          ],
+          "source_gain_after": 21680.12824385209
+        },
+        {
+          "affected_events": 4404,
+          "marginal_gain": 1573.7645753293582,
+          "prefix": [
+            0,
+            3,
+            2
+          ],
+          "source_gain_after": 23381.89281918145
+        },
+        {
+          "affected_events": 1158,
+          "marginal_gain": 1562.8280221772854,
+          "prefix": [
+            2,
+            1,
+            3,
+            3
+          ],
+          "source_gain_after": 25072.720841358732
+        },
+        {
+          "affected_events": 2209,
+          "marginal_gain": 1549.6303723041706,
+          "prefix": [
+            2,
+            1,
+            3,
+            1
+          ],
+          "source_gain_after": 26750.351213662903
+        },
+        {
+          "affected_events": 2375,
+          "marginal_gain": 1547.7494844944372,
+          "prefix": [
+            1,
+            0,
+            2
+          ],
+          "source_gain_after": 28426.10069815734
+        },
+        {
+          "affected_events": 1036,
+          "marginal_gain": 1532.8083710501185,
+          "prefix": [
+            0,
+            2,
+            2,
+            3,
+            1
+          ],
+          "source_gain_after": 30086.90906920746
+        },
+        {
+          "affected_events": 2074,
+          "marginal_gain": 1490.7874965231586,
+          "prefix": [
+            2,
+            2
+          ],
+          "source_gain_after": 31705.69656573062
+        },
+        {
+          "affected_events": 1039,
+          "marginal_gain": 1477.4870068588682,
+          "prefix": [
+            2,
+            3,
+            1,
+            0
+          ],
+          "source_gain_after": 33311.18357258949
+        },
+        {
+          "affected_events": 1063,
+          "marginal_gain": 1466.4376771819543,
+          "prefix": [
+            2,
+            1,
+            3,
+            3,
+            2
+          ],
+          "source_gain_after": 34905.621249771444
+        },
+        {
+          "affected_events": 977,
+          "marginal_gain": 1433.5590325273688,
+          "prefix": [
+            0,
+            2,
+            2,
+            3,
+            1,
+            1
+          ],
+          "source_gain_after": 36467.18028229881
+        },
+        {
+          "affected_events": 923,
+          "marginal_gain": 1304.615872374301,
+          "prefix": [
+            0,
+            2,
+            2,
+            3,
+            1,
+            1,
+            0
+          ],
+          "source_gain_after": 37899.79615467311
+        },
+        {
+          "affected_events": 1003,
+          "marginal_gain": 1302.1870904760315,
+          "prefix": [
+            2,
+            1,
+            3,
+            1,
+            1,
+            0
+          ],
+          "source_gain_after": 39329.98324514914
+        },
+        {
+          "affected_events": 857,
+          "marginal_gain": 1174.940561160252,
+          "prefix": [
+            2,
+            1,
+            3,
+            3,
+            2,
+            0,
+            3,
+            1
+          ],
+          "source_gain_after": 40632.92380630939
+        },
+        {
+          "affected_events": 735,
+          "marginal_gain": 1051.6768497014916,
+          "prefix": [
+            2,
+            1,
+            3,
+            3,
+            2,
+            0,
+            3,
+            1,
+            2,
+            0
+          ],
+          "source_gain_after": 41812.60065601088
+        },
+        {
+          "affected_events": 797,
+          "marginal_gain": 1049.7739314081243,
+          "prefix": [
+            2,
+            1,
+            3,
+            3,
+            2,
+            0,
+            3,
+            1,
+            2
+          ],
+          "source_gain_after": 42990.374587419006
+        },
+        {
+          "affected_events": 865,
+          "marginal_gain": 1032.472457409258,
+          "prefix": [
+            2,
+            1,
+            3,
+            1,
+            1,
+            0,
+            2,
+            3
+          ],
+          "source_gain_after": 44150.84704482826
+        },
+        {
+          "affected_events": 733,
+          "marginal_gain": 981.4355986997559,
+          "prefix": [
+            2,
+            1,
+            3,
+            1,
+            1,
+            0,
+            2,
+            3,
+            0,
+            3,
+            2
+          ],
+          "source_gain_after": 45260.282643528015
+        }
+      ],
+      "joint_reverse": [
+        {
+          "affected_events": 16268,
+          "marginal_gain": 3315.8126026760874,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 3443.8126026760874
+        },
+        {
+          "affected_events": 1304,
+          "marginal_gain": 2479.9595989124996,
+          "prefix": [
+            0,
+            2,
+            3
+          ],
+          "source_gain_after": 6051.7722015885865
+        },
+        {
+          "affected_events": 4062,
+          "marginal_gain": 2217.1106532613767,
+          "prefix": [
+            1,
+            3
+          ],
+          "source_gain_after": 8396.882854849962
+        },
+        {
+          "affected_events": 6135,
+          "marginal_gain": 1990.087798724409,
+          "prefix": [
+            3,
+            2
+          ],
+          "source_gain_after": 10514.970653574372
+        },
+        {
+          "affected_events": 16471,
+          "marginal_gain": 1844.199370378826,
+          "prefix": [
+            0
+          ],
+          "source_gain_after": 12487.170023953198
+        },
+        {
+          "affected_events": 4058,
+          "marginal_gain": 1591.6503927201566,
+          "prefix": [
+            1,
+            2
+          ],
+          "source_gain_after": 14206.820416673356
+        },
+        {
+          "affected_events": 2382,
+          "marginal_gain": 1516.1599249357673,
+          "prefix": [
+            1,
+            3,
+            1
+          ],
+          "source_gain_after": 15850.980341609124
+        },
+        {
+          "affected_events": 920,
+          "marginal_gain": 1356.355886504662,
+          "prefix": [
+            0,
+            2,
+            3,
+            0,
+            3,
+            2,
+            0
+          ],
+          "source_gain_after": 17335.336228113785
+        },
+        {
+          "affected_events": 1012,
+          "marginal_gain": 1045.7693516787858,
+          "prefix": [
+            0,
+            2,
+            3,
+            0,
+            3
+          ],
+          "source_gain_after": 18509.105579792573
+        },
+        {
+          "affected_events": 1100,
+          "marginal_gain": 882.0533601016849,
+          "prefix": [
+            0,
+            2,
+            3,
+            0
+          ],
+          "source_gain_after": 19519.158939894256
+        },
+        {
+          "affected_events": 13988,
+          "marginal_gain": 871.2408872339495,
+          "prefix": [
+            1
+          ],
+          "source_gain_after": 20518.399827128207
+        },
+        {
+          "affected_events": 975,
+          "marginal_gain": 832.7673082530265,
+          "prefix": [
+            0,
+            2,
+            3,
+            0,
+            3,
+            2
+          ],
+          "source_gain_after": 21479.167135381234
+        },
+        {
+          "affected_events": 4156,
+          "marginal_gain": 787.9219300908751,
+          "prefix": [
+            0,
+            2
+          ],
+          "source_gain_after": 22395.089065472108
+        },
+        {
+          "affected_events": 5297,
+          "marginal_gain": 759.7864905738535,
+          "prefix": [
+            1,
+            0
+          ],
+          "source_gain_after": 23282.87555604596
+        },
+        {
+          "affected_events": 1360,
+          "marginal_gain": 698.324390181587,
+          "prefix": [
+            1,
+            0,
+            0
+          ],
+          "source_gain_after": 24109.19994622755
+        },
+        {
+          "affected_events": 1803,
+          "marginal_gain": 541.9549183392332,
+          "prefix": [
+            3,
+            3
+          ],
+          "source_gain_after": 24779.154864566783
+        },
+        {
+          "affected_events": 1129,
+          "marginal_gain": 425.5221694448983,
+          "prefix": [
+            1,
+            3,
+            1,
+            2
+          ],
+          "source_gain_after": 25332.677034011682
+        },
+        {
+          "affected_events": 456,
+          "marginal_gain": 66.96537008660482,
+          "prefix": [
+            3,
+            0,
+            0
+          ],
+          "source_gain_after": 25527.642404098286
+        },
+        {
+          "affected_events": 1550,
+          "marginal_gain": 48.03491274520937,
+          "prefix": [
+            3,
+            2,
+            0
+          ],
+          "source_gain_after": 25703.677316843496
+        },
+        {
+          "affected_events": 229,
+          "marginal_gain": 5.02338912862524,
+          "prefix": [
+            1,
+            3,
+            2
+          ],
+          "source_gain_after": 25836.70070597212
+        }
+      ],
+      "permuted_bytes": 528,
+      "portable_cap": 528,
+      "reverse_branch_totals": [
+        16268,
+        1304,
+        4062,
+        6135,
+        16471,
+        4058,
+        2382,
+        920,
+        1012,
+        1100,
+        16370,
+        975,
+        4156,
+        5297,
+        1360,
+        1803,
+        1129,
+        456,
+        2470,
+        229
+      ],
+      "reverse_bytes": 464,
+      "reverse_records": 20,
+      "row_bytes": 7032,
+      "rule_merge_supports": [
+        6396,
+        5307,
+        4923,
+        3616,
+        2570,
+        2299,
+        2218,
+        1709,
+        1429,
+        1379,
+        1365,
+        1257,
+        1254,
+        1152,
+        1098,
+        1065,
+        1053,
+        1049,
+        1025,
+        952,
+        925,
+        849,
+        822,
+        748,
+        702,
+        679,
+        628,
+        501,
+        470,
+        243,
+        236,
+        220
+      ],
+      "rule_overlapping_supports": [
+        6396,
+        5307,
+        6293,
+        5034,
+        5297,
+        2299,
+        2218,
+        4008,
+        1817,
+        1379,
+        1418,
+        2209,
+        1803,
+        1186,
+        1198,
+        1158,
+        1099,
+        1135,
+        1133,
+        952,
+        1036,
+        865,
+        857,
+        748,
+        809,
+        692,
+        651,
+        501,
+        641,
+        4101,
+        762,
+        4157
+      ],
+      "rules": 32,
+      "source_bytes": 65536,
+      "source_roles": [
+        {
+          "0": 4133,
+          "1": 4090,
+          "2": 4104,
+          "3": 4057
+        },
+        {
+          "0": 4114,
+          "1": 4130,
+          "2": 4108,
+          "3": 4032
+        },
+        {
+          "0": 4105,
+          "1": 4078,
+          "2": 4099,
+          "3": 4102
+        },
+        {
+          "0": 4120,
+          "1": 4072,
+          "2": 4114,
+          "3": 4078
+        }
+      ],
+      "world": 133
+    },
+    {
+      "branch_capacity": 24,
+      "branch_prefix_lengths": {
+        "1": 2,
+        "2": 3,
+        "3": 5,
+        "4": 5,
+        "5": 3,
+        "6": 2,
+        "7": 1,
+        "8": 1,
+        "9": 2
+      },
+      "branch_records": 24,
+      "branch_totals": [
+        7279,
+        16120,
+        4562,
+        2146,
+        1379,
+        7614,
+        3575,
+        1091,
+        4126,
+        16356,
+        1124,
+        1143,
+        1130,
+        1199,
+        2210,
+        949,
+        1025,
+        1016,
+        903,
+        1363,
+        671,
+        804,
+        817,
+        847
+      ],
+      "episode_bytes": 528,
+      "expanded_literal_bytes": {
+        "episode": 479,
+        "frequency": 437,
+        "isolated": 448,
+        "permuted": 479,
+        "reverse": 352
+      },
+      "expanded_rule_lengths": [
+        2,
+        2,
+        3,
+        3,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        5,
+        4,
+        6,
+        5,
+        6,
+        7,
+        6,
+        7,
+        6,
+        12,
+        12,
+        2,
+        12,
+        12,
+        3,
+        4,
+        24
+      ],
+      "expansion_content_payloads": {
+        "episode": {
+          "expanded_rule_terminal_bytes": 175,
+          "selected_prefix_terminal_bytes": 103
+        },
+        "frequency": {
+          "expanded_rule_terminal_bytes": 175,
+          "selected_prefix_terminal_bytes": 61
+        },
+        "isolated": {
+          "expanded_rule_terminal_bytes": 175,
+          "selected_prefix_terminal_bytes": 72
+        },
+        "permuted": {
+          "expanded_rule_terminal_bytes": 175,
+          "selected_prefix_terminal_bytes": 103
+        },
+        "reverse": {
+          "expanded_rule_terminal_bytes": 175,
+          "selected_prefix_terminal_bytes": 51
+        }
+      },
+      "flat_bytes": 518,
+      "frequency_branch_totals": [
+        16448,
+        16356,
+        16120,
+        7614,
+        7279,
+        6172,
+        5264,
+        4562,
+        4343,
+        4126,
+        4037,
+        3575,
+        2969,
+        2419,
+        2210,
+        2146,
+        1973,
+        1735,
+        1379,
+        1363,
+        1309,
+        1284,
+        1270,
+        1199
+      ],
+      "frequency_bytes": 528,
+      "frequency_records": 24,
+      "hashes": {
+        "episodes.bin": "081a537cdc8553328a46f901c5171c52f2b315f621912543f790f6f8b6ccd365",
+        "flat.bin": "307239be9ffc65589790028bf039be0173ba47e57e14c0c2b6072e44ac881c17",
+        "frequency.bin": "8ae825f5d39c886a09335eb8b85c1874533352edaf310b9437a2820360ce8b8e",
+        "isolated.bin": "5124871da18f7a7aad1b42c880a895d37965b6b23caf34827fa48159a93db234",
+        "permuted.bin": "25a8e55f508a9b755c18b3328b8cd16bc8d19739ea9c21c81db915097ef17fef",
+        "reverse.bin": "52a1087c7664c2d3e40deaf1d04ddb14b93b6821be0ea6e805c0e3f37fb0a0e7",
+        "row.bin": "7ca56b059e882a152e653f59035c44200bb4bc1cef9f4879ed140abc2a25060d"
+      },
+      "isolated_branch_totals": [
+        7279,
+        16120,
+        4562,
+        16356,
+        2146,
+        2210,
+        7614,
+        4037,
+        3575,
+        6172,
+        4126,
+        4343,
+        16448,
+        1130,
+        1199,
+        5264,
+        1363,
+        1124,
+        949,
+        1143,
+        1284,
+        1055,
+        1025,
+        1057
+      ],
+      "isolated_bytes": 528,
+      "isolated_records": 24,
+      "joint_forward": [
+        {
+          "affected_events": 7279,
+          "marginal_gain": 5361.546633057359,
+          "prefix": [
+            3,
+            0
+          ],
+          "source_gain_after": 5489.546633057359
+        },
+        {
+          "affected_events": 16120,
+          "marginal_gain": 3818.4368914289303,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 9435.98352448629
+        },
+        {
+          "affected_events": 4562,
+          "marginal_gain": 3740.560433336357,
+          "prefix": [
+            3,
+            0,
+            2
+          ],
+          "source_gain_after": 13304.543957822647
+        },
+        {
+          "affected_events": 2146,
+          "marginal_gain": 3075.3460074488526,
+          "prefix": [
+            2,
+            1,
+            0,
+            2
+          ],
+          "source_gain_after": 16507.8899652715
+        },
+        {
+          "affected_events": 1379,
+          "marginal_gain": 2599.48008253276,
+          "prefix": [
+            2,
+            1,
+            3
+          ],
+          "source_gain_after": 19235.37004780426
+        },
+        {
+          "affected_events": 7614,
+          "marginal_gain": 2548.0484256002474,
+          "prefix": [
+            2,
+            1
+          ],
+          "source_gain_after": 21911.418473404505
+        },
+        {
+          "affected_events": 3575,
+          "marginal_gain": 2427.5553734537007,
+          "prefix": [
+            2,
+            1,
+            0
+          ],
+          "source_gain_after": 24466.973846858207
+        },
+        {
+          "affected_events": 1091,
+          "marginal_gain": 2357.509201026915,
+          "prefix": [
+            2,
+            1,
+            0,
+            1,
+            3
+          ],
+          "source_gain_after": 26952.48304788512
+        },
+        {
+          "affected_events": 4126,
+          "marginal_gain": 1815.8517807809785,
+          "prefix": [
+            1,
+            1
+          ],
+          "source_gain_after": 28896.3348286661
+        },
+        {
+          "affected_events": 9648,
+          "marginal_gain": 1728.9666839246468,
+          "prefix": [
+            2
+          ],
+          "source_gain_after": 30753.301512590744
+        },
+        {
+          "affected_events": 1124,
+          "marginal_gain": 1934.9487276386112,
+          "prefix": [
+            3,
+            0,
+            2,
+            2
+          ],
+          "source_gain_after": 32816.250240229354
+        },
+        {
+          "affected_events": 1143,
+          "marginal_gain": 1887.7722083006363,
+          "prefix": [
+            3,
+            2,
+            3,
+            2
+          ],
+          "source_gain_after": 34832.02244852999
+        },
+        {
+          "affected_events": 1130,
+          "marginal_gain": 1639.500859802574,
+          "prefix": [
+            2,
+            1,
+            3,
+            1
+          ],
+          "source_gain_after": 36599.523308332566
+        },
+        {
+          "affected_events": 1199,
+          "marginal_gain": 1611.5114353780418,
+          "prefix": [
+            2,
+            1,
+            0,
+            1
+          ],
+          "source_gain_after": 38339.03474371061
+        },
+        {
+          "affected_events": 2210,
+          "marginal_gain": 1457.2642028620207,
+          "prefix": [
+            1,
+            1,
+            3
+          ],
+          "source_gain_after": 39924.29894657263
+        },
+        {
+          "affected_events": 949,
+          "marginal_gain": 1427.7036469649515,
+          "prefix": [
+            3,
+            2,
+            3,
+            2,
+            0,
+            0
+          ],
+          "source_gain_after": 41480.00259353758
+        },
+        {
+          "affected_events": 1025,
+          "marginal_gain": 1392.7224304191122,
+          "prefix": [
+            3,
+            2,
+            3,
+            2,
+            0
+          ],
+          "source_gain_after": 43000.72502395669
+        },
+        {
+          "affected_events": 1016,
+          "marginal_gain": 1364.3404244944131,
+          "prefix": [
+            3,
+            0,
+            2,
+            2,
+            0
+          ],
+          "source_gain_after": 44493.0654484511
+        },
+        {
+          "affected_events": 903,
+          "marginal_gain": 1305.102153259862,
+          "prefix": [
+            3,
+            2,
+            3,
+            2,
+            0,
+            0,
+            1
+          ],
+          "source_gain_after": 45926.167601710964
+        },
+        {
+          "affected_events": 1363,
+          "marginal_gain": 981.7630521985091,
+          "prefix": [
+            3,
+            2,
+            3
+          ],
+          "source_gain_after": 47035.930653909476
+        },
+        {
+          "affected_events": 671,
+          "marginal_gain": 954.9606213015122,
+          "prefix": [
+            2,
+            1,
+            1,
+            1,
+            3,
+            0,
+            3,
+            0,
+            2
+          ],
+          "source_gain_after": 48118.89127521099
+        },
+        {
+          "affected_events": 804,
+          "marginal_gain": 928.0359594645802,
+          "prefix": [
+            3,
+            2,
+            3,
+            2,
+            0,
+            0,
+            1,
+            2,
+            1
+          ],
+          "source_gain_after": 49174.92723467557
+        },
+        {
+          "affected_events": 817,
+          "marginal_gain": 920.2084706180083,
+          "prefix": [
+            2,
+            1,
+            0,
+            2,
+            3,
+            2,
+            1,
+            0
+          ],
+          "source_gain_after": 50223.13570529358
+        },
+        {
+          "affected_events": 847,
+          "marginal_gain": 901.0011268601863,
+          "prefix": [
+            2,
+            1,
+            1,
+            1,
+            3,
+            0
+          ],
+          "source_gain_after": 51252.13683215377
+        }
+      ],
+      "joint_reverse": [
+        {
+          "affected_events": 7279,
+          "marginal_gain": 5361.546633057359,
+          "prefix": [
+            3,
+            0
+          ],
+          "source_gain_after": 5489.546633057359
+        },
+        {
+          "affected_events": 16120,
+          "marginal_gain": 3818.4368914289303,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 9435.98352448629
+        },
+        {
+          "affected_events": 4562,
+          "marginal_gain": 3740.560433336357,
+          "prefix": [
+            3,
+            0,
+            2
+          ],
+          "source_gain_after": 13304.543957822647
+        },
+        {
+          "affected_events": 4126,
+          "marginal_gain": 1815.8517807809785,
+          "prefix": [
+            1,
+            1
+          ],
+          "source_gain_after": 15248.395738603625
+        },
+        {
+          "affected_events": 4343,
+          "marginal_gain": 1777.185347207439,
+          "prefix": [
+            1,
+            0
+          ],
+          "source_gain_after": 17153.581085811064
+        },
+        {
+          "affected_events": 5264,
+          "marginal_gain": 1501.0790569973951,
+          "prefix": [
+            3,
+            2
+          ],
+          "source_gain_after": 18782.660142808458
+        },
+        {
+          "affected_events": 1124,
+          "marginal_gain": 1436.1844091594312,
+          "prefix": [
+            3,
+            0,
+            2,
+            2
+          ],
+          "source_gain_after": 20346.84455196789
+        },
+        {
+          "affected_events": 1261,
+          "marginal_gain": 1406.099780892866,
+          "prefix": [
+            3,
+            2,
+            0
+          ],
+          "source_gain_after": 21880.944332860756
+        },
+        {
+          "affected_events": 1016,
+          "marginal_gain": 1364.3404244944131,
+          "prefix": [
+            3,
+            0,
+            2,
+            2,
+            0
+          ],
+          "source_gain_after": 23373.28475735517
+        },
+        {
+          "affected_events": 1783,
+          "marginal_gain": 1185.7848030618668,
+          "prefix": [
+            3,
+            1
+          ],
+          "source_gain_after": 24687.069560417036
+        },
+        {
+          "affected_events": 2925,
+          "marginal_gain": 1149.9468465160537,
+          "prefix": [
+            0,
+            1
+          ],
+          "source_gain_after": 25965.01640693309
+        },
+        {
+          "affected_events": 924,
+          "marginal_gain": 1034.3705436757084,
+          "prefix": [
+            3,
+            0,
+            2,
+            2,
+            0,
+            3
+          ],
+          "source_gain_after": 27127.386950608798
+        },
+        {
+          "affected_events": 2013,
+          "marginal_gain": 842.8741134797257,
+          "prefix": [
+            0,
+            0
+          ],
+          "source_gain_after": 28098.261064088525
+        },
+        {
+          "affected_events": 7614,
+          "marginal_gain": 636.7445477367653,
+          "prefix": [
+            1
+          ],
+          "source_gain_after": 28863.00561182529
+        },
+        {
+          "affected_events": 2989,
+          "marginal_gain": 587.5059068220904,
+          "prefix": [
+            0,
+            2
+          ],
+          "source_gain_after": 29578.51151864738
+        },
+        {
+          "affected_events": 2408,
+          "marginal_gain": 556.2239066262567,
+          "prefix": [
+            0,
+            3,
+            2
+          ],
+          "source_gain_after": 30262.735425273637
+        },
+        {
+          "affected_events": 397,
+          "marginal_gain": 344.9898196164827,
+          "prefix": [
+            1,
+            0,
+            0
+          ],
+          "source_gain_after": 30735.72524489012
+        },
+        {
+          "affected_events": 3194,
+          "marginal_gain": 86.67814443027149,
+          "prefix": [
+            0,
+            3
+          ],
+          "source_gain_after": 30950.403389320392
+        },
+        {
+          "affected_events": 46,
+          "marginal_gain": 28.478177115746888,
+          "prefix": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "source_gain_after": 31106.88156643614
+        }
+      ],
+      "permuted_bytes": 528,
+      "portable_cap": 528,
+      "reverse_branch_totals": [
+        7279,
+        16120,
+        4562,
+        4126,
+        4343,
+        5264,
+        1124,
+        1261,
+        1016,
+        1783,
+        2925,
+        924,
+        2013,
+        16448,
+        7551,
+        2408,
+        397,
+        4118,
+        46
+      ],
+      "reverse_bytes": 448,
+      "reverse_records": 19,
+      "row_bytes": 7032,
+      "rule_merge_supports": [
+        7614,
+        7279,
+        3575,
+        3229,
+        2969,
+        2669,
+        1565,
+        1369,
+        1362,
+        1309,
+        1296,
+        1226,
+        1113,
+        1072,
+        1052,
+        1036,
+        1033,
+        971,
+        963,
+        938,
+        894,
+        863,
+        849,
+        847,
+        635,
+        620,
+        607,
+        598,
+        539,
+        213,
+        191,
+        178
+      ],
+      "rule_overlapping_supports": [
+        7614,
+        7279,
+        3575,
+        3312,
+        2969,
+        4038,
+        6173,
+        1369,
+        2419,
+        1309,
+        1379,
+        1270,
+        1363,
+        1109,
+        1095,
+        1974,
+        1074,
+        971,
+        963,
+        938,
+        894,
+        924,
+        903,
+        847,
+        635,
+        620,
+        4343,
+        615,
+        554,
+        397,
+        2001,
+        231
+      ],
+      "rules": 32,
+      "source_bytes": 65536,
+      "source_roles": [
+        {
+          "0": 4163,
+          "1": 4161,
+          "2": 4060,
+          "3": 4000
+        },
+        {
+          "0": 4177,
+          "1": 4092,
+          "2": 4085,
+          "3": 4030
+        },
+        {
+          "0": 4149,
+          "1": 4091,
+          "2": 4103,
+          "3": 4041
+        },
+        {
+          "0": 4119,
+          "1": 4105,
+          "2": 4109,
+          "3": 4051
+        }
+      ],
+      "world": 134
+    },
+    {
+      "branch_capacity": 24,
+      "branch_prefix_lengths": {
+        "1": 1,
+        "2": 4,
+        "3": 6,
+        "4": 5,
+        "5": 2,
+        "6": 3,
+        "7": 1,
+        "8": 2
+      },
+      "branch_records": 24,
+      "branch_totals": [
+        1864,
+        6325,
+        4856,
+        4152,
+        4378,
+        2500,
+        16371,
+        1038,
+        3582,
+        2500,
+        913,
+        1115,
+        1028,
+        1178,
+        1544,
+        1336,
+        867,
+        845,
+        1738,
+        950,
+        2071,
+        820,
+        952,
+        1171
+      ],
+      "episode_bytes": 528,
+      "expanded_literal_bytes": {
+        "episode": 474,
+        "frequency": 445,
+        "isolated": 471,
+        "permuted": 474,
+        "reverse": 386
+      },
+      "expanded_rule_lengths": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        4,
+        4,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        4,
+        6,
+        5,
+        8,
+        8,
+        7,
+        10,
+        12,
+        12,
+        12,
+        12,
+        4,
+        3,
+        2,
+        3,
+        6
+      ],
+      "expansion_content_payloads": {
+        "episode": {
+          "expanded_rule_terminal_bytes": 165,
+          "selected_prefix_terminal_bytes": 98
+        },
+        "frequency": {
+          "expanded_rule_terminal_bytes": 165,
+          "selected_prefix_terminal_bytes": 69
+        },
+        "isolated": {
+          "expanded_rule_terminal_bytes": 165,
+          "selected_prefix_terminal_bytes": 95
+        },
+        "permuted": {
+          "expanded_rule_terminal_bytes": 165,
+          "selected_prefix_terminal_bytes": 98
+        },
+        "reverse": {
+          "expanded_rule_terminal_bytes": 165,
+          "selected_prefix_terminal_bytes": 55
+        }
+      },
+      "flat_bytes": 513,
+      "frequency_branch_totals": [
+        16645,
+        16375,
+        16371,
+        6325,
+        4856,
+        4378,
+        4214,
+        4152,
+        3582,
+        2500,
+        2500,
+        2363,
+        2071,
+        1864,
+        1738,
+        1544,
+        1336,
+        1293,
+        1257,
+        1178,
+        1171,
+        1115,
+        1110,
+        1095
+      ],
+      "frequency_bytes": 528,
+      "frequency_records": 24,
+      "hashes": {
+        "episodes.bin": "0de8387e3c9131c2f3e4153ba057b2a88e82faa5f525f02da337dc5af4018c12",
+        "flat.bin": "11198cd54dc2b301709f2ded4b8472e1b1067d482603e5ba80dbe95986547e3f",
+        "frequency.bin": "f41a026488445bb38044259e1912165db58ba42ace5060f9f3544acd0ba3e21f",
+        "isolated.bin": "dfcd6b5c870520114f95d5614e082a70c6cd47a9b6cfb49752d8a9e1f7c7e7eb",
+        "permuted.bin": "28b8601d67986a8292f3874991a35fa94aaa945207c21eb04392d73e4496e0b2",
+        "reverse.bin": "928c7a0d3302724b314f23c3e7aed2a6cecfa5c01b70123acf224fd02e9a1929",
+        "row.bin": "d0f69e7afa8f7b84f321aeaab6f41367feb23b165d3945569feddebd287fdc81"
+      },
+      "isolated_branch_totals": [
+        1864,
+        6325,
+        4856,
+        4152,
+        4378,
+        2500,
+        3582,
+        1038,
+        1171,
+        1115,
+        2363,
+        1257,
+        1293,
+        1095,
+        990,
+        1028,
+        986,
+        1110,
+        952,
+        1178,
+        1067,
+        950,
+        921,
+        913
+      ],
+      "isolated_bytes": 528,
+      "isolated_records": 24,
+      "joint_forward": [
+        {
+          "affected_events": 1864,
+          "marginal_gain": 2742.5971284982734,
+          "prefix": [
+            0,
+            3,
+            1,
+            2
+          ],
+          "source_gain_after": 2870.5971284982734
+        },
+        {
+          "affected_events": 6325,
+          "marginal_gain": 2714.9633010418806,
+          "prefix": [
+            1,
+            3
+          ],
+          "source_gain_after": 5713.560429540154
+        },
+        {
+          "affected_events": 4856,
+          "marginal_gain": 2636.645359843902,
+          "prefix": [
+            2,
+            3
+          ],
+          "source_gain_after": 8478.205789384056
+        },
+        {
+          "affected_events": 4152,
+          "marginal_gain": 2449.2600791162718,
+          "prefix": [
+            0,
+            0
+          ],
+          "source_gain_after": 11055.465868500327
+        },
+        {
+          "affected_events": 4378,
+          "marginal_gain": 2191.0265281685456,
+          "prefix": [
+            0,
+            3
+          ],
+          "source_gain_after": 13374.492396668873
+        },
+        {
+          "affected_events": 2500,
+          "marginal_gain": 2009.4623921741304,
+          "prefix": [
+            0,
+            3,
+            1
+          ],
+          "source_gain_after": 15511.954788843002
+        },
+        {
+          "affected_events": 13871,
+          "marginal_gain": 2084.71803434379,
+          "prefix": [
+            1
+          ],
+          "source_gain_after": 17724.672823186793
+        },
+        {
+          "affected_events": 1038,
+          "marginal_gain": 2044.2232092597528,
+          "prefix": [
+            2,
+            3,
+            0,
+            1
+          ],
+          "source_gain_after": 19896.896032446544
+        },
+        {
+          "affected_events": 3582,
+          "marginal_gain": 1721.8714312037705,
+          "prefix": [
+            1,
+            3,
+            2
+          ],
+          "source_gain_after": 21746.767463650314
+        },
+        {
+          "affected_events": 2500,
+          "marginal_gain": 1715.3951816726562,
+          "prefix": [
+            0,
+            0,
+            1
+          ],
+          "source_gain_after": 23590.16264532297
+        },
+        {
+          "affected_events": 913,
+          "marginal_gain": 1598.8021326161227,
+          "prefix": [
+            2,
+            3,
+            0,
+            1,
+            1,
+            3
+          ],
+          "source_gain_after": 25316.96477793909
+        },
+        {
+          "affected_events": 1115,
+          "marginal_gain": 1506.4796917760732,
+          "prefix": [
+            1,
+            0,
+            3,
+            2
+          ],
+          "source_gain_after": 26951.444469715163
+        },
+        {
+          "affected_events": 1028,
+          "marginal_gain": 1388.43069136776,
+          "prefix": [
+            1,
+            0,
+            3,
+            2,
+            0
+          ],
+          "source_gain_after": 28467.875161082924
+        },
+        {
+          "affected_events": 1178,
+          "marginal_gain": 1336.9935312404573,
+          "prefix": [
+            1,
+            3,
+            2,
+            0
+          ],
+          "source_gain_after": 29932.86869232338
+        },
+        {
+          "affected_events": 1544,
+          "marginal_gain": 1307.5178668367407,
+          "prefix": [
+            1,
+            0,
+            3
+          ],
+          "source_gain_after": 31368.38655916012
+        },
+        {
+          "affected_events": 1336,
+          "marginal_gain": 1269.074241452654,
+          "prefix": [
+            1,
+            3,
+            0
+          ],
+          "source_gain_after": 32765.460800612775
+        },
+        {
+          "affected_events": 867,
+          "marginal_gain": 1237.5781959690112,
+          "prefix": [
+            2,
+            3,
+            1,
+            3,
+            2,
+            3,
+            1
+          ],
+          "source_gain_after": 34131.03899658179
+        },
+        {
+          "affected_events": 845,
+          "marginal_gain": 1193.8121050848108,
+          "prefix": [
+            0,
+            0,
+            1,
+            1,
+            3,
+            2,
+            0,
+            2
+          ],
+          "source_gain_after": 35452.8511016666
+        },
+        {
+          "affected_events": 1738,
+          "marginal_gain": 1188.486539788528,
+          "prefix": [
+            0,
+            3,
+            1,
+            2,
+            2
+          ],
+          "source_gain_after": 36769.33764145513
+        },
+        {
+          "affected_events": 950,
+          "marginal_gain": 1160.3532970642834,
+          "prefix": [
+            1,
+            0,
+            3,
+            2,
+            0,
+            0
+          ],
+          "source_gain_after": 38057.690938519416
+        },
+        {
+          "affected_events": 2071,
+          "marginal_gain": 1121.175171903767,
+          "prefix": [
+            2,
+            3,
+            0
+          ],
+          "source_gain_after": 39306.86611042318
+        },
+        {
+          "affected_events": 820,
+          "marginal_gain": 1114.3529086341744,
+          "prefix": [
+            2,
+            3,
+            1,
+            3,
+            2,
+            3,
+            1,
+            0
+          ],
+          "source_gain_after": 40549.21901905735
+        },
+        {
+          "affected_events": 952,
+          "marginal_gain": 1082.0076036715955,
+          "prefix": [
+            0,
+            0,
+            1,
+            1,
+            3,
+            2
+          ],
+          "source_gain_after": 41759.22662272895
+        },
+        {
+          "affected_events": 1171,
+          "marginal_gain": 914.7052423671232,
+          "prefix": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "source_gain_after": 42801.93186509608
+        }
+      ],
+      "joint_reverse": [
+        {
+          "affected_events": 16141,
+          "marginal_gain": 4136.605820127782,
+          "prefix": [
+            3
+          ],
+          "source_gain_after": 4264.605820127782
+        },
+        {
+          "affected_events": 2313,
+          "marginal_gain": 3116.205469056328,
+          "prefix": [
+            3,
+            1,
+            2
+          ],
+          "source_gain_after": 7508.81128918411
+        },
+        {
+          "affected_events": 2970,
+          "marginal_gain": 2554.62070324432,
+          "prefix": [
+            2,
+            1
+          ],
+          "source_gain_after": 10191.43199242843
+        },
+        {
+          "affected_events": 5272,
+          "marginal_gain": 2290.2424406854625,
+          "prefix": [
+            3,
+            2
+          ],
+          "source_gain_after": 12609.674433113893
+        },
+        {
+          "affected_events": 6217,
+          "marginal_gain": 1709.0705923993337,
+          "prefix": [
+            3,
+            1
+          ],
+          "source_gain_after": 14446.745025513226
+        },
+        {
+          "affected_events": 4856,
+          "marginal_gain": 1654.229503439277,
+          "prefix": [
+            2,
+            3
+          ],
+          "source_gain_after": 16228.974528952504
+        },
+        {
+          "affected_events": 4342,
+          "marginal_gain": 1559.0871315136799,
+          "prefix": [
+            2,
+            2
+          ],
+          "source_gain_after": 17916.061660466185
+        },
+        {
+          "affected_events": 1252,
+          "marginal_gain": 1531.5867772732706,
+          "prefix": [
+            2,
+            0,
+            2
+          ],
+          "source_gain_after": 19575.648437739455
+        },
+        {
+          "affected_events": 1257,
+          "marginal_gain": 1462.202708569889,
+          "prefix": [
+            1,
+            0,
+            0
+          ],
+          "source_gain_after": 21165.851146309345
+        },
+        {
+          "affected_events": 1095,
+          "marginal_gain": 1411.8070541357838,
+          "prefix": [
+            1,
+            0,
+            0,
+            1
+          ],
+          "source_gain_after": 22705.65820044513
+        },
+        {
+          "affected_events": 6325,
+          "marginal_gain": 1104.8686080055088,
+          "prefix": [
+            1,
+            3
+          ],
+          "source_gain_after": 23938.52680845064
+        },
+        {
+          "affected_events": 990,
+          "marginal_gain": 1627.7709293866899,
+          "prefix": [
+            2,
+            2,
+            1,
+            3
+          ],
+          "source_gain_after": 25694.29773783733
+        },
+        {
+          "affected_events": 1092,
+          "marginal_gain": 996.4514881846578,
+          "prefix": [
+            3,
+            2,
+            3,
+            1
+          ],
+          "source_gain_after": 26818.749226021988
+        },
+        {
+          "affected_events": 1345,
+          "marginal_gain": 909.7440494944199,
+          "prefix": [
+            2,
+            0,
+            3
+          ],
+          "source_gain_after": 27856.493275516408
+        },
+        {
+          "affected_events": 1544,
+          "marginal_gain": 792.0040464107393,
+          "prefix": [
+            1,
+            0,
+            3
+          ],
+          "source_gain_after": 28776.49732192715
+        },
+        {
+          "affected_events": 4214,
+          "marginal_gain": 627.4160072426437,
+          "prefix": [
+            1,
+            0
+          ],
+          "source_gain_after": 29531.91332916979
+        },
+        {
+          "affected_events": 4206,
+          "marginal_gain": 604.0357148284111,
+          "prefix": [
+            2,
+            0
+          ],
+          "source_gain_after": 30263.949043998204
+        },
+        {
+          "affected_events": 2094,
+          "marginal_gain": 260.7528968840953,
+          "prefix": [
+            3,
+            1,
+            2,
+            2
+          ],
+          "source_gain_after": 30652.7019408823
+        },
+        {
+          "affected_events": 1170,
+          "marginal_gain": 214.5525613222958,
+          "prefix": [
+            2,
+            0,
+            3,
+            1
+          ],
+          "source_gain_after": 30995.254502204596
+        },
+        {
+          "affected_events": 6089,
+          "marginal_gain": 196.3094459609697,
+          "prefix": [
+            1
+          ],
+          "source_gain_after": 31319.563948165567
+        },
+        {
+          "affected_events": 2615,
+          "marginal_gain": 171.19598916488894,
+          "prefix": [
+            0,
+            2
+          ],
+          "source_gain_after": 31618.759937330455
+        }
+      ],
+      "permuted_bytes": 528,
+      "portable_cap": 528,
+      "reverse_branch_totals": [
+        16141,
+        2313,
+        2970,
+        5272,
+        6217,
+        4856,
+        4342,
+        1252,
+        1257,
+        1095,
+        6325,
+        990,
+        1092,
+        1345,
+        1544,
+        4214,
+        4206,
+        2094,
+        1170,
+        16371,
+        3867
+      ],
+      "reverse_bytes": 480,
+      "reverse_records": 21,
+      "row_bytes": 7032,
+      "rule_merge_supports": [
+        6325,
+        4856,
+        4379,
+        3965,
+        3663,
+        2538,
+        2362,
+        1936,
+        1817,
+        1646,
+        1215,
+        1082,
+        1035,
+        1033,
+        1022,
+        1003,
+        992,
+        921,
+        881,
+        815,
+        787,
+        765,
+        713,
+        549,
+        508,
+        485,
+        477,
+        345,
+        275,
+        247,
+        238,
+        201
+      ],
+      "rule_overlapping_supports": [
+        6325,
+        4856,
+        4379,
+        4247,
+        3867,
+        2894,
+        2501,
+        1936,
+        1864,
+        3582,
+        1293,
+        1099,
+        1110,
+        1095,
+        1739,
+        1025,
+        1038,
+        921,
+        1028,
+        845,
+        810,
+        788,
+        729,
+        579,
+        514,
+        495,
+        484,
+        370,
+        2500,
+        4152,
+        283,
+        714
+      ],
+      "rules": 32,
+      "source_bytes": 65536,
+      "source_roles": [
+        {
+          "0": 4170,
+          "1": 4098,
+          "2": 4122,
+          "3": 3994
+        },
+        {
+          "0": 4208,
+          "1": 4063,
+          "2": 4065,
+          "3": 4048
+        },
+        {
+          "0": 4130,
+          "1": 4111,
+          "2": 4103,
+          "3": 4040
+        },
+        {
+          "0": 4137,
+          "1": 4101,
+          "2": 4086,
+          "3": 4060
+        }
+      ],
+      "world": 135
+    }
+  ],
+  "source_observations": 524288,
+  "summary": {
+    "early_differences": {
+      "flat": [
+        198.63085026870317,
+        202.72711433255313,
+        127.99134357463576,
+        279.3761952347913,
+        192.27093428695275,
+        153.10040353694478,
+        326.8522422273502,
+        118.92491974570942
+      ],
+      "frequency": [
+        292.1987507376101,
+        202.72711433255313,
+        127.98769991329408,
+        490.56477412437505,
+        336.5221977275187,
+        42.883981804924304,
+        328.5116120700531,
+        334.3050129198112
+      ],
+      "permuted": [
+        481.4035446569823,
+        202.72711433255313,
+        126.9926222716709,
+        590.3546814626986,
+        484.1161723212985,
+        336.7061008025411,
+        475.05269611417003,
+        669.1539215065246
+      ],
+      "reverse": [
+        321.43794357821076,
+        202.72711433255313,
+        126.9926222716709,
+        414.9983217055711,
+        485.04007120490684,
+        336.7061008025411,
+        475.05269611417003,
+        388.5032224644859
+      ],
+      "row": [
+        294.915710202174,
+        59.64288155177371,
+        -46.168752597269915,
+        386.3450391124103,
+        281.31653376429483,
+        144.48276087262283,
+        289.1952245937108,
+        450.910048025814
+      ]
+    },
+    "early_gain_bpb": 0.10273763590907102,
+    "early_gains": [
+      481.4035446569823,
+      202.72711433255313,
+      126.9926222716709,
+      590.3546814626986,
+      484.1161723212985,
+      336.7061008025411,
+      475.05269611417003,
+      669.1539215065246
+    ],
+    "isolated_differences": {
+      "recombined": {
+        "candidate_gain": [
+          6.314143270416935,
+          925.2339666209084,
+          1188.3667131323969,
+          806.5165089196498,
+          1251.4998780939572,
+          117.84667971413637,
+          1566.5942510571726,
+          468.5146175614568
+        ],
+        "early": [
+          -21.676389616951212,
+          203.71462866784404,
+          126.9926222716709,
+          214.36648374668005,
+          237.23874387450883,
+          26.796267432767422,
+          339.4373829165311,
+          91.0316171865328
+        ],
+        "gain": [
+          6.879499891798332,
+          924.8742117509421,
+          1187.5246695152978,
+          806.5942290355888,
+          1251.04952320538,
+          118.01736487028575,
+          1566.8096026462206,
+          468.84913335797546
+        ],
+        "horizons": {
+          "1024": [
+            -30.710059651735417,
+            -0.9807065401027938,
+            1.9001393656571364,
+            16.03990097477478,
+            11.624996232037676,
+            3.088735594407204,
+            -0.9945411044308891,
+            -0.359976863921613
+          ],
+          "16384": [
+            6.879499891798332,
+            924.8742117509421,
+            1187.5246695152978,
+            806.5942290355888,
+            1251.04952320538,
+            118.01736487028575,
+            1566.8096026462206,
+            468.84913335797546
+          ],
+          "4096": [
+            -21.676389616951212,
+            203.71462866784404,
+            126.9926222716709,
+            214.36648374668005,
+            237.23874387450883,
+            26.796267432767422,
+            339.4373829165311,
+            91.0316171865328
+          ],
+          "8192": [
+            0.7175836244193761,
+            457.5947802571061,
+            551.4380570550848,
+            454.9836441017063,
+            563.3187677662831,
+            78.51316440554126,
+            732.7735831560822,
+            237.27157497005282
+          ]
+        },
+        "tail": [
+          6.161916267378956,
+          467.279431493836,
+          636.086612460213,
+          351.61058493388236,
+          687.7307554390968,
+          39.5042004647446,
+          834.0360194901384,
+          231.57755838792264
+        ]
+      },
+      "switched": {
+        "candidate_gain": [
+          187.56504644338924,
+          783.8659021175914,
+          793.3016641066383,
+          235.55297490409492,
+          349.8389778276492,
+          242.2062608511053,
+          1066.499226992035,
+          334.02393192887587
+        ],
+        "early": [
+          -21.676389616951212,
+          203.71462866784404,
+          126.9926222716709,
+          214.36648374668005,
+          237.23874387450883,
+          26.796267432767422,
+          339.4373829165311,
+          91.0316171865328
+        ],
+        "gain": [
+          23.66082089024667,
+          456.84684032866124,
+          554.1933033617821,
+          453.86380095132927,
+          528.2522250525099,
+          76.24702194747317,
+          728.9046728631997,
+          234.45136158490232
+        ],
+        "horizons": {
+          "1024": [
+            -30.710059651735417,
+            -0.9807065401027938,
+            1.9001393656571364,
+            16.03990097477478,
+            11.624996232037676,
+            3.088735594407204,
+            -0.9945411044308891,
+            -0.359976863921613
+          ],
+          "16384": [
+            23.66082089024667,
+            456.84684032866124,
+            554.1933033617821,
+            453.86380095132927,
+            528.2522250525099,
+            76.24702194747317,
+            728.9046728631997,
+            234.45136158490232
+          ],
+          "4096": [
+            -21.676389616951212,
+            203.71462866784404,
+            126.9926222716709,
+            214.36648374668005,
+            237.23874387450883,
+            26.796267432767422,
+            339.4373829165311,
+            91.0316171865328
+          ],
+          "8192": [
+            0.7175836244193761,
+            457.5947802571061,
+            551.4380570550848,
+            454.9836441017063,
+            563.3187677662831,
+            78.51316440554126,
+            732.7735831560822,
+            237.27157497005282
+          ]
+        },
+        "tail": [
+          22.943237265827293,
+          -0.7479399284448078,
+          2.755246306697387,
+          -1.1198431503770507,
+          -35.06654271377329,
+          -2.2661424580680887,
+          -3.86891029288239,
+          -2.8202133851505096
+        ]
+      },
+      "unrelated": {
+        "candidate_gain": [
+          336.52367307788063,
+          962.9558648628267,
+          553.9989116863258,
+          -375.0322065405812,
+          -110.03804827833028,
+          485.4518622967994,
+          825.2221570191659,
+          -175.23363042376104
+        ],
+        "early": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "gain": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizons": {
+          "1024": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "16384": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "4096": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "8192": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "means": {
+      "recombined": {
+        "episode": {
+          "candidate_gain": 2613.6137838324803,
+          "gain": 2579.673904926661,
+          "tail": 1557.2472573093723
+        },
+        "flat": {
+          "candidate_gain": 1760.444702849805,
+          "gain": 1726.4552376441668,
+          "tail": 1122.987893501072
+        },
+        "frequency": {
+          "candidate_gain": 1372.6072716446872,
+          "gain": 1342.7785519462484,
+          "tail": 898.8797023652438
+        },
+        "isolated": {
+          "candidate_gain": 1822.2529390362183,
+          "gain": 1788.349125642475,
+          "tail": 1150.4988724422208
+        },
+        "permuted": {
+          "candidate_gain": -42275.47707735133,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "candidate_gain": 550.2794232002658,
+          "gain": 664.0428941359962,
+          "tail": 447.0744498846699
+        },
+        "row": {
+          "candidate_gain": 347.6618014446487,
+          "gain": 314.03889567271176,
+          "tail": 48.04296238947882
+        }
+      },
+      "switched": {
+        "episode": {
+          "candidate_gain": 3.6153784895072967,
+          "gain": 1024.64791037533,
+          "tail": 2.221262758041121
+        },
+        "flat": {
+          "candidate_gain": -1310.5173938642959,
+          "gain": 599.8463063167885,
+          "tail": -3.6210378263063667
+        },
+        "frequency": {
+          "candidate_gain": -679.1531427869402,
+          "gain": 457.04215879926295,
+          "tail": 13.143309218258324
+        },
+        "isolated": {
+          "candidate_gain": -495.4913696569151,
+          "gain": 642.5954045028168,
+          "tail": 4.745151302562553
+        },
+        "permuted": {
+          "candidate_gain": -33040.2678309243,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "candidate_gain": -1002.6040066914959,
+          "gain": 218.4965323981826,
+          "tail": 1.5280881468563163
+        },
+        "row": {
+          "candidate_gain": 212.3243889900761,
+          "gain": 265.54665393299126,
+          "tail": -0.4492793502417207
+        }
+      },
+      "unrelated": {
+        "episode": {
+          "candidate_gain": -3205.203127426468,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "flat": {
+          "candidate_gain": -5267.570424124788,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "frequency": {
+          "candidate_gain": -3818.8860110518995,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "isolated": {
+          "candidate_gain": -3518.1842003890088,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "permuted": {
+          "candidate_gain": -24342.65788723216,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "reverse": {
+          "candidate_gain": -3460.5060283798557,
+          "gain": 0.0,
+          "tail": 0.0
+        },
+        "row": {
+          "candidate_gain": -268.29946524699585,
+          "gain": 0.0,
+          "tail": 0.0
+        }
+      }
+    },
+    "switched_differences": [
+      800.251656301281,
+      301.6263512332084,
+      318.22634373535243,
+      1180.1732380855601,
+      834.0458605879166,
+      619.6376507849156,
+      865.03099275786,
+      1153.8179580526146
+    ],
+    "tail_differences": [
+      35.98440161453982,
+      5.941226029507703,
+      8.988124949186556,
+      6.359186900797624,
+      -10.870408181002631,
+      -8.453681825690296,
+      1.7794524116143293,
+      -18.363965032690373
+    ]
+  },
+  "target_observations": 393216,
+  "tests": {
+    "early_gain": true,
+    "early_positive": true,
+    "flat_early_count": true,
+    "flat_early_mean": true,
+    "frequency_early_count": true,
+    "frequency_early_mean": true,
+    "full_gain": true,
+    "full_positive": true,
+    "permuted_early_count": true,
+    "permuted_early_mean": true,
+    "reverse_early_count": true,
+    "reverse_early_mean": true,
+    "row_early_count": true,
+    "row_early_mean": true,
+    "switched_count": true,
+    "switched_mean": true,
+    "tail_tolerance": true
+  },
+  "verification_pass": true
+}
