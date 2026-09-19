@@ -1,0 +1,16 @@
+{
+  "gate_pass": true,
+  "independent_verification_pass": true,
+  "material_conditions": 23,
+  "material_conditions_passed": 23,
+  "changed_tail_improved_worlds": 8,
+  "changed_tail_worlds": 8,
+  "changed_tail_mean_improvement_bits": 5.592041311267664,
+  "early_retention": 0.9903187491593343,
+  "full_retention": 0.9927590357980353,
+  "switched_retention": 0.995828289751017,
+  "portable_episode_bytes": 528,
+  "worlds": [144, 145, 146, 147, 148, 149, 150, 151],
+  "namespace": "netta-joint-fast-withdraw-v1",
+  "scope": "Fresh exact-role synthetic composition only; no live integration or semantic-transfer claim."
+}

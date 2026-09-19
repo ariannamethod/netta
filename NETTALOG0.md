@@ -7,6 +7,120 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-19 — Sol: joint memory learns when to recede
+
+Astra's turn13 joint-prefix memory was first reproduced by an independent
+reader. One later composition was then fixed before new data: keep the archive,
+candidate, recipient and admission unchanged, but reuse turn6's already tested
+source-to-cold hazard 2^-10 instead of 2^-16. Worlds144–151 were generated only
+after the protocol and code hashes were sealed.
+
+The full material gate passes. Fast authority preserves 99.03% of early,
+99.28% of full recombined and 99.58% of whole switched gain. It improves the
+same memory's changed tail in8/8 fresh worlds by 5.592 bits in mean. Two fast
+tails remain negative, the raw trace contains both help and harm, and all
+controls remain visible. Independent reconstruction checks 2,752,512 candidate
+forecasts plus 5,505,024 probability-mass authority forecasts; maximum numeric
+disagreement is 2.59206e-10 bit.
+
+This is evidence that construction of experience and its continuing authority
+can be separated and composed. It is still exact-role synthetic evidence, not
+functional similarity, accumulated fifty-life experience, language, or live
+integration. Canonical Netta, mouth and mycelium were not changed. Work is
+published on isolated branch `sol/joint-fast-withdrawal-20260919`, `turn14/`.
+The hand goes to Don; the continuing rotation is Sol → Don → Astra → Sol.
+
+- `turn14/PROTOCOL.md`:
+  `4ec41f05589cc5720ed3bff521c21f12776cabd43c34e6337bd27f640b5d7cbe`
+- `turn14/FREEZE.json`:
+  `3c61dc18cec4701a83e0adce29de354e5ce7c7210db70d95888a0b64bf5c3bcc`
+- `turn14/RESULT.json`:
+  `74fb30eb6d877940b5d877bf16c240c72dea822e1d79d44e78723c35e3c52775`
+- `turn14/VERIFY.json`:
+  `3defd8829b0b48b0de71f1341b9a207cff5f94a5d4b182192f370a3156ad0af9`
+- `turn14/REPORT.md`:
+  `c62d92ab38f3e6f708a975daa28744d5ba1d94b2a26117e05845a5411f6fcf4b`
+- `turn14/RAW.md`:
+  `e1db7238914f6673bcd86f00f6c6d213dc71b2da1eedfd9113be97c41f503d17`
+- `turn14/VERDICT.json`:
+  `bf87fbec0b2c7e7a1410fd24983d60a192aa858fba1069c1e13d426715265933`
+
+## 2026-09-19 — Astra: joint selection improves transfer at the same memory size
+
+Oleg explicitly retained the next hand with Astra. Added one source-only
+joint greedy selector that credits each record's contribution under the
+longest-match memory already selected. The prior isolated selector is a
+paired arm; formats, capacity, recipient and authority are unchanged.
+One new frozen batch follows the same material contract.
+
+Material PASS (17/17); independent verification reproduces all
+2,752,512 forecasts. Full recombined transfer improves over the paired
+predecessor in every world at the same portable size. Changed tails worsen
+in most paired worlds; the report preserves that price and explicitly does
+not call the earlier failed tail causally repaired. Raw behavior, all horizons
+and marginal source selection paths are retained.
+
+Originally received local and uncommitted from `astra/turn12-information`,
+directory `turn13/`; now preserved on this isolated branch as turn14's verified
+dependency. Earlier turn12 evidence and FAIL remain sealed. No live Netta,
+mouth or mycelium integration. The passed step returns to Sol for audit plus
+her own next hand under the Sol → Don → Astra rotation.
+
+- `turn13/PROTOCOL.md`:
+  `ec37980efb94865e6699cb8abe954fddf779924fc3fa5c2fa5f15d659a9594d4`
+- `turn13/FREEZE.json`:
+  `a4e856b1601a9104e4e896c81845e85586a6a27054d951b8256fb4a62dfe838a`
+- `turn13/RESULT.json`:
+  `c84263e33008843ed3dad8d93967db1dcead2b18a45573ed089e59a728fbb764`
+- `turn13/VERIFY.json`:
+  `6bd644667740bab606761c7ba5984ebf22b4e31fa55f20a5a61269ed77867c41`
+- `turn13/REPORT.md`:
+  `98a91210f5aede642ece7240e07d97446997c70c0463fe570e4406de804b930b`
+- `turn13/RAW.md`:
+  `2c86e88b9b3ef7392a287a2cda2134e7338642abaa915748a30f384bd32dad58`
+- `turn13/VERDICT.json`:
+  `658e5ae6322f815720a3da15e6d440269c89e84ed77a954daaaf0149796bd2aa`
+
+## 2026-09-19 — Astra: information allocation helps; changed-tail gate still fails
+
+Received Don's local EPISODE-DOUBT with an exact receipt; independently
+reproduced the preserved material FAIL and corrected the incoming prose
+without changing its artifacts. One fresh, preregistered allocation step
+compares information-ranked and frequency-ranked memory in the same compact
+format, with an equally compact flat control and unchanged prediction law.
+
+The independent reader verifies all 2,359,296 forecasts. Material
+FAIL remains: 16 of 17 conditions pass; only the changed-tail comparison
+with row fails. All outcomes, source allocation and actual quoted help/harm
+are retained. The same selected tree records fit a smaller literal encoding;
+tree compression is not established. The tail diagnosis identifies omitted
+source relations but does not claim a tested remedy.
+
+Own checkout/branch: `netta-astra-turn12-20260919`,
+`astra/turn12-information`. No commit, push, merge or live integration in
+this hand. Canonical Netta and Don's checkout remain read-only. Returned to
+Sol for reciprocal review and one next bounded question; worlds112–119 are
+now evidence, not a tuning set. Partial functional similarity remains open.
+
+- `turn12/AUDIT.md`:
+  `c381e169723b139171ca4939ff254977a52aca5a6659d947bbd1b554ffe0755c`
+- `turn12/PROTOCOL.md`:
+  `66fe2246db99f1625a83d62cb8a01eea343d9ac42392e1d336938a4656cd1e09`
+- `turn12/FREEZE.json`:
+  `b448d8d982be39c9422784e9eb746201da0fb4f583134c243513d50fd78497e3`
+- `turn12/RESULT.json`:
+  `8d22b7241ac179e55675841c2f671e53704a3c841a02f3afa97bdc1cc75d5453`
+- `turn12/VERIFY.json`:
+  `82756339b9f2133bedb4380cf1ce2d6b87e26b8b1142c6a595222b6965089adb`
+- `turn12/REPORT.md`:
+  `65dbe487099e34186157aea2d990bccb258a5d0b6a5be4cddb47f962f0ac8f36`
+- `turn12/RAW.md`:
+  `e36fa4537a75f3751b736a7cbc54b42f4b0685b998474a6525e2e17edf022643`
+- `turn12/TAIL_REVIEW.md`:
+  `16e5dfe6c0158db84d05c0173a1846557502be66e479337568cdb25a8dc7e410`
+- `turn12/VERDICT.json`:
+  `ab63a057c0409ebdc67dacaf9eff1c8c865f5fae5437291e3be5fd58383556e1`
+
 ## 2026-09-19 — Sol: Astra episode FAIL audited; immediate-alternative storage measured
 
 Sol independently reran Astra's repaired reader on her sealed turn9 batch;
