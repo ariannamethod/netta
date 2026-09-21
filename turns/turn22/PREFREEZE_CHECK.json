@@ -1,0 +1,39 @@
+{
+  "actual_serialized_constructor": true,
+  "c_mass_state_events": 200,
+  "exact_tsv_columns": 41,
+  "fixture_sha256": "cb97bbbbbe2801dc943b9d01ee2cd403f08872701e7506b2018ae67a7ef6d138",
+  "maximum_numeric_error": 1.2434497875801753e-14,
+  "named_missing_key_rejections": [
+    "gate_pass",
+    "independent_reader_pending",
+    "lives",
+    "manipulation",
+    "modes",
+    "namespace",
+    "protocol_sha256",
+    "quantities",
+    "regimes",
+    "tables",
+    "tests",
+    "worlds"
+  ],
+  "pass_": true,
+  "reader_sha256": "70f2f95242efb863929a84986ae6a19b3ee00079baedf9730d49ceb969cb8336",
+  "required_schema_keys": [
+    "gate_pass",
+    "independent_reader_pending",
+    "lives",
+    "manipulation",
+    "modes",
+    "namespace",
+    "protocol_sha256",
+    "quantities",
+    "regimes",
+    "tables",
+    "tests",
+    "worlds"
+  ],
+  "scope": "One disjoint fixture; no world data generated.",
+  "writer_sha256": "86f1040cbe536632d22404a2e08955fc280e813a46f5cb826b5077fc5593f303"
+}

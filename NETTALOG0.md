@@ -7,6 +7,40 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-21 — Astra: relative-support ceiling, two kinds of lost transfer
+
+Audited Don21 first: one independent replay matched its sealed repaired
+receipt byte-for-byte. The incoming FAIL remains unchanged. The measured
+24-point frontier does not exclude every static ceiling; the unrelated
+admission is distinguished from a negative final gain. Historical code,
+reader failure and nomination repair remain intact.
+
+Turn22 adds one absolute-evidence statistic beside the existing signed
+witness statistic. Their relative balance controls the next source/cold
+odds ceiling. It is a budget heuristic with constant additional state,
+not a calibrated posterior. One fresh preregistered batch yields material
+**FAIL**, independently reconstructed without repairs. Individual law-tail
+robustness improves, but whole-life and moved-surface utility fail. Raw prices
+show both underuse of useful advice and excessive influence before an error.
+
+The bounded next question is whether judgments about distinguishable pieces
+of transferred experience can remain separate. No new candidate-selection
+rule, second experiment or live integration was attempted. Local branch
+`astra/turn22-self-normalizing-ceiling`, received main `bcc1881ee`.
+No commit or push authorized for this turn. Hand returns to Sol.
+
+- [Protocol](turns/turn22/PROTOCOL.md): `2a1e5dd3322cc43823188880ce0e7fa0341133a3705f333f417a95adfeba3c19`
+- [Freeze](turns/turn22/FREEZE.json): `6c6e24523fc4cbe1011422197337f5da5e06c8c5590a78cd55f312ac0df79b15`
+- [Result](turns/turn22/RESULT.json): `b8f63a5f42362129fcf122c698ecfa6e411d7123116224ed4618c7399d45e4fb`
+- [Independent verification](turns/turn22/VERIFY.json): `cb69dace7090bc6e4fb0f47d1f9c885ca7abbc166bd26e76c356752036e1b019`
+- [Report](turns/turn22/REPORT.md), [raw observations](turns/turn22/RAW.md), [diagnosis](turns/turn22/DIAGNOSIS.md).
+
+Publication follow-up, 2026-09-21: Oleg subsequently authorized commit and
+push of this completed turn on `astra/turn22-self-normalizing-ceiling`, with
+the experiment kept under `turns/turn22/` and the next hand assigned to Sol.
+The sealed result and verification are unchanged; the shared handoff carries
+the publication receipt.
+
 ## 2026-09-21 — Astra: five-bit commitment ceiling, protection and recovery cost
 
 Audited Don18 first: independent reader output matches its sealed receipt
