@@ -1,0 +1,108 @@
+{
+  "authority_forecasts": 1572864,
+  "candidate_forecasts": 3670016,
+  "gate_pass": false,
+  "identities": {
+    "DATA_MANIFEST.json": "6bae254a490a8002e2d5e3fa3f21c03c6268b5fc7f4eb31b05cdba34ddeb9cf3",
+    "MEMORY_MANIFEST.json": "52f319071258d3b9b4be075b770d7a84b3e79191764aad65ac7267ede105e43f",
+    "RESULTS_MANIFEST.json": "6841226ba64942d0c86bdfcf3215d16bbf6602ce7cf85cb8e5fb134f0757d7ab",
+    "freeze_sha256": "1aac882a7a5a50227a76fc7c31322a97d62913fff235e0c8ef71584632970636",
+    "protocol_sha256": "3fbb761054e432725b5b8dc1b16c728f85b892ac08e3b0cda882bb0de4ba2188",
+    "reader_sha256": "dd950492a07cda32fdcd863f23e7f5ca9b0a64d23f63b664db2eff5b131a0793",
+    "result_sha256": "0780a07293985d2ad86206fe6a68f5819ba839d93321e0eab71d216dd960a897"
+  },
+  "maximum_normalization_error": 1.354472090042691e-14,
+  "maximum_numeric_error": 1.4017587091075256e-10,
+  "modes": [
+    "slow",
+    "fast",
+    "adaptive"
+  ],
+  "quantities": {
+    "early_retention": 0.9992618574259708,
+    "full_retention": 0.9998519832547985,
+    "law_vs_fast": [
+      -4.425604377715899,
+      -5.101564857109452,
+      -5.920358174912508,
+      -5.814876625594252,
+      -4.864653347635112,
+      -5.902041783151162,
+      -5.887534747472046,
+      -5.981093022224741
+    ],
+    "law_vs_slow": [
+      0.07096888634418974,
+      0.012920651831791474,
+      4.547473508864641e-13,
+      1.0042761005024659e-06,
+      -0.08013609536556032,
+      3.783855140682135e-05,
+      5.372089617594611e-08,
+      2.6852831069845706e-10
+    ],
+    "recombined_full": [
+      3339.5677637287513,
+      3667.412010041325,
+      4407.934808241983,
+      3815.4728837539255,
+      3140.6008434220703,
+      3067.0605875925166,
+      3171.95840252021,
+      3911.825562133137
+    ],
+    "surface_vs_fast": [
+      10.186154792944762,
+      10.880615718926265,
+      11.367467522239167,
+      11.36101220301407,
+      11.171782488564077,
+      11.347693648914174,
+      11.492648833456315,
+      5.148519512510347
+    ],
+    "surface_vs_slow": [
+      -0.40655399806996684,
+      -0.4065539980692847,
+      -4.547473508864641e-13,
+      0.0,
+      -0.32191306332060776,
+      0.0,
+      0.0,
+      -0.17066590491140232
+    ]
+  },
+  "regimes": [
+    "recombined",
+    "switched",
+    "moved_mid",
+    "unrelated"
+  ],
+  "scope": "Independent frozen turn13 source books and seven candidates; independent Decimal mass replay of episode slow/fast/adaptive authority, every quote and clock. HEAD256 bindings and P0 are supplied trace inputs; full-vector receipts come from C.",
+  "tests": {
+    "archive_cap": true,
+    "early_retention": true,
+    "episode_null": true,
+    "first_admission_shared": true,
+    "full_positive": true,
+    "full_retention": true,
+    "law_vs_fast_retention": false,
+    "law_vs_slow_mean": false,
+    "law_vs_slow_wins": true,
+    "prefix_and_interval_bounds": true,
+    "surface_vs_fast_mean": true,
+    "surface_vs_fast_wins": true,
+    "surface_vs_slow_retention": true
+  },
+  "verification_pass": true,
+  "worlds": [
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191
+  ]
+}
