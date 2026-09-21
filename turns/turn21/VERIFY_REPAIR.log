@@ -1,0 +1,119 @@
+verified 216 recombined
+verified 216 switched
+verified 216 moved_mid
+verified 216 unrelated
+verified 217 recombined
+verified 217 switched
+verified 217 moved_mid
+verified 217 unrelated
+verified 218 recombined
+verified 218 switched
+verified 218 moved_mid
+verified 218 unrelated
+verified 219 recombined
+verified 219 switched
+verified 219 moved_mid
+verified 219 unrelated
+verified 220 recombined
+verified 220 switched
+verified 220 moved_mid
+verified 220 unrelated
+verified 221 recombined
+verified 221 switched
+verified 221 moved_mid
+verified 221 unrelated
+verified 222 recombined
+verified 222 switched
+verified 222 moved_mid
+verified 222 unrelated
+verified 223 recombined
+verified 223 switched
+verified 223 moved_mid
+verified 223 unrelated
+{
+  "authority_forecasts": 14155776,
+  "candidate_forecasts": 3670016,
+  "complete_gate_pass": false,
+  "frontier": {
+    "law_tail_endpoints": {
+      "2": [
+        55.17441221892619,
+        50.75570242052041
+      ],
+      "3": [
+        55.17441221892619,
+        50.59650599978187
+      ],
+      "4": [
+        55.17441221892619,
+        50.25552172305409
+      ],
+      "5": [
+        55.17441221892619,
+        49.95365455470193
+      ]
+    },
+    "law_tail_rows": {
+      "2": true,
+      "3": true,
+      "4": true,
+      "5": true
+    },
+    "law_tail_rows_true": 4,
+    "moved_tail_endpoints": {
+      "2": [
+        774.3289513638141,
+        781.2386035045225
+      ],
+      "3": [
+        774.3289513638141,
+        784.7602098679745
+      ],
+      "4": [
+        774.3289513638141,
+        786.2993316456447
+      ],
+      "5": [
+        774.3289513638141,
+        786.8290969788194
+      ]
+    },
+    "moved_tail_rows": {
+      "2": true,
+      "3": true,
+      "4": true,
+      "5": true
+    },
+    "moved_tail_rows_true": 4
+  },
+  "gate_pass": false,
+  "maximum_normalization_error": 1.354472090042691e-14,
+  "maximum_numeric_error": 2.5136159820249304e-10,
+  "nominated_point": "h8l4",
+  "reader_tests": {
+    "w5_agreement_within_tolerance": true,
+    "w5_all_candidate_arms_rebuilt": true,
+    "w5_all_modes_replayed": true,
+    "w5_result_schema_accepted": true,
+    "w5_retained_digests_intact": true
+  },
+  "tests": {
+    "w1_window_exists": true,
+    "w2_nominated_point_robust": false,
+    "w3_law_tail_favours_tight_high": true,
+    "w3_moved_tail_favours_loose_high": true,
+    "w4_archive_cap": true,
+    "w4_distributions_normalized": true,
+    "w4_exact_protected_quotes": true,
+    "w4_prefix_and_drawdown": true,
+    "w4_shared_first_admission": true,
+    "w4_unrelated_never_admits": false
+  },
+  "verification_pass": true,
+  "window_points": [
+    "h8l2",
+    "h8l3",
+    "h8l4",
+    "h8l5"
+  ]
+}
