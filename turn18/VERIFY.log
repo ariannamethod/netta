@@ -1,0 +1,133 @@
+{
+  "authority_forecasts": 2097152,
+  "candidate_forecasts": 3670016,
+  "gate_pass": false,
+  "maximum_normalization_error": 1.3100631690576847e-14,
+  "maximum_numeric_error": 1.3153567124390975e-10,
+  "nine_family_gate_pass": false,
+  "quantities": {
+    "early_retention": 0.9989786357828538,
+    "full_retention": 0.9997010456845402,
+    "law_vs_adaptive": [
+      0.022021953132707495,
+      0.00971373867037073,
+      0.004029533886068748,
+      0.058387621776319065,
+      1.4488801387751664,
+      0.2830361489591269,
+      0.09914229342211911,
+      0.00398763775012867
+    ],
+    "law_vs_fast": [
+      -5.821447998987878,
+      -5.975549595627172,
+      -5.824887778274842,
+      -5.3150988022796355,
+      -2.9264470901509867,
+      -4.856199208077442,
+      -5.647209460892327,
+      -4.179712563805765
+    ],
+    "law_vs_slow": [
+      0.02202291463822803,
+      0.009713738672417094,
+      0.0040298151898241485,
+      0.014357738236640216,
+      1.4380754815649652,
+      0.27449073191428397,
+      0.09914207081214954,
+      -0.309971206831392
+    ],
+    "moved_fast_share": [
+      0.1038818359375,
+      0.0408935546875,
+      0.265869140625,
+      0.1083984375,
+      0.1680908203125,
+      0.2174072265625,
+      0.2076416015625,
+      0.30322265625
+    ],
+    "moved_quiet_worlds": 6,
+    "moved_vs_fast": [
+      10.158493195886422,
+      10.848801520325196,
+      2.464820319087039,
+      4.473497501687916,
+      3.718770324090883,
+      8.77794023756428,
+      9.111452543811083,
+      7.11831967404521
+    ],
+    "moved_vs_slow": [
+      -1.1808102307693389,
+      -0.46483136298002137,
+      -2.799516296030788,
+      -0.8936561242676362,
+      -1.7485678857162839,
+      -2.4712377356697743,
+      -2.360233278892565,
+      -3.443493015149329
+    ],
+    "recombined_full": [
+      3719.294795404815,
+      3513.668501951606,
+      3258.9427261337837,
+      2932.0532618589104,
+      4100.45081697464,
+      2662.2215645715773,
+      3790.750512976087,
+      1877.5451134587481
+    ],
+    "switched_first_fast_after_move": [
+      8232,
+      8220,
+      8213,
+      8257,
+      8224,
+      8503,
+      8312,
+      8229
+    ],
+    "switched_first_fast_offsets": [
+      40,
+      28,
+      21,
+      65,
+      32,
+      311,
+      120,
+      37
+    ],
+    "switched_prompt_worlds": 7
+  },
+  "reader_tests": {
+    "c9_agreement_within_tolerance": true,
+    "c9_all_candidate_arms_rebuilt": true,
+    "c9_all_four_modes_replayed": true,
+    "c9_retained_digests_intact": true
+  },
+  "tests": {
+    "c1_moved_vs_fast_mean": true,
+    "c1_moved_vs_fast_wins": true,
+    "c1_moved_vs_slow_retention": true,
+    "c2_law_vs_fast_retention": false,
+    "c2_law_vs_slow_mean": false,
+    "c2_law_vs_slow_wins": true,
+    "c3_law_vs_adaptive_mean": false,
+    "c4_recombined_early_retention": true,
+    "c4_recombined_full_positive": true,
+    "c4_recombined_full_retention": true,
+    "c5_switched_first_fast_within_256": true,
+    "c6_moved_fast_share_at_most_quarter": true,
+    "c7_archive_cap": true,
+    "c7_distributions_normalized": true,
+    "c7_drawdown_bound": true,
+    "c7_first_admission_shared": true,
+    "c7_prefix_bound": true,
+    "c7_unrelated_never_admits": true,
+    "c8_equal_price_exact": true,
+    "c8_protected_new_exact": true
+  },
+  "verification_pass": true
+}
