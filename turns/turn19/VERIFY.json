@@ -1,0 +1,278 @@
+{
+  "authority_forecasts": 2621440,
+  "candidate_forecasts": 3670016,
+  "commitment_cap_bits": 5,
+  "complete_gate_pass": false,
+  "gate_pass": false,
+  "identities": {
+    "DATA_MANIFEST.json": "47ccca44785222d8fa0fb6bfe7cd01a6e5940c6de6a27035e6cd815ccd6efe60",
+    "MEMORY_MANIFEST.json": "6813e48624977853586923a8ca0c303ada8937410ec5b97976f8df4e9822a9b4",
+    "RESULTS_MANIFEST.json": "82d892e7fe2f99be8b9adaf223c1738032b1578d9f5d06aaa907e8d4ead4af39",
+    "freeze_sha256": "f2248eaf6877cb4b20c410a076f6300a90353fece28811d3aac43868ad9586d7",
+    "protocol_sha256": "e00991a388a12b6ee3dbc803f1de613752c141944ed5ee30fe46ead7de53f71b",
+    "reader_sha256": "0400e718b987a0c33b529e1ba854afb0655b9b3f5038e8e9f2acb0caa8a928fc",
+    "result_sha256": "527d9d00dd729b0241814b67a1207d7afb2a146c844678a1c26fb16b42eb4991"
+  },
+  "maximum_normalization_error": 1.354472090042691e-14,
+  "maximum_numeric_error": 1.4267698134062812e-10,
+  "modes": [
+    "slow",
+    "fast",
+    "adaptive",
+    "witness",
+    "ceiling"
+  ],
+  "quantities": {
+    "early_retention": 0.9805246019367143,
+    "full_retention": 0.9796150701865163,
+    "law_vs_fast": [
+      1.3183401591859365,
+      1.0055340043229535,
+      1.3491801723915842,
+      1.075837428891873,
+      0.4045613511029842,
+      1.404703924063142,
+      1.6975483025921676,
+      0.35001878935815967
+    ],
+    "law_vs_slow": [
+      7.309011782185053,
+      6.990365166217998,
+      7.244279196941079,
+      6.295304369741643,
+      4.969811842666331,
+      7.282287510020751,
+      6.8077488062341445,
+      3.627775119457283
+    ],
+    "law_vs_witness": [
+      7.221489793063029,
+      6.887779430791852,
+      7.2200437439630605,
+      6.247799665873345,
+      4.248647771457854,
+      6.234187242332837,
+      6.846805151024341,
+      3.5834020929931967
+    ],
+    "moved_fast_share": [
+      0.05322265625,
+      0.0626220703125,
+      0.37060546875,
+      0.0799560546875,
+      0.0638427734375,
+      0.143310546875,
+      0.43896484375,
+      0.4029541015625
+    ],
+    "moved_quiet_worlds": 5,
+    "moved_vs_fast": [
+      -18.964132659855977,
+      -10.318361466426495,
+      5.12914946828306,
+      -8.411331600256517,
+      -12.007917335467937,
+      -5.797288324274632,
+      0.7994330770878832,
+      4.521029263623063
+    ],
+    "moved_vs_slow": [
+      -30.32976683081347,
+      -21.596627847217633,
+      0.43942987256923516,
+      -19.75120080490842,
+      -23.314422179997564,
+      -11.141825881536533,
+      4.428299054378613,
+      2.0183574529262387
+    ],
+    "recombined_full": [
+      3675.819120000662,
+      3757.562831271355,
+      1731.8493868911823,
+      2898.30375637997,
+      3164.351347501645,
+      2987.725740607132,
+      1670.0169391247202,
+      2283.9487381060226
+    ],
+    "switched_first_fast_after_move": [
+      8216,
+      8207,
+      8329,
+      8752,
+      8246,
+      8269,
+      8287,
+      8207
+    ],
+    "switched_first_fast_offsets": [
+      24,
+      15,
+      137,
+      560,
+      54,
+      77,
+      95,
+      15
+    ],
+    "switched_prompt_worlds": 7
+  },
+  "reader_tests": {
+    "c9_agreement_within_tolerance": true,
+    "c9_all_candidate_arms_rebuilt": true,
+    "c9_all_five_modes_replayed": true,
+    "c9_retained_digests_intact": true
+  },
+  "regimes": [
+    "recombined",
+    "switched",
+    "moved_mid",
+    "unrelated"
+  ],
+  "scope": "Independent frozen turn13 source books and seven candidates; own suffix recount of the episode matchedL sequence; independent Decimal mass replay of slow/fast/adaptive/witness and ceiling authority, every quote, hazard choice, clip, odds and clock value. HEAD256 bindings and P0 are supplied trace inputs; full-vector receipts come from C.",
+  "tables": {
+    "moved_mid": {
+      "adaptive": {
+        "early": 497.3380909220114,
+        "gain": 1856.950618102912,
+        "tail": 672.1380295074359
+      },
+      "ceiling": {
+        "early": 488.38539090099084,
+        "gain": 1822.0997216514033,
+        "tail": 660.9446907362948
+      },
+      "fast": {
+        "early": 493.1472598796711,
+        "gain": 1841.070743857581,
+        "tail": 666.5758681834558
+      },
+      "slow": {
+        "early": 498.0858103267791,
+        "gain": 1858.916692052268,
+        "tail": 673.3506603818697
+      },
+      "witness": {
+        "early": 497.2267727229808,
+        "gain": 1856.5641737415692,
+        "tail": 672.0647299450429
+      }
+    },
+    "recombined": {
+      "adaptive": {
+        "early": 497.3380909220114,
+        "gain": 2828.10997156988,
+        "tail": 1643.2973829744042
+      },
+      "ceiling": {
+        "early": 488.38539090099084,
+        "gain": 2771.1972324853364,
+        "tail": 1610.0422015702275
+      },
+      "fast": {
+        "early": 493.1472598796711,
+        "gain": 2806.323622208231,
+        "tail": 1631.8287465341057
+      },
+      "slow": {
+        "early": 498.0858103267791,
+        "gain": 2828.8634146448026,
+        "tail": 1643.2973829744044
+      },
+      "witness": {
+        "early": 497.2267727229808,
+        "gain": 2827.575244028983,
+        "tail": 1643.075800232457
+      }
+    },
+    "switched": {
+      "adaptive": {
+        "early": 497.3380909220114,
+        "gain": 1197.2272674281044,
+        "tail": 12.414678832628354
+      },
+      "ceiling": {
+        "early": 488.38539090099084,
+        "gain": 1179.8715524360346,
+        "tail": 18.716521520925966
+      },
+      "fast": {
+        "early": 493.1472598796711,
+        "gain": 1192.1356816785626,
+        "tail": 17.640806004437366
+      },
+      "slow": {
+        "early": 498.0858103267791,
+        "gain": 1197.966730217141,
+        "tail": 12.40069854674293
+      },
+      "witness": {
+        "early": 497.2267727229808,
+        "gain": 1197.1546959560146,
+        "tail": 12.655252159488526
+      }
+    },
+    "unrelated": {
+      "adaptive": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "ceiling": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "fast": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "slow": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "witness": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      }
+    }
+  },
+  "tests": {
+    "c1_moved_vs_fast_mean": false,
+    "c1_moved_vs_fast_wins": false,
+    "c1_moved_vs_slow_retention": false,
+    "c2_law_vs_fast_retention": true,
+    "c2_law_vs_slow_mean": true,
+    "c2_law_vs_slow_wins": true,
+    "c3_law_vs_witness_mean": true,
+    "c4_recombined_early_retention": true,
+    "c4_recombined_full_positive": true,
+    "c4_recombined_full_retention": true,
+    "c5_switched_first_fast_within_256": true,
+    "c6_moved_fast_share_at_most_quarter": false,
+    "c7_archive_cap": true,
+    "c7_distributions_normalized": true,
+    "c7_drawdown_bound": true,
+    "c7_first_admission_shared": true,
+    "c7_prefix_bound": true,
+    "c7_unrelated_never_admits": true,
+    "c8_equal_price_exact": true,
+    "c8_protected_new_exact": true,
+    "c9_cap_and_clock": true
+  },
+  "verification_pass": true,
+  "worlds": [
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207
+  ]
+}

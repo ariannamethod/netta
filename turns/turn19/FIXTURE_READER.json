@@ -1,0 +1,14 @@
+{
+  "pass": true,
+  "events": 33,
+  "modes": [
+    "slow",
+    "fast",
+    "adaptive",
+    "witness",
+    "ceiling"
+  ],
+  "field_checks": 1650,
+  "maximum_error": 1.0658141036401503e-14,
+  "scope": "C fixture independently recounted by mass-space reader; no protocol worlds generated"
+}
