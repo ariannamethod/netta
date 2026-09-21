@@ -1,0 +1,311 @@
+{
+  "authority_forecasts": 3145728,
+  "candidate_forecasts": 3670016,
+  "complete_gate_pass": false,
+  "gate_pass": false,
+  "identities": {
+    "DATA_MANIFEST.json": "19992fba026ae46312020743e8be4bd178b24dd0bebf53802dc9d68ac2ddf662",
+    "MEMORY_MANIFEST.json": "d4caff7ad60f48ba3723c37c358864aec3d683d16c2d95bb0b3f228ef5172e93",
+    "RESULTS_MANIFEST.json": "f080e50c70e3f55c066f0ba15d641e7d7a972617b8601f8a069fc6ef851061ac",
+    "freeze_sha256": "41697426a59395853903a21818c782dcd463ec0d5df03fd70fa89340454fe70c",
+    "protocol_sha256": "cb9ae1dc25751e8618c6827dd66590fb00decd721ffc989421dfb91f8979cc9d",
+    "reader_sha256": "78e6345f1a5e2be5eee5815e9302a24961695f54b77ba32d5dcfdaa2e9b10fc7",
+    "result_sha256": "19cff1fc8f05835fd7a5b0eafc3a678127cef71e1ae8f896e8434061db47aed8"
+  },
+  "maximum_normalization_error": 1.3100631690576847e-14,
+  "maximum_numeric_error": 1.552962203277275e-10,
+  "modes": [
+    "slow",
+    "fast",
+    "adaptive",
+    "witness",
+    "ceiling",
+    "witnessed_ceiling"
+  ],
+  "quantities": {
+    "early_retention": 0.9975193886979338,
+    "full_retention": 0.9988915296428239,
+    "law_vs_ceiling": [
+      -2.1616324866839705,
+      -4.743462588063949,
+      -4.0453730417189036,
+      -4.517929243080289,
+      -4.711814414390574,
+      -3.476723812588716,
+      -4.813623786284552,
+      -0.6672349880701631
+    ],
+    "law_vs_fast": [
+      -1.9324869766709298,
+      -3.2042273714048406,
+      -3.253185850119735,
+      -3.050281795217984,
+      -3.727140396860932,
+      -3.5936793193066023,
+      -3.1902950177864113,
+      -0.9167676709676016
+    ],
+    "law_vs_slow": [
+      2.4509869502888932,
+      2.768901161976828,
+      2.0086027528905106,
+      2.567117325627919,
+      2.2285963390324923,
+      1.8708540557752258,
+      2.7878166032794525,
+      1.663402898909908
+    ],
+    "law_vs_witness": [
+      1.9538022101240813,
+      2.6493890494036805,
+      0.6907378956634602,
+      2.3878815260615056,
+      2.2231580002162445,
+      1.4643094884302172,
+      2.6409915202368666,
+      1.4768906104700363
+    ],
+    "moved_fast_share": [
+      0.23681640625,
+      0.0628662109375,
+      0.317138671875,
+      0.3665771484375,
+      0.0557861328125,
+      0.27685546875,
+      0.1361083984375,
+      0.28369140625
+    ],
+    "moved_vs_fast": [
+      5.242138634088974,
+      9.527590490173225,
+      4.103783457177087,
+      3.565374881960338,
+      10.15350692301081,
+      7.824098460283153,
+      8.082116287426288,
+      8.016772293114514
+    ],
+    "moved_vs_slow": [
+      -0.9213903352404031,
+      -1.325970503413373,
+      -0.83317833317642,
+      -1.413735366661399,
+      -1.1355968814741573,
+      -3.267939283237979,
+      -1.541965378374698,
+      -3.422351941579109
+    ],
+    "moved_vs_witness": [
+      1.0199627797439916,
+      -0.6118966076273864,
+      1.6528793619647786,
+      2.44570636653566,
+      -0.5025423897777728,
+      -0.12020960947711501,
+      0.005159904390438896,
+      -0.19767108316932536
+    ],
+    "recombined_full": [
+      1863.382453376657,
+      3577.82324280894,
+      2999.854248086413,
+      1915.035180113611,
+      2787.406374445867,
+      2111.3516238590137,
+      2884.40006968613,
+      2185.546456392154
+    ],
+    "related_high_clips": 47720,
+    "related_low_clips": 62,
+    "switched_first_fast_after_move": [
+      8223,
+      8216,
+      8239,
+      8285,
+      8248,
+      8193,
+      8257,
+      8514
+    ]
+  },
+  "reader_tests": {
+    "c9_agreement_within_tolerance": true,
+    "c9_all_candidate_arms_rebuilt": true,
+    "c9_all_six_modes_replayed": true,
+    "c9_retained_digests_intact": true
+  },
+  "regimes": [
+    "recombined",
+    "switched",
+    "moved_mid",
+    "unrelated"
+  ],
+  "scope": "Independent frozen turn13 source books and seven candidates; own suffix recount of the episode matchedL sequence; independent Decimal mass replay of slow/fast/adaptive/witness, fixed ceiling and witnessed ceiling authority, every quote, hazard choice, clip, odds and clock value. HEAD256 bindings and P0 are supplied trace inputs; full-vector receipts come from C.",
+  "tables": {
+    "moved_mid": {
+      "adaptive": {
+        "early": 423.4211285207153,
+        "gain": 1561.8886769461096,
+        "tail": 524.2549483977787
+      },
+      "ceiling": {
+        "early": 416.0413380865488,
+        "gain": 1533.5264234632914,
+        "tail": 516.0725504981201
+      },
+      "fast": {
+        "early": 419.06523925049265,
+        "gain": 1544.5671884240253,
+        "tail": 517.1766276110924
+      },
+      "slow": {
+        "early": 424.11265189541945,
+        "gain": 1564.2990682154266,
+        "tail": 525.9738162923913
+      },
+      "witness": {
+        "early": 423.2354027381836,
+        "gain": 1560.930177054378,
+        "tail": 523.7796266991737
+      },
+      "witnessed_ceiling": {
+        "early": 423.0605932577784,
+        "gain": 1560.8302134160972,
+        "tail": 524.2410502894967
+      }
+    },
+    "recombined": {
+      "adaptive": {
+        "early": 423.4211285207153,
+        "gain": 2542.727737578031,
+        "tail": 1505.0940090296997
+      },
+      "ceiling": {
+        "early": 416.0413380865488,
+        "gain": 2492.347756003558,
+        "tail": 1474.8938830383868
+      },
+      "fast": {
+        "early": 419.06523925049265,
+        "gain": 2521.0256398741863,
+        "tail": 1493.6350790612532
+      },
+      "slow": {
+        "early": 424.11265189541945,
+        "gain": 2543.419260952735,
+        "tail": 1505.0940090296997
+      },
+      "witness": {
+        "early": 423.2354027381836,
+        "gain": 2542.0481818764774,
+        "tail": 1504.897631521273
+      },
+      "witnessed_ceiling": {
+        "early": 423.0605932577784,
+        "gain": 2540.599956096098,
+        "tail": 1504.0107929694977
+      }
+    },
+    "switched": {
+      "adaptive": {
+        "early": 423.4211285207153,
+        "gain": 1058.7286475746582,
+        "tail": 21.09491902632722
+      },
+      "ceiling": {
+        "early": 416.0413380865488,
+        "gain": 1044.4976289916901,
+        "tail": 27.04375602651899
+      },
+      "fast": {
+        "early": 419.06523925049265,
+        "gain": 1053.6506005941337,
+        "tail": 26.26003978120073
+      },
+      "slow": {
+        "early": 424.11265189541945,
+        "gain": 1059.4334988934713,
+        "tail": 21.1082469704362
+      },
+      "witness": {
+        "early": 423.2354027381836,
+        "gain": 1058.6161870490373,
+        "tail": 21.46563669383309
+      },
+      "witnessed_ceiling": {
+        "early": 423.0605932577784,
+        "gain": 1059.9906948580094,
+        "tail": 23.401531731408852
+      }
+    },
+    "unrelated": {
+      "adaptive": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "ceiling": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "fast": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "slow": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "witness": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "witnessed_ceiling": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      }
+    }
+  },
+  "tests": {
+    "law_fast_retention": false,
+    "law_fixed_ceiling_protection": false,
+    "law_slow_mean": true,
+    "law_slow_wins": true,
+    "law_witness_mean": true,
+    "mechanism_both_levels_clip": true,
+    "mechanism_caps": true,
+    "mechanism_clock_admission": true,
+    "recombined_early_retention": true,
+    "recombined_full_positive": true,
+    "recombined_full_retention": true,
+    "structural_archive_cap": true,
+    "structural_distributions_normalized": true,
+    "structural_exact_quotes": true,
+    "structural_prefix_drawdown": true,
+    "structural_unrelated_never_admits": true,
+    "surface_fast_mean": true,
+    "surface_fast_wins": true,
+    "surface_slow_retention": true,
+    "surface_witness_recovery": true
+  },
+  "verification_pass": true,
+  "witnessed_ceiling_caps": [
+    5,
+    10
+  ],
+  "worlds": [
+    208,
+    209,
+    210,
+    211,
+    212,
+    213,
+    214,
+    215
+  ]
+}
