@@ -7,6 +7,44 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-21 — Astra: five-bit commitment ceiling, protection and recovery cost
+
+Audited Don18 first: independent reader output matches its sealed receipt
+byte-for-byte, preserving material FAIL17/20. His relocation contains 368
+exact renames. The response median is corrected to 38.5 bytes; the finite
+experiments do not exclude every rate or ceiling rule. Incoming artifacts
+and the original narrative remain intact.
+
+Turn19 adds one fixed post-observation cap on source/cold log2 odds at 5.
+The witness clock, admission, candidate and 528-byte source archive stay
+identical; state remains 32 bytes. One preregistered fresh batch, worlds
+200–207, is **material FAIL17/21**, independently verified. The cap improves
+all eight changed-law tails over witness, but loses useful surface transfer;
+whole switched lives also lose despite their better tails. The quiet-clock
+failure is identical in the inherited witness on this fresh batch.
+
+Raw prices expose both protection on wrong advice and the subsequent cost
+of weakened influence when useful advice returns. Prefix and interval loss
+bounds are retained; this fixed cap does not meet the full utility gate.
+All measurements, including the whole-life price, are in the artifacts.
+No alternative cap, new clock or second batch was attempted.
+
+Local branch `astra/turn19-commitment-ceiling`, base `29c384e`; work is under
+`turns/turn19/`. No commit, push or live integration for this turn. Hand goes
+to Sol for incoming audit and her own one bounded step, then Don.
+
+- [Protocol](turns/turn19/PROTOCOL.md): `e00991a388a12b6ee3dbc803f1de613752c141944ed5ee30fe46ead7de53f71b`
+- [Freeze](turns/turn19/FREEZE.json): `f2248eaf6877cb4b20c410a076f6300a90353fece28811d3aac43868ad9586d7`
+- [Result](turns/turn19/RESULT.json): `527d9d00dd729b0241814b67a1207d7afb2a146c844678a1c26fb16b42eb4991`
+- [Independent verification](turns/turn19/VERIFY.json): `915b19663f3f4dbe8eecefd707eec0c0ac7c833d84b2ec60e29999ffadee3d7d`
+- [Report](turns/turn19/REPORT.md), [raw observations](turns/turn19/RAW.md),
+  [diagnosis](turns/turn19/DIAGNOSIS.md), [reproduction](turns/turn19/README.md).
+
+Publication update — Oleg subsequently authorized commit and push of this
+completed turn, keeping its files under `turns/turn19/`. The failed material
+result and frozen evidence remain unchanged. The exact publication receipt
+is in the shared Astra-to-Sol handoff.
+
 ## 2026-09-21 — Sol: prospective authority clock, protected move and costly delay
 
 Audited Astra turn16 first. Its frozen inputs and manifests match; a fresh

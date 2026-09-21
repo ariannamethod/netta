@@ -1,0 +1,154 @@
+200 recombined ceiling 3675.819120000662 1945.551456245927 first_fast_after_move 8721 tail_fast 92
+200 switched ceiling 1725.227801699381 -5.039862055336936 first_fast_after_move 8216 tail_fast 7245
+200 moved_mid ceiling 3067.337696405065 1337.0700326503554 first_fast_after_move 8367 tail_fast 436
+200 unrelated ceiling 0.0 0.0 first_fast_after_move None tail_fast 0
+201 recombined ceiling 3757.562831271355 2074.6113487093726 first_fast_after_move 13702 tail_fast 8
+201 switched ceiling 1678.6302091256375 -4.321273436345056 first_fast_after_move 8207 tail_fast 8102
+201 moved_mid ceiling 2672.813721765346 989.8622392033625 first_fast_after_move 8633 tail_fast 513
+201 unrelated ceiling 0.0 0.0 first_fast_after_move None tail_fast 0
+202 recombined ceiling 1731.8493868911814 1227.1978109477946 first_fast_after_move 8289 tail_fast 207
+202 switched ceiling 508.79372070660236 4.142144763211082 first_fast_after_move 8329 tail_fast 7842
+202 moved_mid ceiling 635.4399096475465 130.78833370415634 first_fast_after_move 8290 tail_fast 3036
+202 unrelated ceiling 0.0 0.0 first_fast_after_move None tail_fast 0
+203 recombined ceiling 2898.3037563799708 1612.1605867918581 first_fast_after_move 8555 tail_fast 40
+203 switched ceiling 1334.2464563839405 48.103286795812394 first_fast_after_move 8752 tail_fast 5570
+203 moved_mid ceiling 2171.285759724042 885.1425901359083 first_fast_after_move 8357 tail_fast 655
+203 unrelated ceiling 0.0 0.0 first_fast_after_move None tail_fast 0
+204 recombined ceiling 3164.351347501645 1752.172156069398 first_fast_after_move 11640 tail_fast 38
+204 switched ceiling 1433.1008332263457 20.92164179409546 first_fast_after_move 8246 tail_fast 5897
+204 moved_mid ceiling 2501.3920278604355 1089.2128364281755 first_fast_after_move 8331 tail_fast 523
+204 unrelated ceiling 0.0 0.0 first_fast_after_move None tail_fast 0
+205 recombined ceiling 2987.7257406071326 1789.9862320668353 first_fast_after_move 10691 tail_fast 57
+205 switched ceiling 1197.7139157961515 -0.025592744149376928 first_fast_after_move 8269 tail_fast 6166
+205 moved_mid ceiling 2004.723759251985 806.9842507116831 first_fast_after_move 8220 tail_fast 1174
+205 unrelated ceiling 0.0 0.0 first_fast_after_move None tail_fast 0
+206 recombined ceiling 1670.0169391247216 1081.6111769443928 first_fast_after_move 8210 tail_fast 526
+206 switched ceiling 625.2563235697125 36.85056138938697 first_fast_after_move 8287 tail_fast 5803
+206 moved_mid ceiling 591.0312905591211 2.6255283787956607 first_fast_after_move 8208 tail_fast 3596
+206 unrelated ceiling 0.0 0.0 first_fast_after_move None tail_fast 0
+207 recombined ceiling 2283.948738106023 1397.0468447862509 first_fast_after_move 9350 tail_fast 305
+207 switched ceiling 936.0031589805074 49.10126566073768 first_fast_after_move 8207 tail_fast 6042
+207 moved_mid ceiling 932.7736079976903 45.87171467791769 first_fast_after_move 8210 tail_fast 3301
+207 unrelated ceiling 0.0 0.0 first_fast_after_move None tail_fast 0
+{
+  "gate_pass": false,
+  "quantities": {
+    "early_retention": 0.9805246019367139,
+    "full_retention": 0.9796150701865163,
+    "law_vs_fast": [
+      1.318340159187123,
+      1.0055340043245256,
+      1.3491801723913768,
+      1.0758374288955181,
+      0.404561351103915,
+      1.4047039240635215,
+      1.6975483025947682,
+      0.35001878936221686
+    ],
+    "law_vs_slow": [
+      7.309011782185449,
+      6.990365166219261,
+      7.244279196940685,
+      6.295304369745125,
+      4.969811842664104,
+      7.282287510017681,
+      6.807748806232965,
+      3.6277751194585406
+    ],
+    "law_vs_witness": [
+      7.221489793064027,
+      6.88777943079263,
+      7.220043743962451,
+      6.2477996658775865,
+      4.248647771454355,
+      6.234187242331816,
+      6.846805151025084,
+      3.583402092995925
+    ],
+    "moved_fast_share": [
+      0.05322265625,
+      0.0626220703125,
+      0.37060546875,
+      0.0799560546875,
+      0.0638427734375,
+      0.143310546875,
+      0.43896484375,
+      0.4029541015625
+    ],
+    "moved_quiet_worlds": 5,
+    "moved_vs_fast": [
+      -18.9641326598487,
+      -10.318361466432407,
+      5.129149468286897,
+      -8.411331600260041,
+      -12.007917335481125,
+      -5.797288324272017,
+      0.7994330770851592,
+      4.521029263624236
+    ],
+    "moved_vs_slow": [
+      -30.329766830803464,
+      -21.596627847205696,
+      0.4394298725693204,
+      -19.751200804917858,
+      -23.314422180008478,
+      -11.141825881538807,
+      4.428299054379386,
+      2.018357452928484
+    ],
+    "recombined_full": [
+      3675.819120000662,
+      3757.562831271355,
+      1731.8493868911814,
+      2898.3037563799708,
+      3164.351347501645,
+      2987.7257406071326,
+      1670.0169391247216,
+      2283.948738106023
+    ],
+    "switched_first_fast_after_move": [
+      8216,
+      8207,
+      8329,
+      8752,
+      8246,
+      8269,
+      8287,
+      8207
+    ],
+    "switched_first_fast_offsets": [
+      24,
+      15,
+      137,
+      560,
+      54,
+      77,
+      95,
+      15
+    ],
+    "switched_prompt_worlds": 7
+  },
+  "tests": {
+    "c1_moved_vs_fast_mean": false,
+    "c1_moved_vs_fast_wins": false,
+    "c1_moved_vs_slow_retention": false,
+    "c2_law_vs_fast_retention": true,
+    "c2_law_vs_slow_mean": true,
+    "c2_law_vs_slow_wins": true,
+    "c3_law_vs_witness_mean": true,
+    "c4_recombined_early_retention": true,
+    "c4_recombined_full_positive": true,
+    "c4_recombined_full_retention": true,
+    "c5_switched_first_fast_within_256": true,
+    "c6_moved_fast_share_at_most_quarter": false,
+    "c7_archive_cap": true,
+    "c7_distributions_normalized": true,
+    "c7_drawdown_bound": true,
+    "c7_first_admission_shared": true,
+    "c7_prefix_bound": true,
+    "c7_unrelated_never_admits": true,
+    "c8_equal_price_exact": true,
+    "c8_protected_new_exact": true,
+    "c9_cap_and_clock": true
+  }
+}
