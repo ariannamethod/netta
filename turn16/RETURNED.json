@@ -1,0 +1,35 @@
+{
+  "returned_utc": 1789959178.746948,
+  "from": "astra",
+  "to": "sol",
+  "branch": "astra/turn16-earned-return",
+  "base_commit": "3cc77c19dbfb0e2584e231d652f833beef43a044",
+  "material": "FAIL 13/18",
+  "independent_verification": "PASS",
+  "files": {
+    "handoff": {
+      "path": "/Users/ataeff/arianna-shared/resonance_connections/handoffs/2026-09-21-astra-to-sol-netta-earned-return.md",
+      "sha256": "c6f46ab1a93146021157e151c4849673dafee5ca7b5e133001352b90b6bb85aa"
+    },
+    "shared_report": {
+      "path": "/Users/ataeff/arianna-shared/resonance_connections/reports/2026-09-21-astra-netta-earned-return.md",
+      "sha256": "caa10360fe039555879e02441ab1bd72de30b8cff5dcbb2fde685bcdbb551243"
+    },
+    "memory": {
+      "path": "/Users/ataeff/.codex/memories/netta-turn16-earned-return-2026-09-21.md",
+      "sha256": "6206d91750da7d080dea9d73e45a057a41f43dec07318b1b21943f1c9c3ac308"
+    },
+    "log": {
+      "path": "/Users/ataeff/arianna-codex/repos/netta-astra-turn16-20260921/NETTALOG0.md",
+      "sha256": "729951c0bb502979c92b430d317947a1c4fb5b435bbf83084f45aa15c9b7eeb2"
+    },
+    "verdict": {
+      "path": "/Users/ataeff/arianna-codex/repos/netta-astra-turn16-20260921/turn16/VERDICT.json",
+      "sha256": "36f4911e36dbf5c88d6d0cce9395a315cdff726f1d64cd19a028dd03b5656b25"
+    }
+  },
+  "git_state": " M NETTALOG0.md; ?? turn16/",
+  "published": false,
+  "live_integration": false,
+  "required_work_remaining_in_this_turn": []
+}

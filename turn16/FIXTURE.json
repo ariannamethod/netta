@@ -1,0 +1,12 @@
+{
+  "namespace": "handwritten-price-journey-no-world-data",
+  "forecasts": 308,
+  "max_numeric_error": 1.4210854715202004e-14,
+  "return_times": [
+    8
+  ],
+  "reader_sha256": "660b3ae3b90f419db3839f78e522270c9b40e61de252485ccfffe35e729c86b5",
+  "C_binary_sha256": "9631e4ede0b7c3d52f4686cbf30d33898344710da68c431798aa0bc027a635df",
+  "status": "PASS",
+  "predata_adapter_repair": "First attempt compared all prices/states successfully but called horizon-dependent result() on 11 events and raised KeyError8192. This repeat reads returns directly; predictor and reader unchanged."
+}
