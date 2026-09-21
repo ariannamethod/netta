@@ -1,0 +1,2817 @@
+{
+  "gate_pass": false,
+  "independent_reader_pending": true,
+  "lives": [
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "314fc7c96aa91c539ee2f40b58f74feb58256dbc196cd571bc463802aaa6a428",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 116,
+          "drawdown": 8.174329464556195,
+          "early": 646.2845884826706,
+          "gain": 3151.633181611645,
+          "last": -2.0096332473241505,
+          "minimum": 0.0,
+          "peak": 3151.633181611645,
+          "tail": 1769.2932758391607
+        },
+        "h8l4": {
+          "activation": 116,
+          "drawdown": 7.962840297068283,
+          "early": 650.1156334950434,
+          "gain": 3165.99007911095,
+          "last": -2.0096332473241505,
+          "minimum": 0.0,
+          "peak": 3165.99007911095,
+          "tail": 1776.0165026840925
+        },
+        "selfnorm": {
+          "activation": 116,
+          "drawdown": 11.974357318480656,
+          "early": 645.349939175122,
+          "gain": 3155.6468229498855,
+          "last": -2.0096332473241505,
+          "minimum": 0.0,
+          "peak": 3155.6468229498855,
+          "tail": 1774.0849385340812
+        },
+        "slow": {
+          "activation": 116,
+          "drawdown": 12.187977825946632,
+          "early": 651.765131492935,
+          "gain": 3174.199814021562,
+          "last": -2.0096332473241505,
+          "minimum": 0.0,
+          "peak": 3174.199814021562,
+          "tail": 1780.657296926346
+        },
+        "split": {
+          "activation": 116,
+          "drawdown": 9.994630202216513,
+          "early": 626.9818285323155,
+          "gain": 2910.3757872259166,
+          "last": -2.0096332473241505,
+          "minimum": 0.0,
+          "peak": 2910.3757872259166,
+          "tail": 1609.8060001641054
+        }
+      },
+      "regime": "recombined",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "3005daf2e337692739b14addf2e85097559e326ad2b9155f0ee4043200ec482e",
+      "split_sha256": "18305879950abc25b70efb518fb0c633086fef7ec11abfe727bcebe803905fdd",
+      "world": 232
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "babe316173ba2ed8055411ddb4e9d70980990fd10c06de1cff89db42214db68a",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 116,
+          "drawdown": 7.3416405188132785,
+          "early": 646.2845884826706,
+          "gain": 1381.7191742156278,
+          "last": -3.3169022282392806,
+          "minimum": 0.0,
+          "peak": 1387.5668023713972,
+          "tail": -0.620731556857387
+        },
+        "h8l4": {
+          "activation": 116,
+          "drawdown": 7.962840297068283,
+          "early": 650.1156334950434,
+          "gain": 1387.3084221268155,
+          "last": -3.3169022282392806,
+          "minimum": 0.0,
+          "peak": 1395.2252846846498,
+          "tail": -2.665154300046372
+        },
+        "selfnorm": {
+          "activation": 116,
+          "drawdown": 11.974357318480656,
+          "early": 645.349939175122,
+          "gain": 1377.298442311993,
+          "last": -3.3169022282392806,
+          "minimum": 0.0,
+          "peak": 1386.8209209188453,
+          "tail": -4.263442103807958
+        },
+        "slow": {
+          "activation": 116,
+          "drawdown": 12.187977825946632,
+          "early": 651.765131492935,
+          "gain": 1386.9756258777838,
+          "last": -3.3169022282392806,
+          "minimum": 0.0,
+          "peak": 1398.8035203880008,
+          "tail": -6.566891217429854
+        },
+        "split": {
+          "activation": 116,
+          "drawdown": 10.901387791804382,
+          "early": 626.9818285323155,
+          "gain": 1289.668399270007,
+          "last": -3.3169022282392806,
+          "minimum": 0.0,
+          "peak": 1300.5697870618114,
+          "tail": -10.901387791803984
+        }
+      },
+      "regime": "switched",
+      "sample": {
+        "harm": {
+          "candidate": -6.538667488575363,
+          "cold": -2.631014433240626,
+          "fast": -2.631018059662461,
+          "long_mass": 0.9563355302995271,
+          "matched": 3,
+          "short_mass": 0.0,
+          "split": -5.850130079475344,
+          "split_minus_fast": -3.219112019812883,
+          "t": 8379,
+          "truth": 163
+        },
+        "help": {
+          "candidate": -2.260329237239396,
+          "cold": -4.927566030573109,
+          "fast": -4.927533477436277,
+          "long_mass": 0.9777440749603447,
+          "matched": 3,
+          "short_mass": 0.0,
+          "split": -2.2876398492174213,
+          "split_minus_fast": 2.6398936282188554,
+          "t": 8347,
+          "truth": 24
+        }
+      },
+      "source_sha256": "a42087289e43f8c320d63f6fe39f45bf7e0886e92653cfe9a346621c0101ac8c",
+      "split_sha256": "2114778ec40781ba8fac00dd71165aab1e9220b4f5c3379cd2854d29f580d7f9",
+      "world": 232
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "744a7fbf8b8fe54cec29cc327889ea5361168cc7ad660e1afcdd0fa2fc6c2db9",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 116,
+          "drawdown": 7.834804119218234,
+          "early": 646.2845884826706,
+          "gain": 2420.4805620047327,
+          "last": -2.0245091666976274,
+          "minimum": 0.0,
+          "peak": 2420.4805620047327,
+          "tail": 1038.140656232252
+        },
+        "h8l4": {
+          "activation": 116,
+          "drawdown": 8.000697287092862,
+          "early": 650.1156334950434,
+          "gain": 2436.332195747361,
+          "last": -2.0245091666976274,
+          "minimum": 0.0,
+          "peak": 2436.332195747361,
+          "tail": 1046.3586193204994
+        },
+        "selfnorm": {
+          "activation": 116,
+          "drawdown": 11.974357318480656,
+          "early": 645.349939175122,
+          "gain": 2416.3884226826954,
+          "last": -2.0245091666976274,
+          "minimum": 0.0,
+          "peak": 2416.3884226826954,
+          "tail": 1034.8265382668917
+        },
+        "slow": {
+          "activation": 116,
+          "drawdown": 13.634690854187284,
+          "early": 651.765131492935,
+          "gain": 2443.0470286455516,
+          "last": -2.0245091666976274,
+          "minimum": 0.0,
+          "peak": 2443.0470286455516,
+          "tail": 1049.504511550339
+        },
+        "split": {
+          "activation": 116,
+          "drawdown": 13.42117038170477,
+          "early": 626.9818285323155,
+          "gain": 2276.4385591331256,
+          "last": -2.0245091666976274,
+          "minimum": 0.0,
+          "peak": 2276.4385591331256,
+          "tail": 975.8687720713157
+        }
+      },
+      "regime": "moved_mid",
+      "sample": {
+        "harm": {
+          "candidate": -2.021150893475088,
+          "cold": -7.7656284378036835,
+          "fast": -2.0600626677398073,
+          "long_mass": 0.9994599303447947,
+          "matched": 2,
+          "short_mass": 0.0,
+          "split": -7.7656284378036835,
+          "split_minus_fast": -5.705565770063876,
+          "t": 13809,
+          "truth": 124
+        },
+        "help": {
+          "candidate": -5.412489297973725,
+          "cold": -1.4471974332498272,
+          "fast": -5.331838075396602,
+          "long_mass": 0.9999058113172007,
+          "matched": 2,
+          "short_mass": 0.0,
+          "split": -1.4471974332498272,
+          "split_minus_fast": 3.884640642146775,
+          "t": 11096,
+          "truth": 134
+        }
+      },
+      "source_sha256": "5b93c38f6120476bfc4791aeafbf73918d7506607db39fea74f4f85bb9d8d79e",
+      "split_sha256": "cb068c405d6a754708bac18d7501b640d9a071921c14fffce2523bb572a18cce",
+      "world": 232
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "5f629a3e3b7c900fd9644dddb23cf68523741f015b52206fe3e508870f396ca7",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.853277372110913,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.853277372110913,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.853277372110913,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.853277372110913,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.853277372110913,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "regime": "unrelated",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "d5b76318ab24fc8b9f59085e602f7be8218c7f26c27458b57d76e7774ea9ad0d",
+      "split_sha256": "aa9ed0365b67c679353eaecc29e60bbf4576bb1a1cca249887c24fd4dfde1bf8",
+      "world": 232
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "61e53072e0385b080cd044d8b88c4c134b03f43ca76d59baa387b939643a7bb9",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 119,
+          "drawdown": 7.7300384832815325,
+          "early": 615.3500049605723,
+          "gain": 3465.8001457170294,
+          "last": -9.487961979239167,
+          "minimum": -0.7646987012856723,
+          "peak": 3465.8001457170294,
+          "tail": 2003.010568309019
+        },
+        "h8l4": {
+          "activation": 119,
+          "drawdown": 7.889674505944981,
+          "early": 618.5268817795417,
+          "gain": 3478.9796212179353,
+          "last": -9.487961979239167,
+          "minimum": -0.7646987012856723,
+          "peak": 3478.9796212179353,
+          "tail": 2009.4240435866507
+        },
+        "selfnorm": {
+          "activation": 119,
+          "drawdown": 9.663739265371419,
+          "early": 610.8079675974841,
+          "gain": 3455.318368689899,
+          "last": -9.487961979239167,
+          "minimum": -0.7646987012856723,
+          "peak": 3455.318368689899,
+          "tail": 2000.2029268774809
+        },
+        "slow": {
+          "activation": 119,
+          "drawdown": 11.412547442384891,
+          "early": 620.8079338971775,
+          "gain": 3488.3636991681788,
+          "last": -9.487961979239167,
+          "minimum": -0.7646987012856723,
+          "peak": 3488.3636991681788,
+          "tail": 2014.3825154968135
+        },
+        "split": {
+          "activation": 119,
+          "drawdown": 9.8106650007893,
+          "early": 529.4865411668507,
+          "gain": 2866.7037652766685,
+          "last": -9.487961979239167,
+          "minimum": -0.3322656362685068,
+          "peak": 2866.7037652766685,
+          "tail": 1614.2441087598745
+        }
+      },
+      "regime": "recombined",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "6ad93595018a5b4260c7b26bc30c8973b17ec52a57cfb269d8fa070521d02232",
+      "split_sha256": "d091dbcf8353d2252276a8c384f7e6a0ff5f7694765323f2b622d6588b551a79",
+      "world": 233
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "e9c33b0c1dd8e1b962dac692b6052d2dc4279909201aa4475e122b58acd79d57",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 119,
+          "drawdown": 7.7300384832815325,
+          "early": 615.3500049605723,
+          "gain": 1477.8536329831597,
+          "last": -2.4728554124367306,
+          "minimum": -0.7646987012856723,
+          "peak": 1482.9608439522765,
+          "tail": 15.064055575148174
+        },
+        "h8l4": {
+          "activation": 119,
+          "drawdown": 7.932495774736708,
+          "early": 618.5268817795417,
+          "gain": 1482.0893325724883,
+          "last": -2.4728554124367306,
+          "minimum": -0.7646987012856723,
+          "peak": 1489.938547703146,
+          "tail": 12.533754941199476
+        },
+        "selfnorm": {
+          "activation": 119,
+          "drawdown": 9.663739265371419,
+          "early": 610.8079675974841,
+          "gain": 1470.703157581277,
+          "last": -2.4728554124367306,
+          "minimum": -0.7646987012856723,
+          "peak": 1475.2191025836783,
+          "tail": 15.587715768850497
+        },
+        "slow": {
+          "activation": 119,
+          "drawdown": 11.500315996797099,
+          "early": 620.8079338971775,
+          "gain": 1483.3742301174207,
+          "last": -2.4728554124367306,
+          "minimum": -0.7646987012856723,
+          "peak": 1494.4180171922744,
+          "tail": 9.393046446047336
+        },
+        "split": {
+          "activation": 119,
+          "drawdown": 9.8106650007893,
+          "early": 529.4865411668507,
+          "gain": 1246.886356652255,
+          "last": -2.4728554124367306,
+          "minimum": -0.3322656362685068,
+          "peak": 1256.3437921618777,
+          "tail": -5.573299864526558
+        }
+      },
+      "regime": "switched",
+      "sample": {
+        "harm": {
+          "candidate": -4.500105951449193,
+          "cold": -8.044390314859621,
+          "fast": -4.527876695826119,
+          "long_mass": 0.9995216249709876,
+          "matched": 2,
+          "short_mass": 7.814361797127e-312,
+          "split": -8.044390314859621,
+          "split_minus_fast": -3.5165136190335016,
+          "t": 8263,
+          "truth": 208
+        },
+        "help": {
+          "candidate": -4.67381770785631,
+          "cold": -1.0696072514774215,
+          "fast": -4.519163687769509,
+          "long_mass": 0.9993025234561989,
+          "matched": 1,
+          "short_mass": 3.42326953167877e-309,
+          "split": -1.0696072514774215,
+          "split_minus_fast": 3.449556436292087,
+          "t": 8311,
+          "truth": 175
+        }
+      },
+      "source_sha256": "aa305763690aa8ff9a661c8773c329e67978091a1e72db399e3c0852d488e355",
+      "split_sha256": "86adfce70e7a1bdaca4915b12ba5c2d9f032c08ef00be7016a6188ca4ef9a55e",
+      "world": 233
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "028a8597619a7756e95e75d921be3373c66c999eb877b58540c4fbe82cf4a245",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 119,
+          "drawdown": 8.765868919127797,
+          "early": 615.3500049605723,
+          "gain": 2504.540716513699,
+          "last": -14.206499145974878,
+          "minimum": -0.7646987012856723,
+          "peak": 2510.288527491969,
+          "tail": 1041.7511391056937
+        },
+        "h8l4": {
+          "activation": 119,
+          "drawdown": 7.998412875839222,
+          "early": 618.5268817795417,
+          "gain": 2518.3829174211955,
+          "last": -14.206499145974878,
+          "minimum": -0.7646987012856723,
+          "peak": 2524.443098465807,
+          "tail": 1048.82733978991
+        },
+        "selfnorm": {
+          "activation": 119,
+          "drawdown": 9.663739265371419,
+          "early": 610.8079675974841,
+          "gain": 2485.890773502387,
+          "last": -14.206499145974878,
+          "minimum": -0.7646987012856723,
+          "peak": 2491.2296749361485,
+          "tail": 1030.7753316899677
+        },
+        "slow": {
+          "activation": 119,
+          "drawdown": 14.469667620870496,
+          "early": 620.8079338971775,
+          "gain": 2526.168392871718,
+          "last": -14.206499145974878,
+          "minimum": -0.7646987012856723,
+          "peak": 2532.527106330224,
+          "tail": 1052.1872092003425
+        },
+        "split": {
+          "activation": 119,
+          "drawdown": 12.97447561885997,
+          "early": 529.4865411668507,
+          "gain": 2263.590461395197,
+          "last": -14.206499145974878,
+          "minimum": -0.3322656362685068,
+          "peak": 2263.590461395197,
+          "tail": 1011.130804878417
+        }
+      },
+      "regime": "moved_mid",
+      "sample": {
+        "harm": {
+          "candidate": -13.396842052527829,
+          "cold": -7.202630036241791,
+          "fast": -7.269335869625599,
+          "long_mass": 0.9993964383289079,
+          "matched": 3,
+          "short_mass": 0.0,
+          "split": -13.335286146222568,
+          "split_minus_fast": -6.065950276596969,
+          "t": 16231,
+          "truth": 169
+        },
+        "help": {
+          "candidate": -15.66354858506054,
+          "cold": -5.060826523196363,
+          "fast": -12.102946193423865,
+          "long_mass": 0.9997058465423266,
+          "matched": 1,
+          "short_mass": 0.0,
+          "split": -5.060826523196363,
+          "split_minus_fast": 7.0421196702275015,
+          "t": 13836,
+          "truth": 114
+        }
+      },
+      "source_sha256": "fceb8561a944c093d725380b9847c53da503c40dc1e5d6a64da9335342f10bc1",
+      "split_sha256": "fa6c8718afffe1cb41b03749f46aed6bd4bd340e7f10b53b03e9ff6415baf76a",
+      "world": 233
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "684dda9e17fcf82d8ef86ebb24bbfff968011a05f0d03492a70766e2796a2b82",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.7161151038850564,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.7161151038850564,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.7161151038850564,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.7161151038850564,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.7161151038850564,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "regime": "unrelated",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "33699d633c3aad9ec519aac88029dabe583e46e2040289a91acdaeacaf84df24",
+      "split_sha256": "e303338b6aabc50949c185b5a1d7d45b77f6b287437c543666dbef7131717e50",
+      "world": 233
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "5df9bfc6fe96949292d89afa3084252a4d101e168ee6008008996b567ff4929c",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 156,
+          "drawdown": 7.599638609650356,
+          "early": 730.9238196930546,
+          "gain": 3625.1508273883464,
+          "last": -8.93512216104873,
+          "minimum": 0.0,
+          "peak": 3625.378716532753,
+          "tail": 1991.2527585165694
+        },
+        "h8l4": {
+          "activation": 156,
+          "drawdown": 7.796402695675397,
+          "early": 734.404643487684,
+          "gain": 3638.455538264234,
+          "last": -8.93512216104873,
+          "minimum": 0.0,
+          "peak": 3638.6843943188105,
+          "tail": 1997.6276385689494
+        },
+        "selfnorm": {
+          "activation": 156,
+          "drawdown": 9.61140708488665,
+          "early": 728.6506760983248,
+          "gain": 3621.7733629755803,
+          "last": -8.93512216104873,
+          "minimum": 0.0,
+          "peak": 3622.0028758010108,
+          "tail": 1992.1439648549951
+        },
+        "slow": {
+          "activation": 156,
+          "drawdown": 10.378949609198116,
+          "early": 736.3632067581021,
+          "gain": 3647.6481350923673,
+          "last": -8.93512216104873,
+          "minimum": 0.0,
+          "peak": 3647.8779337671376,
+          "tail": 2002.6450650905956
+        },
+        "split": {
+          "activation": 156,
+          "drawdown": 11.551044129969569,
+          "early": 453.12616918733414,
+          "gain": 2551.280297229869,
+          "last": -8.93512216104873,
+          "minimum": 0.0,
+          "peak": 2551.280297229869,
+          "tail": 1453.284276421843
+        }
+      },
+      "regime": "recombined",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "12ab4939cd3c32fe8b831772f7b0028d83a919e80a27df433032bfe557d5413f",
+      "split_sha256": "5d241a39c74c56f15ea7de8de293f63dd3c60dde22fed130c53c9f62112e86f7",
+      "world": 234
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "3d8e0b3fdf85ddd68f08441192e4893587a26a11db0c44ffd6f293f9badd763d",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 156,
+          "drawdown": 7.21014181553528,
+          "early": 730.9238196930546,
+          "gain": 1631.9334061187178,
+          "last": -10.401667439209163,
+          "minimum": 0.0,
+          "peak": 1639.1313031684017,
+          "tail": -1.9646627530644745
+        },
+        "h8l4": {
+          "activation": 156,
+          "drawdown": 7.992719188341653,
+          "early": 734.404643487684,
+          "gain": 1638.1005471818758,
+          "last": -10.401667439209163,
+          "minimum": 0.0,
+          "peak": 1646.093266370217,
+          "tail": -2.7273525134303913
+        },
+        "selfnorm": {
+          "activation": 156,
+          "drawdown": 7.874754186573796,
+          "early": 728.6506760983248,
+          "gain": 1628.0509554438556,
+          "last": -10.401667439209163,
+          "minimum": 0.0,
+          "peak": 1634.8911067582762,
+          "tail": -1.578442676732064
+        },
+        "slow": {
+          "activation": 156,
+          "drawdown": 13.196440563666556,
+          "early": 736.3632067581021,
+          "gain": 1637.120320022946,
+          "last": -10.401667439209163,
+          "minimum": 0.0,
+          "peak": 1650.3167605866126,
+          "tail": -7.882749978828842
+        },
+        "split": {
+          "activation": 156,
+          "drawdown": 13.083048739399828,
+          "early": 453.12616918733414,
+          "gain": 1088.074368447889,
+          "last": -10.401667439209163,
+          "minimum": 0.0,
+          "peak": 1101.1574171872887,
+          "tail": -9.921652360131372
+        }
+      },
+      "regime": "switched",
+      "sample": {
+        "harm": {
+          "candidate": -5.477394995905396,
+          "cold": -1.2729571898914651,
+          "fast": -1.5167799611515278,
+          "long_mass": 0.9868881672891198,
+          "matched": 3,
+          "short_mass": 9.144074764593928e-167,
+          "split": -5.1803618110475185,
+          "split_minus_fast": -3.6635818498959907,
+          "t": 8251,
+          "truth": 75
+        },
+        "help": {
+          "candidate": -4.567813628907199,
+          "cold": -2.3334768321018253,
+          "fast": -4.386187286848158,
+          "long_mass": 0.9959547452007566,
+          "matched": 2,
+          "short_mass": 1.1763095556774473e-165,
+          "split": -2.3334768321018253,
+          "split_minus_fast": 2.052710454746333,
+          "t": 8241,
+          "truth": 189
+        }
+      },
+      "source_sha256": "c544420ca2c0251317e0876efced505c52eee074f5d60897b500e38c6564bf2d",
+      "split_sha256": "355837aa4e94c3e4a67f03fe7869bc89e96892c769c2681381bdf0173db52ac4",
+      "world": 234
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "ca8af5590bec4788d65f80e0a8961f8884c0c39cd966a8a130eab48379c80771",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 156,
+          "drawdown": 7.838404795173574,
+          "early": 730.9238196930546,
+          "gain": 2788.714787877395,
+          "last": -9.125066559191435,
+          "minimum": 0.0,
+          "peak": 2789.1140225012055,
+          "tail": 1154.81671900562
+        },
+        "h8l4": {
+          "activation": 156,
+          "drawdown": 7.978379683271214,
+          "early": 734.404643487684,
+          "gain": 2803.4208051604146,
+          "last": -9.125066559191435,
+          "minimum": 0.0,
+          "peak": 2803.823669418761,
+          "tail": 1162.5929054651212
+        },
+        "selfnorm": {
+          "activation": 156,
+          "drawdown": 10.189595103563079,
+          "early": 728.6506760983248,
+          "gain": 2776.956241744259,
+          "last": -9.125066559191435,
+          "minimum": 0.0,
+          "peak": 2777.354639381166,
+          "tail": 1147.326843623671
+        },
+        "slow": {
+          "activation": 156,
+          "drawdown": 13.109750973211703,
+          "early": 736.3632067581021,
+          "gain": 2811.2030324119737,
+          "last": -9.125066559191435,
+          "minimum": 0.0,
+          "peak": 2811.6076360502543,
+          "tail": 1166.1999624101863
+        },
+        "split": {
+          "activation": 156,
+          "drawdown": 11.955751954699963,
+          "early": 453.12616918733414,
+          "gain": 1898.683211312,
+          "last": -9.125066559191435,
+          "minimum": 0.0,
+          "peak": 1898.683211312,
+          "tail": 800.6871905039786
+        }
+      },
+      "regime": "moved_mid",
+      "sample": {
+        "harm": {
+          "candidate": -1.849998079206244,
+          "cold": -7.024582354287882,
+          "fast": -1.8785942648912273,
+          "long_mass": 0.9998608453880746,
+          "matched": 2,
+          "short_mass": 1.268217575315238e-263,
+          "split": -7.024582354287882,
+          "split_minus_fast": -5.1459880893966545,
+          "t": 13996,
+          "truth": 189
+        },
+        "help": {
+          "candidate": -13.683009055284922,
+          "cold": -6.750163470426337,
+          "fast": -13.072056003193584,
+          "long_mass": 0.9998676655606004,
+          "matched": 2,
+          "short_mass": 8.936222658150651e-261,
+          "split": -6.750163470426337,
+          "split_minus_fast": 6.321892532767247,
+          "t": 14062,
+          "truth": 39
+        }
+      },
+      "source_sha256": "f9eda08d746dbf7cb5a9510da0a4efff2caab1af2bf868d5eae3cac8b9b57672",
+      "split_sha256": "fbddfe47e6177aeb4df48b44e9db5fc50b8d9b9431846c3bf696e5476250e133",
+      "world": 234
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "87b3464898b8d0ff10cc2f9df78af422961623316e4acdd02942aaf545a6c0a7",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -10.244398376431691,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -10.244398376431691,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -10.244398376431691,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -10.244398376431691,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -10.244398376431691,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "regime": "unrelated",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "7c7716e97fde4e05aeec62bacf603f58a1c2954eac68e12e8ad20db1d103d62b",
+      "split_sha256": "3cc4196eb997623021bfd8fe85ff8df9864027e59935361f9220475811ea98b3",
+      "world": 234
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "135bbd3f67f40889250fbfe90ef0c0d81a0685dab4dddf0c8bf01478aad80880",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 188,
+          "drawdown": 7.468659226424734,
+          "early": 575.9715162060993,
+          "gain": 2996.7135356397425,
+          "last": -1.3807745425709257,
+          "minimum": -0.4830387638081213,
+          "peak": 2996.7135356397425,
+          "tail": 1714.609601309022
+        },
+        "h8l4": {
+          "activation": 188,
+          "drawdown": 7.96480907061823,
+          "early": 579.597278734048,
+          "gain": 3011.1945184909605,
+          "last": -1.380431681317983,
+          "minimum": -0.4830387638081213,
+          "peak": 3011.1945184909605,
+          "tail": 1721.67041763808
+        },
+        "selfnorm": {
+          "activation": 188,
+          "drawdown": 9.27857718458472,
+          "early": 576.2372384960781,
+          "gain": 2994.947708611318,
+          "last": -1.3815567830258804,
+          "minimum": -0.4830387638081213,
+          "peak": 2994.947708611318,
+          "tail": 1714.5822356956862
+        },
+        "slow": {
+          "activation": 188,
+          "drawdown": 12.522793418508627,
+          "early": 581.3688389697991,
+          "gain": 3019.176293119328,
+          "last": -1.3799550391048712,
+          "minimum": -0.4830387638081213,
+          "peak": 3019.176293119328,
+          "tail": 1725.9687728370845
+        },
+        "split": {
+          "activation": 188,
+          "drawdown": 9.799773075342046,
+          "early": 524.3666293190432,
+          "gain": 3012.348544285599,
+          "last": -1.3799526586173994,
+          "minimum": -0.2213969145028205,
+          "peak": 3012.348544285599,
+          "tail": 1755.7864679166782
+        }
+      },
+      "regime": "recombined",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "82f64fa5727a299a0d9f4d1a0e875acb0ee538ffcf322aa867f9799ef8eafd34",
+      "split_sha256": "b754d08709e5bd2d12c8109af9fe3cd0c073ac7b7cb6a2f4ef6183272d6c9e12",
+      "world": 235
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "f7e56eca5d18a5a41bd0163532120caadf709032440cb9d4d7b722a46bca39c7",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 188,
+          "drawdown": 7.056101319280515,
+          "early": 575.9715162060993,
+          "gain": 1280.711338157436,
+          "last": -9.070115678246896,
+          "minimum": -0.4830387638081213,
+          "peak": 1286.6101828599974,
+          "tail": -1.3925961732884853
+        },
+        "h8l4": {
+          "activation": 188,
+          "drawdown": 7.966727375751134,
+          "early": 579.597278734048,
+          "gain": 1286.0889885707554,
+          "last": -9.070115678246896,
+          "minimum": -0.4830387638081213,
+          "peak": 1294.053862575771,
+          "tail": -3.435112282128668
+        },
+        "selfnorm": {
+          "activation": 188,
+          "drawdown": 9.27857718458472,
+          "early": 576.2372384960781,
+          "gain": 1276.797709343371,
+          "last": -9.070115678246896,
+          "minimum": -0.4830387638081213,
+          "peak": 1284.8956829352924,
+          "tail": -3.5677635722629852
+        },
+        "slow": {
+          "activation": 188,
+          "drawdown": 12.522793418508627,
+          "early": 581.3688389697991,
+          "gain": 1285.8589737921945,
+          "last": -9.070115678246896,
+          "minimum": -0.4830387638081213,
+          "peak": 1297.746387173958,
+          "tail": -7.348546490057162
+        },
+        "split": {
+          "activation": 188,
+          "drawdown": 10.829059171136123,
+          "early": 524.3666293190432,
+          "gain": 1245.7330171977987,
+          "last": -9.070115678246896,
+          "minimum": -0.2213969145028205,
+          "peak": 1256.5620763689346,
+          "tail": -10.829059171135023
+        }
+      },
+      "regime": "switched",
+      "sample": {
+        "harm": {
+          "candidate": -2.989481291007649,
+          "cold": -6.542393669089767,
+          "fast": -2.9989151275770443,
+          "long_mass": 0.9998944425407414,
+          "matched": 2,
+          "short_mass": 0.0,
+          "split": -6.542393669089767,
+          "split_minus_fast": -3.543478541512723,
+          "t": 8197,
+          "truth": 193
+        },
+        "help": {
+          "candidate": -1.22912697997677,
+          "cold": -5.266240311041268,
+          "fast": -5.085099959600386,
+          "long_mass": 0.9255437574637638,
+          "matched": 3,
+          "short_mass": 0.0,
+          "split": -1.3337016764321765,
+          "split_minus_fast": 3.75139828316821,
+          "t": 8264,
+          "truth": 192
+        }
+      },
+      "source_sha256": "3ad60204554f4e851eb4f104c8a93fe661968cd2650d82635aa3936b27b92ce8",
+      "split_sha256": "b485ce3bd798dac1649bdc60cdd856f81cf6fda46e57d0922207f6169510b640",
+      "world": 235
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "8e1a3e15a73b8f9e4e29f8ef8b53a53be3d002ba4ddd5ddb25f6c0537b0deb69",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 188,
+          "drawdown": 8.14792104461867,
+          "early": 575.9715162060993,
+          "gain": 2069.19292725648,
+          "last": -1.398931622301622,
+          "minimum": -0.4830387638081213,
+          "peak": 2070.3405439893754,
+          "tail": 787.0889929257552
+        },
+        "h8l4": {
+          "activation": 188,
+          "drawdown": 7.9811858011069035,
+          "early": 579.597278734048,
+          "gain": 2084.7778190549957,
+          "last": -1.398526125792145,
+          "minimum": -0.4830387638081213,
+          "peak": 2085.919955636157,
+          "tail": 795.253718202117
+        },
+        "selfnorm": {
+          "activation": 188,
+          "drawdown": 9.27857718458472,
+          "early": 576.2372384960781,
+          "gain": 2060.8702865382884,
+          "last": -1.4013152402782056,
+          "minimum": -0.4830387638081213,
+          "peak": 2062.0050541465725,
+          "tail": 780.5048136226607
+        },
+        "slow": {
+          "activation": 188,
+          "drawdown": 13.173698760419711,
+          "early": 581.3688389697991,
+          "gain": 2091.6465787582774,
+          "last": -1.3976050251358227,
+          "minimum": -0.4830387638081213,
+          "peak": 2092.795482734204,
+          "tail": 798.4390584760263
+        },
+        "split": {
+          "activation": 188,
+          "drawdown": 11.480986169400012,
+          "early": 524.3666293190432,
+          "gain": 2256.605754634063,
+          "last": -1.3975969056530813,
+          "minimum": -0.2213969145028205,
+          "peak": 2256.7652889831656,
+          "tail": 1000.043678265132
+        }
+      },
+      "regime": "moved_mid",
+      "sample": {
+        "harm": {
+          "candidate": -11.848807320060589,
+          "cold": -5.666675370814602,
+          "fast": -5.667348127030059,
+          "long_mass": 0.9993602540953173,
+          "matched": 3,
+          "short_mass": 0.0,
+          "split": -11.784181927623418,
+          "split_minus_fast": -6.116833800593359,
+          "t": 15919,
+          "truth": 87
+        },
+        "help": {
+          "candidate": -13.662245247664687,
+          "cold": -5.0592413930478335,
+          "fast": -11.872645353332079,
+          "long_mass": 0.9999022312182504,
+          "matched": 2,
+          "short_mass": 0.0,
+          "split": -5.0592413930478335,
+          "split_minus_fast": 6.813403960284245,
+          "t": 14860,
+          "truth": 56
+        }
+      },
+      "source_sha256": "61a985c7c7f0845743c6cb6e76b670cc9f6a18053526c8a9aa9685cd29e5965d",
+      "split_sha256": "a6701d0c169327c137919f6a35d00cbaacd98f9e079ace0b7c5f06d3e34d5891",
+      "world": 235
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "840c62559e56119957aaed83716ea574a870b045ac9768e9daa0b7e0fd12f9ff",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -6.226919115042485,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -6.226919115042485,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -6.226919115042485,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -6.226919115042485,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -6.226919115042485,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "regime": "unrelated",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "4ab0fd6b7050a02e492a7f80a77a12c2c1cc53b64614cc5bc10ad043e0e96236",
+      "split_sha256": "791d1f8e8de4d1271f99dbc04e9a96e75dc0cc0447ee1bc349d5964e5e75933b",
+      "world": 235
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "fd7636544b00d64ea2fd521fae44ed6d3b539d4231f10788641b6990b505296f",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 106,
+          "drawdown": 8.144794151876908,
+          "early": 373.979340495865,
+          "gain": 2540.355896724953,
+          "last": -3.1849133988133795,
+          "minimum": 0.0,
+          "peak": 2543.2593764566254,
+          "tail": 1603.7707612822899
+        },
+        "h8l4": {
+          "activation": 106,
+          "drawdown": 7.977591186943592,
+          "early": 377.77830009348503,
+          "gain": 2555.5213041244106,
+          "last": -3.200789195721372,
+          "minimum": 0.0,
+          "peak": 2558.4542385952,
+          "tail": 1610.9712810443723
+        },
+        "selfnorm": {
+          "activation": 106,
+          "drawdown": 10.643434203623656,
+          "early": 368.2258977243351,
+          "gain": 2511.4653842193966,
+          "last": -3.199464102297941,
+          "minimum": 0.0,
+          "peak": 2514.400549124048,
+          "tail": 1591.0880810203964
+        },
+        "slow": {
+          "activation": 106,
+          "drawdown": 11.811693121389709,
+          "early": 379.4281756025961,
+          "gain": 2562.8593278953354,
+          "last": -3.21837843391012,
+          "minimum": 0.0,
+          "peak": 2565.82941083988,
+          "tail": 1615.070924683394
+        },
+        "split": {
+          "activation": 106,
+          "drawdown": 8.74440252007571,
+          "early": 451.7884062608401,
+          "gain": 1853.7114357318999,
+          "last": -2.4427653102785083,
+          "minimum": 0.0,
+          "peak": 1853.7213028808162,
+          "tail": 1006.0922384872947
+        }
+      },
+      "regime": "recombined",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "f644385f3eb11ed5c923b56eaa0f699027f4eb949dbc76ce7697a2d19d0febd7",
+      "split_sha256": "d594c1c6efebf102d08e20f2602dc883fd43d0f2a559e82e5a705ec8bf956678",
+      "world": 236
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "ba3466c1e0b095ca1a753dd805444eda067ba90910a48a6b36f3a4fe95c1e596",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 106,
+          "drawdown": 7.407809747878616,
+          "early": 373.979340495865,
+          "gain": 953.6535430036007,
+          "last": -6.3855640511663045,
+          "minimum": 0.0,
+          "peak": 960.4497389544749,
+          "tail": 17.068407560937132
+        },
+        "h8l4": {
+          "activation": 106,
+          "drawdown": 7.977591186943592,
+          "early": 377.77830009348503,
+          "gain": 960.860899986941,
+          "last": -6.3855640511663045,
+          "minimum": 0.0,
+          "peak": 968.8201877351113,
+          "tail": 16.310876906904582
+        },
+        "selfnorm": {
+          "activation": 106,
+          "drawdown": 7.480124528838644,
+          "early": 368.2258977243351,
+          "gain": 939.5104040490075,
+          "last": -6.3855640511663045,
+          "minimum": 0.0,
+          "peak": 943.2904499789815,
+          "tail": 19.1331008499944
+        },
+        "slow": {
+          "activation": 106,
+          "drawdown": 12.863846403726143,
+          "early": 379.4281756025961,
+          "gain": 959.3104503873277,
+          "last": -6.3855640511663045,
+          "minimum": 0.0,
+          "peak": 972.1522717210494,
+          "tail": 11.522047175400484
+        },
+        "split": {
+          "activation": 106,
+          "drawdown": 11.235349509852654,
+          "early": 451.7884062608401,
+          "gain": 836.3849544540074,
+          "last": -6.3855640511663045,
+          "minimum": 0.0,
+          "peak": 847.6191972446065,
+          "tail": -11.234242790599193
+        }
+      },
+      "regime": "switched",
+      "sample": {
+        "harm": {
+          "candidate": -1.7280888345268615,
+          "cold": -5.135772005109587,
+          "fast": -1.7344906995768499,
+          "long_mass": 0.9944793271351178,
+          "matched": 2,
+          "short_mass": 1.594354900692672e-224,
+          "split": -5.135772005109587,
+          "split_minus_fast": -3.401281305532737,
+          "t": 8237,
+          "truth": 178
+        },
+        "help": {
+          "candidate": -5.359582593785145,
+          "cold": -1.7526737998246364,
+          "fast": -5.023534670539301,
+          "long_mass": 0.9839946729350325,
+          "matched": 2,
+          "short_mass": 7.39963768464068e-219,
+          "split": -1.7526737998246364,
+          "split_minus_fast": 3.2708608707146647,
+          "t": 8305,
+          "truth": 34
+        }
+      },
+      "source_sha256": "38ff19a8abb513a1fa1d7789e137c30b291e31bf7d65ca8f67ee6131254a4e6c",
+      "split_sha256": "95a02bc79f7b0aacc5d92b8f81731a5b5c0b9e8432bdc8af7298e457afde3c82",
+      "world": 236
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "9f8559bc8e1157b220480c7fea82d94a4dba27121061a543032b28c882acc718",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 106,
+          "drawdown": 8.623415128160104,
+          "early": 373.979340495865,
+          "gain": 1160.552128108412,
+          "last": -2.298539611974036,
+          "minimum": 0.0,
+          "peak": 1166.5457380534272,
+          "tail": 223.96699266574885
+        },
+        "h8l4": {
+          "activation": 106,
+          "drawdown": 7.999540861342439,
+          "early": 377.77830009348503,
+          "gain": 1173.1537674141266,
+          "last": -2.298539611974036,
+          "minimum": 0.0,
+          "peak": 1181.1012768868504,
+          "tail": 228.60374433409115
+        },
+        "selfnorm": {
+          "activation": 106,
+          "drawdown": 9.527365476287287,
+          "early": 368.2258977243351,
+          "gain": 1141.846019446253,
+          "last": -2.298539611974036,
+          "minimum": 0.0,
+          "peak": 1147.1336958199684,
+          "tail": 221.4687162472416
+        },
+        "slow": {
+          "activation": 106,
+          "drawdown": 14.6229048499697,
+          "early": 379.4281756025961,
+          "gain": 1175.8074951092206,
+          "last": -2.298539611974036,
+          "minimum": 0.0,
+          "peak": 1187.792665649713,
+          "tail": 228.0190918972882
+        },
+        "split": {
+          "activation": 106,
+          "drawdown": 11.808143535919498,
+          "early": 451.7884062608401,
+          "gain": 1475.2495068494877,
+          "last": -2.298539611974036,
+          "minimum": 0.0,
+          "peak": 1475.2495068494877,
+          "tail": 627.6303096048796
+        }
+      },
+      "regime": "moved_mid",
+      "sample": {
+        "harm": {
+          "candidate": -7.122978333845959,
+          "cold": -1.644483060602525,
+          "fast": -1.644532136486213,
+          "long_mass": 0.9997816210353173,
+          "matched": 6,
+          "short_mass": 5.6186583511433034e-306,
+          "split": -7.1093115473575965,
+          "split_minus_fast": -5.464779410871383,
+          "t": 9606,
+          "truth": 35
+        },
+        "help": {
+          "candidate": -15.700713277532914,
+          "cold": -7.253430790150946,
+          "fast": -14.951654358321704,
+          "long_mass": 0.9998732622077526,
+          "matched": 1,
+          "short_mass": 0.0,
+          "split": -7.253430790150946,
+          "split_minus_fast": 7.698223568170758,
+          "t": 13089,
+          "truth": 8
+        }
+      },
+      "source_sha256": "a6f5d2e5fe847f7914e37447459373e87f6de533e782c69a6dfe977f34c37b39",
+      "split_sha256": "4bb0b7ccd2784b3e7aa2b83c0181a3c17a58c5bfbd99cd822c01a0e8b764abfd",
+      "world": 236
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "62cbde211eb2b27429f9e6f70626f1e4532a96a6d48a0cca264e02f4df7d1087",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -8.853660115213069,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -8.853660115213069,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -8.853660115213069,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -8.853660115213069,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -8.853660115213069,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "regime": "unrelated",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "a49999099d99e68464f4a9416f53384400f59aa1c08b8253e34babe5724e10c1",
+      "split_sha256": "bae94e77f453263f5f0c9638a99b4b0c98d19efc48932055ed0b229bda96cab2",
+      "world": 236
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "872beaa1df9d80f5ed3ea4407c87bc112ca869aa81280ff5d9a69cb808ba9299",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 150,
+          "drawdown": 8.086587826427149,
+          "early": 667.4517126995997,
+          "gain": 3804.8412860662984,
+          "last": -3.3807821155055624,
+          "minimum": 0.0,
+          "peak": 3806.780924035766,
+          "tail": 2170.610470101677
+        },
+        "h8l4": {
+          "activation": 150,
+          "drawdown": 7.946389902629221,
+          "early": 670.3066810254118,
+          "gain": 3816.6319856659916,
+          "last": -3.37105250525507,
+          "minimum": 0.0,
+          "peak": 3818.5822627259404,
+          "tail": 2176.32800813384
+        },
+        "selfnorm": {
+          "activation": 150,
+          "drawdown": 8.103000354741994,
+          "early": 664.8734389563348,
+          "gain": 3792.888408767117,
+          "last": -3.3732271730045538,
+          "minimum": 0.0,
+          "peak": 3794.8395192133194,
+          "tail": 2164.835299972309
+        },
+        "slow": {
+          "activation": 150,
+          "drawdown": 12.283320815096516,
+          "early": 672.9192452634926,
+          "gain": 3827.3222107436327,
+          "last": -3.3614645972446935,
+          "minimum": 0.0,
+          "peak": 3829.2882652732033,
+          "tail": 2181.975737002455
+        },
+        "split": {
+          "activation": 150,
+          "drawdown": 11.782830963622928,
+          "early": 350.7523670394756,
+          "gain": 1914.6827489472678,
+          "last": -3.8999778555661533,
+          "minimum": 0.0,
+          "peak": 1916.868783989346,
+          "tail": 1082.9717690202986
+        }
+      },
+      "regime": "recombined",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "98efca8ab74c1f09badd58307d2a01691444d8c9797a632b95f18c4902306f4b",
+      "split_sha256": "15575c97f6fe82de962aa96333a59a7ce3c97f015c1444868c308cbb526c42fc",
+      "world": 237
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "b7562d14dca7f5fb9f5301d46784b4ceb967de149cfea8635617f7a69f0e5970",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 150,
+          "drawdown": 9.172030814468371,
+          "early": 667.4517126995997,
+          "gain": 1645.9847626662274,
+          "last": -3.4920404642402874,
+          "minimum": 0.0,
+          "peak": 1655.156793477302,
+          "tail": 11.753946701603109
+        },
+        "h8l4": {
+          "activation": 150,
+          "drawdown": 8.001423408398523,
+          "early": 670.3066810254118,
+          "gain": 1653.3853212621793,
+          "last": -3.4920404642402874,
+          "minimum": 0.0,
+          "peak": 1661.3867446705774,
+          "tail": 13.081343730028514
+        },
+        "selfnorm": {
+          "activation": 150,
+          "drawdown": 8.103000354741994,
+          "early": 664.8734389563348,
+          "gain": 1642.1055600177287,
+          "last": -3.4920404642402874,
+          "minimum": 0.0,
+          "peak": 1648.4550748167158,
+          "tail": 14.052451222910623
+        },
+        "slow": {
+          "activation": 150,
+          "drawdown": 15.170266100573144,
+          "early": 672.9192452634926,
+          "gain": 1651.3449217781879,
+          "last": -3.4920404642402874,
+          "minimum": 0.0,
+          "peak": 1666.5151878787583,
+          "tail": 5.998448037008824
+        },
+        "split": {
+          "activation": 150,
+          "drawdown": 14.922533383057953,
+          "early": 350.7523670394756,
+          "gain": 837.8295866626593,
+          "last": -3.4920404642402874,
+          "minimum": 0.0,
+          "peak": 852.7503711581646,
+          "tail": 6.118606735691651
+        }
+      },
+      "regime": "switched",
+      "sample": {
+        "harm": {
+          "candidate": -1.8887619698174702,
+          "cold": -6.175581312097035,
+          "fast": -1.9197249834383383,
+          "long_mass": 9.523076029717011e-13,
+          "matched": 3,
+          "short_mass": 0.9995343035301568,
+          "split": -6.175581312071591,
+          "split_minus_fast": -4.255856328633253,
+          "t": 8327,
+          "truth": 209
+        },
+        "help": {
+          "candidate": -5.532164623515493,
+          "cold": -0.8824927016129808,
+          "fast": -5.28029578069026,
+          "long_mass": 8.255894895743002e-12,
+          "matched": 4,
+          "short_mass": 0.9999068765632352,
+          "split": -0.882492701624417,
+          "split_minus_fast": 4.3978030790658424,
+          "t": 8276,
+          "truth": 57
+        }
+      },
+      "source_sha256": "04a1869a4de2f426318f06ea78c6ff3863c20b08d3f64ba7526f17f813d10d30",
+      "split_sha256": "6c9379c7db05cbd17653f3ce0826d0bd1b520e549362a1e21f8d4f6e2a6bf44e",
+      "world": 237
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "4348de5dce12de93e3b94040d0dced0ca3dce0b585a85cac95bab363725675f0",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 150,
+          "drawdown": 8.134776162214848,
+          "early": 667.4517126995997,
+          "gain": 2830.1351859271585,
+          "last": -3.4576562218801543,
+          "minimum": 0.0,
+          "peak": 2835.2623450655365,
+          "tail": 1195.9043699625317
+        },
+        "h8l4": {
+          "activation": 150,
+          "drawdown": 7.985953434765861,
+          "early": 670.3066810254118,
+          "gain": 2843.4060054684146,
+          "last": -3.4056765575795303,
+          "minimum": 0.0,
+          "peak": 2848.60006071693,
+          "tail": 1203.1020279362722
+        },
+        "selfnorm": {
+          "activation": 150,
+          "drawdown": 10.202587896024397,
+          "early": 664.8734389563348,
+          "gain": 2809.7133771011304,
+          "last": -3.5925611494279344,
+          "minimum": 0.0,
+          "peak": 2814.5513970286993,
+          "tail": 1181.6602683063127
+        },
+        "slow": {
+          "activation": 150,
+          "drawdown": 13.364262818538236,
+          "early": 672.9192452634926,
+          "gain": 2852.3533488783296,
+          "last": -3.2536637900219145,
+          "minimum": 0.0,
+          "peak": 2857.7592067041624,
+          "tail": 1207.0068751371496
+        },
+        "split": {
+          "activation": 150,
+          "drawdown": 12.01405497398855,
+          "early": 350.7523670394756,
+          "gain": 1448.3226530517045,
+          "last": -3.2510557734697043,
+          "minimum": 0.0,
+          "peak": 1450.5702212927958,
+          "tail": 616.6116731247399
+        }
+      },
+      "regime": "moved_mid",
+      "sample": {
+        "harm": {
+          "candidate": -3.025840735414119,
+          "cold": -8.309157955572736,
+          "fast": -3.11665038942346,
+          "long_mass": 0.996572870878162,
+          "matched": 2,
+          "short_mass": 4.574845004633723e-13,
+          "split": -8.309157955547693,
+          "split_minus_fast": -5.192507566124233,
+          "t": 9580,
+          "truth": 96
+        },
+        "help": {
+          "candidate": -18.192321715082347,
+          "cold": -9.200938437898106,
+          "fast": -16.010071963784583,
+          "long_mass": 0.9996101475883968,
+          "matched": 1,
+          "short_mass": 6.308072748714368e-07,
+          "split": -9.200939346172806,
+          "split_minus_fast": 6.809132617611777,
+          "t": 10227,
+          "truth": 121
+        }
+      },
+      "source_sha256": "7ea88248e335cac95df4a8e12508c7018db39b19963a94299a7cc71ff74c1c22",
+      "split_sha256": "04ab023dac7f64d8577e3a7c2c7fb7df91de6b62ac1626595d2f14b98525b3b5",
+      "world": 237
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "61b2b604aa558ce545b7344544a13146f8f77200c15c21e842254725cc622df0",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.598984461520105,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.598984461520105,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.598984461520105,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.598984461520105,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.598984461520105,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "regime": "unrelated",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "0f652d3bc1ae796c6c439950beb1ac6fb156156622d8e3241f37438ca017da95",
+      "split_sha256": "de30a2e3beaf32df5e427f05cafae2f0e4e2c15d1b7be74dff337fa980b4a407",
+      "world": 237
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "e3011ea5cbf2f34a611ca3db8bae0546d55d96c542b4d4c6a806fce2964b12cf",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 111,
+          "drawdown": 8.198997203843874,
+          "early": 57.26919550858567,
+          "gain": 1794.6638887711756,
+          "last": -1.4517564392432156,
+          "minimum": -0.939738381124255,
+          "peak": 1794.6638887711756,
+          "tail": 1224.105289929199
+        },
+        "h8l4": {
+          "activation": 111,
+          "drawdown": 7.991948790527886,
+          "early": 57.846343657724134,
+          "gain": 1810.2831147037411,
+          "last": -1.4427000458714607,
+          "minimum": -0.9633507393305649,
+          "peak": 1810.2831147037411,
+          "tail": 1232.2719498766257
+        },
+        "selfnorm": {
+          "activation": 111,
+          "drawdown": 9.343240277647737,
+          "early": 58.64117066323055,
+          "gain": 1766.7366123989898,
+          "last": -1.5057727526768598,
+          "minimum": -0.9633507393305649,
+          "peak": 1766.7366123989898,
+          "tail": 1204.000643689864
+        },
+        "slow": {
+          "activation": 111,
+          "drawdown": 13.51346468013594,
+          "early": 58.34885483588344,
+          "gain": 1817.2296599207818,
+          "last": -1.4372104211998984,
+          "minimum": -0.970185274060289,
+          "peak": 1817.2296599207818,
+          "tail": 1235.5029068129886
+        },
+        "split": {
+          "activation": 111,
+          "drawdown": 10.910976473985556,
+          "early": 396.5164472533337,
+          "gain": 3102.1187845489217,
+          "last": -2.5551970012978504,
+          "minimum": -0.218406576371017,
+          "peak": 3105.092419566579,
+          "tail": 1851.957547857561
+        }
+      },
+      "regime": "recombined",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "45cfc1c0d2113376dbbdaf374d4178a743f63fc8f4014b48e841177ede6659f3",
+      "split_sha256": "9d9868b61bf8b1a88cc40b2dfe530078a662bce0d10cbe9ceb47b5be9322a427",
+      "world": 238
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "270cad9cae090ed1328caf252971f0dfc28d65d29a2c913365be0c219b0b4d52",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 111,
+          "drawdown": 6.821702834256712,
+          "early": 57.26919550858567,
+          "gain": 657.7138390975929,
+          "last": -2.9826920742178404,
+          "minimum": -0.939738381124255,
+          "peak": 663.5418178908538,
+          "tail": 87.15524025562834
+        },
+        "h8l4": {
+          "activation": 111,
+          "drawdown": 7.941978097274017,
+          "early": 57.846343657724134,
+          "gain": 664.6373701983638,
+          "last": -2.9826920742178404,
+          "minimum": -0.9633507393305649,
+          "peak": 672.5511992738211,
+          "tail": 86.62620537125167
+        },
+        "selfnorm": {
+          "activation": 111,
+          "drawdown": 6.8474961734382305,
+          "early": 58.64117066323055,
+          "gain": 650.7332234819487,
+          "last": -2.9826920742178404,
+          "minimum": -0.9633507393305649,
+          "peak": 654.2250158390807,
+          "tail": 87.9972547728264
+        },
+        "slow": {
+          "activation": 111,
+          "drawdown": 12.321655203343425,
+          "early": 58.34885483588344,
+          "gain": 665.0211160402223,
+          "last": -2.9826920742178404,
+          "minimum": -0.970185274060289,
+          "peak": 676.8418287472025,
+          "tail": 83.29436293242777
+        },
+        "split": {
+          "activation": 111,
+          "drawdown": 10.56018020890906,
+          "early": 396.5164472533337,
+          "gain": 1239.8646062923694,
+          "last": -2.9826920742178404,
+          "minimum": -0.218406576371017,
+          "peak": 1250.1612366913494,
+          "tail": -10.296630398980497
+        }
+      },
+      "regime": "switched",
+      "sample": {
+        "harm": {
+          "candidate": -2.554407997560873,
+          "cold": -5.96034535419444,
+          "fast": -2.7021413689675255,
+          "long_mass": 0.958828453854234,
+          "matched": 1,
+          "short_mass": 0.0,
+          "split": -5.96034535419444,
+          "split_minus_fast": -3.2582039852269147,
+          "t": 8220,
+          "truth": 124
+        },
+        "help": {
+          "candidate": -6.237681958727321,
+          "cold": -2.5128631236707193,
+          "fast": -6.086475357599241,
+          "long_mass": 0.07939808377852273,
+          "matched": 3,
+          "short_mass": 0.0,
+          "split": -2.622833448955022,
+          "split_minus_fast": 3.463641908644219,
+          "t": 9250,
+          "truth": 144
+        }
+      },
+      "source_sha256": "85a81150fba81a7eb1ef9c76b2d73cc229ae74b5a511d0cb7d879d38df7f8cf4",
+      "split_sha256": "83baa266e650d2afbd6d7db2a7a568e3b4fe50adea8cba33863a3793072de195",
+      "world": 238
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "d0c8740cf3e29c672172703a4bd075d4d0f2ab71e7972683e8210374d9c2807d",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 111,
+          "drawdown": 7.101378329231011,
+          "early": 57.26919550858567,
+          "gain": 589.2479963563684,
+          "last": -1.9618260117378865,
+          "minimum": -0.939738381124255,
+          "peak": 593.7195816579105,
+          "tail": 18.689397514405208
+        },
+        "h8l4": {
+          "activation": 111,
+          "drawdown": 7.991204639947682,
+          "early": 57.846343657724134,
+          "gain": 603.450427784276,
+          "last": -1.7170594237085393,
+          "minimum": -0.9633507393305649,
+          "peak": 608.20401415731,
+          "tail": 25.439262957163297
+        },
+        "selfnorm": {
+          "activation": 111,
+          "drawdown": 7.451044176249525,
+          "early": 58.64117066323055,
+          "gain": 587.6273077302819,
+          "last": -2.2427969319193224,
+          "minimum": -0.9633507393305649,
+          "peak": 591.5133974144874,
+          "tail": 24.89133902115765
+        },
+        "slow": {
+          "activation": 111,
+          "drawdown": 13.097191787107135,
+          "early": 58.34885483588344,
+          "gain": 611.3244780889692,
+          "last": -1.5537806704980852,
+          "minimum": -0.970185274060289,
+          "peak": 616.203576820957,
+          "tail": 29.59772498117617
+        },
+        "split": {
+          "activation": 111,
+          "drawdown": 11.62978465414949,
+          "early": 396.5164472533337,
+          "gain": 2249.050262208295,
+          "last": -2.6328330685983357,
+          "minimum": -0.218406576371017,
+          "peak": 2254.4209788591447,
+          "tail": 998.8890255169497
+        }
+      },
+      "regime": "moved_mid",
+      "sample": {
+        "harm": {
+          "candidate": -11.826502880885212,
+          "cold": -3.4285051757856237,
+          "fast": -3.4285051757856237,
+          "long_mass": 0.9997545355177329,
+          "matched": 4,
+          "short_mass": 0.0,
+          "split": -11.712061261059597,
+          "split_minus_fast": -8.283556085273974,
+          "t": 11861,
+          "truth": 87
+        },
+        "help": {
+          "candidate": -2.9482221637228267,
+          "cold": -7.930667930266109,
+          "fast": -7.930667930266109,
+          "long_mass": 0.9998782057868475,
+          "matched": 5,
+          "short_mass": 0.0,
+          "split": -2.9483923274471735,
+          "split_minus_fast": 4.982275602818936,
+          "t": 9825,
+          "truth": 17
+        }
+      },
+      "source_sha256": "33391d0970fe20c230d3cfa1ed475d6892b9f5e7d52b41a445fcda8549288478",
+      "split_sha256": "cc9b2bade032454cce0e9e7ac1beb8fb86ee231545774e83c650b283e09cfcf3",
+      "world": 238
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "78cdaeeb5df474e99f9a2abccdc48ace902e89999dce7bb58c21bf919db15cb5",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.520105505838548,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.520105505838548,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.520105505838548,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.520105505838548,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -2.520105505838548,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "regime": "unrelated",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "950b6c65a2bd6bb30f1c081a4be453fa852dd87292dedc637e74f4da0a27c35d",
+      "split_sha256": "0ebaf841d3a216278309c6712f9e1285dd60ceb59eb591e19e440312195830d9",
+      "world": 238
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "f8a67c45bcfa21a6fd694b852988f15ff34a86c99a50272f365c5edcd5b6fa6f",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 108,
+          "drawdown": 7.5708559729255285,
+          "early": 828.9374270579553,
+          "gain": 4464.509512264198,
+          "last": -2.217152809084407,
+          "minimum": 0.0,
+          "peak": 4470.768957113276,
+          "tail": 2514.385608376323
+        },
+        "h8l4": {
+          "activation": 108,
+          "drawdown": 7.800560914408038,
+          "early": 832.5172150596936,
+          "gain": 4476.021806949371,
+          "last": -2.1331181251963516,
+          "minimum": 0.0,
+          "peak": 4482.323619511963,
+          "tail": 2519.3712837477074
+        },
+        "selfnorm": {
+          "activation": 108,
+          "drawdown": 10.479260839602375,
+          "early": 829.4228008952774,
+          "gain": 4474.141187684076,
+          "last": -1.459637678811558,
+          "minimum": 0.0,
+          "peak": 4480.837367494337,
+          "tail": 2520.3516727451497
+        },
+        "slow": {
+          "activation": 108,
+          "drawdown": 10.56356817563801,
+          "early": 834.4620125930861,
+          "gain": 4486.49245120169,
+          "last": -1.095957933487902,
+          "minimum": 0.0,
+          "peak": 4493.312405141778,
+          "tail": 2525.158866736474
+        },
+        "split": {
+          "activation": 108,
+          "drawdown": 10.60314987480001,
+          "early": 762.6874290325898,
+          "gain": 4091.1199054666276,
+          "last": -1.055533790398945,
+          "minimum": 0.0,
+          "peak": 4091.1199054666276,
+          "tail": 2283.2362569288293
+        }
+      },
+      "regime": "recombined",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "49f4074b1418aeaec7b6d16dac92fca97963e6dea7602fcd31d38554561fdc9f",
+      "split_sha256": "55b8a2c721e253e0a2963eb2782e16c4c1b97d98ee45a3db69f1b5ff2bd2b611",
+      "world": 239
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "a2509ca68d0d7d9db6cc7cb63a3c92b9eabd513eb8b877fcefa188102c901055",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 108,
+          "drawdown": 7.344704304261256,
+          "early": 828.9374270579553,
+          "gain": 1946.464215149886,
+          "last": -3.007953585349406,
+          "minimum": 0.0,
+          "peak": 1953.4044390529757,
+          "tail": -3.6596887379760545
+        },
+        "h8l4": {
+          "activation": 108,
+          "drawdown": 7.99953213218123,
+          "early": 832.5172150596936,
+          "gain": 1952.0189421266284,
+          "last": -3.007953585349406,
+          "minimum": 0.0,
+          "peak": 1960.0183763744183,
+          "tail": -4.631581075039245
+        },
+        "selfnorm": {
+          "activation": 108,
+          "drawdown": 10.479260839602375,
+          "early": 829.4228008952774,
+          "gain": 1949.3981490674003,
+          "last": -3.007953585349406,
+          "minimum": 0.0,
+          "peak": 1957.127297346176,
+          "tail": -4.391365871509004
+        },
+        "slow": {
+          "activation": 108,
+          "drawdown": 12.944481100083749,
+          "early": 834.4620125930861,
+          "gain": 1951.7666975656143,
+          "last": -3.007953585349406,
+          "minimum": 0.0,
+          "peak": 1964.711178665698,
+          "tail": -9.566886899616945
+        },
+        "split": {
+          "activation": 108,
+          "drawdown": 12.566643232206843,
+          "early": 762.6874290325898,
+          "gain": 1801.326962725723,
+          "last": -3.007953585349406,
+          "minimum": 0.0,
+          "peak": 1813.8936059579294,
+          "tail": -6.556685812085236
+        }
+      },
+      "regime": "switched",
+      "sample": {
+        "harm": {
+          "candidate": -7.085374027947999,
+          "cold": -1.8745075470501753,
+          "fast": -1.8792647228649353,
+          "long_mass": 0.9947979570011017,
+          "matched": 3,
+          "short_mass": 0.0,
+          "split": -6.837492475478935,
+          "split_minus_fast": -4.9582277526139995,
+          "t": 8342,
+          "truth": 47
+        },
+        "help": {
+          "candidate": -5.343166157807145,
+          "cold": -3.4163822630432934,
+          "fast": -5.229266837345226,
+          "long_mass": 0.9993246329296845,
+          "matched": 2,
+          "short_mass": 0.0,
+          "split": -3.4163822630432934,
+          "split_minus_fast": 1.8128845743019326,
+          "t": 8196,
+          "truth": 47
+        }
+      },
+      "source_sha256": "75d6dfaeef96e446bf0d918fda63e33a5a79c0a7c13c7ee3c0f78656d72bdd45",
+      "split_sha256": "632f73370ddb2b2123313a8a8f41a43067121f40e50c4643610f3cfd7ca4caf8",
+      "world": 239
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "24cacf28c9f393d2fb99825b1642f3edc8b3b2bea6e6b4f976da4dd8c69d7d3c",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": 108,
+          "drawdown": 8.364863228271588,
+          "early": 828.9374270579553,
+          "gain": 3425.825567472844,
+          "last": -1.1252472413359316,
+          "minimum": 0.0,
+          "peak": 3426.247223093315,
+          "tail": 1475.7016635849784
+        },
+        "h8l4": {
+          "activation": 108,
+          "drawdown": 7.993215481486004,
+          "early": 832.5172150596936,
+          "gain": 3439.8895875254634,
+          "last": -1.1043339968788173,
+          "minimum": 0.0,
+          "peak": 3440.237208560444,
+          "tail": 1483.239064323799
+        },
+        "selfnorm": {
+          "activation": 108,
+          "drawdown": 10.479260839602375,
+          "early": 829.4228008952774,
+          "gain": 3429.45737078068,
+          "last": -1.1753302230175167,
+          "minimum": 0.0,
+          "peak": 3429.8882046565914,
+          "tail": 1475.6678558417716
+        },
+        "slow": {
+          "activation": 108,
+          "drawdown": 12.609697049344959,
+          "early": 834.4620125930861,
+          "gain": 3448.395511440009,
+          "last": -1.0767108380410022,
+          "minimum": 0.0,
+          "peak": 3448.744648966531,
+          "tail": 1487.0619269747679
+        },
+        "split": {
+          "activation": 108,
+          "drawdown": 12.612695135116155,
+          "early": 762.6874290325898,
+          "gain": 3199.866682541511,
+          "last": -1.0766708365630429,
+          "minimum": 0.0,
+          "peak": 3199.866682541511,
+          "tail": 1391.9830340037092
+        }
+      },
+      "regime": "moved_mid",
+      "sample": {
+        "harm": {
+          "candidate": -1.4436380965442273,
+          "cold": -5.402558618348671,
+          "fast": -1.4687988168415957,
+          "long_mass": 0.999706963141246,
+          "matched": 2,
+          "short_mass": 0.0,
+          "split": -5.402558618348671,
+          "split_minus_fast": -3.933759801507075,
+          "t": 14494,
+          "truth": 106
+        },
+        "help": {
+          "candidate": -14.409859255898253,
+          "cold": -8.15181866279736,
+          "fast": -11.865176510735399,
+          "long_mass": 0.9984202961140171,
+          "matched": 2,
+          "short_mass": 0.0,
+          "split": -8.15181866279736,
+          "split_minus_fast": 3.7133578479380382,
+          "t": 10493,
+          "truth": 15
+        }
+      },
+      "source_sha256": "7fcf3d7f2cb0fdd60211c83a391b0175b9f7932ad977417e4e69ec560c8454fc",
+      "split_sha256": "41a1d7c1d0a10e5695038b9cab4a995de459a24250f65824da464c0f67988cb8",
+      "world": 239
+    },
+    {
+      "archive_bytes": 528,
+      "controls_sha256": "39aa5a3ae09d2003949a8707bdac4077d6efaa8d2f0c8c3efbf31222fb4b0ece",
+      "exact": {
+        "admission": true,
+        "equal_price": true,
+        "inactive": true,
+        "normalized": true,
+        "protected_new": true
+      },
+      "policies": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -3.1224285222212806,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -3.1224285222212806,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -3.1224285222212806,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -3.1224285222212806,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "last": -3.1224285222212806,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "regime": "unrelated",
+      "sample": {
+        "harm": null,
+        "help": null
+      },
+      "source_sha256": "8379cadfdfc0faff7feccb1cf01d0558b87fde3ca9ca6294f86a1a02f3ff3008",
+      "split_sha256": "5807e455960b4cb3f41207e223220125b6c622b43cd5694904ee53dfeb043ca9",
+      "world": 239
+    }
+  ],
+  "metrics": {
+    "intact_early_retention": 0.9030402093690806,
+    "intact_full_retention": 0.8570146167169074,
+    "law_full_vs_fast": [
+      -92.05077494562079,
+      -230.96727633090472,
+      -543.8590376708289,
+      -34.97832095963736,
+      -117.26858854959335,
+      -808.1551760035682,
+      582.1507671947766,
+      -145.13725242416308
+    ],
+    "law_tail_vs_fast": [
+      -10.280656234946598,
+      -20.63735543967473,
+      -7.956989607066897,
+      -9.436462997846538,
+      -28.302650351536325,
+      -5.635339965911458,
+      -97.45187065460884,
+      -2.8969970741091817
+    ],
+    "moved_tail_vs_fast": [
+      -62.27188416093634,
+      -30.620334227276658,
+      -354.1295285016413,
+      212.95468533937685,
+      403.6633169391307,
+      -579.2926968377918,
+      980.1996280025445,
+      -83.71862958126917
+    ],
+    "moved_tail_vs_slow": [
+      -73.6357394790233,
+      -41.05640432192547,
+      -365.5127719062077,
+      201.60461978910575,
+      399.6112177075914,
+      -590.3952020124096,
+      969.2913005357735,
+      -95.07889297105862
+    ]
+  },
+  "namespace": "netta-split-evidence-v1",
+  "protocol_sha256": "39083d12af527e708f52f8fe1ad170e12e0780e673e36a31fe4be742aa436cdc",
+  "regimes": [
+    "recombined",
+    "switched",
+    "moved_mid",
+    "unrelated"
+  ],
+  "table": {
+    "moved_mid": {
+      "fast": {
+        "early": 562.0209506380503,
+        "gain": 2223.5862339396363,
+        "tail": 867.0074913746231
+      },
+      "h8l4": {
+        "early": 565.136622166579,
+        "gain": 2237.851690697031,
+        "tail": 874.1770852911217
+      },
+      "selfnorm": {
+        "early": 560.2761412007734,
+        "gain": 2213.593724940747,
+        "tail": 862.1402133274594
+      },
+      "slow": {
+        "early": 566.932924926634,
+        "gain": 2244.993233275506,
+        "tail": 877.2520450784095
+      },
+      "split": {
+        "early": 511.9632272239728,
+        "gain": 2133.475886390673,
+        "tail": 927.8555609961402
+      }
+    },
+    "recombined": {
+      "fast": {
+        "early": 562.0209506380503,
+        "gain": 3230.4585342729233,
+        "tail": 1873.8797917079075
+      },
+      "h8l4": {
+        "early": 565.136622166579,
+        "gain": 3244.1347460659495,
+        "tail": 1880.4601406600398
+      },
+      "selfnorm": {
+        "early": 560.2761412007734,
+        "gain": 3221.614732037033,
+        "tail": 1870.1612204237454
+      },
+      "slow": {
+        "early": 566.932924926634,
+        "gain": 3252.9114488953596,
+        "tail": 1885.170260698269
+      },
+      "split": {
+        "early": 511.9632272239728,
+        "gain": 2787.7926585890964,
+        "tail": 1582.1723331945607
+      }
+    },
+    "switched": {
+      "fast": {
+        "early": 562.0209506380503,
+        "gain": 1372.0042389240311,
+        "tail": 15.425496359016295
+      },
+      "h8l4": {
+        "early": 565.136622166579,
+        "gain": 1378.061228003256,
+        "tail": 14.386622597342447
+      },
+      "selfnorm": {
+        "early": 560.2761412007734,
+        "gain": 1366.8247001620728,
+        "tail": 15.371188548783739
+      },
+      "slow": {
+        "early": 566.932924926634,
+        "gain": 1377.5965419477122,
+        "tail": 9.855353750618953
+      },
+      "split": {
+        "early": 511.9632272239728,
+        "gain": 1198.2210314628387,
+        "tail": -7.399293931696277
+      }
+    },
+    "unrelated": {
+      "fast": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "h8l4": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "selfnorm": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "slow": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "split": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      }
+    }
+  },
+  "tests": {
+    "archive": true,
+    "bounds": true,
+    "exact": true,
+    "intact_early": false,
+    "intact_full": false,
+    "intact_worlds": true,
+    "law_tail_mean": false,
+    "law_tail_worlds": false,
+    "law_whole": false,
+    "moved_tail_mean": true,
+    "moved_tail_worlds": false,
+    "moved_vs_slow": true,
+    "unrelated_no_admission": true
+  },
+  "worlds": [
+    232,
+    233,
+    234,
+    235,
+    236,
+    237,
+    238,
+    239
+  ]
+}
