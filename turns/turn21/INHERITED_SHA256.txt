@@ -1,0 +1,46 @@
+# turn21 inherited files, sha256 as relied upon
+# repository: netta clone at git df083b5425137431f02941000256ef96348d1424, branch main
+# every value below is also pinned in turn21/FREEZE.json (sha256
+# e59c454e2352ff596aa621c98742911b92a78599423186d581bdeeb04a52891f)
+
+# --- frozen since turn13, the candidate/archive/P0 machinery ---
+8509ce692c394eaeea55bc1ce99596e246449a519f32bf0576de4e74dd6d5ad9  turns/turn13/episode.c
+003146d6e18d56dbb88b303489b801c688d20f475a9ab74bafb3a4d53a42c475  turns/turn13/experiment.py
+293d897e9f70a817015a2d72834f025713f85ad864668c293417a33fff8f951f  turns/turn13/verify.py
+598b5aa2301e48029b7d5c2ca89c9d67372b33df9497d8b14d0b0de646ee3d08  byte_recurrence/frontend.c
+cc84f37ba78962cbfb36abd6ecea07bbabd6fbd5ee2f8dd3755f998f07df804e  byte_recurrence/frontend.h
+1c14a567b30d376d515c22f6280872e98811956a691958057cfc7ef4b48739d3  portable_recurrence/recurrence.c
+282f79c3a90680a2bf6fa0b86624995d83a292c4edf5d33393c95d3d1b56b958  portable_recurrence/recurrence.h
+d80016369607ef2c202f28b10470e039b452cf177cf746b24320a7df0a1f4629  court4/transfer4_confirm_core.c
+
+# --- the authority lineage this turn generalizes ---
+737b7614f4e9d3cefda05699f013234c847d8068b23256671ce2235f024c0f79  turns/turn18/authority.h
+976e632b2c339f63e0e8af66f545c56276c46b60a4996a8b25b2df8d003a9b0f  turns/turn18/authority.c
+1230beb36a3b05168b0b83627a160ae967318a7283d60b5482c567ef2e6d24bc  turns/turn19/authority.h
+3642f74713559f2d59fc70511b397b3fd218cdd8fcb04dc47d3146dd1536f84e  turns/turn19/authority.c
+994e09be02326d104ca6d239d6557f53619b14269736d969b2b5edd55fb8aef3  turns/turn20/authority.h
+49fb1b6eca4aa860c01995a8634bf8b0ba525ca87d45fcbafdd4e3bce8512976  turns/turn20/authority.c
+523eabacc6b98c0cc0a50a31c748ce3d36b6e1a2c7947e05d4ee39f944ca5937  turns/turn20/replay.c
+0a6bacee586e0aa46fa98d9775c24df72ec31b353158a2470ecf27e30a6a7bda  turns/turn20/experiment.py
+78e6345f1a5e2be5eee5815e9302a24961695f54b77ba32d5dcfdaa2e9b10fc7  turns/turn20/verify_repair.py
+cb9ae1dc25751e8618c6827dd66590fb00decd721ffc989421dfb91f8979cc9d  turns/turn20/PROTOCOL.md
+
+# --- written this turn ---
+06243c2ba6254e92b4627091eaaa86edaf072b38ac5cd9635611f4c25d30a27a  turns/turn21/PROTOCOL.md
+3354cd729d8ee6140df079380deea4a7ea20d10e359754daf8e9afb726ca5e6f  turns/turn21/authority.h
+b817eae6428efb78aed516c6003632a18980be4f287908a970bef51bae540404  turns/turn21/authority.c
+8715732289933e4f35c963df84608010f09d49ef42550c9b9c447fc2c16fbb34  turns/turn21/replay.c
+da08e17edcfe5a4bfa75db4a5fa08551522803e687d1a79ed301478bf1f8df26  turns/turn21/authority_fixture.c
+ba902df3f85b05be17d40cfd7dc517aab608469d5cc8b9f38afe604d919ec1ca  turns/turn21/experiment.py
+fa8ede135064e345169553c9b1714139b3b26e9208a90629de2ad7592a3cff07  turns/turn21/verify.py
+d68ba7fe8dd22ee20e362a9ffdaaa5d62e859cd301eb8b0addfba3d14bf04eb7  turns/turn21/render_tables.py
+
+# --- built here from the inherited sources by turn21/Makefile ---
+9a80938f2220a123f0fd32bd3b045ef9140578e8d282a5d226844ab7a6e58b51  turns/turn21/Makefile
+784d549d01f04bc02b3ae64a8ee5a2e69079ace3c9b085bd5076ef8581fb5b10  turns/turn21/episode
+20e82fd611aab378a50c14384a853406e358a5f79db490d326e949c0639c34ff  turns/turn21/authority_replay
+071416f1981b1a207888b44eee1b1858a1fbe08d56cf2cdb9d2d5f3d144f6a9d  turns/turn21/authority_fixture
+
+# turn21/Makefile is a byte-identical copy of turn20/Makefile (same sha256), and
+# turn21/episode hashes to the value pinned for turn20/episode, turn15/episode and
+# turn14/episode: the inherited build is reproducible on this machine.

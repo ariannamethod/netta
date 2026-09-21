@@ -1,0 +1,42 @@
+verified 216 recombined
+verified 216 switched
+verified 216 moved_mid
+verified 216 unrelated
+verified 217 recombined
+verified 217 switched
+verified 217 moved_mid
+verified 217 unrelated
+verified 218 recombined
+verified 218 switched
+verified 218 moved_mid
+verified 218 unrelated
+verified 219 recombined
+verified 219 switched
+verified 219 moved_mid
+verified 219 unrelated
+verified 220 recombined
+verified 220 switched
+verified 220 moved_mid
+verified 220 unrelated
+verified 221 recombined
+verified 221 switched
+verified 221 moved_mid
+verified 221 unrelated
+verified 222 recombined
+verified 222 switched
+verified 222 moved_mid
+verified 222 unrelated
+verified 223 recombined
+verified 223 switched
+verified 223 moved_mid
+verified 223 unrelated
+Traceback (most recent call last):
+  File "/Users/ataeff/arianna/netta-don-turn18-20260921/turns/turn21/verify.py", line 692, in <module>
+    main()
+    ~~~~^^
+  File "/Users/ataeff/arianna/netta-don-turn18-20260921/turns/turn21/verify.py", line 650, in main
+    need(claim['nominated_point'] == nominated, 'nominated point')
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ataeff/arianna/netta-don-turn18-20260921/turns/turn21/verify.py", line 73, in need
+    raise AssertionError(label)
+AssertionError: nominated point

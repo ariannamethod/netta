@@ -1,0 +1,106 @@
+216 recombined fast_tail 2108.216 h5l5_tail 2077.272 h10l5_tail 2118.201 h16l5_tail 2119.455 witness_tail 2119.455
+216 switched fast_tail -4.044 h5l5_tail -3.334 h10l5_tail -8.109 h16l5_tail -9.919 witness_tail -9.919
+216 moved_mid fast_tail 1021.072 h5l5_tail 1009.753 h10l5_tail 1030.486 h16l5_tail 1030.93 witness_tail 1031.104
+216 unrelated fast_tail 0.0 h5l5_tail 0.0 h10l5_tail 0.0 h16l5_tail 0.0 witness_tail 0.0
+217 recombined fast_tail 1654.349 h5l5_tail 1632.823 h10l5_tail 1664.648 h16l5_tail 1665.488 witness_tail 1665.624
+217 switched fast_tail 162.974 h5l5_tail 162.565 h10l5_tail 161.667 h16l5_tail 160.946 witness_tail 160.796
+217 moved_mid fast_tail 593.71 h5l5_tail 590.995 h10l5_tail 602.504 h16l5_tail 602.542 witness_tail 602.862
+217 unrelated fast_tail 0.0 h5l5_tail 0.0 h10l5_tail 0.0 h16l5_tail 0.0 witness_tail 0.0
+218 recombined fast_tail 1249.765 h5l5_tail 1235.653 h10l5_tail 1260.132 h16l5_tail 1260.521 witness_tail 1260.88
+218 switched fast_tail 277.665 h5l5_tail 277.432 h10l5_tail 278.731 h16l5_tail 277.208 witness_tail 276.989
+218 moved_mid fast_tail 114.565 h5l5_tail 121.352 h10l5_tail 119.641 h16l5_tail 116.007 witness_tail 116.182
+218 unrelated fast_tail 0.0 h5l5_tail 0.0 h10l5_tail 0.0 h16l5_tail 0.0 witness_tail 0.0
+219 recombined fast_tail 1955.595 h5l5_tail 1928.364 h10l5_tail 1965.815 h16l5_tail 1966.954 witness_tail 1966.954
+219 switched fast_tail -6.277 h5l5_tail -5.036 h10l5_tail -9.766 h16l5_tail -12.161 witness_tail -12.161
+219 moved_mid fast_tail 1189.785 h5l5_tail 1177.428 h10l5_tail 1199.209 h16l5_tail 1199.805 witness_tail 1199.805
+219 unrelated fast_tail 0.0 h5l5_tail 0.0 h10l5_tail 0.0 h16l5_tail 0.0 witness_tail 0.0
+220 recombined fast_tail 1211.483 h5l5_tail 1196.812 h10l5_tail 1221.529 h16l5_tail 1222.17 witness_tail 1222.27
+220 switched fast_tail 4.093 h5l5_tail 4.177 h10l5_tail -0.041 h16l5_tail -1.172 witness_tail -1.172
+220 moved_mid fast_tail 437.953 h5l5_tail 438.908 h10l5_tail 443.115 h16l5_tail 440.274 witness_tail 440.358
+220 unrelated fast_tail 0.0 h5l5_tail 0.0 h10l5_tail 0.0 h16l5_tail 0.0 witness_tail 0.0
+221 recombined fast_tail 2120.545 h5l5_tail 2090.109 h10l5_tail 2128.291 h16l5_tail 2129.257 witness_tail 2129.289
+221 switched fast_tail -0.174 h5l5_tail 2.758 h10l5_tail -2.012 h16l5_tail -6.02 witness_tail -6.02
+221 moved_mid fast_tail 1114.723 h5l5_tail 1102.583 h10l5_tail 1120.906 h16l5_tail 1120.913 witness_tail 1121.06
+221 unrelated fast_tail 0.0 h5l5_tail 0.0 h10l5_tail 0.0 h16l5_tail 0.0 witness_tail 0.0
+222 recombined fast_tail 1759.855 h5l5_tail 1735.827 h10l5_tail 1769.96 h16l5_tail 1770.904 witness_tail 1770.998
+222 switched fast_tail -4.558 h5l5_tail -3.146 h10l5_tail -8.02 h16l5_tail -10.404 witness_tail -10.404
+222 moved_mid fast_tail 1116.547 h5l5_tail 1103.874 h10l5_tail 1126.267 h16l5_tail 1126.74 witness_tail 1126.937
+222 unrelated fast_tail 0.0 h5l5_tail 0.0 h10l5_tail 0.0 h16l5_tail 0.0 witness_tail 0.0
+223 recombined fast_tail 1919.103 h5l5_tail 1890.858 h10l5_tail 1928.875 h16l5_tail 1929.956 witness_tail 1930.039
+223 switched fast_tail 5.537 h5l5_tail 5.979 h10l5_tail 2.353 h16l5_tail 1.151 witness_tail 0.684
+223 moved_mid fast_tail 653.655 h5l5_tail 649.739 h10l5_tail 658.951 h16l5_tail 657.421 witness_tail 657.005
+223 unrelated fast_tail 0.0 h5l5_tail 0.0 h10l5_tail 0.0 h16l5_tail 0.0 witness_tail 0.0
+{
+  "frontier": {
+    "law_tail_endpoints": {
+      "2": [
+        55.174412218926236,
+        50.755702420520294
+      ],
+      "3": [
+        55.174412218926236,
+        50.59650599978274
+      ],
+      "4": [
+        55.174412218926236,
+        50.25552172305368
+      ],
+      "5": [
+        55.174412218926236,
+        49.95365455470263
+      ]
+    },
+    "law_tail_rows": {
+      "2": true,
+      "3": true,
+      "4": true,
+      "5": true
+    },
+    "law_tail_rows_true": 4,
+    "moved_tail_endpoints": {
+      "2": [
+        774.3289513638138,
+        781.238603504522
+      ],
+      "3": [
+        774.3289513638138,
+        784.7602098679783
+      ],
+      "4": [
+        774.3289513638138,
+        786.2993316456428
+      ],
+      "5": [
+        774.3289513638138,
+        786.8290969788167
+      ]
+    },
+    "moved_tail_rows": {
+      "2": true,
+      "3": true,
+      "4": true,
+      "5": true
+    },
+    "moved_tail_rows_true": 4
+  },
+  "gate_pass": false,
+  "nominated_point": "h8l4",
+  "tests": {
+    "w1_window_exists": true,
+    "w2_nominated_point_robust": false,
+    "w3_law_tail_favours_tight_high": true,
+    "w3_moved_tail_favours_loose_high": true,
+    "w4_archive_cap": true,
+    "w4_distributions_normalized": true,
+    "w4_exact_protected_quotes": true,
+    "w4_prefix_and_drawdown": true,
+    "w4_shared_first_admission": true,
+    "w4_unrelated_never_admits": false
+  },
+  "window_points": [
+    "h8l2",
+    "h8l3",
+    "h8l4",
+    "h8l5"
+  ]
+}
