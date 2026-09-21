@@ -1,0 +1,200 @@
+{
+  "forecasts": 524288,
+  "gate_pass": false,
+  "lives": [
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 2.3092638912203256e-13,
+      "regime": "recombined",
+      "world": 232
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 2.3092638912203256e-13,
+      "regime": "switched",
+      "world": 232
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 5.24913446042774e-13,
+      "regime": "moved_mid",
+      "world": 232
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "world": 232
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 1.4299672557172016e-13,
+      "regime": "recombined",
+      "world": 233
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 1.1546319456101628e-13,
+      "regime": "switched",
+      "world": 233
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 7.069900220812997e-13,
+      "regime": "moved_mid",
+      "world": 233
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "world": 233
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 4.813927034774679e-13,
+      "regime": "recombined",
+      "world": 234
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 8.704148513061227e-13,
+      "regime": "switched",
+      "world": 234
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 4.813927034774679e-13,
+      "regime": "moved_mid",
+      "world": 234
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "world": 234
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 5.417888360170764e-14,
+      "regime": "recombined",
+      "world": 235
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 2.0872192862952943e-13,
+      "regime": "switched",
+      "world": 235
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 8.5087492607272e-13,
+      "regime": "moved_mid",
+      "world": 235
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "world": 235
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 1.2789769243681803e-13,
+      "regime": "recombined",
+      "world": 236
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 2.1405099914773018e-13,
+      "regime": "switched",
+      "world": 236
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 7.94031507211912e-13,
+      "regime": "moved_mid",
+      "world": 236
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "world": 236
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 6.128431095930864e-13,
+      "regime": "recombined",
+      "world": 237
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 7.02105040772949e-13,
+      "regime": "switched",
+      "world": 237
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 1.014299755297543e-12,
+      "regime": "moved_mid",
+      "world": 237
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "world": 237
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 4.0323300254385686e-13,
+      "regime": "recombined",
+      "world": 238
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 2.7400304247748863e-13,
+      "regime": "switched",
+      "world": 238
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 9.43245481721533e-13,
+      "regime": "moved_mid",
+      "world": 238
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "world": 238
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 6.226130722097878e-13,
+      "regime": "recombined",
+      "world": 239
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 6.901146321069973e-13,
+      "regime": "switched",
+      "world": 239
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 8.135714324453147e-13,
+      "regime": "moved_mid",
+      "world": 239
+    },
+    {
+      "forecasts": 16384,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "world": 239
+    }
+  ],
+  "maximum_numeric_error": 1.014299755297543e-12,
+  "verified": true
+}

@@ -1,0 +1,7 @@
+episode
+split
+.build/
+data/
+memory/
+results/
+__pycache__/

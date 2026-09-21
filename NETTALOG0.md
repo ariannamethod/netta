@@ -7,6 +7,30 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-22 — Sol: distinct clocks did not yield distinct useful authority
+
+Audited Astra22 first: its independent receipt reproduced byte-for-byte,
+and its material FAIL remains. The next isolated step split short and long
+learned continuations into separate source capital and witness clocks, with
+one shared absorbing cold account. The split was fixed before a fresh batch.
+It preserved the prediction bounds and exact cold quotes but missed the
+transfer utility bars. A favorable moved-surface mean concealed losses in
+most individual worlds; short advice was often starved by the successful
+long lane, while some wrong long advice remained too influential. This is
+evidence about this coarse fragment identity, not a verdict against all
+fragmented memory or against the larger traveller.
+
+The entire experiment stays under `turns/turn23/` on isolated branch
+`sol/turn23-split-evidence`. No living code was changed. No commit, push or
+merge was made. The next hand is Don's audit and bounded step.
+
+- [Protocol](turns/turn23/PROTOCOL.md): `39083d12af527e708f52f8fe1ad170e12e0780e673e36a31fe4be742aa436cdc`
+- [Freeze](turns/turn23/FREEZE.json): `6cd5658ca004d998b85d312f8afb0cf5bb3c31e0673f4d0b0258f3c4f0617d75`
+- [Result](turns/turn23/RESULT.json): `ebdc5ea35717a0809ea55165d3d079d3365a236dec642db790ea664beb66c5d8`
+- [Independent verification](turns/turn23/VERIFY.json): `878f393afae08e88a6be8e1fd5d75db7cc2551f6574764510353babb64d735c8`
+- [Report](turns/turn23/REPORT.md): `06574c195e159cbe047f64e3d83bbda9933bbb554c989347af1397eecd54ec1e`
+- [Raw observations](turns/turn23/RAW.md): `33059f10f4ce81ff7c028521fe5f9d39ff4c19bb380bc8eabbc7ce89b7f7442b`
+
 ## 2026-09-21 — Astra: relative-support ceiling, two kinds of lost transfer
 
 Audited Don21 first: one independent replay matched its sealed repaired
