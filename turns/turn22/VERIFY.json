@@ -1,0 +1,290 @@
+{
+  "authority_forecasts": 2621440,
+  "candidate_forecasts": 3670016,
+  "complete_gate_pass": false,
+  "gate_pass": false,
+  "identities": {
+    "DATA_MANIFEST.json": "3f976f0be953c5f38af95e97857ed16f4f6e25cbabcedbbe624c50ff0b05be77",
+    "MEMORY_MANIFEST.json": "0bf7a3c54d78c69d9f9a944007ecc096eef91c5645b20e6c6dc2d55edb0516d3",
+    "RESULTS_MANIFEST.json": "17b24c32a898580dd8e74816567a617762a58ba7fc13fa945a95d303289b3c56",
+    "freeze_sha256": "6c6e24523fc4cbe1011422197337f5da5e06c8c5590a78cd55f312ac0df79b15",
+    "interface_sha256": "82a6e44a22366fb44a3c29b2b509886492fe68a9eb531e7c3010aa7e3751e0eb",
+    "protocol_sha256": "2a1e5dd3322cc43823188880ce0e7fa0341133a3705f333f417a95adfeba3c19",
+    "reader_sha256": "70f2f95242efb863929a84986ae6a19b3ee00079baedf9730d49ceb969cb8336",
+    "result_sha256": "b8f63a5f42362129fcf122c698ecfa6e411d7123116224ed4618c7399d45e4fb"
+  },
+  "maximum_normalization_error": 1.3322676295501878e-14,
+  "maximum_numeric_error": 1.8849277694243938e-10,
+  "modes": [
+    "slow",
+    "fast",
+    "witness",
+    "h8l4",
+    "selfnorm"
+  ],
+  "quantities": {
+    "early_retention": 0.9891931470717378,
+    "full_retention": 0.9912843579309033,
+    "law_robust_worlds": 6,
+    "law_vs_fast": [
+      0.15546045539713305,
+      2.0650751386672255,
+      1.0771065428191378,
+      -1.1032824795775014,
+      -0.2875491847582907,
+      -0.2425688263888901,
+      0.4903231667062755,
+      -2.0913864894889684
+    ],
+    "law_vs_static": [
+      1.0087399964868382,
+      3.9942488763465462,
+      2.484856700571754,
+      0.36633331834718774,
+      -0.22963780167242476,
+      -1.0200295766594536,
+      2.4152419566294157,
+      -1.454160409331962
+    ],
+    "law_whole_vs_fast": [
+      -4.886144181381496,
+      0.9071853004656987,
+      -8.254053344030808,
+      -0.5627105366447722,
+      -10.54105052946693,
+      -8.93683982829441,
+      -1.1427990641625456,
+      -1.2710663229036072
+    ],
+    "law_whole_vs_static": [
+      -9.920170536644946,
+      -4.595881269691063,
+      -13.078839714215746,
+      -5.243998391824789,
+      -16.56441397608546,
+      -16.39003018684639,
+      -6.460775449442508,
+      -7.407018925912325
+    ],
+    "moved_vs_fast": [
+      -14.147246584036111,
+      -3.625925311810761,
+      -14.955742359185479,
+      -2.8437045004002357,
+      -11.816829566000251,
+      0.9240036018697424,
+      -6.149857227823077,
+      -4.394316424565886
+    ],
+    "moved_vs_slow": [
+      -19.86726431055422,
+      -14.984741422432535,
+      -25.857870473555295,
+      -14.204329340710274,
+      -17.06463622343267,
+      6.388053918754736,
+      -11.382896859558969,
+      -10.537446882380664
+    ],
+    "recombined_full": [
+      4410.427368719415,
+      3447.6555215890794,
+      4002.9951161437466,
+      3732.0060392636924,
+      3962.111146510699,
+      1391.286681658738,
+      3108.4618435133975,
+      3489.0558981439312
+    ],
+    "static_law_robust_worlds": 4,
+    "static_law_vs_fast": [
+      -0.8532795410897052,
+      -1.9291737376793208,
+      -1.4077501577526164,
+      -1.469615797924689,
+      -0.057911383085865964,
+      0.7774607502705635,
+      -1.9249187899231401,
+      -0.6372260801570064
+    ],
+    "static_law_whole_vs_fast": [
+      5.03402635526345,
+      5.503066570156761,
+      4.824786370184938,
+      4.681287855180017,
+      6.023363446618532,
+      7.4531903585519785,
+      5.317976385279962,
+      6.135952603008718
+    ]
+  },
+  "reader_tests": {
+    "agreement_within_tolerance": true,
+    "all_candidate_arms_rebuilt": true,
+    "all_five_modes_replayed": true,
+    "retained_digests_intact": true,
+    "schema_accepted": true
+  },
+  "regimes": [
+    "recombined",
+    "switched",
+    "moved_mid",
+    "unrelated"
+  ],
+  "required_result_keys": [
+    "gate_pass",
+    "independent_reader_pending",
+    "lives",
+    "manipulation",
+    "modes",
+    "namespace",
+    "protocol_sha256",
+    "quantities",
+    "regimes",
+    "tables",
+    "tests",
+    "worlds"
+  ],
+  "scope": "Frozen independent turn13 source-book reconstruction and seven candidates; own suffix recount; independent Decimal mass replay of all five modes, own signed/absolute evidence and relative-support cap, every quote and state. HEAD256 bindings and P0 are supplied trace inputs; full-vector receipts come from C.",
+  "tables": {
+    "moved_mid": {
+      "fast": {
+        "early": 662.64857672043,
+        "gain": 2362.734239297228,
+        "tail": 857.5288812237894
+      },
+      "h8l4": {
+        "early": 665.8637305953199,
+        "gain": 2374.862253226155,
+        "tail": 863.0973870675181
+      },
+      "selfnorm": {
+        "early": 660.9071370979897,
+        "gain": 2351.2642048970097,
+        "tail": 850.4026789272955
+      },
+      "slow": {
+        "early": 668.1274926483692,
+        "gain": 2380.1600732364636,
+        "tail": 863.8415703765291
+      },
+      "witness": {
+        "early": 667.4118604830062,
+        "gain": 2378.1176920135836,
+        "tail": 862.6898717978476
+      }
+    },
+    "recombined": {
+      "fast": {
+        "early": 662.64857672043,
+        "gain": 3451.093675080788,
+        "tail": 1945.8883170073495
+      },
+      "h8l4": {
+        "early": 665.8637305953199,
+        "gain": 3463.8105525720202,
+        "tail": 1952.0456864133835
+      },
+      "selfnorm": {
+        "early": 660.9071370979897,
+        "gain": 3442.9999519428375,
+        "tail": 1942.1384259731233
+      },
+      "slow": {
+        "early": 668.1274926483692,
+        "gain": 3473.2717452834345,
+        "tail": 1956.9532424235
+      },
+      "witness": {
+        "early": 667.4118604830062,
+        "gain": 3472.1806071356727,
+        "tail": 1956.7527869199366
+      }
+    },
+    "switched": {
+      "fast": {
+        "early": 662.64857672043,
+        "gain": 1519.1432527413808,
+        "tail": 13.937894667942139
+      },
+      "h8l4": {
+        "early": 665.8637305953199,
+        "gain": 1524.7649589844114,
+        "tail": 13.000092825774416
+      },
+      "selfnorm": {
+        "early": 660.9071370979897,
+        "gain": 1514.8073179280784,
+        "tail": 13.945791958364154
+      },
+      "slow": {
+        "early": 668.1274926483692,
+        "gain": 1524.7424773897385,
+        "tail": 8.423974529803942
+      },
+      "witness": {
+        "early": 667.4118604830062,
+        "gain": 1523.988333069528,
+        "tail": 8.560512853791721
+      }
+    },
+    "unrelated": {
+      "fast": {
+        "early": 2.2706897564644475,
+        "gain": 2.2706897564644475,
+        "tail": 0.0
+      },
+      "h8l4": {
+        "early": 2.08503201273444,
+        "gain": 2.08503201273444,
+        "tail": 0.0
+      },
+      "selfnorm": {
+        "early": 2.4137619438845808,
+        "gain": 2.4137619438845808,
+        "tail": 0.0
+      },
+      "slow": {
+        "early": 1.6608368361706602,
+        "gain": 1.6608368361706602,
+        "tail": 0.0
+      },
+      "witness": {
+        "early": 1.7024415571840852,
+        "gain": 1.7024415571840852,
+        "tail": 0.0
+      }
+    }
+  },
+  "tests": {
+    "s12_admission": true,
+    "s13_unrelated": false,
+    "s14_archive": true,
+    "s15_bounds": true,
+    "s16_normalized": true,
+    "s17_exact_quotes": true,
+    "s18_support_cap": true,
+    "u01_law_tail": true,
+    "u02_law_robust": true,
+    "u03_law_whole": false,
+    "u04_moved_mean": false,
+    "u05_moved_wins": false,
+    "u06_moved_slow": false,
+    "u07_early_retention": true,
+    "u08_full_retention": true,
+    "u09_intact_positive": true,
+    "u10_law_vs_static": false,
+    "u11_whole_vs_static": false
+  },
+  "verification_pass": true,
+  "worlds": [
+    224,
+    225,
+    226,
+    227,
+    228,
+    229,
+    230,
+    231
+  ]
+}
