@@ -1,0 +1,5508 @@
+{
+  "arm_forecasts": 7340032,
+  "arms": [
+    "slow",
+    "fast",
+    "witness",
+    "h8l4",
+    "selfnorm",
+    "split",
+    "orate0",
+    "orate32",
+    "orate128",
+    "orate512",
+    "olevel0",
+    "olevel32",
+    "olevel128",
+    "olevel512"
+  ],
+  "bars": {
+    "fast": {
+      "b1_law_tail_mean": true,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": false,
+      "b4_moved_tail_wins": false,
+      "b5_moved_tail_vs_slow": false,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "h8l4": {
+      "b1_law_tail_mean": true,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": false,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "olevel0": {
+      "b1_law_tail_mean": true,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "olevel128": {
+      "b1_law_tail_mean": false,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "olevel32": {
+      "b1_law_tail_mean": true,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "olevel512": {
+      "b1_law_tail_mean": false,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "orate0": {
+      "b1_law_tail_mean": true,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "orate128": {
+      "b1_law_tail_mean": true,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "orate32": {
+      "b1_law_tail_mean": true,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "orate512": {
+      "b1_law_tail_mean": false,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "selfnorm": {
+      "b1_law_tail_mean": true,
+      "b2_law_whole_mean": false,
+      "b3_moved_tail_mean": false,
+      "b4_moved_tail_wins": false,
+      "b5_moved_tail_vs_slow": false,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "slow": {
+      "b1_law_tail_mean": false,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "split": {
+      "b1_law_tail_mean": false,
+      "b2_law_whole_mean": false,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": false,
+      "b8_intact_full_positive": true
+    },
+    "witness": {
+      "b1_law_tail_mean": false,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    }
+  },
+  "clamp_matches_fast_odds": true,
+  "d_star": 32,
+  "forecasts": 524288,
+  "gate_pass": false,
+  "hygiene": {
+    "admission_identity": true,
+    "admission_shared_with_episode": true,
+    "archive": true,
+    "bounds": true,
+    "exact_quotes": true,
+    "fast_own_bound": true,
+    "label_confined": true,
+    "normalized": true
+  },
+  "label_confined_to_oracle_arms": true,
+  "label_free_reference_agreement": true,
+  "lives": [
+    {
+      "admission": 116,
+      "arms": {
+        "fast": {
+          "activation": 116,
+          "drawdown": 7.654729111644883,
+          "early": 960.7597293796719,
+          "gain": 4334.0378804513975,
+          "minimum": 0.0,
+          "peak": 4334.0378804513975,
+          "tail": 2361.9750651449435
+        },
+        "h8l4": {
+          "activation": 116,
+          "drawdown": 7.901683595925363,
+          "early": 963.9435821350327,
+          "gain": 4345.784515316708,
+          "minimum": 0.0,
+          "peak": 4345.784515316708,
+          "tail": 2367.3703364323405
+        },
+        "olevel0": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 4356.604618266042,
+          "minimum": 0.0,
+          "peak": 4356.604618266042,
+          "tail": 2373.3411257390476
+        },
+        "olevel128": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 4356.604618266042,
+          "minimum": 0.0,
+          "peak": 4356.604618266042,
+          "tail": 2373.3411257390476
+        },
+        "olevel32": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 4356.604618266042,
+          "minimum": 0.0,
+          "peak": 4356.604618266042,
+          "tail": 2373.3411257390476
+        },
+        "olevel512": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 4356.604618266042,
+          "minimum": 0.0,
+          "peak": 4356.604618266042,
+          "tail": 2373.3411257390476
+        },
+        "orate0": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 4356.604618266042,
+          "minimum": 0.0,
+          "peak": 4356.604618266042,
+          "tail": 2373.3411257390476
+        },
+        "orate128": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 4356.604618266042,
+          "minimum": 0.0,
+          "peak": 4356.604618266042,
+          "tail": 2373.3411257390476
+        },
+        "orate32": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 4356.604618266042,
+          "minimum": 0.0,
+          "peak": 4356.604618266042,
+          "tail": 2373.3411257390476
+        },
+        "orate512": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 4356.604618266042,
+          "minimum": 0.0,
+          "peak": 4356.604618266042,
+          "tail": 2373.3411257390476
+        },
+        "selfnorm": {
+          "activation": 116,
+          "drawdown": 10.039198959367582,
+          "early": 959.8843932145131,
+          "gain": 4338.425796794907,
+          "minimum": 0.0,
+          "peak": 4338.425796794907,
+          "tail": 2366.8345306703236
+        },
+        "slow": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 4356.604618266042,
+          "minimum": 0.0,
+          "peak": 4356.604618266042,
+          "tail": 2373.3411257390476
+        },
+        "split": {
+          "activation": 116,
+          "drawdown": 10.489127904813813,
+          "early": 841.1117545550031,
+          "gain": 3800.8365109063434,
+          "minimum": 0.0,
+          "peak": 3800.8365109063434,
+          "tail": 2061.2699446976576
+        },
+        "witness": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.195179201709,
+          "gain": 4356.533852894367,
+          "minimum": 0.0,
+          "peak": 4356.533852894367,
+          "tail": 2373.336963070125
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.3100631690576847e-14,
+      "maximum_numeric_error": 1.8189894035458565e-12,
+      "regime": "recombined",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 240
+    },
+    {
+      "admission": 116,
+      "arms": {
+        "fast": {
+          "activation": 116,
+          "drawdown": 6.650452319754436,
+          "early": 960.7597293796719,
+          "gain": 1966.9432085938945,
+          "minimum": 0.0,
+          "peak": 1973.4188519011377,
+          "tail": -5.119606712566696
+        },
+        "h8l4": {
+          "activation": 116,
+          "drawdown": 7.954670642899146,
+          "early": 963.9435821350327,
+          "gain": 1971.8200642470758,
+          "minimum": 0.0,
+          "peak": 1979.769174653538,
+          "tail": -6.594114637293512
+        },
+        "olevel0": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 1978.1438858144247,
+          "minimum": 0.0,
+          "peak": 1984.619529121668,
+          "tail": -5.119606712566696
+        },
+        "olevel128": {
+          "activation": 116,
+          "drawdown": 12.530547580186294,
+          "early": 966.2590067918499,
+          "gain": 1972.414953624523,
+          "minimum": 0.0,
+          "peak": 1984.6227167426114,
+          "tail": -10.848538902468174
+        },
+        "olevel32": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 1978.1309660328463,
+          "minimum": 0.0,
+          "peak": 1984.6227167426114,
+          "tail": -5.1325264941448445
+        },
+        "olevel512": {
+          "activation": 116,
+          "drawdown": 12.536272649190778,
+          "early": 966.2590067918499,
+          "gain": 1972.9106341641307,
+          "minimum": 0.0,
+          "peak": 1984.6227167426114,
+          "tail": -10.35285836285642
+        },
+        "orate0": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 1977.9552399124811,
+          "minimum": 0.0,
+          "peak": 1984.6227167426114,
+          "tail": -5.30825261450906
+        },
+        "orate128": {
+          "activation": 116,
+          "drawdown": 12.530547580186294,
+          "early": 966.2590067918499,
+          "gain": 1974.4212031038935,
+          "minimum": 0.0,
+          "peak": 1984.6227167426114,
+          "tail": -8.842289423095053
+        },
+        "orate32": {
+          "activation": 116,
+          "drawdown": 11.477899721474898,
+          "early": 966.2590067918499,
+          "gain": 1975.3101226047715,
+          "minimum": 0.0,
+          "peak": 1984.6227167426114,
+          "tail": -7.953369922217958
+        },
+        "orate512": {
+          "activation": 116,
+          "drawdown": 12.536272649190778,
+          "early": 966.2590067918499,
+          "gain": 1972.2482435403126,
+          "minimum": 0.0,
+          "peak": 1984.6227167426114,
+          "tail": -11.015248986675088
+        },
+        "selfnorm": {
+          "activation": 116,
+          "drawdown": 10.039198959367582,
+          "early": 959.8843932145131,
+          "gain": 1966.1239863623623,
+          "minimum": 0.0,
+          "peak": 1972.9479706544266,
+          "tail": -5.467279762222676
+        },
+        "slow": {
+          "activation": 116,
+          "drawdown": 12.536272649190778,
+          "early": 966.2590067918499,
+          "gain": 1972.1990272069368,
+          "minimum": 0.0,
+          "peak": 1984.6227167426114,
+          "tail": -11.064465320049619
+        },
+        "split": {
+          "activation": 116,
+          "drawdown": 9.950069205624459,
+          "early": 841.1117545550031,
+          "gain": 1730.1875913182093,
+          "minimum": 0.0,
+          "peak": 1740.1376605238338,
+          "tail": -9.378974890480269
+        },
+        "witness": {
+          "activation": 116,
+          "drawdown": 12.455316356498997,
+          "early": 966.195179201709,
+          "gain": 1972.222148702167,
+          "minimum": 0.0,
+          "peak": 1984.5561140398563,
+          "tail": -10.974741122065275
+        }
+      },
+      "clamp_values": {
+        "olevel0": 8.083084353211209,
+        "olevel128": -8.542748199935923,
+        "olevel32": 4.4730103592676995,
+        "olevel512": -7.285699915061253,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.3100631690576847e-14,
+      "maximum_numeric_error": 7.219114195322618e-11,
+      "regime": "switched",
+      "switch_bytes": {
+        "olevel0": 8192,
+        "olevel128": 8320,
+        "olevel32": 8224,
+        "olevel512": 8704,
+        "orate0": 8192,
+        "orate128": 8320,
+        "orate32": 8224,
+        "orate512": 8704
+      },
+      "world": 240
+    },
+    {
+      "admission": 116,
+      "arms": {
+        "fast": {
+          "activation": 116,
+          "drawdown": 7.9971051094744325,
+          "early": 960.7597293796719,
+          "gain": 3669.2117111470875,
+          "minimum": 0.0,
+          "peak": 3669.2117111470875,
+          "tail": 1697.1488958406408
+        },
+        "h8l4": {
+          "activation": 116,
+          "drawdown": 7.953900155756855,
+          "early": 963.9435821350327,
+          "gain": 3682.5344500316546,
+          "minimum": 0.0,
+          "peak": 3682.5344500316546,
+          "tail": 1704.1202711472856
+        },
+        "olevel0": {
+          "activation": 116,
+          "drawdown": 12.38353980742204,
+          "early": 966.2590067918499,
+          "gain": 3691.778392158292,
+          "minimum": 0.0,
+          "peak": 3691.778392158292,
+          "tail": 1708.5148996313117
+        },
+        "olevel128": {
+          "activation": 116,
+          "drawdown": 12.38353980742204,
+          "early": 966.2590067918499,
+          "gain": 3691.778392158292,
+          "minimum": 0.0,
+          "peak": 3691.778392158292,
+          "tail": 1708.5148996313117
+        },
+        "olevel32": {
+          "activation": 116,
+          "drawdown": 12.38353980742204,
+          "early": 966.2590067918499,
+          "gain": 3691.778392158292,
+          "minimum": 0.0,
+          "peak": 3691.778392158292,
+          "tail": 1708.5148996313117
+        },
+        "olevel512": {
+          "activation": 116,
+          "drawdown": 12.38353980742204,
+          "early": 966.2590067918499,
+          "gain": 3691.778392158292,
+          "minimum": 0.0,
+          "peak": 3691.778392158292,
+          "tail": 1708.5148996313117
+        },
+        "orate0": {
+          "activation": 116,
+          "drawdown": 12.38353980742204,
+          "early": 966.2590067918499,
+          "gain": 3691.778392158292,
+          "minimum": 0.0,
+          "peak": 3691.778392158292,
+          "tail": 1708.5148996313117
+        },
+        "orate128": {
+          "activation": 116,
+          "drawdown": 12.38353980742204,
+          "early": 966.2590067918499,
+          "gain": 3691.778392158292,
+          "minimum": 0.0,
+          "peak": 3691.778392158292,
+          "tail": 1708.5148996313117
+        },
+        "orate32": {
+          "activation": 116,
+          "drawdown": 12.38353980742204,
+          "early": 966.2590067918499,
+          "gain": 3691.778392158292,
+          "minimum": 0.0,
+          "peak": 3691.778392158292,
+          "tail": 1708.5148996313117
+        },
+        "orate512": {
+          "activation": 116,
+          "drawdown": 12.38353980742204,
+          "early": 966.2590067918499,
+          "gain": 3691.778392158292,
+          "minimum": 0.0,
+          "peak": 3691.778392158292,
+          "tail": 1708.5148996313117
+        },
+        "selfnorm": {
+          "activation": 116,
+          "drawdown": 11.750054662694765,
+          "early": 959.8843932145131,
+          "gain": 3665.8312595369284,
+          "minimum": 0.0,
+          "peak": 3665.8312595369284,
+          "tail": 1694.2399934123373
+        },
+        "slow": {
+          "activation": 116,
+          "drawdown": 12.38353980742204,
+          "early": 966.2590067918499,
+          "gain": 3691.778392158292,
+          "minimum": 0.0,
+          "peak": 3691.778392158292,
+          "tail": 1708.5148996313117
+        },
+        "split": {
+          "activation": 116,
+          "drawdown": 10.539866377437647,
+          "early": 841.1117545550031,
+          "gain": 3198.707977754175,
+          "minimum": 0.0,
+          "peak": 3198.707977754175,
+          "tail": 1459.1414115454886
+        },
+        "witness": {
+          "activation": 116,
+          "drawdown": 12.38353980742204,
+          "early": 966.195179201709,
+          "gain": 3691.625760964479,
+          "minimum": 0.0,
+          "peak": 3691.625760964479,
+          "tail": 1708.4288711402523
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.3100631690576847e-14,
+      "maximum_numeric_error": 3.183231456205249e-12,
+      "regime": "moved_mid",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 240
+    },
+    {
+      "admission": null,
+      "arms": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.0658141036401503e-14,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 240
+    },
+    {
+      "admission": 105,
+      "arms": {
+        "fast": {
+          "activation": 105,
+          "drawdown": 8.008957651270975,
+          "early": 599.6583642144445,
+          "gain": 3801.039201708058,
+          "minimum": -0.6769353457345719,
+          "peak": 3802.4070891588494,
+          "tail": 2263.4274388616054
+        },
+        "h8l4": {
+          "activation": 105,
+          "drawdown": 7.9811756558805484,
+          "early": 602.7206194013075,
+          "gain": 3813.1551065260105,
+          "minimum": -0.9165657987656273,
+          "peak": 3814.5214231747404,
+          "tail": 2269.132481500325
+        },
+        "olevel0": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 3823.6112466692784,
+          "minimum": -0.9256213455597078,
+          "peak": 3824.9864045258173,
+          "tail": 2274.7927351209523
+        },
+        "olevel128": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 3823.6112466692784,
+          "minimum": -0.9256213455597078,
+          "peak": 3824.9864045258173,
+          "tail": 2274.7927351209523
+        },
+        "olevel32": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 3823.6112466692784,
+          "minimum": -0.9256213455597078,
+          "peak": 3824.9864045258173,
+          "tail": 2274.7927351209523
+        },
+        "olevel512": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 3823.6112466692784,
+          "minimum": -0.9256213455597078,
+          "peak": 3824.9864045258173,
+          "tail": 2274.7927351209523
+        },
+        "orate0": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 3823.6112466692784,
+          "minimum": -0.9256213455597078,
+          "peak": 3824.9864045258173,
+          "tail": 2274.7927351209523
+        },
+        "orate128": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 3823.6112466692784,
+          "minimum": -0.9256213455597078,
+          "peak": 3824.9864045258173,
+          "tail": 2274.7927351209523
+        },
+        "orate32": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 3823.6112466692784,
+          "minimum": -0.9256213455597078,
+          "peak": 3824.9864045258173,
+          "tail": 2274.7927351209523
+        },
+        "orate512": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 3823.6112466692784,
+          "minimum": -0.9256213455597078,
+          "peak": 3824.9864045258173,
+          "tail": 2274.7927351209523
+        },
+        "selfnorm": {
+          "activation": 105,
+          "drawdown": 8.083180410437876,
+          "early": 595.2924157149752,
+          "gain": 3783.9808445883878,
+          "minimum": -0.1289685904106781,
+          "peak": 3785.350639996259,
+          "tail": 2257.949550716436
+        },
+        "slow": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 3823.6112466692784,
+          "minimum": -0.9256213455597078,
+          "peak": 3824.9864045258173,
+          "tail": 2274.7927351209523
+        },
+        "split": {
+          "activation": 105,
+          "drawdown": 11.187201014586662,
+          "early": 534.2750433860425,
+          "gain": 2398.686918859987,
+          "minimum": 0.0,
+          "peak": 2398.686918859987,
+          "tail": 1292.205222515204
+        },
+        "witness": {
+          "activation": 105,
+          "drawdown": 12.833751715284961,
+          "early": 604.1230233140753,
+          "gain": 3822.4637376030464,
+          "minimum": -0.9165657987656273,
+          "peak": 3823.8388954595853,
+          "tail": 2274.721969749268
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2101430968414206e-14,
+      "maximum_numeric_error": 3.637978807091713e-12,
+      "regime": "recombined",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 241
+    },
+    {
+      "admission": 105,
+      "arms": {
+        "fast": {
+          "activation": 105,
+          "drawdown": 7.792869140610264,
+          "early": 599.6583642144445,
+          "gain": 1547.431307936685,
+          "minimum": -0.6769353457345719,
+          "peak": 1554.5627724749181,
+          "tail": 9.819545090230974
+        },
+        "h8l4": {
+          "activation": 105,
+          "drawdown": 7.9811756558805484,
+          "early": 602.7206194013075,
+          "gain": 1553.435181715591,
+          "minimum": -0.9165657987656273,
+          "peak": 1561.404338434422,
+          "tail": 9.412556689893051
+        },
+        "olevel0": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 1558.6380566385494,
+          "minimum": -0.9256213455597078,
+          "peak": 1565.7695211767825,
+          "tail": 9.819545090230974
+        },
+        "olevel128": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 1554.5084191671292,
+          "minimum": -0.9256213455597078,
+          "peak": 1561.6398837053625,
+          "tail": 5.68990761881113
+        },
+        "olevel32": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 1558.5765603674379,
+          "minimum": -0.9256213455597078,
+          "peak": 1565.708024905671,
+          "tail": 9.75804881911953
+        },
+        "olevel512": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 1559.360562796671,
+          "minimum": -0.9256213455597078,
+          "peak": 1566.4920273349042,
+          "tail": 10.542051248350443
+        },
+        "orate0": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 1558.6524599166823,
+          "minimum": -0.9256213455597078,
+          "peak": 1565.7839402196857,
+          "tail": 9.833948368365228
+        },
+        "orate128": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 1558.8300467781291,
+          "minimum": -0.9256213455597078,
+          "peak": 1565.9615472819298,
+          "tail": 10.01153522981149
+        },
+        "orate32": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 1558.6968514811613,
+          "minimum": -0.9256213455597078,
+          "peak": 1565.8283419485106,
+          "tail": 9.878339932841605
+        },
+        "orate512": {
+          "activation": 105,
+          "drawdown": 12.982873264319238,
+          "early": 605.1831163003428,
+          "gain": 1559.2968730710063,
+          "minimum": -0.9256213455597078,
+          "peak": 1566.4939087624068,
+          "tail": 10.47836152268437
+        },
+        "selfnorm": {
+          "activation": 105,
+          "drawdown": 8.083180410437876,
+          "early": 595.2924157149752,
+          "gain": 1537.4417193618249,
+          "minimum": -0.1289685904106781,
+          "peak": 1542.6883281144915,
+          "tail": 11.410425489861023
+        },
+        "slow": {
+          "activation": 105,
+          "drawdown": 13.09894054006213,
+          "early": 605.1831163003428,
+          "gain": 1553.397898836771,
+          "minimum": -0.9256213455597078,
+          "peak": 1566.4968111766545,
+          "tail": 4.579387288449164
+        },
+        "split": {
+          "activation": 105,
+          "drawdown": 10.322554012012006,
+          "early": 534.2750433860425,
+          "gain": 1096.1591830740185,
+          "minimum": 0.0,
+          "peak": 1106.4816963447765,
+          "tail": -10.322513270758861
+        },
+        "witness": {
+          "activation": 105,
+          "drawdown": 12.806302746200942,
+          "early": 604.1230233140753,
+          "gain": 1552.457619960807,
+          "minimum": -0.9165657987656273,
+          "peak": 1565.1661446833107,
+          "tail": 4.715852107034969
+        }
+      },
+      "clamp_values": {
+        "olevel0": 6.614641037433015,
+        "olevel128": -4.723773939608812,
+        "olevel32": 3.4993335363389866,
+        "olevel512": 9.243038409500715,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2101430968414206e-14,
+      "maximum_numeric_error": 9.754330676514655e-11,
+      "regime": "switched",
+      "switch_bytes": {
+        "olevel0": 8192,
+        "olevel128": 8320,
+        "olevel32": 8224,
+        "olevel512": 8704,
+        "orate0": 8192,
+        "orate128": 8320,
+        "orate32": 8224,
+        "orate512": 8704
+      },
+      "world": 241
+    },
+    {
+      "admission": 105,
+      "arms": {
+        "fast": {
+          "activation": 105,
+          "drawdown": 8.444984605686386,
+          "early": 599.6583642144445,
+          "gain": 2857.5697452334844,
+          "minimum": -0.6769353457345719,
+          "peak": 2858.6821998399287,
+          "tail": 1319.9579823870426
+        },
+        "h8l4": {
+          "activation": 105,
+          "drawdown": 8.00313916178493,
+          "early": 602.7206194013075,
+          "gain": 2871.0797350439293,
+          "minimum": -0.9165657987656273,
+          "peak": 2872.1954958958577,
+          "tail": 1327.057110018243
+        },
+        "olevel0": {
+          "activation": 105,
+          "drawdown": 14.461545336506333,
+          "early": 605.1831163003428,
+          "gain": 2880.135439377293,
+          "minimum": -0.9256213455597078,
+          "peak": 2881.257661754802,
+          "tail": 1331.316927828972
+        },
+        "olevel128": {
+          "activation": 105,
+          "drawdown": 14.461545336506333,
+          "early": 605.1831163003428,
+          "gain": 2880.135439377293,
+          "minimum": -0.9256213455597078,
+          "peak": 2881.257661754802,
+          "tail": 1331.316927828972
+        },
+        "olevel32": {
+          "activation": 105,
+          "drawdown": 14.461545336506333,
+          "early": 605.1831163003428,
+          "gain": 2880.135439377293,
+          "minimum": -0.9256213455597078,
+          "peak": 2881.257661754802,
+          "tail": 1331.316927828972
+        },
+        "olevel512": {
+          "activation": 105,
+          "drawdown": 14.461545336506333,
+          "early": 605.1831163003428,
+          "gain": 2880.135439377293,
+          "minimum": -0.9256213455597078,
+          "peak": 2881.257661754802,
+          "tail": 1331.316927828972
+        },
+        "orate0": {
+          "activation": 105,
+          "drawdown": 14.461545336506333,
+          "early": 605.1831163003428,
+          "gain": 2880.135439377293,
+          "minimum": -0.9256213455597078,
+          "peak": 2881.257661754802,
+          "tail": 1331.316927828972
+        },
+        "orate128": {
+          "activation": 105,
+          "drawdown": 14.461545336506333,
+          "early": 605.1831163003428,
+          "gain": 2880.135439377293,
+          "minimum": -0.9256213455597078,
+          "peak": 2881.257661754802,
+          "tail": 1331.316927828972
+        },
+        "orate32": {
+          "activation": 105,
+          "drawdown": 14.461545336506333,
+          "early": 605.1831163003428,
+          "gain": 2880.135439377293,
+          "minimum": -0.9256213455597078,
+          "peak": 2881.257661754802,
+          "tail": 1331.316927828972
+        },
+        "orate512": {
+          "activation": 105,
+          "drawdown": 14.461545336506333,
+          "early": 605.1831163003428,
+          "gain": 2880.135439377293,
+          "minimum": -0.9256213455597078,
+          "peak": 2881.257661754802,
+          "tail": 1331.316927828972
+        },
+        "selfnorm": {
+          "activation": 105,
+          "drawdown": 9.072183501411018,
+          "early": 595.2924157149752,
+          "gain": 2831.3722162929175,
+          "minimum": -0.1289685904106781,
+          "peak": 2832.4829262796516,
+          "tail": 1305.3409224209458
+        },
+        "slow": {
+          "activation": 105,
+          "drawdown": 14.461545336506333,
+          "early": 605.1831163003428,
+          "gain": 2880.135439377293,
+          "minimum": -0.9256213455597078,
+          "peak": 2881.257661754802,
+          "tail": 1331.316927828972
+        },
+        "split": {
+          "activation": 105,
+          "drawdown": 7.771812840248231,
+          "early": 534.2750433860425,
+          "gain": 2046.9284498917223,
+          "minimum": 0.0,
+          "peak": 2046.9284498917223,
+          "tail": 940.4467535469481
+        },
+        "witness": {
+          "activation": 105,
+          "drawdown": 14.166250290663811,
+          "early": 604.1230233140753,
+          "gain": 2878.098506718129,
+          "minimum": -0.9165657987656273,
+          "peak": 2879.2207290955726,
+          "tail": 1330.3567388643698
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2101430968414206e-14,
+      "maximum_numeric_error": 2.7284841053187847e-12,
+      "regime": "moved_mid",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 241
+    },
+    {
+      "admission": null,
+      "arms": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.176836406102666e-14,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 241
+    },
+    {
+      "admission": 156,
+      "arms": {
+        "fast": {
+          "activation": 156,
+          "drawdown": 8.11806022566816,
+          "early": 538.6169400157331,
+          "gain": 2909.2605455050843,
+          "minimum": 0.0,
+          "peak": 2909.2605455050843,
+          "tail": 1723.719274424238
+        },
+        "h8l4": {
+          "activation": 156,
+          "drawdown": 7.941209709157647,
+          "early": 542.0514166175024,
+          "gain": 2923.648313258417,
+          "minimum": 0.0,
+          "peak": 2923.648313258417,
+          "tail": 1731.4954002610032
+        },
+        "olevel0": {
+          "activation": 156,
+          "drawdown": 11.865162148768832,
+          "early": 544.0460081298231,
+          "gain": 2931.7702100526067,
+          "minimum": -0.6942760544344628,
+          "peak": 2931.7702100526067,
+          "tail": 1737.3700824543835
+        },
+        "olevel128": {
+          "activation": 156,
+          "drawdown": 11.865162148768832,
+          "early": 544.0460081298231,
+          "gain": 2931.7702100526067,
+          "minimum": -0.6942760544344628,
+          "peak": 2931.7702100526067,
+          "tail": 1737.3700824543835
+        },
+        "olevel32": {
+          "activation": 156,
+          "drawdown": 11.865162148768832,
+          "early": 544.0460081298231,
+          "gain": 2931.7702100526067,
+          "minimum": -0.6942760544344628,
+          "peak": 2931.7702100526067,
+          "tail": 1737.3700824543835
+        },
+        "olevel512": {
+          "activation": 156,
+          "drawdown": 11.865162148768832,
+          "early": 544.0460081298231,
+          "gain": 2931.7702100526067,
+          "minimum": -0.6942760544344628,
+          "peak": 2931.7702100526067,
+          "tail": 1737.3700824543835
+        },
+        "orate0": {
+          "activation": 156,
+          "drawdown": 11.865162148768832,
+          "early": 544.0460081298231,
+          "gain": 2931.7702100526067,
+          "minimum": -0.6942760544344628,
+          "peak": 2931.7702100526067,
+          "tail": 1737.3700824543835
+        },
+        "orate128": {
+          "activation": 156,
+          "drawdown": 11.865162148768832,
+          "early": 544.0460081298231,
+          "gain": 2931.7702100526067,
+          "minimum": -0.6942760544344628,
+          "peak": 2931.7702100526067,
+          "tail": 1737.3700824543835
+        },
+        "orate32": {
+          "activation": 156,
+          "drawdown": 11.865162148768832,
+          "early": 544.0460081298231,
+          "gain": 2931.7702100526067,
+          "minimum": -0.6942760544344628,
+          "peak": 2931.7702100526067,
+          "tail": 1737.3700824543835
+        },
+        "orate512": {
+          "activation": 156,
+          "drawdown": 11.865162148768832,
+          "early": 544.0460081298231,
+          "gain": 2931.7702100526067,
+          "minimum": -0.6942760544344628,
+          "peak": 2931.7702100526067,
+          "tail": 1737.3700824543835
+        },
+        "selfnorm": {
+          "activation": 156,
+          "drawdown": 9.813453092556301,
+          "early": 538.3879558676193,
+          "gain": 2909.0026786985986,
+          "minimum": 0.0,
+          "peak": 2909.0026786985986,
+          "tail": 1723.8611728543876
+        },
+        "slow": {
+          "activation": 156,
+          "drawdown": 11.865162148768832,
+          "early": 544.0460081298231,
+          "gain": 2931.7702100526067,
+          "minimum": -0.6942760544344628,
+          "peak": 2931.7702100526067,
+          "tail": 1737.3700824543835
+        },
+        "split": {
+          "activation": 156,
+          "drawdown": 10.568719927834081,
+          "early": 542.3396535177428,
+          "gain": 2771.1783061176207,
+          "minimum": 0.0,
+          "peak": 2771.1783061176207,
+          "tail": 1562.4309770582752
+        },
+        "witness": {
+          "activation": 156,
+          "drawdown": 11.865162148768832,
+          "early": 543.2592637035233,
+          "gain": 2930.8821740158683,
+          "minimum": -0.3193723240560715,
+          "peak": 2930.8821740158683,
+          "tail": 1737.3589820039238
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2656542480726785e-14,
+      "maximum_numeric_error": 1.8189894035458565e-12,
+      "regime": "recombined",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 242
+    },
+    {
+      "admission": 156,
+      "arms": {
+        "fast": {
+          "activation": 156,
+          "drawdown": 7.095669676263128,
+          "early": 538.6169400157331,
+          "gain": 1188.0584031284136,
+          "minimum": 0.0,
+          "peak": 1193.2435738773727,
+          "tail": 2.5171320475549255
+        },
+        "h8l4": {
+          "activation": 156,
+          "drawdown": 7.9638913486471665,
+          "early": 542.0514166175024,
+          "gain": 1193.1574440566046,
+          "minimum": 0.0,
+          "peak": 1200.9257395566704,
+          "tail": 1.004531059186836
+        },
+        "olevel0": {
+          "activation": 156,
+          "drawdown": 10.630399468663313,
+          "early": 544.0460081298231,
+          "gain": 1196.9172596457713,
+          "minimum": -0.6942760544344628,
+          "peak": 1203.326798817471,
+          "tail": 2.5171320475549255
+        },
+        "olevel128": {
+          "activation": 156,
+          "drawdown": 12.671548086744906,
+          "early": 544.0460081298231,
+          "gain": 1198.738805691029,
+          "minimum": -0.6942760544344628,
+          "peak": 1203.923976439988,
+          "tail": 4.338678092812097
+        },
+        "olevel32": {
+          "activation": 156,
+          "drawdown": 12.076905178035531,
+          "early": 544.0460081298231,
+          "gain": 1194.0654100595918,
+          "minimum": -0.6942760544344628,
+          "peak": 1203.326798817471,
+          "tail": -0.33471753862472836
+        },
+        "olevel512": {
+          "activation": 156,
+          "drawdown": 12.671548086744906,
+          "early": 544.0460081298231,
+          "gain": 1195.9127264658102,
+          "minimum": -0.6942760544344628,
+          "peak": 1204.8127060824995,
+          "tail": 1.5125988675934061
+        },
+        "orate0": {
+          "activation": 156,
+          "drawdown": 12.478316299627977,
+          "early": 544.0460081298231,
+          "gain": 1198.9928767921208,
+          "minimum": -0.6942760544344628,
+          "peak": 1204.388453625704,
+          "tail": 4.592749193903543
+        },
+        "orate128": {
+          "activation": 156,
+          "drawdown": 12.671548086744906,
+          "early": 544.0460081298231,
+          "gain": 1199.1619449215566,
+          "minimum": -0.6942760544344628,
+          "peak": 1204.5658585654503,
+          "tail": 4.76181732333901
+        },
+        "orate32": {
+          "activation": 156,
+          "drawdown": 12.67009478209684,
+          "early": 544.0460081298231,
+          "gain": 1199.0365084201067,
+          "minimum": -0.6942760544344628,
+          "peak": 1204.4328371362153,
+          "tail": 4.636380821891455
+        },
+        "orate512": {
+          "activation": 156,
+          "drawdown": 12.671548086744906,
+          "early": 544.0460081298231,
+          "gain": 1198.0658198999945,
+          "minimum": -0.6942760544344628,
+          "peak": 1204.8127060824995,
+          "tail": 3.6656923017789516
+        },
+        "selfnorm": {
+          "activation": 156,
+          "drawdown": 8.425707496104451,
+          "early": 538.3879558676193,
+          "gain": 1187.5210019951098,
+          "minimum": 0.0,
+          "peak": 1192.1060588583362,
+          "tail": 2.379496150896962
+        },
+        "slow": {
+          "activation": 156,
+          "drawdown": 12.671548086744906,
+          "early": 544.0460081298231,
+          "gain": 1193.7663886746927,
+          "minimum": -0.6942760544344628,
+          "peak": 1204.8127060824995,
+          "tail": -0.6337389235254619
+        },
+        "split": {
+          "activation": 156,
+          "drawdown": 10.716334023551326,
+          "early": 542.3396535177428,
+          "gain": 1208.1549464127897,
+          "minimum": 0.0,
+          "peak": 1218.8712797422515,
+          "tail": -0.592382646549335
+        },
+        "witness": {
+          "activation": 156,
+          "drawdown": 12.46351662788652,
+          "early": 543.2592637035233,
+          "gain": 1193.6865705236278,
+          "minimum": -0.3193723240560715,
+          "peak": 1203.8151163666912,
+          "tail": 0.16337851169175194
+        }
+      },
+      "clamp_values": {
+        "olevel0": -2.0726160292555322,
+        "olevel128": 0.7890792833945086,
+        "olevel32": -6.247015769219991,
+        "olevel512": -4.236451484931205,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2656542480726785e-14,
+      "maximum_numeric_error": 4.4224179873708636e-11,
+      "regime": "switched",
+      "switch_bytes": {
+        "olevel0": 8192,
+        "olevel128": 8320,
+        "olevel32": 8224,
+        "olevel512": 8704,
+        "orate0": 8192,
+        "orate128": 8320,
+        "orate32": 8224,
+        "orate512": 8704
+      },
+      "world": 242
+    },
+    {
+      "admission": 156,
+      "arms": {
+        "fast": {
+          "activation": 156,
+          "drawdown": 7.615817109201771,
+          "early": 538.6169400157331,
+          "gain": 1862.707839424122,
+          "minimum": 0.0,
+          "peak": 1867.4722403396927,
+          "tail": 677.1665683432557
+        },
+        "h8l4": {
+          "activation": 156,
+          "drawdown": 8.00004382862926,
+          "early": 542.0514166175024,
+          "gain": 1877.767283821652,
+          "minimum": 0.0,
+          "peak": 1882.688296330433,
+          "tail": 685.6143708242365
+        },
+        "olevel0": {
+          "activation": 156,
+          "drawdown": 13.476524220213832,
+          "early": 544.0460081298231,
+          "gain": 1884.8188861054873,
+          "minimum": -0.6942760544344628,
+          "peak": 1889.9042361151035,
+          "tail": 690.4187585072642
+        },
+        "olevel128": {
+          "activation": 156,
+          "drawdown": 13.476524220213832,
+          "early": 544.0460081298231,
+          "gain": 1884.8188861054873,
+          "minimum": -0.6942760544344628,
+          "peak": 1889.9042361151035,
+          "tail": 690.4187585072642
+        },
+        "olevel32": {
+          "activation": 156,
+          "drawdown": 13.476524220213832,
+          "early": 544.0460081298231,
+          "gain": 1884.8188861054873,
+          "minimum": -0.6942760544344628,
+          "peak": 1889.9042361151035,
+          "tail": 690.4187585072642
+        },
+        "olevel512": {
+          "activation": 156,
+          "drawdown": 13.476524220213832,
+          "early": 544.0460081298231,
+          "gain": 1884.8188861054873,
+          "minimum": -0.6942760544344628,
+          "peak": 1889.9042361151035,
+          "tail": 690.4187585072642
+        },
+        "orate0": {
+          "activation": 156,
+          "drawdown": 13.476524220213832,
+          "early": 544.0460081298231,
+          "gain": 1884.8188861054873,
+          "minimum": -0.6942760544344628,
+          "peak": 1889.9042361151035,
+          "tail": 690.4187585072642
+        },
+        "orate128": {
+          "activation": 156,
+          "drawdown": 13.476524220213832,
+          "early": 544.0460081298231,
+          "gain": 1884.8188861054873,
+          "minimum": -0.6942760544344628,
+          "peak": 1889.9042361151035,
+          "tail": 690.4187585072642
+        },
+        "orate32": {
+          "activation": 156,
+          "drawdown": 13.476524220213832,
+          "early": 544.0460081298231,
+          "gain": 1884.8188861054873,
+          "minimum": -0.6942760544344628,
+          "peak": 1889.9042361151035,
+          "tail": 690.4187585072642
+        },
+        "orate512": {
+          "activation": 156,
+          "drawdown": 13.476524220213832,
+          "early": 544.0460081298231,
+          "gain": 1884.8188861054873,
+          "minimum": -0.6942760544344628,
+          "peak": 1889.9042361151035,
+          "tail": 690.4187585072642
+        },
+        "selfnorm": {
+          "activation": 156,
+          "drawdown": 9.571502589858255,
+          "early": 538.3879558676193,
+          "gain": 1856.7182123373707,
+          "minimum": 0.0,
+          "peak": 1861.2640879891737,
+          "tail": 671.5767064931605
+        },
+        "slow": {
+          "activation": 156,
+          "drawdown": 13.476524220213832,
+          "early": 544.0460081298231,
+          "gain": 1884.8188861054873,
+          "minimum": -0.6942760544344628,
+          "peak": 1889.9042361151035,
+          "tail": 690.4187585072642
+        },
+        "split": {
+          "activation": 156,
+          "drawdown": 12.508217959913281,
+          "early": 542.3396535177428,
+          "gain": 2096.4508387017845,
+          "minimum": 0.0,
+          "peak": 2100.901204879853,
+          "tail": 887.7035096424452
+        },
+        "witness": {
+          "activation": 156,
+          "drawdown": 13.469749320890742,
+          "early": 543.2592637035233,
+          "gain": 1882.2275735752146,
+          "minimum": -0.3193723240560715,
+          "peak": 1887.3192187144018,
+          "tail": 688.7043815632762
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2656542480726785e-14,
+      "maximum_numeric_error": 1.5916157281026244e-12,
+      "regime": "moved_mid",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 242
+    },
+    {
+      "admission": null,
+      "arms": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2434497875801753e-14,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 242
+    },
+    {
+      "admission": 161,
+      "arms": {
+        "fast": {
+          "activation": 161,
+          "drawdown": 8.493659655146558,
+          "early": 441.0638304428718,
+          "gain": 2413.585859980808,
+          "minimum": -0.2198862680325524,
+          "peak": 2420.0045830722647,
+          "tail": 1403.3831661768543
+        },
+        "h8l4": {
+          "activation": 161,
+          "drawdown": 7.896516346434282,
+          "early": 444.4851413849661,
+          "gain": 2428.7165703732053,
+          "minimum": -0.2199473921792401,
+          "peak": 2435.0730941618203,
+          "tail": 1412.6820805972445
+        },
+        "olevel0": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 2435.5934945371127,
+          "minimum": -0.2199473921792401,
+          "peak": 2442.4922413497457,
+          "tail": 1416.4924601070513
+        },
+        "olevel128": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 2435.5934945371127,
+          "minimum": -0.2199473921792401,
+          "peak": 2442.4922413497457,
+          "tail": 1416.4924601070513
+        },
+        "olevel32": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 2435.5934945371127,
+          "minimum": -0.2199473921792401,
+          "peak": 2442.4922413497457,
+          "tail": 1416.4924601070513
+        },
+        "olevel512": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 2435.5934945371127,
+          "minimum": -0.2199473921792401,
+          "peak": 2442.4922413497457,
+          "tail": 1416.4924601070513
+        },
+        "orate0": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 2435.5934945371127,
+          "minimum": -0.2199473921792401,
+          "peak": 2442.4922413497457,
+          "tail": 1416.4924601070513
+        },
+        "orate128": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 2435.5934945371127,
+          "minimum": -0.2199473921792401,
+          "peak": 2442.4922413497457,
+          "tail": 1416.4924601070513
+        },
+        "orate32": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 2435.5934945371127,
+          "minimum": -0.2199473921792401,
+          "peak": 2442.4922413497457,
+          "tail": 1416.4924601070513
+        },
+        "orate512": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 2435.5934945371127,
+          "minimum": -0.2199473921792401,
+          "peak": 2442.4922413497457,
+          "tail": 1416.4924601070513
+        },
+        "selfnorm": {
+          "activation": 161,
+          "drawdown": 9.482640006843809,
+          "early": 436.7047462182596,
+          "gain": 2388.072757985608,
+          "minimum": -0.2199473921792401,
+          "peak": 2394.8047094367485,
+          "tail": 1388.7243069864417
+        },
+        "slow": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 2435.5934945371127,
+          "minimum": -0.2199473921792401,
+          "peak": 2442.4922413497457,
+          "tail": 1416.4924601070513
+        },
+        "split": {
+          "activation": 161,
+          "drawdown": 11.801947687760602,
+          "early": 453.9452068371558,
+          "gain": 1954.758586694612,
+          "minimum": -0.11056095834362756,
+          "peak": 1962.4383101780138,
+          "tail": 1049.720691914926
+        },
+        "witness": {
+          "activation": 161,
+          "drawdown": 11.504972489685883,
+          "early": 445.34417483138327,
+          "gain": 2434.347468973062,
+          "minimum": -0.2199473921792401,
+          "peak": 2441.246215785695,
+          "tail": 1416.3658673151392
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2656542480726785e-14,
+      "maximum_numeric_error": 2.2737367544323206e-12,
+      "regime": "recombined",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 243
+    },
+    {
+      "admission": 161,
+      "arms": {
+        "fast": {
+          "activation": 161,
+          "drawdown": 8.493659655146558,
+          "early": 441.0638304428718,
+          "gain": 1010.2146255339854,
+          "minimum": -0.2198862680325524,
+          "peak": 1015.2405877588723,
+          "tail": 0.011931730016288333
+        },
+        "h8l4": {
+          "activation": 161,
+          "drawdown": 7.896516346434282,
+          "early": 444.4851413849661,
+          "gain": 1014.8289034066476,
+          "minimum": -0.2199473921792401,
+          "peak": 1022.558200829465,
+          "tail": -1.2055863693126778
+        },
+        "olevel0": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 1019.1129661600768,
+          "minimum": -0.2199473921792401,
+          "peak": 1026.2482700547034,
+          "tail": 0.011931730016288333
+        },
+        "olevel128": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 1021.1285220724602,
+          "minimum": -0.2199473921792401,
+          "peak": 1026.2482700547034,
+          "tail": 2.027487642399811
+        },
+        "olevel32": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 1019.373361430413,
+          "minimum": -0.2199473921792401,
+          "peak": 1026.2482700547034,
+          "tail": 0.2723270003524719
+        },
+        "olevel512": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 1015.8108361147744,
+          "minimum": -0.2199473921792401,
+          "peak": 1026.2482700547034,
+          "tail": -3.2901983152848646
+        },
+        "orate0": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 1019.1567450491488,
+          "minimum": -0.2199473921792401,
+          "peak": 1026.2482700547034,
+          "tail": 0.05571061908812225
+        },
+        "orate128": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 1018.4703469190256,
+          "minimum": -0.2199473921792401,
+          "peak": 1026.2482700547034,
+          "tail": -0.630687511034813
+        },
+        "orate32": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 1019.1671862534232,
+          "minimum": -0.2199473921792401,
+          "peak": 1026.2482700547034,
+          "tail": 0.06615182336246861
+        },
+        "orate512": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 1015.3672167774512,
+          "minimum": -0.2199473921792401,
+          "peak": 1026.2482700547034,
+          "tail": -3.7338176526091065
+        },
+        "selfnorm": {
+          "activation": 161,
+          "drawdown": 9.482640006843809,
+          "early": 436.7047462182596,
+          "gain": 999.2664222935651,
+          "minimum": -0.2199473921792401,
+          "peak": 1003.0033089009711,
+          "tail": -0.08202870560295183
+        },
+        "slow": {
+          "activation": 161,
+          "drawdown": 11.64133229257888,
+          "early": 446.318239359183,
+          "gain": 1015.3627108886216,
+          "minimum": -0.2199473921792401,
+          "peak": 1026.2482700547034,
+          "tail": -3.7383235414378717
+        },
+        "split": {
+          "activation": 161,
+          "drawdown": 11.801947687760602,
+          "early": 453.9452068371558,
+          "gain": 896.8183792140321,
+          "minimum": -0.11056095834362756,
+          "peak": 908.3428793486185,
+          "tail": -8.219515565655719
+        },
+        "witness": {
+          "activation": 161,
+          "drawdown": 11.504972489685883,
+          "early": 445.34417483138327,
+          "gain": 1014.9822480580768,
+          "minimum": -0.2199473921792401,
+          "peak": 1025.1271245583193,
+          "tail": -2.9993535998469056
+        }
+      },
+      "clamp_values": {
+        "olevel0": -2.007780524110715,
+        "olevel128": 1.5911137799311525,
+        "olevel32": -1.7103811406367537,
+        "olevel512": -8.143674409143987,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2656542480726785e-14,
+      "maximum_numeric_error": 4.172306944383308e-11,
+      "regime": "switched",
+      "switch_bytes": {
+        "olevel0": 8192,
+        "olevel128": 8320,
+        "olevel32": 8224,
+        "olevel512": 8704,
+        "orate0": 8192,
+        "orate128": 8320,
+        "orate32": 8224,
+        "orate512": 8704
+      },
+      "world": 243
+    },
+    {
+      "admission": 161,
+      "arms": {
+        "fast": {
+          "activation": 161,
+          "drawdown": 8.493659655146558,
+          "early": 441.0638304428718,
+          "gain": 1463.3462438649135,
+          "minimum": -0.2198862680325524,
+          "peak": 1467.9133857882591,
+          "tail": 453.1435500609431
+        },
+        "h8l4": {
+          "activation": 161,
+          "drawdown": 7.998845762268502,
+          "early": 444.4851413849661,
+          "gain": 1478.125979160658,
+          "minimum": -0.2199473921792401,
+          "peak": 1482.6764138198703,
+          "tail": 462.09148938470327
+        },
+        "olevel0": {
+          "activation": 161,
+          "drawdown": 14.287328807523409,
+          "early": 446.318239359183,
+          "gain": 1485.719172153617,
+          "minimum": -0.2199473921792401,
+          "peak": 1490.4003910467402,
+          "tail": 466.6181377235502
+        },
+        "olevel128": {
+          "activation": 161,
+          "drawdown": 14.287328807523409,
+          "early": 446.318239359183,
+          "gain": 1485.719172153617,
+          "minimum": -0.2199473921792401,
+          "peak": 1490.4003910467402,
+          "tail": 466.6181377235502
+        },
+        "olevel32": {
+          "activation": 161,
+          "drawdown": 14.287328807523409,
+          "early": 446.318239359183,
+          "gain": 1485.719172153617,
+          "minimum": -0.2199473921792401,
+          "peak": 1490.4003910467402,
+          "tail": 466.6181377235502
+        },
+        "olevel512": {
+          "activation": 161,
+          "drawdown": 14.287328807523409,
+          "early": 446.318239359183,
+          "gain": 1485.719172153617,
+          "minimum": -0.2199473921792401,
+          "peak": 1490.4003910467402,
+          "tail": 466.6181377235502
+        },
+        "orate0": {
+          "activation": 161,
+          "drawdown": 14.287328807523409,
+          "early": 446.318239359183,
+          "gain": 1485.719172153617,
+          "minimum": -0.2199473921792401,
+          "peak": 1490.4003910467402,
+          "tail": 466.6181377235502
+        },
+        "orate128": {
+          "activation": 161,
+          "drawdown": 14.287328807523409,
+          "early": 446.318239359183,
+          "gain": 1485.719172153617,
+          "minimum": -0.2199473921792401,
+          "peak": 1490.4003910467402,
+          "tail": 466.6181377235502
+        },
+        "orate32": {
+          "activation": 161,
+          "drawdown": 14.287328807523409,
+          "early": 446.318239359183,
+          "gain": 1485.719172153617,
+          "minimum": -0.2199473921792401,
+          "peak": 1490.4003910467402,
+          "tail": 466.6181377235502
+        },
+        "orate512": {
+          "activation": 161,
+          "drawdown": 14.287328807523409,
+          "early": 446.318239359183,
+          "gain": 1485.719172153617,
+          "minimum": -0.2199473921792401,
+          "peak": 1490.4003910467402,
+          "tail": 466.6181377235502
+        },
+        "selfnorm": {
+          "activation": 161,
+          "drawdown": 10.442077487384495,
+          "early": 436.7047462182596,
+          "gain": 1445.461749664663,
+          "minimum": -0.2199473921792401,
+          "peak": 1450.11781183481,
+          "tail": 446.1132986654913
+        },
+        "slow": {
+          "activation": 161,
+          "drawdown": 14.287328807523409,
+          "early": 446.318239359183,
+          "gain": 1485.719172153617,
+          "minimum": -0.2199473921792401,
+          "peak": 1490.4003910467402,
+          "tail": 466.6181377235502
+        },
+        "split": {
+          "activation": 161,
+          "drawdown": 13.886000823847553,
+          "early": 453.9452068371558,
+          "gain": 1477.2392983145223,
+          "minimum": -0.11056095834362756,
+          "peak": 1481.8603158051837,
+          "tail": 572.2014035348337
+        },
+        "witness": {
+          "activation": 161,
+          "drawdown": 14.284143790961707,
+          "early": 445.34417483138327,
+          "gain": 1481.7493735594765,
+          "minimum": -0.2199473921792401,
+          "peak": 1486.4305924512962,
+          "tail": 463.76777190155354
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2656542480726785e-14,
+      "maximum_numeric_error": 3.183231456205249e-12,
+      "regime": "moved_mid",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 243
+    },
+    {
+      "admission": null,
+      "arms": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.1546319456101628e-14,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 243
+    },
+    {
+      "admission": 112,
+      "arms": {
+        "fast": {
+          "activation": 112,
+          "drawdown": 7.64137975363019,
+          "early": 832.9214517216853,
+          "gain": 3892.0122091706535,
+          "minimum": -0.9099231639597916,
+          "peak": 3892.6263159820196,
+          "tail": 2164.5984603289035
+        },
+        "h8l4": {
+          "activation": 112,
+          "drawdown": 7.772776052549943,
+          "early": 836.154707460782,
+          "gain": 3904.811837029626,
+          "minimum": -0.9112974325147616,
+          "peak": 3905.4304207174914,
+          "tail": 2170.7723733194757
+        },
+        "olevel0": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 3914.5664653794593,
+          "minimum": -0.9116555381741707,
+          "peak": 3915.187986556301,
+          "tail": 2175.96272402883
+        },
+        "olevel128": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 3914.5664653794593,
+          "minimum": -0.9116555381741707,
+          "peak": 3915.187986556301,
+          "tail": 2175.96272402883
+        },
+        "olevel32": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 3914.5664653794593,
+          "minimum": -0.9116555381741707,
+          "peak": 3915.187986556301,
+          "tail": 2175.96272402883
+        },
+        "olevel512": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 3914.5664653794593,
+          "minimum": -0.9116555381741707,
+          "peak": 3915.187986556301,
+          "tail": 2175.96272402883
+        },
+        "orate0": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 3914.5664653794593,
+          "minimum": -0.9116555381741707,
+          "peak": 3915.187986556301,
+          "tail": 2175.96272402883
+        },
+        "orate128": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 3914.5664653794593,
+          "minimum": -0.9116555381741707,
+          "peak": 3915.187986556301,
+          "tail": 2175.96272402883
+        },
+        "orate32": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 3914.5664653794593,
+          "minimum": -0.9116555381741707,
+          "peak": 3915.187986556301,
+          "tail": 2175.96272402883
+        },
+        "orate512": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 3914.5664653794593,
+          "minimum": -0.9116555381741707,
+          "peak": 3915.187986556301,
+          "tail": 2175.96272402883
+        },
+        "selfnorm": {
+          "activation": 112,
+          "drawdown": 9.541374257329608,
+          "early": 833.949826443294,
+          "gain": 3891.5099465941757,
+          "minimum": -0.9112974325147616,
+          "peak": 3892.131398765488,
+          "tail": 2164.649708904649
+        },
+        "slow": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 3914.5664653794593,
+          "minimum": -0.9116555381741707,
+          "peak": 3915.187986556301,
+          "tail": 2175.96272402883
+        },
+        "split": {
+          "activation": 112,
+          "drawdown": 9.218679760813302,
+          "early": 492.35132160614495,
+          "gain": 2459.993938428927,
+          "minimum": -0.6609005533976045,
+          "peak": 2460.6154347070633,
+          "tail": 1441.7938081662844
+        },
+        "witness": {
+          "activation": 112,
+          "drawdown": 10.373292950549398,
+          "early": 838.1718228501704,
+          "gain": 3914.279241223824,
+          "minimum": -0.9112974325147616,
+          "peak": 3914.900762400666,
+          "tail": 2175.933585346375
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2656542480726785e-14,
+      "maximum_numeric_error": 2.7284841053187847e-12,
+      "regime": "recombined",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 244
+    },
+    {
+      "admission": 112,
+      "arms": {
+        "fast": {
+          "activation": 112,
+          "drawdown": 7.303956322441991,
+          "early": 832.9214517216853,
+          "gain": 1725.9028862082082,
+          "minimum": -0.9099231639597916,
+          "peak": 1731.5612138983647,
+          "tail": -1.5108626335420527
+        },
+        "h8l4": {
+          "activation": 112,
+          "drawdown": 7.976102701932632,
+          "early": 836.154707460782,
+          "gain": 1730.3202258706071,
+          "minimum": -0.9112974325147616,
+          "peak": 1738.1981910868858,
+          "tail": -3.719237839543098
+        },
+        "olevel0": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 1737.092878717096,
+          "minimum": -0.9116555381741707,
+          "peak": 1742.7512064072528,
+          "tail": -1.5108626335420527
+        },
+        "olevel128": {
+          "activation": 112,
+          "drawdown": 13.100301203171512,
+          "early": 838.4299083233481,
+          "gain": 1731.3180244683385,
+          "minimum": -0.9116555381741707,
+          "peak": 1742.7726970392246,
+          "tail": -7.28571688229897
+        },
+        "olevel32": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 1736.0352763507885,
+          "minimum": -0.9116555381741707,
+          "peak": 1742.7726970392246,
+          "tail": -2.5684649998496667
+        },
+        "olevel512": {
+          "activation": 112,
+          "drawdown": 13.277026941063923,
+          "early": 838.4299083233481,
+          "gain": 1731.4185489712117,
+          "minimum": -0.9116555381741707,
+          "peak": 1742.7726970392246,
+          "tail": -7.185192379426776
+        },
+        "orate0": {
+          "activation": 112,
+          "drawdown": 10.486509830072542,
+          "early": 838.4299083233481,
+          "gain": 1737.0523156721508,
+          "minimum": -0.9116555381741707,
+          "peak": 1742.7714662583674,
+          "tail": -1.5514256784883902
+        },
+        "orate128": {
+          "activation": 112,
+          "drawdown": 13.275894233642475,
+          "early": 838.4299083233481,
+          "gain": 1736.745903377297,
+          "minimum": -0.9116555381741707,
+          "peak": 1742.7726970392246,
+          "tail": -1.8578379733434702
+        },
+        "orate32": {
+          "activation": 112,
+          "drawdown": 11.88489935075404,
+          "early": 838.4299083233481,
+          "gain": 1736.630383136206,
+          "minimum": -0.9116555381741707,
+          "peak": 1742.7726970392246,
+          "tail": -1.9733582144309771
+        },
+        "orate512": {
+          "activation": 112,
+          "drawdown": 13.277026941063923,
+          "early": 838.4299083233481,
+          "gain": 1732.546436967658,
+          "minimum": -0.9116555381741707,
+          "peak": 1742.7726970392246,
+          "tail": -6.057304382979493
+        },
+        "selfnorm": {
+          "activation": 112,
+          "drawdown": 8.34797585261731,
+          "early": 833.949826443294,
+          "gain": 1726.6819494517354,
+          "minimum": -0.9112974325147616,
+          "peak": 1731.0213107868167,
+          "tail": -0.17828823779862912
+        },
+        "slow": {
+          "activation": 112,
+          "drawdown": 13.277026941063923,
+          "early": 838.4299083233481,
+          "gain": 1731.4238797393466,
+          "minimum": -0.9116555381741707,
+          "peak": 1742.7726970392246,
+          "tail": -7.179861611292701
+        },
+        "split": {
+          "activation": 112,
+          "drawdown": 12.077958957757232,
+          "early": 492.35132160614495,
+          "gain": 1007.1856870499703,
+          "minimum": -0.6609005533976045,
+          "peak": 1019.2227293307898,
+          "tail": -11.014443212685606
+        },
+        "witness": {
+          "activation": 112,
+          "drawdown": 13.139361236506375,
+          "early": 838.1718228501704,
+          "gain": 1731.1958008513234,
+          "minimum": -0.9112974325147616,
+          "peak": 1742.5146115660468,
+          "tail": -7.149855026136999
+        }
+      },
+      "clamp_values": {
+        "olevel0": 6.037227487243021,
+        "olevel128": -8.911024666467567,
+        "olevel32": -0.2857363359286174,
+        "olevel512": -14.51131101466471,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2656542480726785e-14,
+      "maximum_numeric_error": 1.0345502232667059e-10,
+      "regime": "switched",
+      "switch_bytes": {
+        "olevel0": 8192,
+        "olevel128": 8320,
+        "olevel32": 8224,
+        "olevel512": 8704,
+        "orate0": 8192,
+        "orate128": 8320,
+        "orate32": 8224,
+        "orate512": 8704
+      },
+      "world": 244
+    },
+    {
+      "admission": 112,
+      "arms": {
+        "fast": {
+          "activation": 112,
+          "drawdown": 7.928446812117272,
+          "early": 832.9214517216853,
+          "gain": 2762.1898236786374,
+          "minimum": -0.9099231639597916,
+          "peak": 2767.2045817622743,
+          "tail": 1034.7760748369003
+        },
+        "h8l4": {
+          "activation": 112,
+          "drawdown": 8.004357798582078,
+          "early": 836.154707460782,
+          "gain": 2776.511501234288,
+          "minimum": -0.9112974325147616,
+          "peak": 2781.5013701836406,
+          "tail": 1042.4720375241307
+        },
+        "olevel0": {
+          "activation": 112,
+          "drawdown": 13.926324092342384,
+          "early": 838.4299083233481,
+          "gain": 2784.562545430071,
+          "minimum": -0.9116555381741707,
+          "peak": 2789.7355976465115,
+          "tail": 1045.958804079438
+        },
+        "olevel128": {
+          "activation": 112,
+          "drawdown": 13.926324092342384,
+          "early": 838.4299083233481,
+          "gain": 2784.562545430071,
+          "minimum": -0.9116555381741707,
+          "peak": 2789.7355976465115,
+          "tail": 1045.958804079438
+        },
+        "olevel32": {
+          "activation": 112,
+          "drawdown": 13.926324092342384,
+          "early": 838.4299083233481,
+          "gain": 2784.562545430071,
+          "minimum": -0.9116555381741707,
+          "peak": 2789.7355976465115,
+          "tail": 1045.958804079438
+        },
+        "olevel512": {
+          "activation": 112,
+          "drawdown": 13.926324092342384,
+          "early": 838.4299083233481,
+          "gain": 2784.562545430071,
+          "minimum": -0.9116555381741707,
+          "peak": 2789.7355976465115,
+          "tail": 1045.958804079438
+        },
+        "orate0": {
+          "activation": 112,
+          "drawdown": 13.926324092342384,
+          "early": 838.4299083233481,
+          "gain": 2784.562545430071,
+          "minimum": -0.9116555381741707,
+          "peak": 2789.7355976465115,
+          "tail": 1045.958804079438
+        },
+        "orate128": {
+          "activation": 112,
+          "drawdown": 13.926324092342384,
+          "early": 838.4299083233481,
+          "gain": 2784.562545430071,
+          "minimum": -0.9116555381741707,
+          "peak": 2789.7355976465115,
+          "tail": 1045.958804079438
+        },
+        "orate32": {
+          "activation": 112,
+          "drawdown": 13.926324092342384,
+          "early": 838.4299083233481,
+          "gain": 2784.562545430071,
+          "minimum": -0.9116555381741707,
+          "peak": 2789.7355976465115,
+          "tail": 1045.958804079438
+        },
+        "orate512": {
+          "activation": 112,
+          "drawdown": 13.926324092342384,
+          "early": 838.4299083233481,
+          "gain": 2784.562545430071,
+          "minimum": -0.9116555381741707,
+          "peak": 2789.7355976465115,
+          "tail": 1045.958804079438
+        },
+        "selfnorm": {
+          "activation": 112,
+          "drawdown": 11.307842060895382,
+          "early": 833.949826443294,
+          "gain": 2756.5439880749573,
+          "minimum": -0.9112974325147616,
+          "peak": 2761.4509639200924,
+          "tail": 1029.6837503854267
+        },
+        "slow": {
+          "activation": 112,
+          "drawdown": 13.926324092342384,
+          "early": 838.4299083233481,
+          "gain": 2784.562545430071,
+          "minimum": -0.9116555381741707,
+          "peak": 2789.7355976465115,
+          "tail": 1045.958804079438
+        },
+        "split": {
+          "activation": 112,
+          "drawdown": 9.761929017510965,
+          "early": 492.35132160614495,
+          "gain": 1842.9081305953068,
+          "minimum": -0.6609005533976045,
+          "peak": 1843.5449141509177,
+          "tail": 824.708000332652
+        },
+        "witness": {
+          "activation": 112,
+          "drawdown": 13.926151779715838,
+          "early": 838.1718228501704,
+          "gain": 2783.2110708841656,
+          "minimum": -0.9112974325147616,
+          "peak": 2788.3841179499304,
+          "tail": 1044.8654150067118
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2656542480726785e-14,
+      "maximum_numeric_error": 1.8189894035458565e-12,
+      "regime": "moved_mid",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 244
+    },
+    {
+      "admission": null,
+      "arms": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.176836406102666e-14,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 244
+    },
+    {
+      "admission": 147,
+      "arms": {
+        "fast": {
+          "activation": 147,
+          "drawdown": 8.21184202640086,
+          "early": 316.70786289743904,
+          "gain": 1955.665921749992,
+          "minimum": 0.0,
+          "peak": 1957.900782327092,
+          "tail": 1134.0550082246514
+        },
+        "h8l4": {
+          "activation": 147,
+          "drawdown": 7.988670018664578,
+          "early": 319.8737416635711,
+          "gain": 1970.9905113930517,
+          "minimum": 0.0,
+          "peak": 1973.229687514155,
+          "tail": 1142.0457196277773
+        },
+        "olevel0": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 1978.1572515379355,
+          "minimum": 0.0,
+          "peak": 1980.4172553152769,
+          "tail": 1145.4193160094221
+        },
+        "olevel128": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 1978.1572515379355,
+          "minimum": 0.0,
+          "peak": 1980.4172553152769,
+          "tail": 1145.4193160094221
+        },
+        "olevel32": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 1978.1572515379355,
+          "minimum": 0.0,
+          "peak": 1980.4172553152769,
+          "tail": 1145.4193160094221
+        },
+        "olevel512": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 1978.1572515379355,
+          "minimum": 0.0,
+          "peak": 1980.4172553152769,
+          "tail": 1145.4193160094221
+        },
+        "orate0": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 1978.1572515379355,
+          "minimum": 0.0,
+          "peak": 1980.4172553152769,
+          "tail": 1145.4193160094221
+        },
+        "orate128": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 1978.1572515379355,
+          "minimum": 0.0,
+          "peak": 1980.4172553152769,
+          "tail": 1145.4193160094221
+        },
+        "orate32": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 1978.1572515379355,
+          "minimum": 0.0,
+          "peak": 1980.4172553152769,
+          "tail": 1145.4193160094221
+        },
+        "orate512": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 1978.1572515379355,
+          "minimum": 0.0,
+          "peak": 1980.4172553152769,
+          "tail": 1145.4193160094221
+        },
+        "selfnorm": {
+          "activation": 147,
+          "drawdown": 8.501348132458588,
+          "early": 315.0214045569528,
+          "gain": 1936.920325600034,
+          "minimum": 0.0,
+          "peak": 1939.1712535192937,
+          "tail": 1121.9667260620195
+        },
+        "slow": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 1978.1572515379355,
+          "minimum": 0.0,
+          "peak": 1980.4172553152769,
+          "tail": 1145.4193160094221
+        },
+        "split": {
+          "activation": 147,
+          "drawdown": 11.757012680713387,
+          "early": 416.6893900766142,
+          "gain": 1961.0406414408733,
+          "minimum": 0.0,
+          "peak": 1961.0406414408733,
+          "tail": 1038.3795550968946
+        },
+        "witness": {
+          "activation": 147,
+          "drawdown": 13.469979052352357,
+          "early": 320.5202061535808,
+          "gain": 1975.616635967312,
+          "minimum": 0.0,
+          "peak": 1977.876639722306,
+          "tail": 1144.7241291309006
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2878587085651816e-14,
+      "maximum_numeric_error": 1.8189894035458565e-12,
+      "regime": "recombined",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 245
+    },
+    {
+      "admission": 147,
+      "arms": {
+        "fast": {
+          "activation": 147,
+          "drawdown": 8.815975916343405,
+          "early": 316.70786289743904,
+          "gain": 974.3833380084656,
+          "minimum": 0.0,
+          "peak": 983.199313924809,
+          "tail": 152.7724244831288
+        },
+        "h8l4": {
+          "activation": 147,
+          "drawdown": 8.00351081531187,
+          "early": 319.8737416635711,
+          "gain": 985.0662733655798,
+          "minimum": 0.0,
+          "peak": 993.0697841808917,
+          "tail": 156.12148160030824
+        },
+        "olevel0": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 985.510360011638,
+          "minimum": 0.0,
+          "peak": 994.3263359279814,
+          "tail": 152.7724244831288
+        },
+        "olevel128": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 985.687644236909,
+          "minimum": 0.0,
+          "peak": 994.5036201532524,
+          "tail": 152.94970870839992
+        },
+        "olevel32": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 985.5370141092945,
+          "minimum": 0.0,
+          "peak": 994.352990025638,
+          "tail": 152.79907858078533
+        },
+        "olevel512": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 982.4716421404506,
+          "minimum": 0.0,
+          "peak": 991.287618056794,
+          "tail": 149.73370661194187
+        },
+        "orate0": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 985.5462285015552,
+          "minimum": 0.0,
+          "peak": 994.3622044178986,
+          "tail": 152.8082929730468
+        },
+        "orate128": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 985.7238357089037,
+          "minimum": 0.0,
+          "peak": 994.5398116252471,
+          "tail": 152.98590018039496
+        },
+        "orate32": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 985.590630303392,
+          "minimum": 0.0,
+          "peak": 994.4066062197354,
+          "tail": 152.85269477488382
+        },
+        "orate512": {
+          "activation": 147,
+          "drawdown": 13.4950338406652,
+          "early": 321.8772362222249,
+          "gain": 986.2566573309479,
+          "minimum": 0.0,
+          "peak": 995.0726332472913,
+          "tail": 153.51872180243922
+        },
+        "selfnorm": {
+          "activation": 147,
+          "drawdown": 8.379642735131142,
+          "early": 315.0214045569528,
+          "gain": 969.3554662635086,
+          "minimum": 0.0,
+          "peak": 975.2264913739731,
+          "tail": 154.40186672549035
+        },
+        "slow": {
+          "activation": 147,
+          "drawdown": 14.816153590749423,
+          "early": 321.8772362222249,
+          "gain": 983.3508577922994,
+          "minimum": 0.0,
+          "peak": 998.1670113830488,
+          "tail": 150.61292226379047
+        },
+        "split": {
+          "activation": 147,
+          "drawdown": 10.377242083033593,
+          "early": 416.6893900766142,
+          "gain": 915.7564815369993,
+          "minimum": 0.0,
+          "peak": 926.1009140781304,
+          "tail": -6.904604806979597
+        },
+        "witness": {
+          "activation": 147,
+          "drawdown": 14.81029406828236,
+          "early": 320.5202061535808,
+          "gain": 980.5857673688718,
+          "minimum": 0.0,
+          "peak": 995.396061437154,
+          "tail": 149.69326053246562
+        }
+      },
+      "clamp_values": {
+        "olevel0": 5.289632011206523,
+        "olevel128": 5.275855007229422,
+        "olevel32": 4.699926964360766,
+        "olevel512": -3.9908270406383037,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2878587085651816e-14,
+      "maximum_numeric_error": 2.2794210963184014e-11,
+      "regime": "switched",
+      "switch_bytes": {
+        "olevel0": 8192,
+        "olevel128": 8320,
+        "olevel32": 8224,
+        "olevel512": 8704,
+        "orate0": 8192,
+        "orate128": 8320,
+        "orate32": 8224,
+        "orate512": 8704
+      },
+      "world": 245
+    },
+    {
+      "admission": 147,
+      "arms": {
+        "fast": {
+          "activation": 147,
+          "drawdown": 8.358147679433273,
+          "early": 316.70786289743904,
+          "gain": 1109.7232563442797,
+          "minimum": 0.0,
+          "peak": 1115.3305354152083,
+          "tail": 288.11234281894025
+        },
+        "h8l4": {
+          "activation": 147,
+          "drawdown": 7.991470916061303,
+          "early": 319.8737416635711,
+          "gain": 1121.6806281880965,
+          "minimum": 0.0,
+          "peak": 1129.6010867911762,
+          "tail": 292.73583642282773
+        },
+        "olevel0": {
+          "activation": 147,
+          "drawdown": 13.769540699815707,
+          "early": 321.8772362222249,
+          "gain": 1125.4175238933137,
+          "minimum": 0.0,
+          "peak": 1136.961673512457,
+          "tail": 292.67958836480875
+        },
+        "olevel128": {
+          "activation": 147,
+          "drawdown": 13.769540699815707,
+          "early": 321.8772362222249,
+          "gain": 1125.4175238933137,
+          "minimum": 0.0,
+          "peak": 1136.961673512457,
+          "tail": 292.67958836480875
+        },
+        "olevel32": {
+          "activation": 147,
+          "drawdown": 13.769540699815707,
+          "early": 321.8772362222249,
+          "gain": 1125.4175238933137,
+          "minimum": 0.0,
+          "peak": 1136.961673512457,
+          "tail": 292.67958836480875
+        },
+        "olevel512": {
+          "activation": 147,
+          "drawdown": 13.769540699815707,
+          "early": 321.8772362222249,
+          "gain": 1125.4175238933137,
+          "minimum": 0.0,
+          "peak": 1136.961673512457,
+          "tail": 292.67958836480875
+        },
+        "orate0": {
+          "activation": 147,
+          "drawdown": 13.769540699815707,
+          "early": 321.8772362222249,
+          "gain": 1125.4175238933137,
+          "minimum": 0.0,
+          "peak": 1136.961673512457,
+          "tail": 292.67958836480875
+        },
+        "orate128": {
+          "activation": 147,
+          "drawdown": 13.769540699815707,
+          "early": 321.8772362222249,
+          "gain": 1125.4175238933137,
+          "minimum": 0.0,
+          "peak": 1136.961673512457,
+          "tail": 292.67958836480875
+        },
+        "orate32": {
+          "activation": 147,
+          "drawdown": 13.769540699815707,
+          "early": 321.8772362222249,
+          "gain": 1125.4175238933137,
+          "minimum": 0.0,
+          "peak": 1136.961673512457,
+          "tail": 292.67958836480875
+        },
+        "orate512": {
+          "activation": 147,
+          "drawdown": 13.769540699815707,
+          "early": 321.8772362222249,
+          "gain": 1125.4175238933137,
+          "minimum": 0.0,
+          "peak": 1136.961673512457,
+          "tail": 292.67958836480875
+        },
+        "selfnorm": {
+          "activation": 147,
+          "drawdown": 9.700714635862141,
+          "early": 315.0214045569528,
+          "gain": 1101.0763907211467,
+          "minimum": 0.0,
+          "peak": 1106.5923278410446,
+          "tail": 286.1227911831317
+        },
+        "slow": {
+          "activation": 147,
+          "drawdown": 13.769540699815707,
+          "early": 321.8772362222249,
+          "gain": 1125.4175238933137,
+          "minimum": 0.0,
+          "peak": 1136.961673512457,
+          "tail": 292.67958836480875
+        },
+        "split": {
+          "activation": 147,
+          "drawdown": 11.136570880334375,
+          "early": 416.6893900766142,
+          "gain": 1591.1713175808495,
+          "minimum": 0.0,
+          "peak": 1591.1713175808495,
+          "tail": 668.5102312368676
+        },
+        "witness": {
+          "activation": 147,
+          "drawdown": 13.681284612558443,
+          "early": 320.5202061535808,
+          "gain": 1120.80975266184,
+          "minimum": 0.0,
+          "peak": 1132.2375098933533,
+          "tail": 289.91724582543515
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2878587085651816e-14,
+      "maximum_numeric_error": 2.9558577807620168e-12,
+      "regime": "moved_mid",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 245
+    },
+    {
+      "admission": null,
+      "arms": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.1546319456101628e-14,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 245
+    },
+    {
+      "admission": 198,
+      "arms": {
+        "fast": {
+          "activation": 198,
+          "drawdown": 9.003606098986154,
+          "early": 82.0634203695063,
+          "gain": 1599.3766265611603,
+          "minimum": 0.0,
+          "peak": 1601.1738615519341,
+          "tail": 1141.3059147453941
+        },
+        "h8l4": {
+          "activation": 198,
+          "drawdown": 7.981604186665038,
+          "early": 85.49810424782586,
+          "gain": 1615.2292593333511,
+          "minimum": 0.0,
+          "peak": 1617.0638814669292,
+          "tail": 1149.5997799142121
+        },
+        "olevel0": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 1621.7502567301767,
+          "minimum": -0.7929986583718813,
+          "peak": 1623.5987687036713,
+          "tail": 1152.6438061974618
+        },
+        "olevel128": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 1621.7502567301767,
+          "minimum": -0.7929986583718813,
+          "peak": 1623.5987687036713,
+          "tail": 1152.6438061974618
+        },
+        "olevel32": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 1621.7502567301767,
+          "minimum": -0.7929986583718813,
+          "peak": 1623.5987687036713,
+          "tail": 1152.6438061974618
+        },
+        "olevel512": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 1621.7502567301767,
+          "minimum": -0.7929986583718813,
+          "peak": 1623.5987687036713,
+          "tail": 1152.6438061974618
+        },
+        "orate0": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 1621.7502567301767,
+          "minimum": -0.7929986583718813,
+          "peak": 1623.5987687036713,
+          "tail": 1152.6438061974618
+        },
+        "orate128": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 1621.7502567301767,
+          "minimum": -0.7929986583718813,
+          "peak": 1623.5987687036713,
+          "tail": 1152.6438061974618
+        },
+        "orate32": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 1621.7502567301767,
+          "minimum": -0.7929986583718813,
+          "peak": 1623.5987687036713,
+          "tail": 1152.6438061974618
+        },
+        "orate512": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 1621.7502567301767,
+          "minimum": -0.7929986583718813,
+          "peak": 1623.5987687036713,
+          "tail": 1152.6438061974618
+        },
+        "selfnorm": {
+          "activation": 198,
+          "drawdown": 9.126866650155861,
+          "early": 80.72768675918584,
+          "gain": 1565.4889704071481,
+          "minimum": 0.0,
+          "peak": 1566.9313422914206,
+          "tail": 1117.5679696841578
+        },
+        "slow": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 1621.7502567301767,
+          "minimum": -0.7929986583718813,
+          "peak": 1623.5987687036713,
+          "tail": 1152.6438061974618
+        },
+        "split": {
+          "activation": 198,
+          "drawdown": 10.60502405658167,
+          "early": 350.0558182714032,
+          "gain": 2173.518663384035,
+          "minimum": 0.0,
+          "peak": 2173.634435912586,
+          "tail": 1239.2876276552677
+        },
+        "witness": {
+          "activation": 198,
+          "drawdown": 13.566227167907826,
+          "early": 85.66969876251697,
+          "gain": 1619.057009937495,
+          "minimum": -0.6146146634559191,
+          "peak": 1620.9055219109896,
+          "tail": 1152.371845161142
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.3322676295501878e-14,
+      "maximum_numeric_error": 2.0463630789890885e-12,
+      "regime": "recombined",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 246
+    },
+    {
+      "admission": 198,
+      "arms": {
+        "fast": {
+          "activation": 198,
+          "drawdown": 9.003606098986154,
+          "early": 82.0634203695063,
+          "gain": 499.21329768332805,
+          "minimum": 0.0,
+          "peak": 505.6885223672961,
+          "tail": 41.142585867561316
+        },
+        "h8l4": {
+          "activation": 198,
+          "drawdown": 7.981604186665038,
+          "early": 85.49810424782586,
+          "gain": 506.2136203669639,
+          "minimum": 0.0,
+          "peak": 514.1537845001031,
+          "tail": 40.58414094782839
+        },
+        "olevel0": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 510.24903640027594,
+          "minimum": -0.7929986583718813,
+          "peak": 516.7242610842442,
+          "tail": 41.142585867561316
+        },
+        "olevel128": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 510.3809966089091,
+          "minimum": -0.7929986583718813,
+          "peak": 516.8562212928773,
+          "tail": 41.27454607619406
+        },
+        "olevel32": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 510.34356981515145,
+          "minimum": -0.7929986583718813,
+          "peak": 516.8187944991197,
+          "tail": 41.23711928243669
+        },
+        "olevel512": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 504.81669220291985,
+          "minimum": -0.7929986583718813,
+          "peak": 511.2919168868879,
+          "tail": 35.710241670204745
+        },
+        "orate0": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 510.3054228047429,
+          "minimum": -0.7929986583718813,
+          "peak": 516.780647488711,
+          "tail": 41.19897227202825
+        },
+        "orate128": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 510.4830297049401,
+          "minimum": -0.7929986583718813,
+          "peak": 516.9582546926075,
+          "tail": 41.3765791722249
+        },
+        "orate32": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 510.3498246065792,
+          "minimum": -0.7929986583718813,
+          "peak": 516.8250492905481,
+          "tail": 41.24337407386425
+        },
+        "orate512": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 511.0158510422454,
+          "minimum": -0.7929986583718813,
+          "peak": 517.4910763114513,
+          "tail": 41.90940050953056
+        },
+        "selfnorm": {
+          "activation": 198,
+          "drawdown": 9.126866650155861,
+          "early": 80.72768675918584,
+          "gain": 490.722203191675,
+          "minimum": 0.0,
+          "peak": 495.24623141639984,
+          "tail": 42.80120246868138
+        },
+        "slow": {
+          "activation": 198,
+          "drawdown": 13.610522977363303,
+          "early": 87.44577045125276,
+          "gain": 505.6231595679528,
+          "minimum": -0.7929986583718813,
+          "peak": 518.0705940734423,
+          "tail": 36.516709035238264
+        },
+        "split": {
+          "activation": 198,
+          "drawdown": 10.498716876682607,
+          "early": 350.0558182714032,
+          "gain": 924.7410666912215,
+          "minimum": 0.0,
+          "peak": 935.0923907267049,
+          "tail": -9.489969037548388
+        },
+        "witness": {
+          "activation": 198,
+          "drawdown": 13.566227167907826,
+          "early": 85.66969876251697,
+          "gain": 503.5279808171146,
+          "minimum": -0.6146146634559191,
+          "peak": 515.3190778495614,
+          "tail": 36.84281604075939
+        }
+      },
+      "clamp_values": {
+        "olevel0": 4.6259915094837725,
+        "olevel128": 3.7464116760444193,
+        "olevel32": 7.823767073714456,
+        "olevel512": -9.256643659925203,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.3322676295501878e-14,
+      "maximum_numeric_error": 3.660716174636036e-11,
+      "regime": "switched",
+      "switch_bytes": {
+        "olevel0": 8192,
+        "olevel128": 8320,
+        "olevel32": 8224,
+        "olevel512": 8704,
+        "orate0": 8192,
+        "orate128": 8320,
+        "orate32": 8224,
+        "orate512": 8704
+      },
+      "world": 246
+    },
+    {
+      "admission": 198,
+      "arms": {
+        "fast": {
+          "activation": 198,
+          "drawdown": 9.003606098986154,
+          "early": 82.0634203695063,
+          "gain": 497.68623733071973,
+          "minimum": 0.0,
+          "peak": 499.36601869270015,
+          "tail": 39.615525514952616
+        },
+        "h8l4": {
+          "activation": 198,
+          "drawdown": 8.002940397252246,
+          "early": 85.49810424782586,
+          "gain": 512.1665619428657,
+          "minimum": 0.0,
+          "peak": 513.8868087080576,
+          "tail": 46.53708252372987
+        },
+        "olevel0": {
+          "activation": 198,
+          "drawdown": 14.204440255538486,
+          "early": 87.44577045125276,
+          "gain": 520.0185785589041,
+          "minimum": -0.7929986583718813,
+          "peak": 521.7513412942609,
+          "tail": 50.91212802618763
+        },
+        "olevel128": {
+          "activation": 198,
+          "drawdown": 14.204440255538486,
+          "early": 87.44577045125276,
+          "gain": 520.0185785589041,
+          "minimum": -0.7929986583718813,
+          "peak": 521.7513412942609,
+          "tail": 50.91212802618763
+        },
+        "olevel32": {
+          "activation": 198,
+          "drawdown": 14.204440255538486,
+          "early": 87.44577045125276,
+          "gain": 520.0185785589041,
+          "minimum": -0.7929986583718813,
+          "peak": 521.7513412942609,
+          "tail": 50.91212802618763
+        },
+        "olevel512": {
+          "activation": 198,
+          "drawdown": 14.204440255538486,
+          "early": 87.44577045125276,
+          "gain": 520.0185785589041,
+          "minimum": -0.7929986583718813,
+          "peak": 521.7513412942609,
+          "tail": 50.91212802618763
+        },
+        "orate0": {
+          "activation": 198,
+          "drawdown": 14.204440255538486,
+          "early": 87.44577045125276,
+          "gain": 520.0185785589041,
+          "minimum": -0.7929986583718813,
+          "peak": 521.7513412942609,
+          "tail": 50.91212802618763
+        },
+        "orate128": {
+          "activation": 198,
+          "drawdown": 14.204440255538486,
+          "early": 87.44577045125276,
+          "gain": 520.0185785589041,
+          "minimum": -0.7929986583718813,
+          "peak": 521.7513412942609,
+          "tail": 50.91212802618763
+        },
+        "orate32": {
+          "activation": 198,
+          "drawdown": 14.204440255538486,
+          "early": 87.44577045125276,
+          "gain": 520.0185785589041,
+          "minimum": -0.7929986583718813,
+          "peak": 521.7513412942609,
+          "tail": 50.91212802618763
+        },
+        "orate512": {
+          "activation": 198,
+          "drawdown": 14.204440255538486,
+          "early": 87.44577045125276,
+          "gain": 520.0185785589041,
+          "minimum": -0.7929986583718813,
+          "peak": 521.7513412942609,
+          "tail": 50.91212802618763
+        },
+        "selfnorm": {
+          "activation": 198,
+          "drawdown": 9.30601542138129,
+          "early": 80.72768675918584,
+          "gain": 492.95270609991707,
+          "minimum": 0.0,
+          "peak": 494.2224449708422,
+          "tail": 45.03170537692336
+        },
+        "slow": {
+          "activation": 198,
+          "drawdown": 14.204440255538486,
+          "early": 87.44577045125276,
+          "gain": 520.0185785589041,
+          "minimum": -0.7929986583718813,
+          "peak": 521.7513412942609,
+          "tail": 50.91212802618763
+        },
+        "split": {
+          "activation": 198,
+          "drawdown": 12.644530315496922,
+          "early": 350.0558182714032,
+          "gain": 1346.0653969415248,
+          "minimum": 0.0,
+          "peak": 1346.0653969415248,
+          "tail": 411.8343612127545
+        },
+        "witness": {
+          "activation": 198,
+          "drawdown": 13.566227167907826,
+          "early": 85.66969876251697,
+          "gain": 513.3208442636651,
+          "minimum": -0.6146146634559191,
+          "peak": 515.053606998589,
+          "tail": 46.63567948730916
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.3322676295501878e-14,
+      "maximum_numeric_error": 1.4210854715202004e-11,
+      "regime": "moved_mid",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 246
+    },
+    {
+      "admission": null,
+      "arms": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.176836406102666e-14,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 246
+    },
+    {
+      "admission": 151,
+      "arms": {
+        "fast": {
+          "activation": 151,
+          "drawdown": 8.38790136996704,
+          "early": 273.98263794373406,
+          "gain": 2610.742499184137,
+          "minimum": -0.545120237494876,
+          "peak": 2610.742499184137,
+          "tail": 1633.7626922107365
+        },
+        "h8l4": {
+          "activation": 151,
+          "drawdown": 7.994112808490172,
+          "early": 277.0928369993985,
+          "gain": 2624.2439765566696,
+          "minimum": -0.9645570555584884,
+          "peak": 2624.2439765566696,
+          "tail": 1640.680378307592
+        },
+        "olevel0": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 2633.249969032006,
+          "minimum": -0.9837968852125866,
+          "peak": 2633.249969032006,
+          "tail": 1645.3096232564023
+        },
+        "olevel128": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 2633.249969032006,
+          "minimum": -0.9837968852125866,
+          "peak": 2633.249969032006,
+          "tail": 1645.3096232564023
+        },
+        "olevel32": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 2633.249969032006,
+          "minimum": -0.9837968852125866,
+          "peak": 2633.249969032006,
+          "tail": 1645.3096232564023
+        },
+        "olevel512": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 2633.249969032006,
+          "minimum": -0.9837968852125866,
+          "peak": 2633.249969032006,
+          "tail": 1645.3096232564023
+        },
+        "orate0": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 2633.249969032006,
+          "minimum": -0.9837968852125866,
+          "peak": 2633.249969032006,
+          "tail": 1645.3096232564023
+        },
+        "orate128": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 2633.249969032006,
+          "minimum": -0.9837968852125866,
+          "peak": 2633.249969032006,
+          "tail": 1645.3096232564023
+        },
+        "orate32": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 2633.249969032006,
+          "minimum": -0.9837968852125866,
+          "peak": 2633.249969032006,
+          "tail": 1645.3096232564023
+        },
+        "orate512": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 2633.249969032006,
+          "minimum": -0.9837968852125866,
+          "peak": 2633.249969032006,
+          "tail": 1645.3096232564023
+        },
+        "selfnorm": {
+          "activation": 151,
+          "drawdown": 7.922836844512631,
+          "early": 269.56679634475597,
+          "gain": 2571.1330955767226,
+          "minimum": -0.5985996340005957,
+          "peak": 2571.1330955767226,
+          "tail": 1610.5968663099393
+        },
+        "slow": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 2633.249969032006,
+          "minimum": -0.9837968852125866,
+          "peak": 2633.249969032006,
+          "tail": 1645.3096232564023
+        },
+        "split": {
+          "activation": 151,
+          "drawdown": 8.941725969497384,
+          "early": 458.7319165003849,
+          "gain": 2595.1855651675937,
+          "minimum": -0.9027091981789948,
+          "peak": 2595.8008400459366,
+          "tail": 1430.9900104094656
+        },
+        "witness": {
+          "activation": 151,
+          "drawdown": 13.019731820704692,
+          "early": 277.77298926568164,
+          "gain": 2631.056242509992,
+          "minimum": -0.9645570555584884,
+          "peak": 2631.056242509992,
+          "tail": 1645.0647863846882
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2878587085651816e-14,
+      "maximum_numeric_error": 5.4569682106375694e-12,
+      "regime": "recombined",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 247
+    },
+    {
+      "admission": 151,
+      "arms": {
+        "fast": {
+          "activation": 151,
+          "drawdown": 7.540037107680291,
+          "early": 273.98263794373406,
+          "gain": 1076.4384817230675,
+          "minimum": -0.545120237494876,
+          "peak": 1083.580498062388,
+          "tail": 99.45867474965453
+        },
+        "h8l4": {
+          "activation": 151,
+          "drawdown": 7.994112808490172,
+          "early": 277.0928369993985,
+          "gain": 1083.9699747288273,
+          "minimum": -0.9645570555584884,
+          "peak": 1091.9205719513973,
+          "tail": 100.40637647974938
+        },
+        "olevel0": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 1087.3990205252549,
+          "minimum": -0.9837968852125866,
+          "peak": 1094.5410368645753,
+          "tail": 99.45867474965453
+        },
+        "olevel128": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 1087.7192199573983,
+          "minimum": -0.9837968852125866,
+          "peak": 1094.8612362967187,
+          "tail": 99.77887418179733
+        },
+        "olevel32": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 1087.4947493888662,
+          "minimum": -0.9837968852125866,
+          "peak": 1094.6367657281867,
+          "tail": 99.55440361326617
+        },
+        "olevel512": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 1088.261751852725,
+          "minimum": -0.9837968852125866,
+          "peak": 1095.4037681920454,
+          "tail": 100.3214060771248
+        },
+        "orate0": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 1087.5958219909353,
+          "minimum": -0.9837968852125866,
+          "peak": 1094.7378383302557,
+          "tail": 99.65547621533457
+        },
+        "orate128": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 1087.7734291982824,
+          "minimum": -0.9837968852125866,
+          "peak": 1094.9154455376029,
+          "tail": 99.83308342268273
+        },
+        "orate32": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 1087.640223792771,
+          "minimum": -0.9837968852125866,
+          "peak": 1094.7822401320914,
+          "tail": 99.69987801717161
+        },
+        "orate512": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 1088.3062508203298,
+          "minimum": -0.9837968852125866,
+          "peak": 1095.4482671596504,
+          "tail": 100.36590504472693
+        },
+        "selfnorm": {
+          "activation": 151,
+          "drawdown": 7.632207302273159,
+          "early": 269.56679634475597,
+          "gain": 1059.0520857115998,
+          "minimum": -0.5985996340005957,
+          "peak": 1064.0575613134104,
+          "tail": 98.51585644481904
+        },
+        "slow": {
+          "activation": 151,
+          "drawdown": 13.183002279875154,
+          "early": 279.4463819439363,
+          "gain": 1083.92882791963,
+          "minimum": -0.9837968852125866,
+          "peak": 1097.059065962257,
+          "tail": 95.98848214402791
+        },
+        "split": {
+          "activation": 151,
+          "drawdown": 10.708736241882889,
+          "early": 458.7319165003849,
+          "gain": 1153.4885519575496,
+          "minimum": -0.9027091981789948,
+          "peak": 1164.1955547581142,
+          "tail": -10.707002800563785
+        },
+        "witness": {
+          "activation": 151,
+          "drawdown": 13.019731820704692,
+          "early": 277.77298926568164,
+          "gain": 1082.3211685931797,
+          "minimum": -0.9645570555584884,
+          "peak": 1094.7140991621604,
+          "tail": 96.32971246787972
+        }
+      },
+      "clamp_values": {
+        "olevel0": 2.7506567199000957,
+        "olevel128": 4.68361457364628,
+        "olevel32": 3.2134278206813387,
+        "olevel512": 4.9755147050172,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2878587085651816e-14,
+      "maximum_numeric_error": 2.7625901566352695e-11,
+      "regime": "switched",
+      "switch_bytes": {
+        "olevel0": 8192,
+        "olevel128": 8320,
+        "olevel32": 8224,
+        "olevel512": 8704,
+        "orate0": 8192,
+        "orate128": 8320,
+        "orate32": 8224,
+        "orate512": 8704
+      },
+      "world": 247
+    },
+    {
+      "admission": 151,
+      "arms": {
+        "fast": {
+          "activation": 151,
+          "drawdown": 8.06999763219028,
+          "early": 273.98263794373406,
+          "gain": 1469.0312867067166,
+          "minimum": -0.545120237494876,
+          "peak": 1474.080092366306,
+          "tail": 492.0514797333059
+        },
+        "h8l4": {
+          "activation": 151,
+          "drawdown": 7.994112808490172,
+          "early": 277.0928369993985,
+          "gain": 1482.486635599457,
+          "minimum": -0.9645570555584884,
+          "peak": 1487.8967386761892,
+          "tail": 498.92303735037603
+        },
+        "olevel0": {
+          "activation": 151,
+          "drawdown": 13.824873506154063,
+          "early": 279.4463819439363,
+          "gain": 1490.89298343573,
+          "minimum": -0.9837968852125866,
+          "peak": 1496.5483221977204,
+          "tail": 502.9526376601327
+        },
+        "olevel128": {
+          "activation": 151,
+          "drawdown": 13.824873506154063,
+          "early": 279.4463819439363,
+          "gain": 1490.89298343573,
+          "minimum": -0.9837968852125866,
+          "peak": 1496.5483221977204,
+          "tail": 502.9526376601327
+        },
+        "olevel32": {
+          "activation": 151,
+          "drawdown": 13.824873506154063,
+          "early": 279.4463819439363,
+          "gain": 1490.89298343573,
+          "minimum": -0.9837968852125866,
+          "peak": 1496.5483221977204,
+          "tail": 502.9526376601327
+        },
+        "olevel512": {
+          "activation": 151,
+          "drawdown": 13.824873506154063,
+          "early": 279.4463819439363,
+          "gain": 1490.89298343573,
+          "minimum": -0.9837968852125866,
+          "peak": 1496.5483221977204,
+          "tail": 502.9526376601327
+        },
+        "orate0": {
+          "activation": 151,
+          "drawdown": 13.824873506154063,
+          "early": 279.4463819439363,
+          "gain": 1490.89298343573,
+          "minimum": -0.9837968852125866,
+          "peak": 1496.5483221977204,
+          "tail": 502.9526376601327
+        },
+        "orate128": {
+          "activation": 151,
+          "drawdown": 13.824873506154063,
+          "early": 279.4463819439363,
+          "gain": 1490.89298343573,
+          "minimum": -0.9837968852125866,
+          "peak": 1496.5483221977204,
+          "tail": 502.9526376601327
+        },
+        "orate32": {
+          "activation": 151,
+          "drawdown": 13.824873506154063,
+          "early": 279.4463819439363,
+          "gain": 1490.89298343573,
+          "minimum": -0.9837968852125866,
+          "peak": 1496.5483221977204,
+          "tail": 502.9526376601327
+        },
+        "orate512": {
+          "activation": 151,
+          "drawdown": 13.824873506154063,
+          "early": 279.4463819439363,
+          "gain": 1490.89298343573,
+          "minimum": -0.9837968852125866,
+          "peak": 1496.5483221977204,
+          "tail": 502.9526376601327
+        },
+        "selfnorm": {
+          "activation": 151,
+          "drawdown": 10.091184805500461,
+          "early": 269.56679634475597,
+          "gain": 1443.1173505879303,
+          "minimum": -0.5985996340005957,
+          "peak": 1447.1712989369896,
+          "tail": 482.5811213211439
+        },
+        "slow": {
+          "activation": 151,
+          "drawdown": 13.824873506154063,
+          "early": 279.4463819439363,
+          "gain": 1490.89298343573,
+          "minimum": -0.9837968852125866,
+          "peak": 1496.5483221977204,
+          "tail": 502.9526376601327
+        },
+        "split": {
+          "activation": 151,
+          "drawdown": 12.286209630489111,
+          "early": 458.7319165003849,
+          "gain": 1959.2979821488764,
+          "minimum": -0.9027091981789948,
+          "peak": 1961.6592180839698,
+          "tail": 795.1024273907619
+        },
+        "witness": {
+          "activation": 151,
+          "drawdown": 13.820116772382562,
+          "early": 277.77298926568164,
+          "gain": 1486.08575567354,
+          "minimum": -0.9645570555584884,
+          "peak": 1491.7432147052666,
+          "tail": 500.09429954824185
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2878587085651816e-14,
+      "maximum_numeric_error": 7.73070496506989e-12,
+      "regime": "moved_mid",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 247
+    },
+    {
+      "admission": null,
+      "arms": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "h8l4": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "olevel512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate0": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate128": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate32": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "orate512": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "selfnorm": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "split": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "gain": 0.0,
+          "minimum": 0.0,
+          "peak": 0.0,
+          "tail": 0.0
+        }
+      },
+      "clamp_values": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "exact": {
+        "clamp_is_fast_odds": true,
+        "cold_quotes_exact": true,
+        "level_after_switch_is_fast": true,
+        "new_column": true,
+        "oracle_off_law_is_slow": true,
+        "oracle_pre_switch_is_slow": true,
+        "reference_label_free": true
+      },
+      "forecasts": 16384,
+      "max_norm_error": 1.2212453270876722e-14,
+      "maximum_numeric_error": 0.0,
+      "regime": "unrelated",
+      "switch_bytes": {
+        "olevel0": null,
+        "olevel128": null,
+        "olevel32": null,
+        "olevel512": null,
+        "orate0": null,
+        "orate128": null,
+        "orate32": null,
+        "orate512": null
+      },
+      "world": 247
+    }
+  ],
+  "maximum_numeric_error": 1.0345502232667059e-10,
+  "namespace": "netta-oracle-latency-v1",
+  "required_schema_keys": [
+    "arms",
+    "bars",
+    "bars_cleared",
+    "curve",
+    "delays",
+    "failed_bars",
+    "gate_pass",
+    "gate_pass_pending_reader",
+    "hygiene",
+    "independent_reader_pending",
+    "labels",
+    "labels_sha256",
+    "lives",
+    "namespace",
+    "protocol_sha256",
+    "quantities",
+    "regimes",
+    "seam",
+    "seam_regime",
+    "table",
+    "tests",
+    "unrelated_admissions",
+    "w3_law_bars_separating",
+    "worlds"
+  ],
+  "switch_bytes_exact": true,
+  "tests": {
+    "W1_satisfiability": true,
+    "W2_budget": true,
+    "W3_rate_vs_level": false,
+    "W4_references_stay_themselves": true,
+    "W5_hygiene": true,
+    "W6_reader": true
+  },
+  "verified": true,
+  "worlds": [
+    240,
+    241,
+    242,
+    243,
+    244,
+    245,
+    246,
+    247
+  ],
+  "writer_gate_pass_pending_reader": false
+}

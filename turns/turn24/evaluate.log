@@ -1,0 +1,173 @@
+240 recombined slow=4356.605 olevel0=4356.605
+240 switched slow=1972.199 olevel0=1978.144
+240 moved_mid slow=3691.778 olevel0=3691.778
+240 unrelated slow=0.000 olevel0=0.000
+241 recombined slow=3823.611 olevel0=3823.611
+241 switched slow=1553.398 olevel0=1558.638
+241 moved_mid slow=2880.135 olevel0=2880.135
+241 unrelated slow=0.000 olevel0=0.000
+242 recombined slow=2931.770 olevel0=2931.770
+242 switched slow=1193.766 olevel0=1196.917
+242 moved_mid slow=1884.819 olevel0=1884.819
+242 unrelated slow=0.000 olevel0=0.000
+243 recombined slow=2435.593 olevel0=2435.593
+243 switched slow=1015.363 olevel0=1019.113
+243 moved_mid slow=1485.719 olevel0=1485.719
+243 unrelated slow=0.000 olevel0=0.000
+244 recombined slow=3914.566 olevel0=3914.566
+244 switched slow=1731.424 olevel0=1737.093
+244 moved_mid slow=2784.563 olevel0=2784.563
+244 unrelated slow=0.000 olevel0=0.000
+245 recombined slow=1978.157 olevel0=1978.157
+245 switched slow=983.351 olevel0=985.510
+245 moved_mid slow=1125.418 olevel0=1125.418
+245 unrelated slow=0.000 olevel0=0.000
+246 recombined slow=1621.750 olevel0=1621.750
+246 switched slow=505.623 olevel0=510.249
+246 moved_mid slow=520.019 olevel0=520.019
+246 unrelated slow=0.000 olevel0=0.000
+247 recombined slow=2633.250 olevel0=2633.250
+247 switched slow=1083.929 olevel0=1087.399
+247 moved_mid slow=1490.893 olevel0=1490.893
+247 unrelated slow=0.000 olevel0=0.000
+{
+  "tests": {
+    "W1_satisfiability": true,
+    "W2_budget": true,
+    "W3_rate_vs_level": false,
+    "W4_references_stay_themselves": true,
+    "W5_hygiene": true,
+    "W6_reader": false
+  },
+  "curve": {
+    "olevel": {
+      "0": {
+        "bars_cleared": 8,
+        "failed_bars": [],
+        "law_tail_mean": 0.0,
+        "law_whole_mean": 10.559739387130335
+      },
+      "32": {
+        "bars_cleared": 8,
+        "failed_bars": [],
+        "law_tail_mean": -0.43831954483713825,
+        "law_whole_mean": 10.121419842293122
+      },
+      "128": {
+        "bars_cleared": 7,
+        "failed_bars": [
+          "b1_law_tail_mean"
+        ],
+        "law_tail_mean": -1.3958597607988479,
+        "law_whole_mean": 9.163879626331521
+      },
+      "512": {
+        "bars_cleared": 7,
+        "failed_bars": [
+          "b1_law_tail_mean"
+        ],
+        "law_tail_mean": -2.762508650548868,
+        "law_whole_mean": 7.797230736581142
+      }
+    },
+    "orate": {
+      "0": {
+        "bars_cleared": 8,
+        "failed_bars": [],
+        "law_tail_mean": 0.27420584084136823,
+        "law_whole_mean": 10.83394522797164
+      },
+      "32": {
+        "bars_cleared": 8,
+        "failed_bars": [],
+        "law_tail_mean": -0.08021666433396396,
+        "law_whole_mean": 10.479522722795835
+      },
+      "128": {
+        "bars_cleared": 8,
+        "failed_bars": [],
+        "law_tail_mean": -0.181715525132301,
+        "law_whole_mean": 10.378023861998145
+      },
+      "512": {
+        "bars_cleared": 7,
+        "failed_bars": [
+          "b1_law_tail_mean"
+        ],
+        "law_tail_mean": -1.2450143078927502,
+        "law_whole_mean": 9.314725079237768
+      }
+    },
+    "d_star": 32,
+    "d_star_rate": 128,
+    "witness_median_detection_bytes": 38.5,
+    "budget_beats_measured_detection": false
+  },
+  "bars_cleared": {
+    "slow": 7,
+    "fast": 5,
+    "witness": 7,
+    "h8l4": 7,
+    "selfnorm": 4,
+    "split": 5,
+    "orate0": 8,
+    "orate32": 8,
+    "orate128": 8,
+    "orate512": 7,
+    "olevel0": 8,
+    "olevel32": 8,
+    "olevel128": 7,
+    "olevel512": 7
+  },
+  "failed_bars": {
+    "slow": [
+      "b1_law_tail_mean"
+    ],
+    "fast": [
+      "b3_moved_tail_mean",
+      "b4_moved_tail_wins",
+      "b5_moved_tail_vs_slow"
+    ],
+    "witness": [
+      "b1_law_tail_mean"
+    ],
+    "h8l4": [
+      "b5_moved_tail_vs_slow"
+    ],
+    "selfnorm": [
+      "b2_law_whole_mean",
+      "b3_moved_tail_mean",
+      "b4_moved_tail_wins",
+      "b5_moved_tail_vs_slow"
+    ],
+    "split": [
+      "b1_law_tail_mean",
+      "b2_law_whole_mean",
+      "b7_intact_full_retention"
+    ],
+    "orate0": [],
+    "orate32": [],
+    "orate128": [],
+    "orate512": [
+      "b1_law_tail_mean"
+    ],
+    "olevel0": [],
+    "olevel32": [],
+    "olevel128": [
+      "b1_law_tail_mean"
+    ],
+    "olevel512": [
+      "b1_law_tail_mean"
+    ]
+  },
+  "hygiene": {
+    "admission_identity": true,
+    "admission_shared_with_episode": true,
+    "bounds": true,
+    "fast_own_bound": true,
+    "normalized": true,
+    "exact_quotes": true,
+    "label_confined": true,
+    "archive": true
+  }
+}

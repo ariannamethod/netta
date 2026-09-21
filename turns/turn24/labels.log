@@ -1,0 +1,90 @@
+{
+  "240": {
+    "world": 240,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "raw_prefix_identical_to_recombined": true,
+    "raw_tail_differing_bytes": 7954,
+    "raw_tail_divergence": 0.970947265625,
+    "raw_tail_differing_bytes_vs_unrelated": 8156,
+    "command_prefix_identical_to_recombined": true,
+    "command_tail_identical_to_unrelated": true
+  },
+  "241": {
+    "world": 241,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "raw_prefix_identical_to_recombined": true,
+    "raw_tail_differing_bytes": 7937,
+    "raw_tail_divergence": 0.9688720703125,
+    "raw_tail_differing_bytes_vs_unrelated": 8163,
+    "command_prefix_identical_to_recombined": true,
+    "command_tail_identical_to_unrelated": true
+  },
+  "242": {
+    "world": 242,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "raw_prefix_identical_to_recombined": true,
+    "raw_tail_differing_bytes": 8004,
+    "raw_tail_divergence": 0.97705078125,
+    "raw_tail_differing_bytes_vs_unrelated": 8148,
+    "command_prefix_identical_to_recombined": true,
+    "command_tail_identical_to_unrelated": true
+  },
+  "243": {
+    "world": 243,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "raw_prefix_identical_to_recombined": true,
+    "raw_tail_differing_bytes": 7803,
+    "raw_tail_divergence": 0.9525146484375,
+    "raw_tail_differing_bytes_vs_unrelated": 8152,
+    "command_prefix_identical_to_recombined": true,
+    "command_tail_identical_to_unrelated": true
+  },
+  "244": {
+    "world": 244,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "raw_prefix_identical_to_recombined": true,
+    "raw_tail_differing_bytes": 8030,
+    "raw_tail_divergence": 0.980224609375,
+    "raw_tail_differing_bytes_vs_unrelated": 8135,
+    "command_prefix_identical_to_recombined": true,
+    "command_tail_identical_to_unrelated": true
+  },
+  "245": {
+    "world": 245,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "raw_prefix_identical_to_recombined": true,
+    "raw_tail_differing_bytes": 8069,
+    "raw_tail_divergence": 0.9849853515625,
+    "raw_tail_differing_bytes_vs_unrelated": 8176,
+    "command_prefix_identical_to_recombined": true,
+    "command_tail_identical_to_unrelated": true
+  },
+  "246": {
+    "world": 246,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "raw_prefix_identical_to_recombined": true,
+    "raw_tail_differing_bytes": 8013,
+    "raw_tail_divergence": 0.9781494140625,
+    "raw_tail_differing_bytes_vs_unrelated": 8132,
+    "command_prefix_identical_to_recombined": true,
+    "command_tail_identical_to_unrelated": true
+  },
+  "247": {
+    "world": 247,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "raw_prefix_identical_to_recombined": true,
+    "raw_tail_differing_bytes": 7954,
+    "raw_tail_divergence": 0.970947265625,
+    "raw_tail_differing_bytes_vs_unrelated": 8140,
+    "command_prefix_identical_to_recombined": true,
+    "command_tail_identical_to_unrelated": true
+  }
+}
