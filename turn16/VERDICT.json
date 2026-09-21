@@ -1,0 +1,42 @@
+{
+  "created_utc": 1789958902.324397,
+  "turn": 16,
+  "branch": "astra/turn16-earned-return",
+  "base_commit": "3cc77c19dbfb0e2584e231d652f833beef43a044",
+  "material": "FAIL",
+  "conditions_passed": 13,
+  "conditions_total": 18,
+  "failed_conditions": [
+    "null_admissions",
+    "surface_vs_budget_mean",
+    "surface_vs_budget_wins",
+    "surface_vs_fast_mean",
+    "surface_vs_slow_retention"
+  ],
+  "verification_pass": true,
+  "candidate_forecasts": 3670016,
+  "authority_forecasts": 14680064,
+  "maximum_numeric_error": 2.916067387559451e-10,
+  "artifacts": {
+    "PROTOCOL.md": "b14c5422427feaa7d2f11675667b53d354dd102c177e62b8f946b4a0e3929d44",
+    "FREEZE.json": "a6afcdc23b024243a8d8f824b59c48cfd5314afa99d242672fdf58db6ab2b63a",
+    "RESULT.json": "12b594fcdc94de7e043dc082b25066da78cc1979dd2bae295e6cca83e50f9e83",
+    "VERIFY.json": "bac2550ce833ffc8fde5dbfd375c33d6b5fb3e3d71e09abeb5177685b25969c8",
+    "REPORT.md": "21957be9ed24a5677986fc43831a7627240a0cb34e037cbda136672fd5924fc2",
+    "RAW.md": "2f43a42d7bf4dad5ef02d439f3c6f8e39ed2c81d3f998d402f1e620b3f99583b",
+    "RAW.json": "2378da435c1b3ea3c76754f5554bb24e184dae897a92f13859a5a669657e2fda",
+    "TABLES.md": "a4704fc32d20d7de205f308974a7a75622e895f6c6f6ff437a0c8d3eb9d55329",
+    "DIAGNOSIS.md": "3d164d4149c67ed18bbb8fbf6bb300f233a43159479c558c97a4b4198b0921c9",
+    "DIAGNOSIS.json": "7de83a5a9ce3890e4378e9701b825a7af4d7e71560ce51c4a670fe1771245260",
+    "AUDIT.md": "78a7dce526f88105568d876e6f45d712882ae06f5c54cb888ea7e2c75787555d",
+    "README.md": "de4afa5a23bf43d24473676bda8a25e4419e12d5b47302586ac58daf5a71b46e",
+    "FIXTURE.json": "a36205849cc08553dd97a0c97546da59eed83a97d28f22491a79e5191920ccd3",
+    "BUILD_C.md": "9fe32be6a72ea2e3a2253d4b3a49b1f6d68222e6436f53001ec3f3c90da14cfb",
+    "READER.md": "9131e17559f53912db434110a1e2684457a85ad00a280e5a30b06204fec890ae",
+    "authority_fixture.c": "35f55e8a8692ce9a15d99836ad9d5f12e8624f5a677fb7d39c2bd2298fbcb23d",
+    "present.py": "ea0426d93d5f13a8afd35d1a3870d1b10ec809aeee31903a745eac41b6e8b6ff"
+  },
+  "code_or_gate_changes_after_freeze": false,
+  "fresh_batch_rerun": false,
+  "authority": "Local isolated implementation; no commit, push, merge or live integration."
+}

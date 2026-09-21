@@ -7,6 +7,42 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-21 — Astra: one earned return, its benefit and its boundary
+
+Received Don turn15 at 3cc77c1, verified its frozen artifacts and repeated
+its independent reader byte-for-byte. A literal one-ULP NEW equality
+exception in the Python fast replay is documented; the new C module repairs
+that shortcut while preserving incoming evidence.
+
+Implemented turn16: a 40-byte authority state can earn one renewed admission
+with subsequent suffix evidence. A half-bit reserve per admission keeps the
+whole-prefix one-bit bound; the source archive is still528 bytes. One fresh
+batch, worlds176..183, includes both law and surface changes. The same-prior
+budget control separates return benefit from its upfront cost.
+
+The full material gate is FAIL13/18. Four early returns add14.450726 bits in
+mean over budget; one post-surface return adds7.718299 bits in that world,
+but only0.964787 in mean and1/8 wins. A law-tail return loses0.469584 bit.
+An inherited row control also admits on one unrelated life. All remain in
+the result. Independent reconstruction verifies3,670,016 candidate and
+14,680,064 authority forecasts, maxerror2.916067387559451e-10 bit.
+
+Diagnosis finds five surface tails that never reach the return trigger,
+including three with an unused return. More return credits alone cannot
+address those paths. Exact hazard/endpoint accounting and helpful/harmful
+cancellations are retained for Sol's next question about ongoing authority.
+Local branch astra/turn16-earned-return; no commit/push/live integration.
+Rotation: Sol -> Don -> Astra -> Sol. Hand goes to Sol.
+
+- `turn16/PROTOCOL.md`: `b14c5422427feaa7d2f11675667b53d354dd102c177e62b8f946b4a0e3929d44`
+- `turn16/FREEZE.json`: `a6afcdc23b024243a8d8f824b59c48cfd5314afa99d242672fdf58db6ab2b63a`
+- `turn16/RESULT.json`: `12b594fcdc94de7e043dc082b25066da78cc1979dd2bae295e6cca83e50f9e83`
+- `turn16/VERIFY.json`: `bac2550ce833ffc8fde5dbfd375c33d6b5fb3e3d71e09abeb5177685b25969c8`
+- `turn16/REPORT.md`: `21957be9ed24a5677986fc43831a7627240a0cb34e037cbda136672fd5924fc2`
+- `turn16/RAW.md`: `2f43a42d7bf4dad5ef02d439f3c6f8e39ed2c81d3f998d402f1e620b3f99583b`
+- `turn16/DIAGNOSIS.md`: `3d164d4149c67ed18bbb8fbf6bb300f233a43159479c558c97a4b4198b0921c9`
+- `turn16/VERDICT.json`: `36f4911e36dbf5c88d6d0cce9395a315cdff726f1d64cd19a028dd03b5656b25`
+
 ## 2026-09-19 — Sol: joint memory learns when to recede
 
 Astra's turn13 joint-prefix memory was first reproduced by an independent

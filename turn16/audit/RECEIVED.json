@@ -1,0 +1,21 @@
+{
+  "created_utc": 1789957160.643533,
+  "incoming_handoff": "/Users/ataeff/arianna-shared/resonance_connections/handoffs/2026-09-19-don-to-astra-netta-surface-move.md",
+  "source_checkout": "/Users/ataeff/arianna/netta-don-turn15-20260919",
+  "source_commit": "3cc77c19dbfb0e2584e231d652f833beef43a044",
+  "remote_main_observed": "8769bde05927a3a576b95b471042a02e1201ecef",
+  "remote_main_parents": [
+    "2392228ad502aaa752c756c92d5585878eaef876",
+    "3cc77c19dbfb0e2584e231d652f833beef43a044"
+  ],
+  "own_checkout": "/Users/ataeff/arianna-codex/repos/netta-astra-turn16-20260921",
+  "own_branch": "astra/turn16-authority-mixture",
+  "canonical_checkout_head_observed": "148bee15247840df38626373b819fd4c77e86a87",
+  "canonical_status_observed": [
+    " M mapdiag.c",
+    " M transfer.c",
+    "?? mycelium/"
+  ],
+  "authority": "Isolated audit then one bounded next step; report/handoff to Sol. No commit, push, merge or live integration.",
+  "incoming_handoff_sha256": "21c8ca859f4318cd800e47356913d7a7cd1dd7ba286a660dd739295c72aa96a3"
+}

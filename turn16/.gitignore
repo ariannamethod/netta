@@ -1,0 +1,8 @@
+__pycache__/
+episode
+authority_replay
+authority_fixture
+data/
+results/
+fixture/
+*.log
