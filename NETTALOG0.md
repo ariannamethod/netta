@@ -7,6 +7,50 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-21 — Sol: prospective authority clock, protected move and costly delay
+
+Audited Astra turn16 first. Its frozen inputs and manifests match; a fresh
+independent-reader run is byte-identical to the retained verification. Its
+material FAIL13/18 stands, including five surface tails that never reach the
+return trigger and the separate unrelated-row admission.
+
+Turn17 fixed one prospective authority law before any fresh data. An episode
+memory with positive recent candidate evidence uses the slow withdrawal clock;
+otherwise it uses the fast clock. The inherited archive, candidate, P0 and
+first admission are unchanged. Worlds184..191 were generated once under the
+frozen protocol. The independent reader reconstructed the inherited
+3,670,016 candidate forecasts and 1,572,864 new authority forecasts.
+
+The material result is **FAIL11/13**. Moved-surface tails improve over the
+fast clock by10.369487 bits in mean,8/8 wins. Changed-law tails lose5.487216
+bits to fast,0/8 wins; the slow-clock advantage there is only0.000474 bit.
+The clock reacts too late to refund early loss after a law change. Unchanged
+early/full retention is99.926%/99.985% of slow; no unrelated episode admits.
+Helpful and harmful charged bytes are both retained. This is one synthetic
+authority test, not a live Netta change. Local branch
+`sol/turn17-prospective-hazard-20260921`, no commit/push. Hand goes to Don
+under Sol → Don → Astra → Sol.
+
+- `turn17/PROTOCOL.md`: `3fbb761054e432725b5b8dc1b16c728f85b892ac08e3b0cda882bb0de4ba2188`
+- `turn17/FREEZE.json`: `1aac882a7a5a50227a76fc7c31322a97d62913fff235e0c8ef71584632970636`
+- `turn17/RESULT.json`: `0780a07293985d2ad86206fe6a68f5819ba839d93321e0eab71d216dd960a897`
+- `turn17/VERIFY.json`: `1ce690ab6b0cc5cfbab3a79ade3cb738e2a89f976766a3656e0fbdbc60d78ae9`
+- `turn17/REPORT.md`: `f0af66811bfe6ba63b4d5d06198d9f7dfa998af93b366856cedaf51c8d6122fb`
+- `turn17/RAW.md`: `8f97d99aabf3d4481b449ec7cbe18a0f74810a44dd7dc6ff6b715f533b5c505c`
+- `turn17/TABLES.md`: `841bd4db79948b0e8430a501715d4f117e5b05be78a5387bbfc0012ddeb53c06`
+- `turn17/INCOMING_AUDIT.md`: `9c2caffd3fe069f645aae7bd466b1c45c0a53d789bbfe47e2de2013ff5370ecf`
+- `turn17/README.md`: `0fa5b977766362b380c94283696c62a7afc33e3a9c513978f5c8ce502172fdb6`
+- `turn17/DATA_MANIFEST.json`: `6bae254a490a8002e2d5e3fa3f21c03c6268b5fc7f4eb31b05cdba34ddeb9cf3`
+- `turn17/MEMORY_MANIFEST.json`: `52f319071258d3b9b4be075b770d7a84b3e79191764aad65ac7267ede105e43f`
+- `turn17/RESULTS_MANIFEST.json`: `6841226ba64942d0c86bdfcf3215d16bbf6602ce7cf85cb8e5fb134f0757d7ab`
+- `turn17/VERDICT.json`: `ac31dbcf334195a6fcfd4f025011b0ad7d146f626545eb3e8a3d5bc717e97f4d`
+
+Publication update — Oleg subsequently asked Sol to push this completed
+turn for the Don → Astra → Sol continuation. The original local verdict,
+frozen files and raw evidence remain unchanged. Publication uses this
+isolated branch; the exact commit is in its Git history and the shared
+handoff's dated publication receipt.
+
 ## 2026-09-21 — Astra: one earned return, its benefit and its boundary
 
 Received Don turn15 at 3cc77c1, verified its frozen artifacts and repeated

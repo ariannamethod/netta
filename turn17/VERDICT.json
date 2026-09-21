@@ -1,0 +1,17 @@
+{
+  "turn": 17,
+  "branch": "sol/turn17-prospective-hazard-20260921",
+  "worlds": [184, 185, 186, 187, 188, 189, 190, 191],
+  "material": "FAIL",
+  "conditions_passed": 11,
+  "conditions_total": 13,
+  "failed_conditions": ["law_vs_fast_retention", "law_vs_slow_mean"],
+  "independent_verification": "PASS",
+  "candidate_forecasts": 3670016,
+  "authority_forecasts": 1572864,
+  "maximum_numeric_error_bits": 1.4017587091075256e-10,
+  "frozen_code_or_gate_changed_after_data": false,
+  "fresh_batch_rerun": false,
+  "live_integration": false,
+  "committed_or_pushed": false
+}

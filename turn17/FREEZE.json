@@ -1,0 +1,44 @@
+{
+  "created_utc": 1789981180.542698,
+  "files": {
+    "byte_recurrence/frontend.c": "598b5aa2301e48029b7d5c2ca89c9d67372b33df9497d8b14d0b0de646ee3d08",
+    "byte_recurrence/frontend.h": "cc84f37ba78962cbfb36abd6ecea07bbabd6fbd5ee2f8dd3755f998f07df804e",
+    "court4/transfer4_confirm_core.c": "d80016369607ef2c202f28b10470e039b452cf177cf746b24320a7df0a1f4629",
+    "portable_recurrence/recurrence.c": "1c14a567b30d376d515c22f6280872e98811956a691958057cfc7ef4b48739d3",
+    "portable_recurrence/recurrence.h": "282f79c3a90680a2bf6fa0b86624995d83a292c4edf5d33393c95d3d1b56b958",
+    "turn13/episode.c": "8509ce692c394eaeea55bc1ce99596e246449a519f32bf0576de4e74dd6d5ad9",
+    "turn13/experiment.py": "003146d6e18d56dbb88b303489b801c688d20f475a9ab74bafb3a4d53a42c475",
+    "turn13/verify.py": "293d897e9f70a817015a2d72834f025713f85ad864668c293417a33fff8f951f",
+    "turn17/Makefile": "a7c7418ccefa4c78fb0baa18bade7b4b8659549ade765cc234028cdbff8f31df",
+    "turn17/PROTOCOL.md": "3fbb761054e432725b5b8dc1b16c728f85b892ac08e3b0cda882bb0de4ba2188",
+    "turn17/authority.c": "0ccbe168dcd65d333813937a4a032a2cded3c5a42809754149497c8dedb59179",
+    "turn17/authority.h": "226121d986a6b69428e02660bcd8f73aa8de2b01fb39ef43cdfc83e026aa3c3d",
+    "turn17/authority_replay": "6da0aaeb69fc9161e87cfa6c43e530e9664e9d8e01f345fec5b44ca814f1a2e1",
+    "turn17/episode": "784d549d01f04bc02b3ae64a8ee5a2e69079ace3c9b085bd5076ef8581fb5b10",
+    "turn17/experiment.py": "2a2fc24e87f8e971a34d786e7d75e5f4efd93c7af5913f1b8f7d93538e94b502",
+    "turn17/replay.c": "61a2500353af617d35e832da0fb2ef289b0ef06521affd72994d00a8fcab550c",
+    "turn17/verify.py": "dd950492a07cda32fdcd863f23e7f5ca9b0a64d23f63b664db2eff5b131a0793"
+  },
+  "modes": [
+    "slow",
+    "fast",
+    "adaptive"
+  ],
+  "namespace": "netta-prospective-hazard-v1",
+  "regimes": [
+    "recombined",
+    "switched",
+    "moved_mid",
+    "unrelated"
+  ],
+  "worlds": [
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191
+  ]
+}
