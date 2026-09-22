@@ -1,0 +1,22 @@
+{
+  "changed_artifact_refused": "retained artifact /Users/ataeff/arianna-codex/repos/netta-astra-turn25-20260922/turns/turn25/.build/preflight-1ffi8z76/probe.txt: sha256 7f8b1dfc466b6249f06cbe55c9174df2578e7754da793fded244ef5cba2a38f1 != 25718360e05d3c2d0963d1381e9dd4dae5fca789244ee4b9f861adcc0cc96218",
+  "existing_output_refused": "verify.py refuses: output file /Users/ataeff/arianna-codex/repos/netta-astra-turn25-20260922/turns/turn25/.build/preflight-1ffi8z76/probe.txt already exists",
+  "fixture": {
+    "control_state_bytes": 40,
+    "event_count": 48,
+    "latch_state_bytes": 48,
+    "max_mass_error": 5.329070518200751e-15,
+    "neutral_holds": 26,
+    "neutral_rebound_holds": 3,
+    "passed": true,
+    "returns": 3,
+    "sets": 3
+  },
+  "independent_fixture_max_error": 5.329070518200751e-15,
+  "missing_validity_refused": "RESULT.json: missing required field validity",
+  "protocol_sha256": "db4d93eb8835973330cbe6e4a356b9228d230e9251b7fbc7bb7f0bb074cdf730",
+  "reader_sha256": "845e2e09cedc1cb26457e18cdf8624884ec4e0299b008910d5319b4c5c7985aa",
+  "scope": "Artificial schema records only; no fresh data.",
+  "writer_schema": true,
+  "writer_sha256": "a8b9fc3109ca30f2e221a6184dbc4ff770df7ffe37d29399959c2f27c1413ead"
+}

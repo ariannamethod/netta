@@ -1,0 +1,116 @@
+240 recombined max_error=1.82e-12
+240 switched max_error=7.22e-11
+240 moved_mid max_error=3.18e-12
+240 unrelated max_error=0
+241 recombined max_error=3.64e-12
+241 switched max_error=9.75e-11
+241 moved_mid max_error=2.73e-12
+241 unrelated max_error=0
+242 recombined max_error=1.82e-12
+242 switched max_error=4.42e-11
+242 moved_mid max_error=1.59e-12
+242 unrelated max_error=0
+243 recombined max_error=2.27e-12
+243 switched max_error=4.17e-11
+243 moved_mid max_error=3.18e-12
+243 unrelated max_error=0
+244 recombined max_error=2.73e-12
+244 switched max_error=1.03e-10
+244 moved_mid max_error=1.82e-12
+244 unrelated max_error=0
+245 recombined max_error=1.82e-12
+245 switched max_error=2.28e-11
+245 moved_mid max_error=2.96e-12
+245 unrelated max_error=0
+246 recombined max_error=2.05e-12
+246 switched max_error=3.66e-11
+246 moved_mid max_error=1.42e-11
+246 unrelated max_error=0
+247 recombined max_error=5.46e-12
+247 switched max_error=2.76e-11
+247 moved_mid max_error=7.73e-12
+247 unrelated max_error=0
+{
+  "hygiene": {
+    "admission_identity": true,
+    "admission_shared_with_episode": true,
+    "bounds": true,
+    "fast_own_bound": true,
+    "normalized": true,
+    "exact_quotes": true,
+    "label_confined": true,
+    "archive": true
+  },
+  "namespace": "netta-oracle-latency-v1",
+  "worlds": [
+    240,
+    241,
+    242,
+    243,
+    244,
+    245,
+    246,
+    247
+  ],
+  "arms": [
+    "slow",
+    "fast",
+    "witness",
+    "h8l4",
+    "selfnorm",
+    "split",
+    "orate0",
+    "orate32",
+    "orate128",
+    "orate512",
+    "olevel0",
+    "olevel32",
+    "olevel128",
+    "olevel512"
+  ],
+  "forecasts": 524288,
+  "arm_forecasts": 7340032,
+  "maximum_numeric_error": 1.0345502232667059e-10,
+  "label_free_reference_agreement": true,
+  "label_confined_to_oracle_arms": true,
+  "switch_bytes_exact": true,
+  "clamp_matches_fast_odds": true,
+  "required_schema_keys": [
+    "arms",
+    "bars",
+    "bars_cleared",
+    "curve",
+    "delays",
+    "failed_bars",
+    "gate_pass",
+    "gate_pass_pending_reader",
+    "hygiene",
+    "independent_reader_pending",
+    "labels",
+    "labels_sha256",
+    "lives",
+    "namespace",
+    "protocol_sha256",
+    "quantities",
+    "regimes",
+    "seam",
+    "seam_regime",
+    "table",
+    "tests",
+    "unrelated_admissions",
+    "w3_law_bars_separating",
+    "worlds"
+  ],
+  "tests": {
+    "W1_satisfiability": true,
+    "W2_budget": true,
+    "W3_rate_vs_level": false,
+    "W4_references_stay_themselves": true,
+    "W5_hygiene": true,
+    "W6_reader": true
+  },
+  "d_star": 32,
+  "gate_pass": false,
+  "writer_gate_pass_pending_reader": false,
+  "verified": true
+}

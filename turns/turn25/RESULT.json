@@ -1,0 +1,4888 @@
+{
+  "bars": {
+    "fast": {
+      "b1_law_tail_mean": true,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": false,
+      "b4_moved_tail_wins": false,
+      "b5_moved_tail_vs_slow": false,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "latch": {
+      "b1_law_tail_mean": false,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "slow": {
+      "b1_law_tail_mean": false,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    },
+    "witness": {
+      "b1_law_tail_mean": false,
+      "b2_law_whole_mean": true,
+      "b3_moved_tail_mean": true,
+      "b4_moved_tail_wins": true,
+      "b5_moved_tail_vs_slow": true,
+      "b6_intact_early_retention": true,
+      "b7_intact_full_retention": true,
+      "b8_intact_full_positive": true
+    }
+  },
+  "independent_reader_pending": true,
+  "lives": [
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 347,
+        "first_set": 326,
+        "first_set_after_seam": 8820,
+        "latch_at_seam": 0,
+        "return_count": 25,
+        "returns_before_seam": 14,
+        "set_count": 25,
+        "sets_before_seam": 14
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 80,
+          "drawdown": 7.950507081593969,
+          "early": 833.3146223230957,
+          "fast_count": 16304,
+          "gain": 4064.7317052948233,
+          "horizons": {
+            "1024": 45.836921186207995,
+            "16384": 4064.7317052948233,
+            "4096": 833.3146223230957,
+            "8192": 1902.28143821898
+          },
+          "minimum": 0.0,
+          "peak": 4064.7317052948233,
+          "slow_count": 0,
+          "tail": 2162.450267075848,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 80,
+          "drawdown": 13.765570983720863,
+          "early": 838.1154518185374,
+          "fast_count": 839,
+          "gain": 4086.184616082072,
+          "horizons": {
+            "1024": 40.470298002288146,
+            "16384": 4086.184616082072,
+            "4096": 838.1154518185374,
+            "8192": 1912.4248693176569
+          },
+          "minimum": 0.0,
+          "peak": 4086.184616082072,
+          "slow_count": 15465,
+          "tail": 2173.759746764409,
+          "tail_fast_count": 142
+        },
+        "slow": {
+          "activation": 80,
+          "drawdown": 13.895268262567242,
+          "early": 838.8813829002274,
+          "fast_count": 0,
+          "gain": 4087.3487758239903,
+          "horizons": {
+            "1024": 40.38417503786282,
+            "16384": 4087.3487758239903,
+            "4096": 838.8813829002274,
+            "8192": 1913.3919960639228
+          },
+          "minimum": 0.0,
+          "peak": 4087.3487758239903,
+          "slow_count": 16304,
+          "tail": 2173.9567797600603,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 80,
+          "drawdown": 13.765570983720863,
+          "early": 838.1917674154449,
+          "fast_count": 682,
+          "gain": 4086.4024624223352,
+          "horizons": {
+            "1024": 40.48711257328904,
+            "16384": 4086.4024624223352,
+            "4096": 838.1917674154449,
+            "8192": 1912.5886009619326
+          },
+          "minimum": 0.0,
+          "peak": 4086.4024624223352,
+          "slow_count": 15622,
+          "tail": 2173.8138614603986,
+          "tail_fast_count": 103
+        }
+      },
+      "raw_harm": {
+        "candidate": -1.7495501411620284,
+        "cold": -2.5712365811960582,
+        "delta": -0.031327413200454846,
+        "fast_live": -2.5365382149472855,
+        "fast_odds_before": -4.9320539677525135,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -2.015238732905731,
+        "latch_odds_before": 0.6613787463431248,
+        "matched": 3,
+        "rank": 1,
+        "slow_live": -1.9606496694042739,
+        "slow_odds_before": 1.1308946223470868,
+        "t": 11511,
+        "truth": 210,
+        "w_after": -2.3504568225741083,
+        "w_before": -3.2744704646277554,
+        "witness_live": -1.983911319705276,
+        "witness_odds_before": 0.9229457599848626
+      },
+      "raw_help": {
+        "candidate": -5.655304106952334,
+        "cold": -1.9829237546570688,
+        "delta": 0.057408613532112795,
+        "fast_live": -2.707139863453382,
+        "fast_odds_before": -0.41684539699893547,
+        "latch_after": 1,
+        "latch_before": 0,
+        "latch_live": -5.260095857632809,
+        "latch_odds_before": 5.181286737439893,
+        "matched": 3,
+        "rank": 3,
+        "slow_live": -5.355844837553002,
+        "slow_odds_before": 5.641949502865853,
+        "t": 11508,
+        "truth": 161,
+        "w_after": -2.5957841771541643,
+        "w_before": 1.1113250840166207,
+        "witness_live": -5.317504471164922,
+        "witness_odds_before": 5.444109076600966
+      },
+      "regime": "recombined",
+      "world": 248
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 347,
+        "first_set": 326,
+        "first_set_after_seam": 8227,
+        "latch_at_seam": 0,
+        "return_count": 105,
+        "returns_before_seam": 14,
+        "set_count": 106,
+        "sets_before_seam": 14
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 80,
+          "drawdown": 7.466762161688166,
+          "early": 833.3146223230957,
+          "fast_count": 16304,
+          "gain": 1930.8757014770656,
+          "horizons": {
+            "1024": 45.836921186207995,
+            "16384": 1930.8757014770656,
+            "4096": 833.3146223230957,
+            "8192": 1902.28143821898
+          },
+          "minimum": 0.0,
+          "peak": 1937.1192011300502,
+          "slow_count": 0,
+          "tail": 28.59426325808574,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 80,
+          "drawdown": 13.066782116938391,
+          "early": 838.1154518185374,
+          "fast_count": 6719,
+          "gain": 1936.7134955105623,
+          "horizons": {
+            "1024": 40.470298002288146,
+            "16384": 1936.7134955105623,
+            "4096": 838.1154518185374,
+            "8192": 1912.4248693176569
+          },
+          "minimum": 0.0,
+          "peak": 1948.2372553298846,
+          "slow_count": 9585,
+          "tail": 24.288626192903607,
+          "tail_fast_count": 6022
+        },
+        "slow": {
+          "activation": 80,
+          "drawdown": 13.22604388910095,
+          "early": 838.8813829002274,
+          "fast_count": 0,
+          "gain": 1937.5920451432166,
+          "horizons": {
+            "1024": 40.38417503786282,
+            "16384": 1937.5920451432166,
+            "4096": 838.8813829002274,
+            "8192": 1913.3919960639228
+          },
+          "minimum": 0.0,
+          "peak": 1949.7802169815432,
+          "slow_count": 16304,
+          "tail": 24.200049079292405,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 80,
+          "drawdown": 13.071968876598902,
+          "early": 838.1917674154449,
+          "fast_count": 5941,
+          "gain": 1936.8119401903607,
+          "horizons": {
+            "1024": 40.48711257328904,
+            "16384": 1936.8119401903607,
+            "4096": 838.1917674154449,
+            "8192": 1912.5886009619326
+          },
+          "minimum": 0.0,
+          "peak": 1948.4967277702565,
+          "slow_count": 10363,
+          "tail": 24.223339228426006,
+          "tail_fast_count": 5362
+        }
+      },
+      "raw_harm": {
+        "candidate": -2.5533554963909513,
+        "cold": -5.157100632367778,
+        "delta": -0.3117166549675181,
+        "fast_live": -5.09295351063726,
+        "fast_odds_before": -6.79050974066076,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -3.8519796185801853,
+        "latch_odds_before": -1.2941908423112636,
+        "matched": 1,
+        "rank": 2,
+        "slow_live": -3.238581606944713,
+        "slow_odds_before": 0.2747124027964386,
+        "t": 9151,
+        "truth": 72,
+        "w_after": 7.508249539416129,
+        "w_before": 5.062714222905085,
+        "witness_live": -3.5402629636126672,
+        "witness_odds_before": -0.5429802108471622
+      },
+      "raw_help": {
+        "candidate": -6.162590129438183,
+        "cold": -3.5372859055857857,
+        "delta": 0.2931219232791147,
+        "fast_live": -3.629112539405809,
+        "fast_odds_before": -3.653997467811151,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -4.901591252615798,
+        "latch_odds_before": 1.4339784280511152,
+        "matched": 2,
+        "rank": 2,
+        "slow_live": -5.385886646045488,
+        "slow_odds_before": 2.6436487254964973,
+        "t": 8597,
+        "truth": 27,
+        "w_after": 4.7242496020132885,
+        "w_before": 7.586636207345224,
+        "witness_live": -5.194713175894913,
+        "witness_odds_before": 2.1402310251378083
+      },
+      "regime": "switched",
+      "world": 248
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 347,
+        "first_set": 326,
+        "first_set_after_seam": 8193,
+        "latch_at_seam": 0,
+        "return_count": 82,
+        "returns_before_seam": 14,
+        "set_count": 83,
+        "sets_before_seam": 14
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 80,
+          "drawdown": 8.426238567714336,
+          "early": 833.3146223230957,
+          "fast_count": 16304,
+          "gain": 2995.5707907065143,
+          "horizons": {
+            "1024": 45.836921186207995,
+            "16384": 2995.5707907065143,
+            "4096": 833.3146223230957,
+            "8192": 1902.28143821898
+          },
+          "minimum": 0.0,
+          "peak": 3002.8859319296116,
+          "slow_count": 0,
+          "tail": 1093.289352487534,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 80,
+          "drawdown": 13.596335826114228,
+          "early": 838.1154518185374,
+          "fast_count": 2543,
+          "gain": 3008.634644435122,
+          "horizons": {
+            "1024": 40.470298002288146,
+            "16384": 3008.634644435122,
+            "4096": 838.1154518185374,
+            "8192": 1912.4248693176569
+          },
+          "minimum": 0.0,
+          "peak": 3021.94482150582,
+          "slow_count": 13761,
+          "tail": 1096.2097751174651,
+          "tail_fast_count": 1846
+        },
+        "slow": {
+          "activation": 80,
+          "drawdown": 13.631523509526687,
+          "early": 838.8813829002274,
+          "fast_count": 0,
+          "gain": 3012.0476267331824,
+          "horizons": {
+            "1024": 40.38417503786282,
+            "16384": 3012.0476267331824,
+            "4096": 838.8813829002274,
+            "8192": 1913.3919960639228
+          },
+          "minimum": 0.0,
+          "peak": 3025.359597578351,
+          "slow_count": 16304,
+          "tail": 1098.6556306692603,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 80,
+          "drawdown": 13.603555689520817,
+          "early": 838.1917674154449,
+          "fast_count": 1985,
+          "gain": 3009.4047214529946,
+          "horizons": {
+            "1024": 40.48711257328904,
+            "16384": 3009.4047214529946,
+            "4096": 838.1917674154449,
+            "8192": 1912.5886009619326
+          },
+          "minimum": 0.0,
+          "peak": 3022.7149152564243,
+          "slow_count": 14319,
+          "tail": 1096.8161204910753,
+          "tail_fast_count": 1406
+        }
+      },
+      "raw_harm": {
+        "candidate": -1.0367558012633868,
+        "cold": -4.0788411338232695,
+        "delta": -0.1601239541548809,
+        "fast_live": -3.8422314766382506,
+        "fast_odds_before": -5.307643623502613,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -1.911772207540617,
+        "latch_odds_before": -0.1015564950751239,
+        "matched": 3,
+        "rank": 2,
+        "slow_live": -1.5937115874394907,
+        "slow_odds_before": 0.8018483507637447,
+        "t": 9836,
+        "truth": 81,
+        "w_after": 0.2810399425749248,
+        "w_before": -2.8501113703070535,
+        "witness_live": -1.751648253385736,
+        "witness_odds_before": 0.3201768965085632
+      },
+      "raw_help": {
+        "candidate": -15.568942924854007,
+        "cold": -4.296652672640034,
+        "delta": 0.5714161034644132,
+        "fast_live": -4.58403027794854,
+        "fast_odds_before": -2.1809616170446864,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -7.55776368047645,
+        "latch_odds_before": 3.107792337421138,
+        "matched": 1,
+        "rank": 4,
+        "slow_live": -8.274406810599904,
+        "slow_odds_before": 3.8923684808883867,
+        "t": 12304,
+        "truth": 175,
+        "w_after": -12.561186157330937,
+        "w_before": -1.3304731923788016,
+        "witness_live": -8.129179783940863,
+        "witness_odds_before": 3.735863831260464
+      },
+      "regime": "moved_mid",
+      "world": 248
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": null,
+        "first_set": null,
+        "first_set_after_seam": null,
+        "latch_at_seam": 0,
+        "return_count": 0,
+        "returns_before_seam": 0,
+        "set_count": 0,
+        "sets_before_seam": 0
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.199040866595169e-14,
+      "modes": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "latch": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        }
+      },
+      "raw_harm": {
+        "candidate": -6.037242428902741,
+        "cold": -2.3744652997694633,
+        "delta": 0.0,
+        "fast_live": -2.3744652997694633,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -2.3744652997694633,
+        "latch_odds_before": 0.0,
+        "matched": 3,
+        "rank": 3,
+        "slow_live": -2.3744652997694633,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 61,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -2.3744652997694633,
+        "witness_odds_before": 0.0
+      },
+      "raw_help": {
+        "candidate": -6.037242428902741,
+        "cold": -2.3744652997694633,
+        "delta": 0.0,
+        "fast_live": -2.3744652997694633,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -2.3744652997694633,
+        "latch_odds_before": 0.0,
+        "matched": 3,
+        "rank": 3,
+        "slow_live": -2.3744652997694633,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 61,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -2.3744652997694633,
+        "witness_odds_before": 0.0
+      },
+      "regime": "unrelated",
+      "world": 248
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 279,
+        "first_set": 272,
+        "first_set_after_seam": 8328,
+        "latch_at_seam": 0,
+        "return_count": 79,
+        "returns_before_seam": 50,
+        "set_count": 79,
+        "sets_before_seam": 50
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.3100631690576847e-14,
+      "modes": {
+        "fast": {
+          "activation": 130,
+          "drawdown": 7.687458243923629,
+          "early": 374.9304628759132,
+          "fast_count": 16254,
+          "gain": 2058.487542016578,
+          "horizons": {
+            "1024": 29.647046179235904,
+            "16384": 2058.487542016578,
+            "4096": 374.9304628759132,
+            "8192": 775.4832160371935
+          },
+          "minimum": -0.09387328637634518,
+          "peak": 2058.487542016578,
+          "slow_count": 0,
+          "tail": 1283.0043259793854,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 130,
+          "drawdown": 12.123388442552596,
+          "early": 379.44113145696855,
+          "fast_count": 1905,
+          "gain": 2078.3830499649016,
+          "horizons": {
+            "1024": 25.65308023360231,
+            "16384": 2078.3830499649016,
+            "4096": 379.44113145696855,
+            "8192": 784.8919102373242
+          },
+          "minimum": -0.09406005327945532,
+          "peak": 2078.3830499649016,
+          "slow_count": 14349,
+          "tail": 1293.4911397275798,
+          "tail_fast_count": 630
+        },
+        "slow": {
+          "activation": 130,
+          "drawdown": 12.123388444212196,
+          "early": 380.3902183827927,
+          "fast_count": 0,
+          "gain": 2081.026334957979,
+          "horizons": {
+            "1024": 24.27512337898579,
+            "16384": 2081.026334957979,
+            "4096": 380.3902183827927,
+            "8192": 786.6609706350159
+          },
+          "minimum": -0.09406005327945532,
+          "peak": 2081.026334957979,
+          "slow_count": 16254,
+          "tail": 1294.365364322965,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 130,
+          "drawdown": 12.123388444085776,
+          "early": 379.71170359385144,
+          "fast_count": 1328,
+          "gain": 2079.1836613889786,
+          "horizons": {
+            "1024": 25.113600584128513,
+            "16384": 2079.1836613889786,
+            "4096": 379.71170359385144,
+            "8192": 785.3969254453357
+          },
+          "minimum": -0.09406005327945532,
+          "peak": 2079.1836613889786,
+          "slow_count": 14926,
+          "tail": 1293.7867359436416,
+          "tail_fast_count": 417
+        }
+      },
+      "raw_harm": {
+        "candidate": -2.388173101256736,
+        "cold": -4.4257293392484565,
+        "delta": -0.6110526062347481,
+        "fast_live": -4.358849487854378,
+        "fast_odds_before": -6.010092054339129,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -4.112433595431914,
+        "latch_odds_before": -3.561191316720161,
+        "matched": 5,
+        "rank": 3,
+        "slow_live": -3.0271589571074515,
+        "slow_odds_before": 0.15560135258730737,
+        "t": 9543,
+        "truth": 155,
+        "w_after": -3.183318273836736,
+        "w_before": -5.3892898186616325,
+        "witness_live": -3.5013809891971657,
+        "witness_odds_before": -1.298014358551564
+      },
+      "raw_help": {
+        "candidate": -2.301587474726917,
+        "cold": -1.2909510954751173,
+        "delta": 0.3737538153800497,
+        "fast_live": -1.3621024512076199,
+        "fast_odds_before": -3.2428445476238528,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -1.5849051916496784,
+        "latch_odds_before": -0.7927338215396357,
+        "matched": 1,
+        "rank": 3,
+        "slow_live": -2.1393366305292645,
+        "slow_odds_before": 2.911779851942418,
+        "t": 9535,
+        "truth": 239,
+        "w_after": -4.478890641092234,
+        "w_before": -3.5801334315772224,
+        "witness_live": -1.958659007029728,
+        "witness_odds_before": 1.4760861105000516
+      },
+      "regime": "recombined",
+      "world": 249
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 279,
+        "first_set": 272,
+        "first_set_after_seam": 8228,
+        "latch_at_seam": 0,
+        "return_count": 83,
+        "returns_before_seam": 50,
+        "set_count": 84,
+        "sets_before_seam": 50
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.3100631690576847e-14,
+      "modes": {
+        "fast": {
+          "activation": 130,
+          "drawdown": 8.370028017852974,
+          "early": 374.9304628759132,
+          "fast_count": 16254,
+          "gain": 797.3150986188297,
+          "horizons": {
+            "1024": 29.647046179235904,
+            "16384": 797.3150986188297,
+            "4096": 374.9304628759132,
+            "8192": 775.4832160371935
+          },
+          "minimum": -0.09387328637634518,
+          "peak": 804.1028966417545,
+          "slow_count": 0,
+          "tail": 21.831882581637338,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 130,
+          "drawdown": 12.77630165494702,
+          "early": 379.44113145696855,
+          "fast_count": 8560,
+          "gain": 800.991456200097,
+          "horizons": {
+            "1024": 25.65308023360231,
+            "16384": 800.991456200097,
+            "4096": 379.44113145696855,
+            "8192": 784.8919102373242
+          },
+          "minimum": -0.09406005327945532,
+          "peak": 813.7677578549701,
+          "slow_count": 7694,
+          "tail": 16.099545962773227,
+          "tail_fast_count": 7285
+        },
+        "slow": {
+          "activation": 130,
+          "drawdown": 13.155663342159755,
+          "early": 380.3902183827927,
+          "fast_count": 0,
+          "gain": 802.8141161185617,
+          "horizons": {
+            "1024": 24.27512337898579,
+            "16384": 802.8141161185617,
+            "4096": 380.3902183827927,
+            "8192": 786.6609706350159
+          },
+          "minimum": -0.09406005327945532,
+          "peak": 815.592394398834,
+          "slow_count": 16254,
+          "tail": 16.153145483545305,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 130,
+          "drawdown": 13.02657508672337,
+          "early": 379.71170359385144,
+          "fast_count": 7937,
+          "gain": 801.5215005727962,
+          "horizons": {
+            "1024": 25.113600584128513,
+            "16384": 801.5215005727962,
+            "4096": 379.71170359385144,
+            "8192": 785.3969254453357
+          },
+          "minimum": -0.09406005327945532,
+          "peak": 814.2978043640953,
+          "slow_count": 8317,
+          "tail": 16.124575127460503,
+          "tail_fast_count": 7026
+        }
+      },
+      "raw_harm": {
+        "candidate": -3.593918419895611,
+        "cold": -5.504533063447564,
+        "delta": -0.25351458705890373,
+        "fast_live": -5.428854521725198,
+        "fast_odds_before": -5.650807918028929,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -4.4753525695271925,
+        "latch_odds_before": -0.7236425588493479,
+        "matched": 1,
+        "rank": 2,
+        "slow_live": -4.135080586893098,
+        "slow_odds_before": 0.4294735607230576,
+        "t": 8363,
+        "truth": 117,
+        "w_after": -4.214582418956129,
+        "w_before": -6.322784064524472,
+        "witness_live": -4.221837982468289,
+        "witness_odds_before": 0.11105902080888025
+      },
+      "raw_help": {
+        "candidate": -6.799260960871861,
+        "cold": -3.9466185730465755,
+        "delta": 0.2636846300964777,
+        "fast_live": -4.235104611457503,
+        "fast_odds_before": -1.908315253011008,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -6.048965918170172,
+        "latch_odds_before": 3.0220353751287403,
+        "matched": 3,
+        "rank": 3,
+        "slow_live": -6.390013120820028,
+        "slow_odds_before": 4.167809500743658,
+        "t": 8360,
+        "truth": 119,
+        "w_after": -5.612666453277412,
+        "w_before": -2.8490570998215503,
+        "witness_live": -6.3126505482666495,
+        "witness_odds_before": 3.8593225555050017
+      },
+      "regime": "switched",
+      "world": 249
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 279,
+        "first_set": 272,
+        "first_set_after_seam": 8221,
+        "latch_at_seam": 0,
+        "return_count": 133,
+        "returns_before_seam": 50,
+        "set_count": 134,
+        "sets_before_seam": 50
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.3100631690576847e-14,
+      "modes": {
+        "fast": {
+          "activation": 130,
+          "drawdown": 7.331684983985554,
+          "early": 374.9304628759132,
+          "fast_count": 16254,
+          "gain": 799.9827728773475,
+          "horizons": {
+            "1024": 29.647046179235904,
+            "16384": 799.9827728773475,
+            "4096": 374.9304628759132,
+            "8192": 775.4832160371935
+          },
+          "minimum": -0.09387328637634518,
+          "peak": 805.7672303300214,
+          "slow_count": 0,
+          "tail": 24.499556840154533,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 130,
+          "drawdown": 11.272535607433404,
+          "early": 379.44113145696855,
+          "fast_count": 5599,
+          "gain": 805.711942348342,
+          "horizons": {
+            "1024": 25.65308023360231,
+            "16384": 805.711942348342,
+            "4096": 379.44113145696855,
+            "8192": 784.8919102373242
+          },
+          "minimum": -0.09406005327945532,
+          "peak": 815.6439528218078,
+          "slow_count": 10655,
+          "tail": 20.820032111019405,
+          "tail_fast_count": 4324
+        },
+        "slow": {
+          "activation": 130,
+          "drawdown": 12.04343433802605,
+          "early": 380.3902183827927,
+          "fast_count": 0,
+          "gain": 805.6786987610893,
+          "horizons": {
+            "1024": 24.27512337898579,
+            "16384": 805.6786987610893,
+            "4096": 380.3902183827927,
+            "8192": 786.6609706350159
+          },
+          "minimum": -0.09406005327945532,
+          "peak": 817.4644266971275,
+          "slow_count": 16254,
+          "tail": 19.017728126072605,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 130,
+          "drawdown": 11.644936236543884,
+          "early": 379.71170359385144,
+          "fast_count": 4530,
+          "gain": 805.5517024420483,
+          "horizons": {
+            "1024": 25.113600584128513,
+            "16384": 805.5517024420483,
+            "4096": 379.71170359385144,
+            "8192": 785.3969254453357
+          },
+          "minimum": -0.09406005327945532,
+          "peak": 816.1684491060083,
+          "slow_count": 11724,
+          "tail": 20.15477699671161,
+          "tail_fast_count": 3619
+        }
+      },
+      "raw_harm": {
+        "candidate": -2.0037099155640083,
+        "cold": -3.66999608550684,
+        "delta": -0.20413150824124005,
+        "fast_live": -3.6090997022561826,
+        "fast_odds_before": -5.627140588483099,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -2.986521717982853,
+        "latch_odds_before": -1.3714944642818685,
+        "matched": 3,
+        "rank": 3,
+        "slow_live": -2.472812445250278,
+        "slow_odds_before": 0.5533351614065216,
+        "t": 8689,
+        "truth": 46,
+        "w_after": -2.1701347317036346,
+        "w_before": -3.960176414602804,
+        "witness_live": -2.782390209741613,
+        "witness_odds_before": -0.6390420520314984
+      },
+      "raw_help": {
+        "candidate": -5.0655155158270855,
+        "cold": -3.1227296775658573,
+        "delta": 0.2366289684370484,
+        "fast_live": -3.2019763007072255,
+        "fast_odds_before": -3.682916645807136,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -3.965656280639382,
+        "latch_odds_before": 0.5732460992144028,
+        "matched": 1,
+        "rank": 1,
+        "slow_live": -4.551253454531925,
+        "slow_odds_before": 2.4961753191233282,
+        "t": 8688,
+        "truth": 175,
+        "w_after": -3.960176414602804,
+        "w_before": -2.082467691707433,
+        "witness_live": -4.20228524907643,
+        "witness_odds_before": 1.3060592234417854
+      },
+      "regime": "moved_mid",
+      "world": 249
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": null,
+        "first_set": null,
+        "first_set_after_seam": null,
+        "latch_at_seam": 0,
+        "return_count": 0,
+        "returns_before_seam": 0,
+        "set_count": 0,
+        "sets_before_seam": 0
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.199040866595169e-14,
+      "modes": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "latch": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        }
+      },
+      "raw_harm": {
+        "candidate": -2.8657723585879253,
+        "cold": -2.8657723585879253,
+        "delta": 0.0,
+        "fast_live": -2.8657723585879253,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -2.8657723585879253,
+        "latch_odds_before": 0.0,
+        "matched": 0,
+        "rank": 2,
+        "slow_live": -2.8657723585879253,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 196,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -2.8657723585879253,
+        "witness_odds_before": 0.0
+      },
+      "raw_help": {
+        "candidate": -2.8657723585879253,
+        "cold": -2.8657723585879253,
+        "delta": 0.0,
+        "fast_live": -2.8657723585879253,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -2.8657723585879253,
+        "latch_odds_before": 0.0,
+        "matched": 0,
+        "rank": 2,
+        "slow_live": -2.8657723585879253,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 196,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -2.8657723585879253,
+        "witness_odds_before": 0.0
+      },
+      "regime": "unrelated",
+      "world": 249
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 474,
+        "first_set": 284,
+        "first_set_after_seam": 9001,
+        "latch_at_seam": 0,
+        "return_count": 17,
+        "returns_before_seam": 8,
+        "set_count": 17,
+        "sets_before_seam": 8
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 180,
+          "drawdown": 8.640530107892118,
+          "early": 434.5439898331491,
+          "fast_count": 16204,
+          "gain": 2760.978064337315,
+          "horizons": {
+            "1024": 5.324056092943524,
+            "16384": 2760.978064337315,
+            "4096": 434.5439898331491,
+            "8192": 1148.091221368337
+          },
+          "minimum": -0.22772343266278217,
+          "peak": 2760.978064337315,
+          "slow_count": 0,
+          "tail": 1612.8868429689867,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 180,
+          "drawdown": 12.93254976262915,
+          "early": 439.0076460270726,
+          "fast_count": 822,
+          "gain": 2782.318935800477,
+          "horizons": {
+            "1024": 1.7891550668305016,
+            "16384": 2782.318935800477,
+            "4096": 439.0076460270726,
+            "8192": 1158.191556947033
+          },
+          "minimum": -0.22867458298749055,
+          "peak": 2782.318935800477,
+          "slow_count": 15382,
+          "tail": 1624.1273788534336,
+          "tail_fast_count": 95
+        },
+        "slow": {
+          "activation": 180,
+          "drawdown": 12.933379224632745,
+          "early": 439.96644743549166,
+          "fast_count": 0,
+          "gain": 2783.4595070851724,
+          "horizons": {
+            "1024": 0.2690689003753439,
+            "16384": 2783.4595070851724,
+            "4096": 439.96644743549166,
+            "8192": 1159.2003103825184
+          },
+          "minimum": -0.22867458298749055,
+          "peak": 2783.4595070851724,
+          "slow_count": 16204,
+          "tail": 1624.2591967026383,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 180,
+          "drawdown": 12.93254976262915,
+          "early": 439.22549236733573,
+          "fast_count": 612,
+          "gain": 2782.610322625031,
+          "horizons": {
+            "1024": 1.0968543214065,
+            "16384": 2782.610322625031,
+            "4096": 439.22549236733573,
+            "8192": 1158.4385419697521
+          },
+          "minimum": -0.22867458298749055,
+          "peak": 2782.610322625031,
+          "slow_count": 15592,
+          "tail": 1624.171780655272,
+          "tail_fast_count": 63
+        }
+      },
+      "raw_harm": {
+        "candidate": -1.8806432686247088,
+        "cold": -4.886838935936209,
+        "delta": -0.02039437434147784,
+        "fast_live": -4.827873594740777,
+        "fast_odds_before": -7.389024258756248,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -3.463778811499498,
+        "latch_odds_before": -1.670538352066032,
+        "matched": 1,
+        "rank": 1,
+        "slow_live": -3.3014472967280897,
+        "slow_odds_before": -1.3309289883735729,
+        "t": 9228,
+        "truth": 154,
+        "w_after": -3.8277979088472303,
+        "w_before": -7.054444981841271,
+        "witness_live": -3.44338443715802,
+        "witness_odds_before": -1.62782487413594
+      },
+      "raw_help": {
+        "candidate": -5.289413175881313,
+        "cold": -1.6392325578254319,
+        "delta": 0.023867778533615436,
+        "fast_live": -1.7351283197650893,
+        "fast_odds_before": -3.7345896642859024,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -3.5538887140659137,
+        "latch_odds_before": 1.9852019299430548,
+        "matched": 2,
+        "rank": 1,
+        "slow_live": -3.739154783352661,
+        "slow_odds_before": 2.319343924801091,
+        "t": 9225,
+        "truth": 227,
+        "w_after": -7.054444981841271,
+        "w_before": -3.514079343262338,
+        "witness_live": -3.577756492599529,
+        "witness_odds_before": 2.0279554211781536
+      },
+      "regime": "recombined",
+      "world": 250
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 474,
+        "first_set": 284,
+        "first_set_after_seam": 8299,
+        "latch_at_seam": 0,
+        "return_count": 42,
+        "returns_before_seam": 8,
+        "set_count": 43,
+        "sets_before_seam": 8
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 180,
+          "drawdown": 8.587312759171482,
+          "early": 434.5439898331491,
+          "fast_count": 16204,
+          "gain": 1151.856633395016,
+          "horizons": {
+            "1024": 5.324056092943524,
+            "16384": 1151.856633395016,
+            "4096": 434.5439898331491,
+            "8192": 1148.091221368337
+          },
+          "minimum": -0.22772343266278217,
+          "peak": 1156.9839797948075,
+          "slow_count": 0,
+          "tail": 3.765412026679365,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 180,
+          "drawdown": 10.743510682445958,
+          "early": 439.0076460270726,
+          "fast_count": 7733,
+          "gain": 1157.7021454728924,
+          "horizons": {
+            "1024": 1.7891550668305016,
+            "16384": 1157.7021454728924,
+            "4096": 439.0076460270726,
+            "8192": 1158.191556947033
+          },
+          "minimum": -0.22867458298749055,
+          "peak": 1167.2019941977464,
+          "slow_count": 8471,
+          "tail": -0.48941147413749864,
+          "tail_fast_count": 7006
+        },
+        "slow": {
+          "activation": 180,
+          "drawdown": 11.103026452985205,
+          "early": 439.96644743549166,
+          "fast_count": 0,
+          "gain": 1157.220633686044,
+          "horizons": {
+            "1024": 0.2690689003753439,
+            "16384": 1157.220633686044,
+            "4096": 439.96644743549166,
+            "8192": 1159.2003103825184
+          },
+          "minimum": -0.22867458298749055,
+          "peak": 1168.210747633232,
+          "slow_count": 16204,
+          "tail": -1.9796766964731765,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 180,
+          "drawdown": 11.058974113986551,
+          "early": 439.22549236733573,
+          "fast_count": 7211,
+          "gain": 1157.6531437273259,
+          "horizons": {
+            "1024": 1.0968543214065,
+            "16384": 1157.6531437273259,
+            "4096": 439.22549236733573,
+            "8192": 1158.4385419697521
+          },
+          "minimum": -0.22867458298749055,
+          "peak": 1167.4489792204656,
+          "slow_count": 8993,
+          "tail": -0.7853982424255368,
+          "tail_fast_count": 6662
+        }
+      },
+      "raw_harm": {
+        "candidate": -2.8411940589792195,
+        "cold": -4.432073424596425,
+        "delta": -0.08362669201189687,
+        "fast_live": -4.3857110726405395,
+        "fast_odds_before": -5.921686366796678,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -3.767916737684904,
+        "latch_odds_before": -1.2880553726947053,
+        "matched": 1,
+        "rank": 2,
+        "slow_live": -3.3570530619912953,
+        "slow_odds_before": 0.28942213630481467,
+        "t": 8522,
+        "truth": 157,
+        "w_after": -3.471010365468056,
+        "w_before": -5.22517649660414,
+        "witness_live": -3.684290045673007,
+        "witness_odds_before": -0.9728733346765506
+      },
+      "raw_help": {
+        "candidate": -5.307094863352578,
+        "cold": -1.6623062190185607,
+        "delta": 0.13028462212531,
+        "fast_live": -2.1826260587842756,
+        "fast_odds_before": -1.0276161526695966,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -4.407454712776485,
+        "latch_odds_before": 3.6199892370619957,
+        "matched": 2,
+        "rank": 1,
+        "slow_live": -4.915060773500766,
+        "slow_odds_before": 5.164153076497475,
+        "t": 8508,
+        "truth": 230,
+        "w_after": -5.131566527820204,
+        "w_before": -1.534738460372838,
+        "witness_live": -4.537739334901795,
+        "witness_odds_before": 3.93874831461152
+      },
+      "regime": "switched",
+      "world": 250
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 474,
+        "first_set": 284,
+        "first_set_after_seam": 8336,
+        "latch_at_seam": 0,
+        "return_count": 54,
+        "returns_before_seam": 8,
+        "set_count": 54,
+        "sets_before_seam": 8
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 180,
+          "drawdown": 8.587312759171482,
+          "early": 434.5439898331491,
+          "fast_count": 16204,
+          "gain": 1819.4075011173375,
+          "horizons": {
+            "1024": 5.324056092943524,
+            "16384": 1819.4075011173375,
+            "4096": 434.5439898331491,
+            "8192": 1148.091221368337
+          },
+          "minimum": -0.22772343266278217,
+          "peak": 1822.60984846927,
+          "slow_count": 0,
+          "tail": 671.3162797489929,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 180,
+          "drawdown": 12.547907033169395,
+          "early": 439.0076460270726,
+          "fast_count": 2430,
+          "gain": 1838.4491429593174,
+          "horizons": {
+            "1024": 1.7891550668305016,
+            "16384": 1838.4491429593174,
+            "4096": 439.0076460270726,
+            "8192": 1158.191556947033
+          },
+          "minimum": -0.22867458298749055,
+          "peak": 1841.7024330494821,
+          "slow_count": 13774,
+          "tail": 680.2575860122818,
+          "tail_fast_count": 1703
+        },
+        "slow": {
+          "activation": 180,
+          "drawdown": 12.992387318711963,
+          "early": 439.96644743549166,
+          "fast_count": 0,
+          "gain": 1841.820904786316,
+          "horizons": {
+            "1024": 0.2690689003753439,
+            "16384": 1841.820904786316,
+            "4096": 439.96644743549166,
+            "8192": 1159.2003103825184
+          },
+          "minimum": -0.22867458298749055,
+          "peak": 1845.0741948764808,
+          "slow_count": 16204,
+          "tail": 682.620594403798,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 180,
+          "drawdown": 12.601699359793201,
+          "early": 439.22549236733573,
+          "fast_count": 1830,
+          "gain": 1839.2816767437585,
+          "horizons": {
+            "1024": 1.0968543214065,
+            "16384": 1839.2816767437585,
+            "4096": 439.22549236733573,
+            "8192": 1158.4385419697521
+          },
+          "minimum": -0.22867458298749055,
+          "peak": 1842.5349668339231,
+          "slow_count": 14374,
+          "tail": 680.8431347740085,
+          "tail_fast_count": 1281
+        }
+      },
+      "raw_harm": {
+        "candidate": -1.3710917499934796,
+        "cold": -3.912986926627079,
+        "delta": -0.3250568744691251,
+        "fast_live": -3.7772571207851224,
+        "fast_odds_before": -5.58183968123532,
+        "latch_after": 0,
+        "latch_before": 1,
+        "latch_live": -2.3984434014591813,
+        "latch_odds_before": -0.6756987252410506,
+        "matched": 3,
+        "rank": 3,
+        "slow_live": -1.856600218257576,
+        "slow_odds_before": 0.9249211109024907,
+        "t": 9532,
+        "truth": 177,
+        "w_after": 1.7723123798080171,
+        "w_before": -0.794408048336085,
+        "witness_live": -2.073386526990056,
+        "witness_odds_before": 0.20052593858347859
+      },
+      "raw_help": {
+        "candidate": -5.908158033674265,
+        "cold": -2.7647505014074927,
+        "delta": 0.5332507952747925,
+        "fast_live": -3.390177662610699,
+        "fast_odds_before": -0.6050472642563889,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -5.056093265509704,
+        "latch_odds_before": 3.12652218803522,
+        "matched": 3,
+        "rank": 2,
+        "slow_live": -5.684562801892092,
+        "slow_odds_before": 5.515498187906725,
+        "t": 13597,
+        "truth": 144,
+        "w_after": -5.273748826746457,
+        "w_before": -2.199061981398384,
+        "witness_live": -5.589344060784496,
+        "witness_odds_before": 4.93950656504725
+      },
+      "regime": "moved_mid",
+      "world": 250
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": null,
+        "first_set": null,
+        "first_set_after_seam": null,
+        "latch_at_seam": 0,
+        "return_count": 0,
+        "returns_before_seam": 0,
+        "set_count": 0,
+        "sets_before_seam": 0
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.0658141036401503e-14,
+      "modes": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "latch": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        }
+      },
+      "raw_harm": {
+        "candidate": -10.049973562587525,
+        "cold": -10.049973562587525,
+        "delta": 0.0,
+        "fast_live": -10.049973562587525,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -10.049973562587525,
+        "latch_odds_before": 0.0,
+        "matched": 3,
+        "rank": 0,
+        "slow_live": -10.049973562587525,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 65,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -10.049973562587525,
+        "witness_odds_before": 0.0
+      },
+      "raw_help": {
+        "candidate": -10.049973562587525,
+        "cold": -10.049973562587525,
+        "delta": 0.0,
+        "fast_live": -10.049973562587525,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -10.049973562587525,
+        "latch_odds_before": 0.0,
+        "matched": 3,
+        "rank": 0,
+        "slow_live": -10.049973562587525,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 65,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -10.049973562587525,
+        "witness_odds_before": 0.0
+      },
+      "regime": "unrelated",
+      "world": 250
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 106,
+        "first_set": 97,
+        "first_set_after_seam": 8434,
+        "latch_at_seam": 0,
+        "return_count": 41,
+        "returns_before_seam": 25,
+        "set_count": 41,
+        "sets_before_seam": 25
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.199040866595169e-14,
+      "modes": {
+        "fast": {
+          "activation": 77,
+          "drawdown": 8.74390053416414,
+          "early": 734.2834587123417,
+          "fast_count": 16307,
+          "gain": 3433.553643099383,
+          "horizons": {
+            "1024": 18.07248592569399,
+            "16384": 3433.553643099383,
+            "4096": 734.2834587123417,
+            "8192": 1593.6888809530992
+          },
+          "minimum": -0.5054230032228995,
+          "peak": 3433.553643099383,
+          "slow_count": 0,
+          "tail": 1839.8647621462703,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 77,
+          "drawdown": 13.830396760991789,
+          "early": 738.9225888304696,
+          "fast_count": 1009,
+          "gain": 3454.77304551131,
+          "horizons": {
+            "1024": 14.545998751498367,
+            "16384": 3454.77304551131,
+            "4096": 738.9225888304696,
+            "8192": 1603.8516211610386
+          },
+          "minimum": -0.5364917086814742,
+          "peak": 3454.77304551131,
+          "slow_count": 15298,
+          "tail": 1850.9214243502809,
+          "tail_fast_count": 222
+        },
+        "slow": {
+          "activation": 77,
+          "drawdown": 13.909581892577307,
+          "early": 739.7662230653732,
+          "fast_count": 0,
+          "gain": 3456.1730898254914,
+          "horizons": {
+            "1024": 12.26810476961174,
+            "16384": 3456.1730898254914,
+            "4096": 739.7662230653732,
+            "8192": 1604.9436279749702
+          },
+          "minimum": -0.5364917086814742,
+          "peak": 3456.1730898254914,
+          "slow_count": 16307,
+          "tail": 1851.2294618505252,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 77,
+          "drawdown": 13.884110081185554,
+          "early": 739.0585693485959,
+          "fast_count": 735,
+          "gain": 3455.153235939548,
+          "horizons": {
+            "1024": 13.769806949019197,
+            "16384": 3455.153235939548,
+            "4096": 739.0585693485959,
+            "8192": 1604.0888932896064
+          },
+          "minimum": -0.5364917086814742,
+          "peak": 3455.153235939548,
+          "slow_count": 15572,
+          "tail": 1851.0643426499457,
+          "tail_fast_count": 119
+        }
+      },
+      "raw_harm": {
+        "candidate": -2.123809858899536,
+        "cold": -2.8091405275693972,
+        "delta": -0.04274225180673463,
+        "fast_live": -2.590076535508816,
+        "fast_odds_before": -1.437356018657459,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -2.203106048032272,
+        "latch_odds_before": 2.6018213504412464,
+        "matched": 1,
+        "rank": 3,
+        "slow_live": -2.1451577530994608,
+        "slow_odds_before": 4.629012161457332,
+        "t": 9971,
+        "truth": 136,
+        "w_after": -2.2049448682744823,
+        "w_before": -2.9835102316844835,
+        "witness_live": -2.1603637962255373,
+        "witness_odds_before": 3.8190554090956463
+      },
+      "raw_help": {
+        "candidate": -4.0791343359387895,
+        "cold": -2.3374044328677526,
+        "delta": 0.0821411952554767,
+        "fast_live": -3.044770699294848,
+        "fast_odds_before": 0.3063042775047449,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -3.929447124150018,
+        "latch_odds_before": 4.353547338775551,
+        "matched": 1,
+        "rank": 1,
+        "slow_live": -4.039321523508939,
+        "slow_odds_before": 6.371308900615214,
+        "t": 9970,
+        "truth": 204,
+        "w_after": -2.9835102316844835,
+        "w_before": -1.281837758568719,
+        "witness_live": -4.011588319405495,
+        "witness_odds_before": 5.582237868085077
+      },
+      "regime": "recombined",
+      "world": 251
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 106,
+        "first_set": 97,
+        "first_set_after_seam": 8289,
+        "latch_at_seam": 0,
+        "return_count": 43,
+        "returns_before_seam": 25,
+        "set_count": 44,
+        "sets_before_seam": 25
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.199040866595169e-14,
+      "modes": {
+        "fast": {
+          "activation": 77,
+          "drawdown": 8.74390053416414,
+          "early": 734.2834587123417,
+          "fast_count": 16307,
+          "gain": 1595.4261938689958,
+          "horizons": {
+            "1024": 18.07248592569399,
+            "16384": 1595.4261938689958,
+            "4096": 734.2834587123417,
+            "8192": 1593.6888809530992
+          },
+          "minimum": -0.5054230032228995,
+          "peak": 1600.6015169436114,
+          "slow_count": 0,
+          "tail": 1.7373129158977392,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 77,
+          "drawdown": 12.465169970629404,
+          "early": 738.9225888304696,
+          "fast_count": 8646,
+          "gain": 1600.1793443578244,
+          "horizons": {
+            "1024": 14.545998751498367,
+            "16384": 1600.1793443578244,
+            "4096": 738.9225888304696,
+            "8192": 1603.8516211610386
+          },
+          "minimum": -0.5364917086814742,
+          "peak": 1610.8887804562687,
+          "slow_count": 7661,
+          "tail": -3.6722768032168798,
+          "tail_fast_count": 7859
+        },
+        "slow": {
+          "activation": 77,
+          "drawdown": 12.48948817289488,
+          "early": 739.7662230653732,
+          "fast_count": 0,
+          "gain": 1600.808978045465,
+          "horizons": {
+            "1024": 12.26810476961174,
+            "16384": 1600.808978045465,
+            "4096": 739.7662230653732,
+            "8192": 1604.9436279749702
+          },
+          "minimum": -0.5364917086814742,
+          "peak": 1612.0264616516372,
+          "slow_count": 16307,
+          "tail": -4.134649929506993,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 77,
+          "drawdown": 12.485148450205315,
+          "early": 739.0585693485959,
+          "fast_count": 8296,
+          "gain": 1600.3378727700722,
+          "horizons": {
+            "1024": 13.769806949019197,
+            "16384": 1600.3378727700722,
+            "4096": 739.0585693485959,
+            "8192": 1604.0888932896064
+          },
+          "minimum": -0.5364917086814742,
+          "peak": 1611.1288021099647,
+          "slow_count": 8011,
+          "tail": -3.7510205195333213,
+          "tail_fast_count": 7680
+        }
+      },
+      "raw_harm": {
+        "candidate": -2.6800522753531473,
+        "cold": -7.987408436879753,
+        "delta": -0.06327174167581884,
+        "fast_live": -7.851483914382992,
+        "fast_odds_before": -8.606150094136922,
+        "latch_after": 0,
+        "latch_before": 1,
+        "latch_live": -5.559632493719009,
+        "latch_odds_before": -2.965518021756838,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -5.115817740989551,
+        "slow_odds_before": -2.352905680521344,
+        "t": 8462,
+        "truth": 200,
+        "w_after": 4.0465913809018685,
+        "w_before": -1.3014346122577929,
+        "witness_live": -5.4963607520431905,
+        "witness_odds_before": -2.87797685984331
+      },
+      "raw_help": {
+        "candidate": -4.7073090656589835,
+        "cold": -1.4872932938072485,
+        "delta": 0.055388224613333925,
+        "fast_live": -1.5571596446179545,
+        "fast_odds_before": -4.160534505439412,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -3.0779992589060425,
+        "latch_odds_before": 1.5718964336060328,
+        "matched": 2,
+        "rank": 2,
+        "slow_live": -3.4328782739182486,
+        "slow_odds_before": 2.2814653610623923,
+        "t": 8599,
+        "truth": 200,
+        "w_after": -0.9457561908347184,
+        "w_before": 2.347622793307888,
+        "witness_live": -3.1333874835193765,
+        "witness_odds_before": 1.6812676260524395
+      },
+      "regime": "switched",
+      "world": 251
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 106,
+        "first_set": 97,
+        "first_set_after_seam": 8241,
+        "latch_at_seam": 0,
+        "return_count": 85,
+        "returns_before_seam": 25,
+        "set_count": 86,
+        "sets_before_seam": 25
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.199040866595169e-14,
+      "modes": {
+        "fast": {
+          "activation": 77,
+          "drawdown": 9.204266519992188,
+          "early": 734.2834587123417,
+          "fast_count": 16307,
+          "gain": 2320.269264095824,
+          "horizons": {
+            "1024": 18.07248592569399,
+            "16384": 2320.269264095824,
+            "4096": 734.2834587123417,
+            "8192": 1593.6888809530992
+          },
+          "minimum": -0.5054230032228995,
+          "peak": 2328.557268525006,
+          "slow_count": 0,
+          "tail": 726.5803831427321,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 77,
+          "drawdown": 14.215513433868864,
+          "early": 738.9225888304696,
+          "fast_count": 2838,
+          "gain": 2336.4475337650197,
+          "horizons": {
+            "1024": 14.545998751498367,
+            "16384": 2336.4475337650197,
+            "4096": 738.9225888304696,
+            "8192": 1603.8516211610386
+          },
+          "minimum": -0.5364917086814742,
+          "peak": 2347.205539785092,
+          "slow_count": 13469,
+          "tail": 732.5959126039783,
+          "tail_fast_count": 2051
+        },
+        "slow": {
+          "activation": 77,
+          "drawdown": 14.219508510217793,
+          "early": 739.7662230653732,
+          "fast_count": 0,
+          "gain": 2340.350333844549,
+          "horizons": {
+            "1024": 12.26810476961174,
+            "16384": 2340.350333844549,
+            "4096": 739.7662230653732,
+            "8192": 1604.9436279749702
+          },
+          "minimum": -0.5364917086814742,
+          "peak": 2351.125379713976,
+          "slow_count": 16307,
+          "tail": 735.4067058695769,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 77,
+          "drawdown": 14.215513433868864,
+          "early": 739.0585693485959,
+          "fast_count": 2316,
+          "gain": 2337.1671645881024,
+          "horizons": {
+            "1024": 13.769806949019197,
+            "16384": 2337.1671645881024,
+            "4096": 739.0585693485959,
+            "8192": 1604.0888932896064
+          },
+          "minimum": -0.5364917086814742,
+          "peak": 2347.9298414831505,
+          "slow_count": 13991,
+          "tail": 733.0782712984941,
+          "tail_fast_count": 1700
+        }
+      },
+      "raw_harm": {
+        "candidate": -1.443368918934484,
+        "cold": -3.4647070561210445,
+        "delta": -0.2470292008392696,
+        "fast_live": -3.392693093861714,
+        "fast_odds_before": -5.877194422435444,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -2.435003018179153,
+        "latch_odds_before": -0.9541146320055839,
+        "matched": 3,
+        "rank": 2,
+        "slow_live": -2.050597324927114,
+        "slow_odds_before": 0.25557857427971553,
+        "t": 9769,
+        "truth": 155,
+        "w_after": -1.1682644245932075,
+        "w_before": -3.29249296699847,
+        "witness_live": -2.1879738173398833,
+        "witness_odds_before": -0.20196217326608762
+      },
+      "raw_help": {
+        "candidate": -7.161981946102298,
+        "cold": -4.686348425957483,
+        "delta": 0.29597674806335306,
+        "fast_live": -4.734858125202313,
+        "fast_odds_before": -4.5732410643472825,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -5.575316737409658,
+        "latch_odds_before": 0.35278553589260664,
+        "matched": 1,
+        "rank": 3,
+        "slow_live": -6.049402058032549,
+        "slow_odds_before": 1.5484407410857184,
+        "t": 9761,
+        "truth": 144,
+        "w_after": -5.273179915006529,
+        "w_before": -2.887789826954028,
+        "witness_live": -5.871293485473011,
+        "witness_odds_before": 1.1070268832316275
+      },
+      "regime": "moved_mid",
+      "world": 251
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": null,
+        "first_set": null,
+        "first_set_after_seam": null,
+        "latch_at_seam": 0,
+        "return_count": 0,
+        "returns_before_seam": 0,
+        "set_count": 0,
+        "sets_before_seam": 0
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2212453270876722e-14,
+      "modes": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "latch": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        }
+      },
+      "raw_harm": {
+        "candidate": -5.148379130355195,
+        "cold": -2.7572099534001016,
+        "delta": 0.0,
+        "fast_live": -2.7572099534001016,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -2.7572099534001016,
+        "latch_odds_before": 0.0,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -2.7572099534001016,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 126,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -2.7572099534001016,
+        "witness_odds_before": 0.0
+      },
+      "raw_help": {
+        "candidate": -5.148379130355195,
+        "cold": -2.7572099534001016,
+        "delta": 0.0,
+        "fast_live": -2.7572099534001016,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -2.7572099534001016,
+        "latch_odds_before": 0.0,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -2.7572099534001016,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 126,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -2.7572099534001016,
+        "witness_odds_before": 0.0
+      },
+      "regime": "unrelated",
+      "world": 251
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 1027,
+        "first_set": 954,
+        "first_set_after_seam": null,
+        "latch_at_seam": 0,
+        "return_count": 4,
+        "returns_before_seam": 4,
+        "set_count": 4,
+        "sets_before_seam": 4
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 110,
+          "drawdown": 7.940151385664649,
+          "early": 790.6975192637041,
+          "fast_count": 16274,
+          "gain": 4228.14456956006,
+          "horizons": {
+            "1024": 96.2736291050246,
+            "16384": 4228.14456956006,
+            "4096": 790.6975192637041,
+            "8192": 1855.7595672261514
+          },
+          "minimum": 0.0,
+          "peak": 4228.14456956006,
+          "slow_count": 0,
+          "tail": 2372.3850023339082,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 110,
+          "drawdown": 11.656601534761649,
+          "early": 796.0908090419751,
+          "fast_count": 118,
+          "gain": 4250.550970020556,
+          "horizons": {
+            "1024": 94.97934924235068,
+            "16384": 4250.550970020556,
+            "4096": 796.0908090419751,
+            "8192": 1866.8051538239135
+          },
+          "minimum": 0.0,
+          "peak": 4250.550970020556,
+          "slow_count": 16156,
+          "tail": 2383.7458161966306,
+          "tail_fast_count": 0
+        },
+        "slow": {
+          "activation": 110,
+          "drawdown": 11.658396376940345,
+          "early": 796.2170766659491,
+          "fast_count": 0,
+          "gain": 4250.714701664828,
+          "horizons": {
+            "1024": 94.96836502581402,
+            "16384": 4250.714701664828,
+            "4096": 796.2170766659491,
+            "8192": 1866.9688854681865
+          },
+          "minimum": 0.0,
+          "peak": 4250.714701664828,
+          "slow_count": 16274,
+          "tail": 2383.7458161966306,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 110,
+          "drawdown": 11.656601534761649,
+          "early": 796.0963592672048,
+          "fast_count": 107,
+          "gain": 4250.566233139935,
+          "horizons": {
+            "1024": 94.97934924235068,
+            "16384": 4250.566233139935,
+            "4096": 796.0963592672048,
+            "8192": 1866.820416943294
+          },
+          "minimum": 0.0,
+          "peak": 4250.566233139935,
+          "slow_count": 16167,
+          "tail": 2383.7458161966306,
+          "tail_fast_count": 0
+        }
+      },
+      "raw_harm": {
+        "candidate": -1.074051910616097,
+        "cold": -2.36247769715561,
+        "delta": 0.0,
+        "fast_live": -1.0769967094395998,
+        "fast_odds_before": 8.173123459672253,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -1.0740978539770154,
+        "latch_odds_before": 14.178754986183376,
+        "matched": 6,
+        "rank": 3,
+        "slow_live": -1.0740978539770154,
+        "slow_odds_before": 14.178754986183376,
+        "t": 8192,
+        "truth": 71,
+        "w_after": 20.17166999891026,
+        "w_before": 19.492381122447224,
+        "witness_live": -1.0740978539770154,
+        "witness_odds_before": 14.178754986183376
+      },
+      "raw_help": {
+        "candidate": -1.074051910616097,
+        "cold": -2.36247769715561,
+        "delta": 0.0,
+        "fast_live": -1.0769967094395998,
+        "fast_odds_before": 8.173123459672253,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -1.0740978539770154,
+        "latch_odds_before": 14.178754986183376,
+        "matched": 6,
+        "rank": 3,
+        "slow_live": -1.0740978539770154,
+        "slow_odds_before": 14.178754986183376,
+        "t": 8192,
+        "truth": 71,
+        "w_after": 20.17166999891026,
+        "w_before": 19.492381122447224,
+        "witness_live": -1.0740978539770154,
+        "witness_odds_before": 14.178754986183376
+      },
+      "regime": "recombined",
+      "world": 252
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 1027,
+        "first_set": 954,
+        "first_set_after_seam": 8506,
+        "latch_at_seam": 0,
+        "return_count": 6,
+        "returns_before_seam": 4,
+        "set_count": 7,
+        "sets_before_seam": 4
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 110,
+          "drawdown": 7.175576203917785,
+          "early": 790.6975192637041,
+          "fast_count": 16274,
+          "gain": 1856.939321612518,
+          "horizons": {
+            "1024": 96.2736291050246,
+            "16384": 1856.939321612518,
+            "4096": 790.6975192637041,
+            "8192": 1855.7595672261514
+          },
+          "minimum": 0.0,
+          "peak": 1862.1264385759607,
+          "slow_count": 0,
+          "tail": 1.179754386366391,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 110,
+          "drawdown": 11.656601534761649,
+          "early": 796.0908090419751,
+          "fast_count": 7978,
+          "gain": 1863.744063477802,
+          "horizons": {
+            "1024": 94.97934924235068,
+            "16384": 1863.744063477802,
+            "4096": 796.0908090419751,
+            "8192": 1866.8051538239135
+          },
+          "minimum": 0.0,
+          "peak": 1873.455968322323,
+          "slow_count": 8296,
+          "tail": -3.0610903461124312,
+          "tail_fast_count": 7860
+        },
+        "slow": {
+          "activation": 110,
+          "drawdown": 11.658396376940345,
+          "early": 796.2170766659491,
+          "fast_count": 0,
+          "gain": 1862.4327066042085,
+          "horizons": {
+            "1024": 94.96836502581402,
+            "16384": 1862.4327066042085,
+            "4096": 796.2170766659491,
+            "8192": 1866.9688854681865
+          },
+          "minimum": 0.0,
+          "peak": 1873.619699966596,
+          "slow_count": 16274,
+          "tail": -4.536178863977994,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 110,
+          "drawdown": 11.656601534761649,
+          "early": 796.0963592672048,
+          "fast_count": 7927,
+          "gain": 1862.8842634179402,
+          "horizons": {
+            "1024": 94.97934924235068,
+            "16384": 1862.8842634179402,
+            "4096": 796.0963592672048,
+            "8192": 1866.820416943294
+          },
+          "minimum": 0.0,
+          "peak": 1873.4712314417036,
+          "slow_count": 8347,
+          "tail": -3.936153525353165,
+          "tail_fast_count": 7820
+        }
+      },
+      "raw_harm": {
+        "candidate": -1.049470473586952,
+        "cold": -2.4753534387418936,
+        "delta": -0.17056407949723473,
+        "fast_live": -2.4620953794370206,
+        "fast_odds_before": -7.505480410148885,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -2.197193036953476,
+        "latch_odds_before": -2.7933380424731338,
+        "matched": 3,
+        "rank": 2,
+        "slow_live": -1.8751637855577197,
+        "slow_odds_before": -1.182377040202121,
+        "t": 8626,
+        "truth": 101,
+        "w_after": -3.0833979998601184,
+        "w_before": -4.654741641305868,
+        "witness_live": -2.026628957456241,
+        "witness_odds_before": -1.8573656747129357
+      },
+      "raw_help": {
+        "candidate": -5.411418089153459,
+        "cold": -3.45727158647969,
+        "delta": 0.3027981616798545,
+        "fast_live": -3.5218768844706116,
+        "fast_odds_before": -3.994726956109167,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -4.351194171245307,
+        "latch_odds_before": 0.721611828733233,
+        "matched": 3,
+        "rank": 3,
+        "slow_live": -4.842404401550565,
+        "slow_odds_before": 2.3062149761459496,
+        "t": 8610,
+        "truth": 101,
+        "w_after": -4.463475002253726,
+        "w_before": -2.5902745802115685,
+        "witness_live": -4.653992332925162,
+        "witness_odds_before": 1.6615796024699467
+      },
+      "regime": "switched",
+      "world": 252
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 1027,
+        "first_set": 954,
+        "first_set_after_seam": 10041,
+        "latch_at_seam": 0,
+        "return_count": 6,
+        "returns_before_seam": 4,
+        "set_count": 6,
+        "sets_before_seam": 4
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 110,
+          "drawdown": 7.8699129608362455,
+          "early": 790.6975192637041,
+          "fast_count": 16274,
+          "gain": 3422.6371666403406,
+          "horizons": {
+            "1024": 96.2736291050246,
+            "16384": 3422.6371666403406,
+            "4096": 790.6975192637041,
+            "8192": 1855.7595672261514
+          },
+          "minimum": 0.0,
+          "peak": 3422.6371666403406,
+          "slow_count": 0,
+          "tail": 1566.8775994141872,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 110,
+          "drawdown": 11.656601534761649,
+          "early": 796.0908090419751,
+          "fast_count": 136,
+          "gain": 3445.0206735299885,
+          "horizons": {
+            "1024": 94.97934924235068,
+            "16384": 3445.0206735299885,
+            "4096": 796.0908090419751,
+            "8192": 1866.8051538239135
+          },
+          "minimum": 0.0,
+          "peak": 3445.0206735299885,
+          "slow_count": 16138,
+          "tail": 1578.2155197060795,
+          "tail_fast_count": 18
+        },
+        "slow": {
+          "activation": 110,
+          "drawdown": 11.658396376940345,
+          "early": 796.2170766659491,
+          "fast_count": 0,
+          "gain": 3445.2093811877926,
+          "horizons": {
+            "1024": 94.96836502581402,
+            "16384": 3445.2093811877926,
+            "4096": 796.2170766659491,
+            "8192": 1866.9688854681865
+          },
+          "minimum": 0.0,
+          "peak": 3445.2093811877926,
+          "slow_count": 16274,
+          "tail": 1578.2404957196134,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 110,
+          "drawdown": 11.656601534761649,
+          "early": 796.0963592672048,
+          "fast_count": 120,
+          "gain": 3445.0428744309033,
+          "horizons": {
+            "1024": 94.97934924235068,
+            "16384": 3445.0428744309033,
+            "4096": 796.0963592672048,
+            "8192": 1866.820416943294
+          },
+          "minimum": 0.0,
+          "peak": 3445.0428744309033,
+          "slow_count": 16154,
+          "tail": 1578.2224574876175,
+          "tail_fast_count": 13
+        }
+      },
+      "raw_harm": {
+        "candidate": -0.6969195745047094,
+        "cold": -2.1145047319580983,
+        "delta": -0.0024196394164333057,
+        "fast_live": -1.2443539326148931,
+        "fast_odds_before": -0.027056184099705765,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -0.7137720130772722,
+        "latch_odds_before": 5.72450742078114,
+        "matched": 9,
+        "rank": 3,
+        "slow_live": -0.7100875080545688,
+        "slow_odds_before": 6.084522826999128,
+        "t": 13785,
+        "truth": 43,
+        "w_after": 2.7327743930985373,
+        "w_before": 1.3576146948595083,
+        "witness_live": -0.7113523736608389,
+        "witness_odds_before": 5.950798744892543
+      },
+      "raw_help": {
+        "candidate": -4.3165086532827805,
+        "cold": -0.8010814870360342,
+        "delta": 4.4470207694047303e-07,
+        "fast_live": -2.209314350251398,
+        "fast_odds_before": 1.1070685166419971,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -4.2133692839466255,
+        "latch_odds_before": 7.127345847566995,
+        "matched": 2,
+        "rank": 2,
+        "slow_live": -4.2133699604594845,
+        "slow_odds_before": 7.127355722956692,
+        "t": 13871,
+        "truth": 7,
+        "w_after": 0.5412352350952261,
+        "w_before": 4.187522478804617,
+        "witness_live": -4.213369728648702,
+        "witness_odds_before": 7.1273523390941556
+      },
+      "regime": "moved_mid",
+      "world": 252
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": null,
+        "first_set": null,
+        "first_set_after_seam": null,
+        "latch_at_seam": 0,
+        "return_count": 0,
+        "returns_before_seam": 0,
+        "set_count": 0,
+        "sets_before_seam": 0
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.176836406102666e-14,
+      "modes": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "latch": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        }
+      },
+      "raw_harm": {
+        "candidate": -3.6353863036595233,
+        "cold": -2.9413088392171343,
+        "delta": 0.0,
+        "fast_live": -2.9413088392171343,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -2.9413088392171343,
+        "latch_odds_before": 0.0,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -2.9413088392171343,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 202,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -2.9413088392171343,
+        "witness_odds_before": 0.0
+      },
+      "raw_help": {
+        "candidate": -3.6353863036595233,
+        "cold": -2.9413088392171343,
+        "delta": 0.0,
+        "fast_live": -2.9413088392171343,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -2.9413088392171343,
+        "latch_odds_before": 0.0,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -2.9413088392171343,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 202,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -2.9413088392171343,
+        "witness_odds_before": 0.0
+      },
+      "regime": "unrelated",
+      "world": 252
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 131,
+        "first_set": 129,
+        "first_set_after_seam": 8743,
+        "latch_at_seam": 0,
+        "return_count": 25,
+        "returns_before_seam": 16,
+        "set_count": 25,
+        "sets_before_seam": 16
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 123,
+          "drawdown": 7.153344477323344,
+          "early": 774.98607655949,
+          "fast_count": 16261,
+          "gain": 3312.103668996943,
+          "horizons": {
+            "1024": 51.655072787134635,
+            "16384": 3312.103668996943,
+            "4096": 774.98607655949,
+            "8192": 1498.9304035693435
+          },
+          "minimum": -0.6154751601725947,
+          "peak": 3312.6615127105097,
+          "slow_count": 0,
+          "tail": 1813.1732654275997,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 123,
+          "drawdown": 11.20710212361655,
+          "early": 780.0505154501841,
+          "fast_count": 445,
+          "gain": 3334.0381939985455,
+          "horizons": {
+            "1024": 51.91600708371383,
+            "16384": 3334.0381939985455,
+            "4096": 780.0505154501841,
+            "8192": 1509.6145248399835
+          },
+          "minimum": -0.6229913133352989,
+          "peak": 3334.599148362053,
+          "slow_count": 15816,
+          "tail": 1824.4236691585647,
+          "tail_fast_count": 96
+        },
+        "slow": {
+          "activation": 123,
+          "drawdown": 11.395930362168656,
+          "early": 780.4959210248618,
+          "fast_count": 0,
+          "gain": 3334.65565655534,
+          "horizons": {
+            "1024": 52.25710857351723,
+            "16384": 3334.65565655534,
+            "4096": 780.4959210248618,
+            "8192": 1510.0987819912684
+          },
+          "minimum": -0.6229913133352989,
+          "peak": 3335.2166109188474,
+          "slow_count": 16261,
+          "tail": 1824.5568745640762,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 123,
+          "drawdown": 11.365186684835862,
+          "early": 780.26142400891,
+          "fast_count": 249,
+          "gain": 3334.310155034793,
+          "horizons": {
+            "1024": 52.077285108883466,
+            "16384": 3334.310155034793,
+            "4096": 780.26142400891,
+            "8192": 1509.839308961782
+          },
+          "minimum": -0.6229913133352989,
+          "peak": 3334.8711093983,
+          "slow_count": 16012,
+          "tail": 1824.4708460730185,
+          "tail_fast_count": 62
+        }
+      },
+      "raw_harm": {
+        "candidate": -1.0129191376781266,
+        "cold": -2.2824532347041604,
+        "delta": -0.05007686888428897,
+        "fast_live": -2.1616984770312806,
+        "fast_odds_before": -3.9222105808458907,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -1.241418197797505,
+        "latch_odds_before": 1.5826491572667791,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -1.1774424132719887,
+        "slow_odds_before": 2.147242635049083,
+        "t": 13942,
+        "truth": 101,
+        "w_after": -2.4981488614738483,
+        "w_before": -3.8892211184514913,
+        "witness_live": -1.191341328913216,
+        "witness_odds_before": 2.0109670549847873
+      },
+      "raw_help": {
+        "candidate": -5.510501578939611,
+        "cold": -3.643231148164306,
+        "delta": 0.10171985633483516,
+        "fast_live": -3.7535475186806435,
+        "fast_odds_before": -3.1474471840200193,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -4.995153986056719,
+        "latch_odds_before": 2.3697730243000854,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -5.12091165883391,
+        "slow_odds_before": 2.9150811912387184,
+        "t": 13937,
+        "truth": 5,
+        "w_after": -5.30613018902004,
+        "w_before": -3.549790718188114,
+        "witness_live": -5.096873842391554,
+        "witness_odds_before": 2.802485154316646
+      },
+      "regime": "recombined",
+      "world": 253
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 131,
+        "first_set": 129,
+        "first_set_after_seam": 8192,
+        "latch_at_seam": 0,
+        "return_count": 43,
+        "returns_before_seam": 16,
+        "set_count": 44,
+        "sets_before_seam": 16
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 123,
+          "drawdown": 7.153344477323344,
+          "early": 774.98607655949,
+          "fast_count": 16261,
+          "gain": 1493.288921233495,
+          "horizons": {
+            "1024": 51.655072787134635,
+            "16384": 1493.288921233495,
+            "4096": 774.98607655949,
+            "8192": 1498.9304035693435
+          },
+          "minimum": -0.6154751601725947,
+          "peak": 1499.384911695912,
+          "slow_count": 0,
+          "tail": -5.641482335848517,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 123,
+          "drawdown": 10.596351133399594,
+          "early": 780.0505154501841,
+          "fast_count": 7945,
+          "gain": 1499.4789600806755,
+          "horizons": {
+            "1024": 51.91600708371383,
+            "16384": 1499.4789600806755,
+            "4096": 780.0505154501841,
+            "8192": 1509.6145248399835
+          },
+          "minimum": -0.6229913133352989,
+          "peak": 1510.075311214074,
+          "slow_count": 8316,
+          "tail": -10.135564759307394,
+          "tail_fast_count": 7596
+        },
+        "slow": {
+          "activation": 123,
+          "drawdown": 12.102508788223759,
+          "early": 780.4959210248618,
+          "fast_count": 0,
+          "gain": 1498.4570595771352,
+          "horizons": {
+            "1024": 52.25710857351723,
+            "16384": 1498.4570595771352,
+            "4096": 780.4959210248618,
+            "8192": 1510.0987819912684
+          },
+          "minimum": -0.6229913133352989,
+          "peak": 1510.559568365359,
+          "slow_count": 16261,
+          "tail": -11.641722414134332,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 123,
+          "drawdown": 10.596351133399594,
+          "early": 780.26142400891,
+          "fast_count": 7619,
+          "gain": 1499.7037442024734,
+          "horizons": {
+            "1024": 52.077285108883466,
+            "16384": 1499.7037442024734,
+            "4096": 780.26142400891,
+            "8192": 1509.839308961782
+          },
+          "minimum": -0.6229913133352989,
+          "peak": 1510.3000953358726,
+          "slow_count": 8642,
+          "tail": -10.13556475930782,
+          "tail_fast_count": 7432
+        }
+      },
+      "raw_harm": {
+        "candidate": -2.5556222615697157,
+        "cold": -4.265547046469724,
+        "delta": -1.5045742429720121e-12,
+        "fast_live": -4.2655470464527605,
+        "fast_odds_before": -37.49119311737125,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -4.265547046079275,
+        "latch_odds_before": -32.96652215875461,
+        "matched": 3,
+        "rank": 2,
+        "slow_live": -4.265547045042808,
+        "slow_odds_before": -31.096824751386986,
+        "t": 8456,
+        "truth": 29,
+        "w_after": 2.8975935586367165,
+        "w_before": 1.225980669663699,
+        "witness_live": -4.265547046077771,
+        "witness_odds_before": -32.96097193352466
+      },
+      "raw_help": {
+        "candidate": -5.455036142731666,
+        "cold": -2.360955140867646,
+        "delta": 1.2230216839270724e-12,
+        "fast_live": -2.3609551408812712,
+        "fast_odds_before": -36.444054069823615,
+        "latch_after": 1,
+        "latch_before": 0,
+        "latch_live": -2.3609551411848964,
+        "latch_odds_before": -31.902732435517905,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -2.360955142027057,
+        "slow_odds_before": -30.033035028150508,
+        "t": 8468,
+        "truth": 29,
+        "w_after": -1.2170754332921798,
+        "w_before": 1.9375541352999641,
+        "witness_live": -2.3609551411861194,
+        "witness_odds_before": -31.89718221028796
+      },
+      "regime": "switched",
+      "world": 253
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 131,
+        "first_set": 129,
+        "first_set_after_seam": 8433,
+        "latch_at_seam": 0,
+        "return_count": 44,
+        "returns_before_seam": 16,
+        "set_count": 44,
+        "sets_before_seam": 16
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 123,
+          "drawdown": 8.054169186508943,
+          "early": 774.98607655949,
+          "fast_count": 16261,
+          "gain": 2702.7546361840423,
+          "horizons": {
+            "1024": 51.655072787134635,
+            "16384": 2702.7546361840423,
+            "4096": 774.98607655949,
+            "8192": 1498.9304035693435
+          },
+          "minimum": -0.6154751601725947,
+          "peak": 2703.297319407946,
+          "slow_count": 0,
+          "tail": 1203.824232614703,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 123,
+          "drawdown": 12.049610527948744,
+          "early": 780.0505154501841,
+          "fast_count": 864,
+          "gain": 2724.10890518646,
+          "horizons": {
+            "1024": 51.91600708371383,
+            "16384": 2724.10890518646,
+            "4096": 780.0505154501841,
+            "8192": 1509.6145248399835
+          },
+          "minimum": -0.6229913133352989,
+          "peak": 2724.654273693466,
+          "slow_count": 15397,
+          "tail": 1214.4943803464607,
+          "tail_fast_count": 515
+        },
+        "slow": {
+          "activation": 123,
+          "drawdown": 12.78387983793391,
+          "early": 780.4959210248618,
+          "fast_count": 0,
+          "gain": 2725.3077538360476,
+          "horizons": {
+            "1024": 52.25710857351723,
+            "16384": 2725.3077538360476,
+            "4096": 780.4959210248618,
+            "8192": 1510.0987819912684
+          },
+          "minimum": -0.6229913133352989,
+          "peak": 2725.8531223430537,
+          "slow_count": 16261,
+          "tail": 1215.2089718447774,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 123,
+          "drawdown": 12.125896761716376,
+          "early": 780.26142400891,
+          "fast_count": 543,
+          "gain": 2724.5543107611293,
+          "horizons": {
+            "1024": 52.077285108883466,
+            "16384": 2724.5543107611293,
+            "4096": 780.26142400891,
+            "8192": 1509.839308961782
+          },
+          "minimum": -0.6229913133352989,
+          "peak": 2725.0996792681353,
+          "slow_count": 15718,
+          "tail": 1214.7150017993386,
+          "tail_fast_count": 356
+        }
+      },
+      "raw_harm": {
+        "candidate": -0.7707318169720436,
+        "cold": -2.247750113671662,
+        "delta": -0.23153316499379595,
+        "fast_live": -2.166583743636986,
+        "fast_odds_before": -4.898278395597935,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -1.4441335360155894,
+        "latch_odds_before": -0.4779388198096349,
+        "matched": 5,
+        "rank": 1,
+        "slow_live": -1.0741590548195377,
+        "slow_odds_before": 1.2499014461437077,
+        "t": 10594,
+        "truth": 5,
+        "w_after": -1.983038437921423,
+        "w_before": -3.571671467995914,
+        "witness_live": -1.2126003710217934,
+        "witness_odds_before": 0.5148220356648874
+      },
+      "raw_help": {
+        "candidate": -5.013166089872316,
+        "cold": -2.4016981124404033,
+        "delta": 0.40931472736608754,
+        "fast_live": -2.533253759742818,
+        "fast_odds_before": -3.103749091716412,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -3.714387149837564,
+        "latch_odds_before": 1.322138369107064,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -4.374558398996737,
+        "slow_odds_before": 3.031970823692851,
+        "t": 10585,
+        "truth": 100,
+        "w_after": -5.142140812008817,
+        "w_before": -2.6123074421439014,
+        "witness_live": -4.1237018772036516,
+        "witness_odds_before": 2.320683320251359
+      },
+      "regime": "moved_mid",
+      "world": 253
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": null,
+        "first_set": null,
+        "first_set_after_seam": null,
+        "latch_at_seam": 0,
+        "return_count": 0,
+        "returns_before_seam": 0,
+        "set_count": 0,
+        "sets_before_seam": 0
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2434497875801753e-14,
+      "modes": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "latch": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        }
+      },
+      "raw_harm": {
+        "candidate": -5.5327079463334625,
+        "cold": -3.12777911409178,
+        "delta": 0.0,
+        "fast_live": -3.12777911409178,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -3.12777911409178,
+        "latch_odds_before": 0.0,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -3.12777911409178,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 142,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -3.12777911409178,
+        "witness_odds_before": 0.0
+      },
+      "raw_help": {
+        "candidate": -5.5327079463334625,
+        "cold": -3.12777911409178,
+        "delta": 0.0,
+        "fast_live": -3.12777911409178,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -3.12777911409178,
+        "latch_odds_before": 0.0,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -3.12777911409178,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 142,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -3.12777911409178,
+        "witness_odds_before": 0.0
+      },
+      "regime": "unrelated",
+      "world": 253
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 635,
+        "first_set": 527,
+        "first_set_after_seam": 10149,
+        "latch_at_seam": 0,
+        "return_count": 17,
+        "returns_before_seam": 13,
+        "set_count": 17,
+        "sets_before_seam": 13
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 111,
+          "drawdown": 8.295112651321858,
+          "early": 703.4959489749076,
+          "fast_count": 16273,
+          "gain": 4064.61478988089,
+          "horizons": {
+            "1024": 31.69691665690413,
+            "16384": 4064.61478988089,
+            "4096": 703.4959489749076,
+            "8192": 1783.0721784978896
+          },
+          "minimum": 0.0,
+          "peak": 4067.445665641924,
+          "slow_count": 0,
+          "tail": 2281.5426113830104,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 111,
+          "drawdown": 13.166210676242144,
+          "early": 708.423140925033,
+          "fast_count": 469,
+          "gain": 4086.485708239005,
+          "horizons": {
+            "1024": 32.320740988585015,
+            "16384": 4086.485708239005,
+            "4096": 708.423140925033,
+            "8192": 1793.4957044867556
+          },
+          "minimum": 0.0,
+          "peak": 4089.3641923031146,
+          "slow_count": 15804,
+          "tail": 2292.99000375226,
+          "tail_fast_count": 31
+        },
+        "slow": {
+          "activation": 111,
+          "drawdown": 13.166210676242144,
+          "early": 709.0184025809116,
+          "fast_count": 0,
+          "gain": 4087.1364721471805,
+          "horizons": {
+            "1024": 32.63998263054631,
+            "16384": 4087.1364721471805,
+            "4096": 709.0184025809116,
+            "8192": 1794.1034541494
+          },
+          "minimum": 0.0,
+          "peak": 4090.01495621129,
+          "slow_count": 16273,
+          "tail": 2293.0330179977914,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 111,
+          "drawdown": 13.166210676242144,
+          "early": 708.6479250468338,
+          "fast_count": 290,
+          "gain": 4086.7340808180347,
+          "horizons": {
+            "1024": 32.431177626715595,
+            "16384": 4086.7340808180347,
+            "4096": 708.6479250468338,
+            "8192": 1793.7204886085565
+          },
+          "minimum": 0.0,
+          "peak": 4089.6125648821444,
+          "slow_count": 15983,
+          "tail": 2293.0135922094864,
+          "tail_fast_count": 14
+        }
+      },
+      "raw_harm": {
+        "candidate": -0.9813458345114747,
+        "cold": -2.837338742751914,
+        "delta": -0.009409796835935236,
+        "fast_live": -2.432739457733331,
+        "fast_odds_before": -2.8264791756029224,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -1.0962356680332523,
+        "latch_odds_before": 3.0798136157600893,
+        "matched": 2,
+        "rank": 1,
+        "slow_live": -1.0849969081996496,
+        "slow_odds_before": 3.238790403587954,
+        "t": 14775,
+        "truth": 93,
+        "w_after": 1.841259552340811,
+        "w_before": -0.015208625444777565,
+        "witness_live": -1.086825871197317,
+        "witness_odds_before": 3.2118572387990003
+      },
+      "raw_help": {
+        "candidate": -4.83169019795942,
+        "cold": -2.15685151102135,
+        "delta": 0.01111119494612911,
+        "fast_live": -2.895009800273535,
+        "fast_odds_before": -0.14520557054902702,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -4.696967835738415,
+        "latch_odds_before": 5.755485089663144,
+        "matched": 2,
+        "rank": 2,
+        "slow_live": -4.710237173096157,
+        "slow_odds_before": 5.914548659954269,
+        "t": 14771,
+        "truth": 93,
+        "w_after": -0.015208625444777565,
+        "w_before": 2.7454245796059786,
+        "witness_live": -4.708079030684544,
+        "witness_odds_before": 5.887600111581082
+      },
+      "regime": "recombined",
+      "world": 254
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 635,
+        "first_set": 527,
+        "first_set_after_seam": 8228,
+        "latch_at_seam": 0,
+        "return_count": 14,
+        "returns_before_seam": 13,
+        "set_count": 15,
+        "sets_before_seam": 13
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 111,
+          "drawdown": 8.295112651321858,
+          "early": 703.4959489749076,
+          "fast_count": 16273,
+          "gain": 1780.1219791485917,
+          "horizons": {
+            "1024": 31.69691665690413,
+            "16384": 1780.1219791485917,
+            "4096": 703.4959489749076,
+            "8192": 1783.0721784978896
+          },
+          "minimum": 0.0,
+          "peak": 1787.0331571141135,
+          "slow_count": 0,
+          "tail": -2.9501993492978453,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 111,
+          "drawdown": 13.166210676242144,
+          "early": 708.423140925033,
+          "fast_count": 8589,
+          "gain": 1784.8838578950713,
+          "horizons": {
+            "1024": 32.320740988585015,
+            "16384": 1784.8838578950713,
+            "4096": 708.423140925033,
+            "8192": 1793.4957044867556
+          },
+          "minimum": 0.0,
+          "peak": 1797.6123067331014,
+          "slow_count": 7684,
+          "tail": -8.611846591684493,
+          "tail_fast_count": 8151
+        },
+        "slow": {
+          "activation": 111,
+          "drawdown": 13.166210676242144,
+          "early": 709.0184025809116,
+          "fast_count": 0,
+          "gain": 1785.3148867889963,
+          "horizons": {
+            "1024": 32.63998263054631,
+            "16384": 1785.3148867889963,
+            "4096": 709.0184025809116,
+            "8192": 1794.1034541494
+          },
+          "minimum": 0.0,
+          "peak": 1798.2200563957458,
+          "slow_count": 16273,
+          "tail": -8.788567360403508,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 111,
+          "drawdown": 13.166210676242144,
+          "early": 708.6479250468338,
+          "fast_count": 8406,
+          "gain": 1785.0085820100273,
+          "horizons": {
+            "1024": 32.431177626715595,
+            "16384": 1785.0085820100273,
+            "4096": 708.6479250468338,
+            "8192": 1793.7204886085565
+          },
+          "minimum": 0.0,
+          "peak": 1797.8370908549023,
+          "slow_count": 7867,
+          "tail": -8.71190659852941,
+          "tail_fast_count": 8130
+        }
+      },
+      "raw_harm": {
+        "candidate": -1.9846389908758684,
+        "cold": -2.600137683672701,
+        "delta": -0.011150065211128268,
+        "fast_live": -2.5933031471606247,
+        "fast_odds_before": -6.795090918923595,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -2.3542738696246146,
+        "latch_odds_before": -0.8981892833776779,
+        "matched": 2,
+        "rank": 2,
+        "slow_live": -2.3325347568295003,
+        "slow_odds_before": -0.6877367819208166,
+        "t": 8255,
+        "truth": 118,
+        "w_after": -3.3071082694436758,
+        "w_before": -4.049142670699879,
+        "witness_live": -2.3431238044134863,
+        "witness_odds_before": -0.7896174540975338
+      },
+      "raw_help": {
+        "candidate": -4.709654697661238,
+        "cold": -1.3266211458784074,
+        "delta": 0.037739671073671044,
+        "fast_live": -1.5931592409934228,
+        "fast_odds_before": -2.124287467087468,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -3.994808180587809,
+        "latch_odds_before": 3.776992417351142,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -4.065756642378692,
+        "slow_odds_before": 3.978909592007828,
+        "t": 8252,
+        "truth": 246,
+        "w_after": -2.8548914561962038,
+        "w_before": 0.5451789373797434,
+        "witness_live": -4.03254785166148,
+        "witness_odds_before": 3.8825613692723615
+      },
+      "regime": "switched",
+      "world": 254
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 635,
+        "first_set": 527,
+        "first_set_after_seam": 8347,
+        "latch_at_seam": 0,
+        "return_count": 38,
+        "returns_before_seam": 13,
+        "set_count": 38,
+        "sets_before_seam": 13
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2656542480726785e-14,
+      "modes": {
+        "fast": {
+          "activation": 111,
+          "drawdown": 8.32009425613569,
+          "early": 703.4959489749076,
+          "fast_count": 16273,
+          "gain": 3036.2738960166294,
+          "horizons": {
+            "1024": 31.69691665690413,
+            "16384": 3036.2738960166294,
+            "4096": 703.4959489749076,
+            "8192": 1783.0721784978896
+          },
+          "minimum": 0.0,
+          "peak": 3038.870654662813,
+          "slow_count": 0,
+          "tail": 1253.2017175187343,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 111,
+          "drawdown": 14.084806520498205,
+          "early": 708.423140925033,
+          "fast_count": 1241,
+          "gain": 3057.0827134558513,
+          "horizons": {
+            "1024": 32.320740988585015,
+            "16384": 3057.0827134558513,
+            "4096": 708.423140925033,
+            "8192": 1793.4957044867556
+          },
+          "minimum": 0.0,
+          "peak": 3059.718097434112,
+          "slow_count": 15032,
+          "tail": 1263.5870089690798,
+          "tail_fast_count": 803
+        },
+        "slow": {
+          "activation": 111,
+          "drawdown": 14.12419902894544,
+          "early": 709.0184025809116,
+          "fast_count": 0,
+          "gain": 3058.804670833329,
+          "horizons": {
+            "1024": 32.63998263054631,
+            "16384": 3058.804670833329,
+            "4096": 709.0184025809116,
+            "8192": 1794.1034541494
+          },
+          "minimum": 0.0,
+          "peak": 3061.44005481159,
+          "slow_count": 16273,
+          "tail": 1264.7012166839254,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 111,
+          "drawdown": 14.10861606212984,
+          "early": 708.6479250468338,
+          "fast_count": 880,
+          "gain": 3057.583621282821,
+          "horizons": {
+            "1024": 32.431177626715595,
+            "16384": 3057.583621282821,
+            "4096": 708.6479250468338,
+            "8192": 1793.7204886085565
+          },
+          "minimum": 0.0,
+          "peak": 3060.2190052610817,
+          "slow_count": 15393,
+          "tail": 1263.863132674253,
+          "tail_fast_count": 604
+        }
+      },
+      "raw_harm": {
+        "candidate": -0.8935837150318218,
+        "cold": -3.093361986673626,
+        "delta": -0.33872438163323726,
+        "fast_live": -2.8138495979646825,
+        "fast_odds_before": -3.9829228033599287,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -1.541730421227244,
+        "latch_odds_before": 0.21626700388647163,
+        "matched": 3,
+        "rank": 2,
+        "slow_live": -1.0621181013197092,
+        "slow_odds_before": 2.607792609820533,
+        "t": 9219,
+        "truth": 169,
+        "w_after": 0.41987586012641287,
+        "w_before": -1.8373186183384687,
+        "witness_live": -1.2030060395940068,
+        "witness_odds_before": 1.610123059843703
+      },
+      "raw_help": {
+        "candidate": -5.722350221868375,
+        "cold": -2.4135378343996745,
+        "delta": 0.6599732320885479,
+        "fast_live": -2.4737265287439567,
+        "fast_odds_before": -4.392548278093767,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -3.2563549734460127,
+        "latch_odds_before": -0.04555675483165238,
+        "matched": 2,
+        "rank": 1,
+        "slow_live": -4.320914823945911,
+        "slow_odds_before": 2.1463899942705327,
+        "t": 9175,
+        "truth": 67,
+        "w_after": -7.2710639582385035,
+        "w_before": -4.090066137568829,
+        "witness_live": -3.9163282055345605,
+        "witness_odds_before": 1.360877656925237
+      },
+      "regime": "moved_mid",
+      "world": 254
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": null,
+        "first_set": null,
+        "first_set_after_seam": null,
+        "latch_at_seam": 0,
+        "return_count": 0,
+        "returns_before_seam": 0,
+        "set_count": 0,
+        "sets_before_seam": 0
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.176836406102666e-14,
+      "modes": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "latch": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        }
+      },
+      "raw_harm": {
+        "candidate": -3.167700678798281,
+        "cold": -3.167700678798281,
+        "delta": 0.0,
+        "fast_live": -3.167700678798281,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -3.167700678798281,
+        "latch_odds_before": 0.0,
+        "matched": 0,
+        "rank": 3,
+        "slow_live": -3.167700678798281,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 145,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -3.167700678798281,
+        "witness_odds_before": 0.0
+      },
+      "raw_help": {
+        "candidate": -3.167700678798281,
+        "cold": -3.167700678798281,
+        "delta": 0.0,
+        "fast_live": -3.167700678798281,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -3.167700678798281,
+        "latch_odds_before": 0.0,
+        "matched": 0,
+        "rank": 3,
+        "slow_live": -3.167700678798281,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 145,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -3.167700678798281,
+        "witness_odds_before": 0.0
+      },
+      "regime": "unrelated",
+      "world": 254
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 443,
+        "first_set": 423,
+        "first_set_after_seam": 8711,
+        "latch_at_seam": 0,
+        "return_count": 18,
+        "returns_before_seam": 15,
+        "set_count": 18,
+        "sets_before_seam": 15
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.354472090042691e-14,
+      "modes": {
+        "fast": {
+          "activation": 123,
+          "drawdown": 7.627974985083256,
+          "early": 321.7259671067264,
+          "fast_count": 16261,
+          "gain": 2362.6899128825025,
+          "horizons": {
+            "1024": 24.467353471867373,
+            "16384": 2362.6899128825025,
+            "4096": 321.7259671067264,
+            "8192": 836.3024639434982
+          },
+          "minimum": 0.0,
+          "peak": 2362.6899128825025,
+          "slow_count": 0,
+          "tail": 1526.3874489390091,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 123,
+          "drawdown": 11.170291782676031,
+          "early": 325.95364472933363,
+          "fast_count": 841,
+          "gain": 2384.0752765456805,
+          "horizons": {
+            "1024": 21.306282021378074,
+            "16384": 2384.0752765456805,
+            "4096": 325.95364472933363,
+            "8192": 846.3694777849786
+          },
+          "minimum": 0.0,
+          "peak": 2384.0752765456805,
+          "slow_count": 15420,
+          "tail": 1537.7057987606977,
+          "tail_fast_count": 42
+        },
+        "slow": {
+          "activation": 123,
+          "drawdown": 12.051031219181418,
+          "early": 326.93101518161444,
+          "fast_count": 0,
+          "gain": 2385.2422114002125,
+          "horizons": {
+            "1024": 18.858134696543193,
+            "16384": 2385.2422114002125,
+            "4096": 326.93101518161444,
+            "8192": 847.4781352745957
+          },
+          "minimum": 0.0,
+          "peak": 2385.2422114002125,
+          "slow_count": 16261,
+          "tail": 1537.7640761256098,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 123,
+          "drawdown": 11.170291782676031,
+          "early": 326.0994546027708,
+          "fast_count": 673,
+          "gain": 2384.308386005326,
+          "horizons": {
+            "1024": 20.313709504393053,
+            "16384": 2384.308386005326,
+            "4096": 326.0994546027708,
+            "8192": 846.5776112310884
+          },
+          "minimum": 0.0,
+          "peak": 2384.308386005326,
+          "slow_count": 15588,
+          "tail": 1537.7307747742332,
+          "tail_fast_count": 24
+        }
+      },
+      "raw_harm": {
+        "candidate": -0.8120937991401577,
+        "cold": -1.706454144716126,
+        "delta": -0.007371972825088502,
+        "fast_live": -1.1842718557832468,
+        "fast_odds_before": 0.0452486225051202,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -0.8415642848982725,
+        "latch_odds_before": 4.449508167269175,
+        "matched": 3,
+        "rank": 1,
+        "slow_live": -0.8215568601872558,
+        "slow_odds_before": 6.122421194311692,
+        "t": 13147,
+        "truth": 122,
+        "w_after": -0.5177728705407204,
+        "w_before": -1.4576859005075498,
+        "witness_live": -0.834192312073184,
+        "witness_odds_before": 4.877453180621872
+      },
+      "raw_help": {
+        "candidate": -2.0415112528860395,
+        "cold": -1.200349708729176,
+        "delta": 0.006446102448637525,
+        "fast_live": -1.6881904624562805,
+        "fast_odds_before": 0.8892756626362266,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -2.0139498734780306,
+        "latch_odds_before": 5.323226119495115,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -2.032473051278095,
+        "slow_odds_before": 6.965139244330107,
+        "t": 13146,
+        "truth": 122,
+        "w_after": -1.4576859005075498,
+        "w_before": -0.6364122388136115,
+        "witness_live": -2.020395975926668,
+        "witness_odds_before": 5.719283968308573
+      },
+      "regime": "recombined",
+      "world": 255
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 443,
+        "first_set": 423,
+        "first_set_after_seam": 8257,
+        "latch_at_seam": 0,
+        "return_count": 28,
+        "returns_before_seam": 15,
+        "set_count": 29,
+        "sets_before_seam": 15
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.354472090042691e-14,
+      "modes": {
+        "fast": {
+          "activation": 123,
+          "drawdown": 7.044844465768854,
+          "early": 321.7259671067264,
+          "fast_count": 16261,
+          "gain": 833.9299859577629,
+          "horizons": {
+            "1024": 24.467353471867373,
+            "16384": 833.9299859577629,
+            "4096": 321.7259671067264,
+            "8192": 836.3024639434982
+          },
+          "minimum": 0.0,
+          "peak": 838.9763727377858,
+          "slow_count": 0,
+          "tail": -2.3724779857351925,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 123,
+          "drawdown": 11.220640283677767,
+          "early": 325.95364472933363,
+          "fast_count": 8454,
+          "gain": 838.529251837323,
+          "horizons": {
+            "1024": 21.306282021378074,
+            "16384": 838.529251837323,
+            "4096": 325.95364472933363,
+            "8192": 846.3694777849786
+          },
+          "minimum": 0.0,
+          "peak": 849.0701807277401,
+          "slow_count": 7807,
+          "tail": -7.840225947655809,
+          "tail_fast_count": 7655
+        },
+        "slow": {
+          "activation": 123,
+          "drawdown": 12.051031219181418,
+          "early": 326.93101518161444,
+          "fast_count": 0,
+          "gain": 839.3085016622483,
+          "horizons": {
+            "1024": 18.858134696543193,
+            "16384": 839.3085016622483,
+            "4096": 326.93101518161444,
+            "8192": 847.4781352745957
+          },
+          "minimum": 0.0,
+          "peak": 850.1788382173588,
+          "slow_count": 16261,
+          "tail": -8.169633612347328,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 123,
+          "drawdown": 11.220640284303386,
+          "early": 326.0994546027708,
+          "fast_count": 8116,
+          "gain": 838.6814733735013,
+          "horizons": {
+            "1024": 20.313709504393053,
+            "16384": 838.6814733735013,
+            "4096": 326.0994546027708,
+            "8192": 846.5776112310884
+          },
+          "minimum": 0.0,
+          "peak": 849.2783141738513,
+          "slow_count": 8145,
+          "tail": -7.896137857587681,
+          "tail_fast_count": 7467
+        }
+      },
+      "raw_harm": {
+        "candidate": -3.027669768715354,
+        "cold": -4.018651962303674,
+        "delta": -0.01955834724503669,
+        "fast_live": -3.9716929837304162,
+        "fast_odds_before": -4.850423880873636,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -3.311004837779019,
+        "latch_odds_before": 0.837145810715888,
+        "matched": 2,
+        "rank": 3,
+        "slow_live": -3.245688935822468,
+        "slow_odds_before": 1.3462953803859403,
+        "t": 8343,
+        "truth": 190,
+        "w_after": -0.8190140354686845,
+        "w_before": -1.8683832041878758,
+        "witness_live": -3.2914464905339824,
+        "witness_odds_before": 0.9807867062109064
+      },
+      "raw_help": {
+        "candidate": -6.578274631171311,
+        "cold": -2.4920958047295727,
+        "delta": 0.04892303202802051,
+        "fast_live": -2.6172967857468303,
+        "fast_odds_before": -3.3676466230008613,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -4.725682777441256,
+        "latch_odds_before": 2.3564235987083784,
+        "matched": 4,
+        "rank": 1,
+        "slow_live": -4.999478439194781,
+        "slow_odds_before": 2.8163743417348197,
+        "t": 8456,
+        "truth": 121,
+        "w_after": -6.552331396930965,
+        "w_before": -2.5457058792146854,
+        "witness_live": -4.774605809469277,
+        "witness_odds_before": 2.437460684667452
+      },
+      "regime": "switched",
+      "world": 255
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": 443,
+        "first_set": 423,
+        "first_set_after_seam": 8286,
+        "latch_at_seam": 0,
+        "return_count": 51,
+        "returns_before_seam": 15,
+        "set_count": 52,
+        "sets_before_seam": 15
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.354472090042691e-14,
+      "modes": {
+        "fast": {
+          "activation": 123,
+          "drawdown": 7.982642434468289,
+          "early": 321.7259671067264,
+          "fast_count": 16261,
+          "gain": 1349.1253146417585,
+          "horizons": {
+            "1024": 24.467353471867373,
+            "16384": 1349.1253146417585,
+            "4096": 321.7259671067264,
+            "8192": 836.3024639434982
+          },
+          "minimum": 0.0,
+          "peak": 1355.335420127091,
+          "slow_count": 0,
+          "tail": 512.8228506982596,
+          "tail_fast_count": 8192
+        },
+        "latch": {
+          "activation": 123,
+          "drawdown": 13.740302964702778,
+          "early": 325.95364472933363,
+          "fast_count": 2647,
+          "gain": 1366.1511456580824,
+          "horizons": {
+            "1024": 21.306282021378074,
+            "16384": 1366.1511456580824,
+            "4096": 325.95364472933363,
+            "8192": 846.3694777849786
+          },
+          "minimum": 0.0,
+          "peak": 1374.1789851612841,
+          "slow_count": 13614,
+          "tail": 519.7816678730989,
+          "tail_fast_count": 1848
+        },
+        "slow": {
+          "activation": 123,
+          "drawdown": 13.990381731631942,
+          "early": 326.93101518161444,
+          "fast_count": 0,
+          "gain": 1369.7752085668192,
+          "horizons": {
+            "1024": 18.858134696543193,
+            "16384": 1369.7752085668192,
+            "4096": 326.93101518161444,
+            "8192": 847.4781352745957
+          },
+          "minimum": 0.0,
+          "peak": 1377.8379711439134,
+          "slow_count": 16261,
+          "tail": 522.2970732922241,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": 123,
+          "drawdown": 13.745651367752771,
+          "early": 326.0994546027708,
+          "fast_count": 2144,
+          "gain": 1366.8202886570928,
+          "horizons": {
+            "1024": 20.313709504393053,
+            "16384": 1366.8202886570928,
+            "4096": 326.0994546027708,
+            "8192": 846.5776112310884
+          },
+          "minimum": 0.0,
+          "peak": 1374.8727633149865,
+          "slow_count": 14117,
+          "tail": 520.2426774260008,
+          "tail_fast_count": 1495
+        }
+      },
+      "raw_harm": {
+        "candidate": -1.309633899820961,
+        "cold": -5.281800925242451,
+        "delta": -0.37772678527214243,
+        "fast_live": -5.0660458287213554,
+        "fast_odds_before": -6.4933357045471025,
+        "latch_after": 0,
+        "latch_before": 1,
+        "latch_live": -3.3381356876365453,
+        "latch_odds_before": -2.0571565443777433,
+        "matched": 3,
+        "rank": 1,
+        "slow_live": -2.3235067944504513,
+        "slow_odds_before": -0.22631637006795427,
+        "t": 9091,
+        "truth": 177,
+        "w_after": 2.141974915720606,
+        "w_before": -1.889230564852526,
+        "witness_live": -2.960408902364403,
+        "witness_odds_before": -1.4196882641521167
+      },
+      "raw_help": {
+        "candidate": -5.081870604995235,
+        "cold": -2.519811683613156,
+        "delta": 0.20457524470778932,
+        "fast_live": -3.329066188108576,
+        "fast_odds_before": 0.09722895317407904,
+        "latch_after": 1,
+        "latch_before": 1,
+        "latch_live": -4.69519943972633,
+        "latch_odds_before": 3.9029819696564445,
+        "matched": 3,
+        "rank": 3,
+        "slow_live": -4.988301932940895,
+        "slow_odds_before": 6.174117432130676,
+        "t": 9691,
+        "truth": 68,
+        "w_after": -4.548673424943498,
+        "w_before": -2.050698842385981,
+        "witness_live": -4.899774684434119,
+        "witness_odds_before": 5.1482723419544225
+      },
+      "regime": "moved_mid",
+      "world": 255
+    },
+    {
+      "archive_bytes": 528,
+      "diagnostics": {
+        "first_return": null,
+        "first_set": null,
+        "first_set_after_seam": null,
+        "latch_at_seam": 0,
+        "return_count": 0,
+        "returns_before_seam": 0,
+        "set_count": 0,
+        "sets_before_seam": 0
+      },
+      "exactness": {
+        "admission": true,
+        "clock": true,
+        "equal_price": true,
+        "inactive": true,
+        "latch_law": true,
+        "new": true
+      },
+      "max_norm_error": 1.2434497875801753e-14,
+      "modes": {
+        "fast": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "latch": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "slow": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        },
+        "witness": {
+          "activation": null,
+          "drawdown": 0.0,
+          "early": 0.0,
+          "fast_count": 0,
+          "gain": 0.0,
+          "horizons": {
+            "1024": 0.0,
+            "16384": 0.0,
+            "4096": 0.0,
+            "8192": 0.0
+          },
+          "minimum": 0.0,
+          "peak": 0.0,
+          "slow_count": 0,
+          "tail": 0.0,
+          "tail_fast_count": 0
+        }
+      },
+      "raw_harm": {
+        "candidate": -3.300008373349244,
+        "cold": -3.300008373349244,
+        "delta": 0.0,
+        "fast_live": -3.300008373349244,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -3.300008373349244,
+        "latch_odds_before": 0.0,
+        "matched": 0,
+        "rank": 2,
+        "slow_live": -3.300008373349244,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 39,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -3.300008373349244,
+        "witness_odds_before": 0.0
+      },
+      "raw_help": {
+        "candidate": -3.300008373349244,
+        "cold": -3.300008373349244,
+        "delta": 0.0,
+        "fast_live": -3.300008373349244,
+        "fast_odds_before": 0.0,
+        "latch_after": 0,
+        "latch_before": 0,
+        "latch_live": -3.300008373349244,
+        "latch_odds_before": 0.0,
+        "matched": 0,
+        "rank": 2,
+        "slow_live": -3.300008373349244,
+        "slow_odds_before": 0.0,
+        "t": 8192,
+        "truth": 39,
+        "w_after": 0.0,
+        "w_before": 0.0,
+        "witness_live": -3.300008373349244,
+        "witness_odds_before": 0.0
+      },
+      "regime": "unrelated",
+      "world": 255
+    }
+  ],
+  "material_pass": false,
+  "modes": [
+    "slow",
+    "fast",
+    "witness",
+    "latch"
+  ],
+  "namespace": "netta-witness-latch-v1",
+  "protocol_sha256": "db4d93eb8835973330cbe6e4a356b9228d230e9251b7fbc7bb7f0bb074cdf730",
+  "quantities": {
+    "fast": {
+      "intact_early_retention": 0.9912826122896099,
+      "intact_full_gains": [
+        4064.7317052948233,
+        2058.487542016578,
+        2760.978064337315,
+        3433.553643099383,
+        4228.14456956006,
+        3312.103668996943,
+        4064.61478988089,
+        2362.6899128825025
+      ],
+      "intact_full_retention": 0.9931816477004618,
+      "law_tail_mean": 0.0,
+      "law_tail_vs_fast": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "law_whole_mean": 0.0,
+      "law_whole_vs_fast": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "moved_tail_mean": 0.0,
+      "moved_tail_vs_fast": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "moved_tail_vs_slow": [
+        -5.366278181726329,
+        5.481828714081928,
+        -11.304314654805125,
+        -8.82632272684475,
+        -11.362896305426148,
+        -11.384739230074274,
+        -11.499499165191082,
+        -9.474222593964555
+      ],
+      "moved_tail_vs_slow_mean": -7.967055517993792,
+      "moved_tail_wins": 0
+    },
+    "latch": {
+      "intact_early_retention": 0.998870284216613,
+      "intact_full_gains": [
+        4086.184616082072,
+        2078.3830499649016,
+        2782.318935800477,
+        3454.77304551131,
+        4250.550970020556,
+        3334.0381939985455,
+        4086.485708239005,
+        2384.0752765456805
+      ],
+      "intact_full_retention": 0.999661942283293,
+      "law_tail_mean": -4.945838658027836,
+      "law_tail_vs_fast": [
+        -4.3056370651821325,
+        -5.73233661886411,
+        -4.254823500816864,
+        -5.409589719114619,
+        -4.2408447324788225,
+        -4.494082423458877,
+        -5.661647242386648,
+        -5.467747961920617
+      ],
+      "law_whole_mean": 5.308592439996673,
+      "law_whole_vs_fast": [
+        5.837794033496721,
+        3.6763575812673253,
+        5.845512077876492,
+        4.753150488828624,
+        6.804741865284086,
+        6.1900388471804035,
+        4.761878746479624,
+        4.599265879560107
+      ],
+      "moved_tail_mean": 6.6937387842707174,
+      "moved_tail_vs_fast": [
+        2.9204226299311813,
+        -3.679524729135128,
+        8.94130626328888,
+        6.01552946124616,
+        11.33792029189226,
+        10.670147731757652,
+        10.385291450345449,
+        6.958817174839282
+      ],
+      "moved_tail_vs_slow": [
+        -2.445855551795148,
+        1.8023039849467999,
+        -2.363008391516246,
+        -2.8107932655985906,
+        -0.024976013533887453,
+        -0.7145914983166222,
+        -1.1142077148456337,
+        -2.5154054191252726
+      ],
+      "moved_tail_vs_slow_mean": -1.273316733723075,
+      "moved_tail_wins": 7
+    },
+    "slow": {
+      "intact_early_retention": 1.0,
+      "intact_full_gains": [
+        4087.3487758239903,
+        2081.026334957979,
+        2783.4595070851724,
+        3456.1730898254914,
+        4250.714701664828,
+        3334.65565655534,
+        4087.1364721471805,
+        2385.2422114002125
+      ],
+      "intact_full_retention": 1.0,
+      "law_tail_mean": -5.6302124764738295,
+      "law_tail_vs_fast": [
+        -4.394214178793334,
+        -5.678737098092032,
+        -5.745088723152541,
+        -5.871962845404732,
+        -5.715933250344385,
+        -6.000240078285815,
+        -5.838368011105663,
+        -5.797155626612135
+      ],
+      "law_whole_mean": 5.524386539200137,
+      "law_whole_vs_fast": [
+        6.716343666151033,
+        5.499017499732076,
+        5.3640002910281055,
+        5.382784176469158,
+        5.493384991690618,
+        5.1681383436400665,
+        5.1929076404046555,
+        5.37851570448538
+      ],
+      "moved_tail_mean": 7.967055517993792,
+      "moved_tail_vs_fast": [
+        5.366278181726329,
+        -5.481828714081928,
+        11.304314654805125,
+        8.82632272684475,
+        11.362896305426148,
+        11.384739230074274,
+        11.499499165191082,
+        9.474222593964555
+      ],
+      "moved_tail_vs_slow": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "moved_tail_vs_slow_mean": 0.0,
+      "moved_tail_wins": 7
+    },
+    "witness": {
+      "intact_early_retention": 0.9991272381306975,
+      "intact_full_gains": [
+        4086.4024624223352,
+        2079.1836613889786,
+        2782.610322625031,
+        3455.153235939548,
+        4250.566233139935,
+        3334.310155034793,
+        4086.7340808180347,
+        2384.308386005326
+      ],
+      "intact_full_retention": 0.9997548450192589,
+      "law_tail_mean": -5.12659158057943,
+      "law_tail_vs_fast": [
+        -4.370924029659733,
+        -5.707307454176835,
+        -4.550810269104902,
+        -5.488333435431061,
+        -5.115907911719556,
+        -4.494082423459304,
+        -5.761707249231565,
+        -5.523659871852489
+      ],
+      "law_whole_mean": 5.356085619027823,
+      "law_whole_vs_fast": [
+        5.936238713295097,
+        4.20640195396652,
+        5.796510332309936,
+        4.911678901076357,
+        5.9449418054223315,
+        6.414822968978342,
+        4.8866028614356765,
+        4.751487415738325
+      ],
+      "moved_tail_mean": 6.940450060275193,
+      "moved_tail_vs_fast": [
+        3.5267680035412923,
+        -4.344779843442922,
+        9.526855025015607,
+        6.497888155761984,
+        11.34485807343026,
+        10.890769184635474,
+        10.661415155518625,
+        7.419826727741224
+      ],
+      "moved_tail_vs_slow": [
+        -1.8395101781850371,
+        1.1370488706390063,
+        -1.7774596297895187,
+        -2.3284345710827665,
+        -0.018038231995888054,
+        -0.4939700454388003,
+        -0.8380840096724569,
+        -2.054395866223331
+      ],
+      "moved_tail_vs_slow_mean": -1.026605457718599,
+      "moved_tail_wins": 7
+    }
+  },
+  "regimes": [
+    "recombined",
+    "switched",
+    "moved_mid",
+    "unrelated"
+  ],
+  "tables": {
+    "moved_mid": {
+      "fast": {
+        "early": 620.997255706166,
+        "gain": 2305.752667784974,
+        "tail": 881.5514965581622
+      },
+      "latch": {
+        "early": 625.7506160349468,
+        "gain": 2322.700837667273,
+        "tail": 888.2452353424329
+      },
+      "slow": {
+        "early": 626.4583359046527,
+        "gain": 2324.8743223186407,
+        "tail": 889.518552076156
+      },
+      "witness": {
+        "early": 625.9115869563684,
+        "gain": 2323.1757950448564,
+        "tail": 888.4919466184374
+      }
+    },
+    "recombined": {
+      "fast": {
+        "early": 620.997255706166,
+        "gain": 3285.6629870085617,
+        "tail": 1861.4618157817522
+      },
+      "latch": {
+        "early": 625.7506160349468,
+        "gain": 3307.1012245203183,
+        "tail": 1872.645622195482
+      },
+      "slow": {
+        "early": 626.4583359046527,
+        "gain": 3308.219593682524,
+        "tail": 1872.863823440037
+      },
+      "witness": {
+        "early": 625.9115869563684,
+        "gain": 3307.4085671717476,
+        "tail": 1872.7247187453283
+      }
+    },
+    "switched": {
+      "fast": {
+        "early": 620.997255706166,
+        "gain": 1429.9692294140343,
+        "tail": 5.768058187223128
+      },
+      "latch": {
+        "early": 625.7506160349468,
+        "gain": 1435.2778218540311,
+        "tail": 0.822219529195291
+      },
+      "slow": {
+        "early": 626.4583359046527,
+        "gain": 1435.4936159532344,
+        "tail": 0.13784571074929752
+      },
+      "witness": {
+        "early": 625.9115869563684,
+        "gain": 1435.3253150330622,
+        "tail": 0.6414666066436967
+      }
+    },
+    "unrelated": {
+      "fast": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "latch": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "slow": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      },
+      "witness": {
+        "early": 0.0,
+        "gain": 0.0,
+        "tail": 0.0
+      }
+    }
+  },
+  "validity": {
+    "admission": true,
+    "archive": true,
+    "bounds": true,
+    "exact_quotes": true,
+    "latch": true,
+    "normalization": true
+  },
+  "worlds": [
+    248,
+    249,
+    250,
+    251,
+    252,
+    253,
+    254,
+    255
+  ]
+}

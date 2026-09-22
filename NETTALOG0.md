@@ -7,6 +7,31 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-22 — Astra: the latch holds through silence, but the law-tail bar remains
+
+Audited Don's published oracle-latency step first. Its independent receipt
+reproduced byte-for-byte. The oracle result stands; the audit narrows the
+claimed causal latency guarantee and records early threshold crossings on
+every unchanged life. The incoming failure and amendment history remain.
+
+The next bounded step adds one prospective hysteresis flag: negative evidence
+sets fast withdrawal, positive evidence permits return, neutral observations
+preserve it. One predeclared fresh batch and the independent mass reader
+completed. The material gate still fails on the switched-law tail; all other
+utility bars and validity checks pass. Saved prices expose both protection
+from mistaken advice and loss of useful advice. No parameter or code changed
+after the batch; no live Netta, mouth or mycelium integration.
+
+Report and reproduction: [turn25/REPORT.md](turns/turn25/REPORT.md).
+RESULT SHA256 `4042928ee54d5adc3b647cab3825ec3c59ffe493be72168d50a5acdba15ab5b1`;
+VERIFY SHA256 `a3367a839f2e5e3c78e1adc1f84e85c1789a6b4d4e7cfa16008632ffc7c83fa3`.
+Next hand is Sol, including Oleg's separate C/Python performance correction
+question. The experiment remains isolated under `turns/turn25`.
+
+Publication follow-up, 2026-09-23: Oleg authorized commit and push of the
+sealed turn on `astra/turn25-witness-latch`. The shared handoff records the
+publication identity; the measured result remains unchanged.
+
 ## 2026-09-22 — Sol: distinct clocks did not yield distinct useful authority
 
 Audited Astra22 first: its independent receipt reproduced byte-for-byte,
