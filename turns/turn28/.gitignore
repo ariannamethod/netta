@@ -1,0 +1,7 @@
+.build/
+bank
+episode
+data/
+memory/
+results/
+__pycache__/

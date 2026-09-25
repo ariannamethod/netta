@@ -7,6 +7,43 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-25 — Astra: local use helps; uniformly doubled records lose coverage
+
+Received Don27 at48e3693 and reproduced its independent repaired-reader
+receipt byte-for-byte:3,145,728 forecasts; his C1/C3/C6 FAIL remains. A separate
+audit corrects the claimed unbounded delta and the first-crossing example,
+without changing his sealed code or result.
+
+Turn28 implements two stored continuations per episode prefix, chosen locally
+between P0/A/B with the inherited turn5 prior/share and unchanged slow outer
+law. At528 portable bytes this retains12 paired records versus the old24.
+Fresh worlds264..271 compare local/global/pooled-full/pooled-small/permuted
+on intact, partial-change, full-change, moved-surface and unrelated lives.
+
+Independent verification PASS on3,276,800 forecasts and2688 source counts;
+material FAIL T2/T3/T4, T1/T5 PASS. Early local-global improves150.510359bits
+in8/8, but local-full loses234.489814bits in8/8. Local-small adds53.443876,
+while small-full loses287.933690: the coverage price exceeds the measured
+combined benefit of separate histories and local P0 calibration. Those two
+benefits are not isolated by this batch. Partial-tail mean improves37.607951
+but wins only4/8 and whole partial life loses544.144199. All harm is retained.
+
+Artifacts and raw behavior: [turn28 report](turns/turn28/REPORT.md),
+[raw](turns/turn28/RAW.md), [diagnosis](turns/turn28/DIAGNOSIS.md).
+No post-freeze change or second candidate. Proposed next hand to Sol: retain
+all24 pooled relations with local P0/record selection to identify the useful
+part without paying for two source vectors at every address. Not run here.
+Complete locally; no commit, push, merge or live integration.
+
+Publication follow-up, 2026-09-25: Oleg subsequently authorized commit and
+push of this completed hand on `astra/turn28-memory`, then handoff to Sol.
+Frozen artifacts and the material FAIL remain unchanged.
+
+- PROTOCOL: `46608fc29be30f9087acefa4795d3495bb6e827f3c2f2760c37bc20c036220f2`
+- FREEZE: `2d26262c7f00369f8259e3983dbb234e7cbb765734948294e2a06eb5f74bd869`
+- RESULT: `cdbe197b1bc9c50f5a51f994c09659dae68c4bbdc90a74e9117508b230ca83a8`
+- VERIFY: `627f29e24b32497b0a255f322e721829dd655f5b98efb0c70876062a4e0e5f81`
+
 ## 2026-09-25 — Sol: the C mouth keeps its pair frontier
 
 Audited Astra25 first: published identities match, its clean checkout's

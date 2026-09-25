@@ -1,0 +1,57 @@
+[
+  {
+    "stage": "freeze",
+    "command": [
+      "python3",
+      "-B",
+      "experiment.py",
+      "freeze"
+    ],
+    "rc": 0,
+    "seconds": 0.06930570816621184
+  },
+  {
+    "stage": "generate",
+    "command": [
+      "python3",
+      "-B",
+      "experiment.py",
+      "generate"
+    ],
+    "rc": 0,
+    "seconds": 11.326840832829475
+  },
+  {
+    "stage": "extract",
+    "command": [
+      "python3",
+      "-B",
+      "experiment.py",
+      "extract"
+    ],
+    "rc": 0,
+    "seconds": 6.932430500164628
+  },
+  {
+    "stage": "learn",
+    "command": [
+      "python3",
+      "-B",
+      "experiment.py",
+      "learn"
+    ],
+    "rc": 0,
+    "seconds": 6.950247874949127
+  },
+  {
+    "stage": "evaluate",
+    "command": [
+      "python3",
+      "-B",
+      "experiment.py",
+      "evaluate"
+    ],
+    "rc": 0,
+    "seconds": 30.26012449990958
+  }
+]

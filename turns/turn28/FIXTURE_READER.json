@@ -1,0 +1,9 @@
+{
+  "events": 8,
+  "fixture_stdout_sha256": "815103c60d7adb35eb8c7d96e13efbb6276ef227fb744a7eedad4fbae89378dd",
+  "max_error": 1.7763568394002505e-15,
+  "numeric_checks": 136,
+  "passed": true,
+  "reader_sha256": "a03cdf6e330e39321991257c83883c0bef6220cc7a2129189b067a9f676ebc9d",
+  "scope": "One declared C fixture; source components independently reconstructed; local/global probability masses, matched NEW/equal and unmatched chronology. No fresh worlds."
+}
