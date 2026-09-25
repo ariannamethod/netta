@@ -1,0 +1,16 @@
+{
+  "base_commit": "48e36938f887ec57b26e4ac20b83f58dd5d149ab",
+  "branch": "astra/turn28-memory",
+  "incoming_readonly": "/Users/ataeff/arianna/netta-don-turn18-20260921",
+  "scope": "turns/turn28 in isolated clone; shared handoff when complete",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102)",
+  "python": "Python 3.14.4",
+  "source_files": {
+    "PROTOCOL.md": "46608fc29be30f9087acefa4795d3495bb6e827f3c2f2760c37bc20c036220f2",
+    "INTERFACE.md": "6fb1a547fdf1765c851c7609d40563d35a819de53f228cd45cca7293711b154d",
+    "experiment.py": "65d0238a853ae75fd53fd39d3a722e6f74545dd5615935dc43bf7f04bc0ab20d",
+    "bank.c": "82fe7a161b885f7ca0de12b96b58bec51e5949b8069aa90c8e23b55394871e8f",
+    "Makefile": "de709fbde5c53de0d833fc6194c7fc1881d2f47cced79ef0f707ff783bd175ff",
+    "source_check.py": "4fe90bad14f11b29b57caf1887543c62b0ffaaa21d01f5f8184b5bd739973d41"
+  }
+}

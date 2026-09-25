@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "verify.py",
+    "--output",
+    "VERIFY.json"
+  ],
+  "rc": 0,
+  "seconds": 126.13282475015149
+}

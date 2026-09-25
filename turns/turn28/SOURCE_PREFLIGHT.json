@@ -1,0 +1,21 @@
+[
+  {
+    "command": [
+      "make",
+      "all"
+    ],
+    "rc": 0,
+    "stdout": "make: Nothing to be done for `all'.\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "source_check.py"
+    ],
+    "rc": 0,
+    "stdout": "{\n  \"archive_bytes\": {\n    \"bank.bin\": 152,\n    \"permuted.bin\": 152,\n    \"pooled_full.bin\": 104,\n    \"pooled_small.bin\": 104\n  },\n  \"archive_sha256\": {\n    \"bank.bin\": \"c024615e8411771302b752b1f7f0394d749632d8b868103e3cf76584eaf05694\",\n    \"permuted.bin\": \"990097322ba195105f55cb63632d4c7961060a71ac057f71d9ce10ca23d0c077\",\n    \"pooled_full.bin\": \"f3e025962dbc7a82a605ed263658e264fcc0352a70782ee5b0cc642767183bd2\",\n    \"pooled_small.bin\": \"f3e025962dbc7a82a605ed263658e264fcc0352a70782ee5b0cc642767183bd2\"\n  },\n  \"bank_selected\": 3,\n  \"differing_case_records\": 3,\n  \"fresh_worlds_generated\": 0,\n  \"handwritten_role_events\": 2050,\n  \"independent_prefix_counts_checked\": 9,\n  \"recipient_predictions\": 0,\n  \"rules\": 10,\n  \"selected\": 3,\n  \"source_fixture_pass\": true,\n  \"writer_sha256\": \"65d0238a853ae75fd53fd39d3a722e6f74545dd5615935dc43bf7f04bc0ab20d\"\n}\n",
+    "stderr": ""
+  }
+]

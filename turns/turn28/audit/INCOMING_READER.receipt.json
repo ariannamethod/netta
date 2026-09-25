@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "/Users/ataeff/arianna/netta-don-turn18-20260921/turns/turn27/verify_repair.py",
+    "--output",
+    "/Users/ataeff/arianna-codex/repos/netta-astra-turn28-20260925/turns/turn28/audit/INCOMING_READER.json"
+  ],
+  "cwd": "/Users/ataeff/arianna-codex/repos/netta-astra-turn28-20260925",
+  "elapsed_seconds": 79.94071416696534,
+  "finished_utc": "2026-09-25T16:56:27.786175+00:00",
+  "log_sha256": "506f805af24cfdfef348343c77d9daa75255030edd3ce181338b585b652981df",
+  "output_sha256": "f8ede0c01f9516ee8e0d585cb02a18cd48ba0170c8df6100acc2ec2ca61bb4ab",
+  "reader_sha256": "be63f64452e60d11a65abdedf2a34d4c2ed176a281a1b43ff8a650b3fb78d2b8",
+  "reader_unchanged": true,
+  "returncode": 0,
+  "started_utc": "2026-09-25T16:55:07.845329+00:00"
+}

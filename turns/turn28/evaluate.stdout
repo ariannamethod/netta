@@ -1,0 +1,32 @@
+{
+  "conditions": {
+    "T1": true,
+    "T2": false,
+    "T3": false,
+    "T4": false,
+    "T5": true
+  },
+  "quantities": {
+    "early_gain_per_byte": 0.10335811996434935,
+    "early_positive": 8,
+    "early_vs_full": -234.48981395901637,
+    "early_wins_full": 0,
+    "full_retention": 0.586716417945135,
+    "full_positive": 8,
+    "partial_tail_vs_full": 37.607951080585494,
+    "partial_tail_wins_full": 4,
+    "partial_whole_vs_full": -544.1441994188216,
+    "early_vs_global": 150.51035865154913,
+    "early_wins_global": 8,
+    "early_vs_permuted": 419.11776827730745,
+    "early_wins_permuted": 8
+  },
+  "validity": {
+    "archive": true,
+    "source_counts": true,
+    "normalization": true,
+    "exact_quotes": true,
+    "bounds": true
+  },
+  "material_pass": false
+}
