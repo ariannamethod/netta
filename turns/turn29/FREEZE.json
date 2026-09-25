@@ -1,0 +1,51 @@
+{
+  "arms": [
+    "local_full",
+    "global_full",
+    "pooled_full",
+    "bank_local",
+    "permuted_full"
+  ],
+  "files": {
+    "byte_recurrence/frontend.c": "598b5aa2301e48029b7d5c2ca89c9d67372b33df9497d8b14d0b0de646ee3d08",
+    "byte_recurrence/frontend.h": "cc84f37ba78962cbfb36abd6ecea07bbabd6fbd5ee2f8dd3755f998f07df804e",
+    "court4/transfer4_confirm_core.c": "d80016369607ef2c202f28b10470e039b452cf177cf746b24320a7df0a1f4629",
+    "portable_recurrence/recurrence.c": "1c14a567b30d376d515c22f6280872e98811956a691958057cfc7ef4b48739d3",
+    "portable_recurrence/recurrence.h": "282f79c3a90680a2bf6fa0b86624995d83a292c4edf5d33393c95d3d1b56b958",
+    "turns/turn13/episode.c": "8509ce692c394eaeea55bc1ce99596e246449a519f32bf0576de4e74dd6d5ad9",
+    "turns/turn13/experiment.py": "003146d6e18d56dbb88b303489b801c688d20f475a9ab74bafb3a4d53a42c475",
+    "turns/turn22/experiment.py": "86f1040cbe536632d22404a2e08955fc280e813a46f5cb826b5077fc5593f303",
+    "turns/turn28/bank": "21b0dc1157338a565426ab3ec9948b6f2bb9c7d66323662849a550ba8dc07ed8",
+    "turns/turn28/bank.c": "82fe7a161b885f7ca0de12b96b58bec51e5949b8069aa90c8e23b55394871e8f",
+    "turns/turn28/experiment.py": "65d0238a853ae75fd53fd39d3a722e6f74545dd5615935dc43bf7f04bc0ab20d",
+    "turns/turn28/verify.py": "037c604d07ea7da328ada0859f7a869b6e4e0e5065c30e35c09efb7a3c9d7693",
+    "turns/turn29/INTERFACE.md": "40b81900eab4daaf57cd1141523611ecf355067f2da89b3e3e07aa45bc81db58",
+    "turns/turn29/Makefile": "c05593b2e091584b21115a6d644eddca0b05ae888d0288cb93292eecaa4ae200",
+    "turns/turn29/PROTOCOL.md": "3174e44eb930042d2018aab6108dcc558d4d00d4426f5fdd8af1247dc001166c",
+    "turns/turn29/calibrate": "b970060ef87e4968bfe1615c5ba731b71a69501c5d246dc83b040aa4143bc8f1",
+    "turns/turn29/calibrate.c": "9a64800440d06e70bb7f29772517ff2af443db32d9603c91c00715c1c3d36a2e",
+    "turns/turn29/episode": "b970060ef87e4968bfe1615c5ba731b71a69501c5d246dc83b040aa4143bc8f1",
+    "turns/turn29/experiment.py": "022dc324402d6abfe4226dcef1ad9d7efa7578de563784d92b21e05ea40020dd",
+    "turns/turn29/source_check.py": "88fcfdd627ccde4bcdbdd542feb36b1f20f49ca4e8d945f33b7ef975bdde5799",
+    "turns/turn29/turn28-bank": "21b0dc1157338a565426ab3ec9948b6f2bb9c7d66323662849a550ba8dc07ed8",
+    "turns/turn29/verify.py": "a1697c6452689458f5aa2266105e423d3db6c5db9a8b594310a39a8c46e74ceb"
+  },
+  "namespace": "netta-local-pooled-permission-v1",
+  "regimes": [
+    "recombined",
+    "partial",
+    "switched",
+    "moved_mid",
+    "unrelated"
+  ],
+  "worlds": [
+    272,
+    273,
+    274,
+    275,
+    276,
+    277,
+    278,
+    279
+  ]
+}

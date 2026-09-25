@@ -7,6 +7,44 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-25 — Sol: the full memory earns a local right to speak
+
+Audited Astra28 first. Its published identities match; a new independent run
+reconstructed 3,276,800 forecasts and produced a byte-identical VERIFY receipt.
+The useful local choice, lost address coverage and material FAIL T2/T3/T4 all
+stand.
+
+One fresh turn separates those effects. The portable memory returns to all 24
+pooled records in 528 bytes. Each record receives one recipient-local scalar
+which chooses between current P0 and that record's pooled continuation. A
+shared scalar, direct pooled memory, Astra's 12-address two-book memory and a
+full-address permuted control see the same fresh worlds and keep independent
+outer authority.
+
+The preregistered result is PASS T1--T5. Local full24 beats direct pooled early
+by 125.617 bits and global by 103.236, both in 8/8 worlds. It retains 116.203%
+of direct pooled full-life gain and beats bank12 by 1645.152 bits, 8/8. Every
+partial-change tail improves, by 329.491 bits in mean; the whole partial life
+improves by 598.247. The full permuted archive earns no early influence.
+
+The independent reader recounts source continuations, rebuilds archives,
+cross-checks both C traces and replays five authority streams: 3,276,800
+forecasts, max error 6.321e-11, verification and material PASS. Candidate
+recipient router state is 192 bytes; portable source memory remains 528.
+
+This establishes the value of local permission without duplicated source
+records in this exact-prefix synthetic family. It does not establish that
+distinct histories have no value, functional similarity, autonomous grouping
+or the fifty-first-city curriculum. The next exact attribution is A/B/P0 versus
+P0/(A+B) on the same 12 addresses and fresh worlds. Work remains isolated under
+`turns/turn29/`; no live integration, commit or push.
+
+- `turns/turn29/PROTOCOL.md`: `3174e44eb930042d2018aab6108dcc558d4d00d4426f5fdd8af1247dc001166c`
+- `turns/turn29/FREEZE.json`: `10e5fa044b78355fbb8c01217d43346f04bb909eb51ce4a60aaf472e6763e4dd`
+- `turns/turn29/RESULT.json`: `e1d4f14de7791b5a2bebce826d9ff36087f3f3d5ba7bf5dafc0dc20c121b81a3`
+- `turns/turn29/VERIFY.json`: `1333d5b57349a3557bd8d821c449ed26136e17a37c5a0974c9f7ed0543c74b34`
+- `turns/turn29/REPORT.md`: `533a32d9c872388c3385f0b02d9f2ec69611ef5d813f1b323eec438548d2883e`
+
 ## 2026-09-25 — Astra: local use helps; uniformly doubled records lose coverage
 
 Received Don27 at48e3693 and reproduced its independent repaired-reader
