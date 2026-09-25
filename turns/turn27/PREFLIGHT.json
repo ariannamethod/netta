@@ -1,0 +1,224 @@
+{
+  "gate": {
+    "c1_law_tail": {
+      "also_flipped": [],
+      "target": "c1_law_tail",
+      "tests": {
+        "c1_law_tail": false,
+        "c2_law_whole": true,
+        "c3_moved": true,
+        "c4_recombined": true,
+        "c5_incumbent": true,
+        "c6_mechanism": true,
+        "c7_hygiene": true,
+        "c8_reader": false
+      }
+    },
+    "c2_law_whole": {
+      "also_flipped": [],
+      "target": "c2_law_whole",
+      "tests": {
+        "c1_law_tail": true,
+        "c2_law_whole": false,
+        "c3_moved": true,
+        "c4_recombined": true,
+        "c5_incumbent": true,
+        "c6_mechanism": true,
+        "c7_hygiene": true,
+        "c8_reader": false
+      }
+    },
+    "c3_moved": {
+      "also_flipped": [],
+      "target": "c3_moved",
+      "tests": {
+        "c1_law_tail": true,
+        "c2_law_whole": true,
+        "c3_moved": false,
+        "c4_recombined": true,
+        "c5_incumbent": true,
+        "c6_mechanism": true,
+        "c7_hygiene": true,
+        "c8_reader": false
+      }
+    },
+    "c4_recombined": {
+      "also_flipped": [],
+      "target": "c4_recombined",
+      "tests": {
+        "c1_law_tail": true,
+        "c2_law_whole": true,
+        "c3_moved": true,
+        "c4_recombined": false,
+        "c5_incumbent": true,
+        "c6_mechanism": true,
+        "c7_hygiene": true,
+        "c8_reader": false
+      }
+    },
+    "c5_incumbent": {
+      "also_flipped": [],
+      "target": "c5_incumbent",
+      "tests": {
+        "c1_law_tail": true,
+        "c2_law_whole": true,
+        "c3_moved": true,
+        "c4_recombined": true,
+        "c5_incumbent": false,
+        "c6_mechanism": true,
+        "c7_hygiene": true,
+        "c8_reader": false
+      }
+    },
+    "c6_mechanism": {
+      "also_flipped": [],
+      "target": "c6_mechanism",
+      "tests": {
+        "c1_law_tail": true,
+        "c2_law_whole": true,
+        "c3_moved": true,
+        "c4_recombined": true,
+        "c5_incumbent": true,
+        "c6_mechanism": false,
+        "c7_hygiene": true,
+        "c8_reader": false
+      }
+    },
+    "c6_mechanism_late": {
+      "also_flipped": [],
+      "target": "c6_mechanism",
+      "tests": {
+        "c1_law_tail": true,
+        "c2_law_whole": true,
+        "c3_moved": true,
+        "c4_recombined": true,
+        "c5_incumbent": true,
+        "c6_mechanism": false,
+        "c7_hygiene": true,
+        "c8_reader": false
+      }
+    },
+    "c7_hygiene": {
+      "also_flipped": [],
+      "target": "c7_hygiene",
+      "tests": {
+        "c1_law_tail": true,
+        "c2_law_whole": true,
+        "c3_moved": true,
+        "c4_recombined": true,
+        "c5_incumbent": true,
+        "c6_mechanism": true,
+        "c7_hygiene": false,
+        "c8_reader": false
+      }
+    },
+    "green": {
+      "c1_law_tail": true,
+      "c2_law_whole": true,
+      "c3_moved": true,
+      "c4_recombined": true,
+      "c5_incumbent": true,
+      "c6_mechanism": true,
+      "c7_hygiene": true,
+      "c8_reader": false
+    }
+  },
+  "law": {
+    "events": 200,
+    "exercised": {
+      "-1": {
+        "admissions": 1,
+        "armed": 0,
+        "cusum_latch": 1,
+        "equal_price": 2,
+        "hysteresis_return": 1,
+        "hysteresis_set": 1,
+        "non_voting": 5
+      },
+      "120": {
+        "admissions": 1,
+        "armed": 80,
+        "cusum_latch": 1,
+        "equal_price": 2,
+        "hysteresis_return": 1,
+        "hysteresis_set": 1,
+        "non_voting": 5
+      }
+    },
+    "maximum_numeric_error": 4.1744385725905886e-14
+  },
+  "protocol_sha256": "9264908b35d0ce89025d0bce6d9cecc6e25e8cf28c5d761072154ce6e3ca6df1",
+  "reader_sha256": "da7e1ad97d6a235580881d6ec06aa0d498166992dfe9366bea9c232db9f7d435",
+  "refusals": {
+    "changed_artifact_refused": "retained artifact /Users/ataeff/arianna/netta-don-turn18-20260921/turns/turn27/.build/preflight-cymd8c74/probe.txt: sha256 7f8b1dfc466b6249f06cbe55c9174df2578e7754da793fded244ef5cba2a38f1 != 25718360e05d3c2d0963d1381e9dd4dae5fca789244ee4b9f861adcc0cc96218",
+    "existing_output_rc": 1,
+    "existing_output_refused": "verify.py refuses: output file /Users/ataeff/arianna/netta-don-turn18-20260921/turns/turn27/.build/preflight-cymd8c74/probe.txt already exists",
+    "missing_key_refusals": {
+      "arms": "RESULT.json: missing required field arms",
+      "bars": "RESULT.json: missing required field bars",
+      "candidate": "RESULT.json: missing required field candidate",
+      "cusum_trajectories": "RESULT.json: missing required field cusum_trajectories",
+      "drift": "RESULT.json: missing required field drift",
+      "false_latch_census": "RESULT.json: missing required field false_latch_census",
+      "fast_own_drawdown_bound": "RESULT.json: missing required field fast_own_drawdown_bound",
+      "gate_pass": "RESULT.json: missing required field gate_pass",
+      "gate_pass_pending_reader": "RESULT.json: missing required field gate_pass_pending_reader",
+      "hygiene": "RESULT.json: missing required field hygiene",
+      "incumbent": "RESULT.json: missing required field incumbent",
+      "independent_reader_pending": "RESULT.json: missing required field independent_reader_pending",
+      "labels": "RESULT.json: missing required field labels",
+      "labels_sha256": "RESULT.json: missing required field labels_sha256",
+      "latch_deadline": "RESULT.json: missing required field latch_deadline",
+      "life_table": "RESULT.json: missing required field life_table",
+      "lives": "RESULT.json: missing required field lives",
+      "namespace": "RESULT.json: missing required field namespace",
+      "protocol_sha256": "RESULT.json: missing required field protocol_sha256",
+      "quantities": "RESULT.json: missing required field quantities",
+      "regimes": "RESULT.json: missing required field regimes",
+      "seam": "RESULT.json: missing required field seam",
+      "seam_regime": "RESULT.json: missing required field seam_regime",
+      "table": "RESULT.json: missing required field table",
+      "test_details": "RESULT.json: missing required field test_details",
+      "tests": "RESULT.json: missing required field tests",
+      "threshold": "RESULT.json: missing required field threshold",
+      "unrelated_admissions": "RESULT.json: missing required field unrelated_admissions",
+      "worlds": "RESULT.json: missing required field worlds",
+      "yardstick": "RESULT.json: missing required field yardstick"
+    },
+    "schema_accepted": [
+      "arms",
+      "bars",
+      "candidate",
+      "cusum_trajectories",
+      "drift",
+      "false_latch_census",
+      "fast_own_drawdown_bound",
+      "gate_pass",
+      "gate_pass_pending_reader",
+      "hygiene",
+      "incumbent",
+      "independent_reader_pending",
+      "labels",
+      "labels_sha256",
+      "latch_deadline",
+      "life_table",
+      "lives",
+      "namespace",
+      "protocol_sha256",
+      "quantities",
+      "regimes",
+      "seam",
+      "seam_regime",
+      "table",
+      "test_details",
+      "tests",
+      "threshold",
+      "unrelated_admissions",
+      "worlds",
+      "yardstick"
+    ]
+  },
+  "replay_sha256": "d8d06abd8a50b457955d414c8ab127f13555c4fe3b1535e76ac368c2603680f7",
+  "scope": "Handcrafted tape and artificial gate records only; no world bytes.",
+  "writer_sha256": "5c07888e1a460ce12daf2f17aadb55487e55fba2aaec50ac0cc8b307eb50f02d"
+}

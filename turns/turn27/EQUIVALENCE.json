@@ -1,0 +1,58 @@
+{
+  "bitwise_equal": true,
+  "lives": {
+    "world256/recombined": {
+      "columns_compared": {
+        "turn24_orate0": 4,
+        "turn25_hysteresis": 8,
+        "turn25_shared_controls": 12
+      },
+      "mismatches": {
+        "turn24_orate0": 0,
+        "turn25_hysteresis": 0,
+        "turn25_shared_controls": 0
+      },
+      "rows": 16384,
+      "seam": -1
+    },
+    "world256/switched": {
+      "columns_compared": {
+        "turn24_orate0": 4,
+        "turn25_hysteresis": 8,
+        "turn25_shared_controls": 12
+      },
+      "mismatches": {
+        "turn24_orate0": 0,
+        "turn25_hysteresis": 0,
+        "turn25_shared_controls": 0
+      },
+      "rows": 16384,
+      "seam": 8192
+    },
+    "world257/moved_mid": {
+      "columns_compared": {
+        "turn24_orate0": 4,
+        "turn25_hysteresis": 8,
+        "turn25_shared_controls": 12
+      },
+      "mismatches": {
+        "turn24_orate0": 0,
+        "turn25_hysteresis": 0,
+        "turn25_shared_controls": 0
+      },
+      "rows": 16384,
+      "seam": -1
+    }
+  },
+  "rebuilt_binary_sha256": "b5541a06e5efe2e60290501ae931e34574f21156ac74ed0d47da2719a6db7c20",
+  "scope": "Printed-field bitwise comparison of this turn's hysteresis and orate0 arms against turn25's replay rebuilt from its frozen sources and turn24's retained oracle binary, on whole production lives.",
+  "turn24_oracle_frozen_sha256": "674d54501d82c5d1fec19252732114848dfc22bac69d11ceedaa79a05cbf1f6c",
+  "turn24_oracle_sha256": "674d54501d82c5d1fec19252732114848dfc22bac69d11ceedaa79a05cbf1f6c",
+  "turn25_rebuilt_from": {
+    "turns/turn22/authority.c": "dbcfbf4a6f54884dd6b1e20192c00dca39b9699e82fcdd7b070a3bd56620bd93",
+    "turns/turn22/authority.h": "8f8c0d645cce26a82c3fe54a139709313d0a94ad8b776ad52740684905a3fd9f",
+    "turns/turn25/latch.c": "c3ed1a42a2fb085e2d28093453d256939f662a2ee2ffdc1217f50040c16f3fe6",
+    "turns/turn25/latch.h": "efd7e0394c439cc4fa9959c7caff6ba378155a52eb7cd0db235c81c9be3383e9",
+    "turns/turn25/replay.c": "30fb9a601bb9b9995c9b1a806a56f1673cae4de92128d2f8ded1dcee6c74ea10"
+  }
+}

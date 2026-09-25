@@ -1,0 +1,98 @@
+{
+  "256": {
+    "world": 256,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "generator_sha256": "cc19bd57e1d54f57608e4255b9684b885b3c35475d538fbc5283704d60a676b0",
+    "shared_emission_seed": 4948326076168472549,
+    "raw_prefix_identical_to_recombined": true,
+    "command_tape_is_declared_construction": true,
+    "raw_tail_differing_bytes": 7968,
+    "raw_tail_divergence": 0.97265625,
+    "raw_tail_differing_bytes_vs_unrelated": 8123
+  },
+  "257": {
+    "world": 257,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "generator_sha256": "61d45f18c2e921b6a47ff819b0046d2225bdfdaa189cad0a348d643c28e05c47",
+    "shared_emission_seed": 10731944432145073727,
+    "raw_prefix_identical_to_recombined": true,
+    "command_tape_is_declared_construction": true,
+    "raw_tail_differing_bytes": 8022,
+    "raw_tail_divergence": 0.979248046875,
+    "raw_tail_differing_bytes_vs_unrelated": 8170
+  },
+  "258": {
+    "world": 258,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "generator_sha256": "cb85040095dab0bad58216a44ad5387ad6c065d16ce8b381b19beda38c3daa5a",
+    "shared_emission_seed": 9805550658363648038,
+    "raw_prefix_identical_to_recombined": true,
+    "command_tape_is_declared_construction": true,
+    "raw_tail_differing_bytes": 7996,
+    "raw_tail_divergence": 0.97607421875,
+    "raw_tail_differing_bytes_vs_unrelated": 8156
+  },
+  "259": {
+    "world": 259,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "generator_sha256": "49d3faea73fdf6d3e79981e69e972a088838a4dfb982052f775d8987586f821d",
+    "shared_emission_seed": 15424130424951021780,
+    "raw_prefix_identical_to_recombined": true,
+    "command_tape_is_declared_construction": true,
+    "raw_tail_differing_bytes": 7923,
+    "raw_tail_divergence": 0.9671630859375,
+    "raw_tail_differing_bytes_vs_unrelated": 8168
+  },
+  "260": {
+    "world": 260,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "generator_sha256": "f95f2c12f1dd817b08fa41ca2ff76951e3fe3702a63befbed50dd263393d63d7",
+    "shared_emission_seed": 7986771951616945800,
+    "raw_prefix_identical_to_recombined": true,
+    "command_tape_is_declared_construction": true,
+    "raw_tail_differing_bytes": 7994,
+    "raw_tail_divergence": 0.975830078125,
+    "raw_tail_differing_bytes_vs_unrelated": 8143
+  },
+  "261": {
+    "world": 261,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "generator_sha256": "1ab2a46fb928c0628b40857e4372c337c0b9591ba246afc950d0eae6ff49d22b",
+    "shared_emission_seed": 2515772055137904755,
+    "raw_prefix_identical_to_recombined": true,
+    "command_tape_is_declared_construction": true,
+    "raw_tail_differing_bytes": 7938,
+    "raw_tail_divergence": 0.968994140625,
+    "raw_tail_differing_bytes_vs_unrelated": 8168
+  },
+  "262": {
+    "world": 262,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "generator_sha256": "86b0d7daa1669e9878f389e8c67be42ac4d1485025f2af7dc3aeab112f46710a",
+    "shared_emission_seed": 4267856091391861185,
+    "raw_prefix_identical_to_recombined": true,
+    "command_tape_is_declared_construction": true,
+    "raw_tail_differing_bytes": 7968,
+    "raw_tail_divergence": 0.97265625,
+    "raw_tail_differing_bytes_vs_unrelated": 8141
+  },
+  "263": {
+    "world": 263,
+    "seam": 8192,
+    "law_changed_regime": "switched",
+    "generator_sha256": "354af2e52ab09443c2748f2a8121ba93b1e738ef66557ee193c97e43a7f29778",
+    "shared_emission_seed": 16257069235143661962,
+    "raw_prefix_identical_to_recombined": true,
+    "command_tape_is_declared_construction": true,
+    "raw_tail_differing_bytes": 7972,
+    "raw_tail_divergence": 0.97314453125,
+    "raw_tail_differing_bytes_vs_unrelated": 8169
+  }
+}
