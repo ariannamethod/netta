@@ -1,0 +1,274 @@
+256 recombined cusum=2917.934 latch=10996 smax=8.366
+256 switched cusum=1312.018 latch=8749 smax=36.872
+256 moved_mid cusum=2115.820 latch=10005 smax=17.529
+256 unrelated cusum=0.000 latch=None smax=0.000
+257 recombined cusum=3322.224 latch=4369 smax=11.145
+257 switched cusum=1626.573 latch=4369 smax=56.671
+257 moved_mid cusum=2718.470 latch=4369 smax=14.064
+257 unrelated cusum=0.000 latch=None smax=0.000
+258 recombined cusum=897.061 latch=7578 smax=13.074
+258 switched cusum=257.190 latch=7578 smax=13.074
+258 moved_mid cusum=243.780 latch=7578 smax=26.347
+258 unrelated cusum=0.000 latch=None smax=0.000
+259 recombined cusum=5452.010 latch=8949 smax=10.955
+259 switched cusum=2403.534 latch=8294 smax=20.297
+259 moved_mid cusum=3829.655 latch=8950 smax=19.128
+259 unrelated cusum=0.000 latch=None smax=0.000
+260 recombined cusum=3029.869 latch=None smax=6.982
+260 switched cusum=1431.050 latch=8454 smax=12.326
+260 moved_mid cusum=2324.572 latch=9557 smax=13.535
+260 unrelated cusum=0.000 latch=None smax=0.000
+261 recombined cusum=4000.266 latch=None smax=7.512
+261 switched cusum=1906.189 latch=8285 smax=16.459
+261 moved_mid cusum=3049.066 latch=9283 smax=18.711
+261 unrelated cusum=0.000 latch=None smax=0.000
+262 recombined cusum=2914.855 latch=None smax=6.924
+262 switched cusum=1146.572 latch=9252 smax=9.610
+262 moved_mid cusum=1559.919 latch=10276 smax=23.199
+262 unrelated cusum=0.000 latch=None smax=0.000
+263 recombined cusum=2755.667 latch=2092 smax=8.282
+263 switched cusum=1093.180 latch=2092 smax=11.345
+263 moved_mid cusum=1584.368 latch=2092 smax=17.257
+263 unrelated cusum=0.000 latch=None smax=0.000
+{
+  "gate_pass": false,
+  "gate_pass_pending_reader": false,
+  "hygiene": {
+    "admission_identity": true,
+    "admission_shared_with_episode": true,
+    "archive": true,
+    "bounds": true,
+    "distributions_positive_and_normalized": true,
+    "exact_quotes": true,
+    "label_confined": true,
+    "laws_recomputed": true,
+    "unrelated_admissions_reported": true
+  },
+  "test_details": {
+    "c1": {
+      "law_tail_mean": -2.9402072410684728,
+      "law_tail_vs_fast": [
+        -5.934367117475491,
+        0.0,
+        0.0005419653302212168,
+        -5.876433864026802,
+        -5.86878900058057,
+        0.13296249306702634,
+        -5.975572404862167,
+        0.0
+      ],
+      "worlds_at_least_minus_one": 4
+    },
+    "c2": {
+      "law_whole_mean": 6.439253982763464,
+      "law_whole_vs_fast": [
+        5.249210064227782,
+        5.969267234468589,
+        10.26791666748207,
+        5.375940295101373,
+        5.256981828476,
+        11.412648209998224,
+        5.208342503847234,
+        2.773725058506443
+      ]
+    },
+    "c3": {
+      "moved_tail_mean": 1.2500773398248501,
+      "moved_tail_vs_fast": [
+        2.5227040228612623,
+        0.0,
+        0.00046218246775797667,
+        1.0580254001833964,
+        1.9907989448599892,
+        1.5177461062949078,
+        2.9108820619314884,
+        0.0
+      ],
+      "moved_tail_vs_slow_mean": -6.227208724127861,
+      "moved_tail_wins": 6
+    },
+    "c4": {
+      "intact_early_retention": 0.9994946491759998,
+      "intact_full_gains": [
+        2917.9338374718227,
+        3322.2239887144265,
+        897.0610579708404,
+        5452.009819084155,
+        3029.868891089969,
+        4000.2663091234845,
+        2914.8549033567924,
+        2755.666780560008
+      ],
+      "intact_full_positive": 8,
+      "intact_full_retention": 0.9973896922508723
+    },
+    "c5": {
+      "cusum_law_tail_mean": -2.9402072410684728,
+      "hysteresis_law_tail_mean": -4.988329508502549,
+      "margin": 2.048122267434076
+    },
+    "c6": {
+      "false_latch_count": 13,
+      "false_latches": [
+        {
+          "latch_byte": 10996,
+          "regime": "recombined",
+          "s_max": 8.365961169680368,
+          "s_max_byte": 10996,
+          "world": 256
+        },
+        {
+          "latch_byte": 10005,
+          "regime": "moved_mid",
+          "s_max": 17.528633177521655,
+          "s_max_byte": 15242,
+          "world": 256
+        },
+        {
+          "latch_byte": 4369,
+          "regime": "recombined",
+          "s_max": 11.145311790707193,
+          "s_max_byte": 15093,
+          "world": 257
+        },
+        {
+          "latch_byte": 4369,
+          "regime": "moved_mid",
+          "s_max": 14.064169907878057,
+          "s_max_byte": 12776,
+          "world": 257
+        },
+        {
+          "latch_byte": 7578,
+          "regime": "recombined",
+          "s_max": 13.074377220160821,
+          "s_max_byte": 7588,
+          "world": 258
+        },
+        {
+          "latch_byte": 7578,
+          "regime": "moved_mid",
+          "s_max": 26.347241273707866,
+          "s_max_byte": 14424,
+          "world": 258
+        },
+        {
+          "latch_byte": 8949,
+          "regime": "recombined",
+          "s_max": 10.955492255525584,
+          "s_max_byte": 8950,
+          "world": 259
+        },
+        {
+          "latch_byte": 8950,
+          "regime": "moved_mid",
+          "s_max": 19.12811831999398,
+          "s_max_byte": 15870,
+          "world": 259
+        },
+        {
+          "latch_byte": 9557,
+          "regime": "moved_mid",
+          "s_max": 13.535156015436511,
+          "s_max_byte": 15482,
+          "world": 260
+        },
+        {
+          "latch_byte": 9283,
+          "regime": "moved_mid",
+          "s_max": 18.710535426896378,
+          "s_max_byte": 15781,
+          "world": 261
+        },
+        {
+          "latch_byte": 10276,
+          "regime": "moved_mid",
+          "s_max": 23.199195449906284,
+          "s_max_byte": 16330,
+          "world": 262
+        },
+        {
+          "latch_byte": 2092,
+          "regime": "recombined",
+          "s_max": 8.28201505768224,
+          "s_max_byte": 2098,
+          "world": 263
+        },
+        {
+          "latch_byte": 2092,
+          "regime": "moved_mid",
+          "s_max": 17.25725363114372,
+          "s_max_byte": 13496,
+          "world": 263
+        }
+      ],
+      "intact_s_max": {
+        "256/moved_mid": 17.528633177521655,
+        "256/recombined": 8.365961169680368,
+        "256/unrelated": 0.0,
+        "257/moved_mid": 14.064169907878057,
+        "257/recombined": 11.145311790707193,
+        "257/unrelated": 0.0,
+        "258/moved_mid": 26.347241273707866,
+        "258/recombined": 13.074377220160821,
+        "258/unrelated": 0.0,
+        "259/moved_mid": 19.12811831999398,
+        "259/recombined": 10.955492255525584,
+        "259/unrelated": 0.0,
+        "260/moved_mid": 13.535156015436511,
+        "260/recombined": 6.9824280092281406,
+        "260/unrelated": 0.0,
+        "261/moved_mid": 18.710535426896378,
+        "261/recombined": 7.5124462687312965,
+        "261/unrelated": 0.0,
+        "262/moved_mid": 23.199195449906284,
+        "262/recombined": 6.923637561626973,
+        "262/unrelated": 0.0,
+        "263/moved_mid": 17.25725363114372,
+        "263/recombined": 8.28201505768224,
+        "263/unrelated": 0.0
+      },
+      "latch_deadline": 8448,
+      "switched_latch_bytes": {
+        "256": 8749,
+        "257": 4369,
+        "258": 7578,
+        "259": 8294,
+        "260": 8454,
+        "261": 8285,
+        "262": 9252,
+        "263": 2092
+      },
+      "switched_latched_before_seam": [
+        257,
+        258,
+        263
+      ],
+      "switched_latched_by_deadline": 5
+    },
+    "c7": {
+      "admission_identity": true,
+      "admission_shared_with_episode": true,
+      "archive": true,
+      "bounds": true,
+      "distributions_positive_and_normalized": true,
+      "exact_quotes": true,
+      "label_confined": true,
+      "laws_recomputed": true,
+      "unrelated_admissions_reported": true
+    },
+    "c8": {
+      "note": "the independent reader has not run inside the writer"
+    }
+  },
+  "tests": {
+    "c1_law_tail": false,
+    "c2_law_whole": true,
+    "c3_moved": false,
+    "c4_recombined": true,
+    "c5_incumbent": true,
+    "c6_mechanism": false,
+    "c7_hygiene": true,
+    "c8_reader": false
+  }
+}
