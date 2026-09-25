@@ -1,0 +1,57 @@
+{
+  "arms": [
+    "bank3",
+    "pooled2",
+    "permuted2",
+    "cold",
+    "full24"
+  ],
+  "files": {
+    "byte_recurrence/frontend.c": "598b5aa2301e48029b7d5c2ca89c9d67372b33df9497d8b14d0b0de646ee3d08",
+    "byte_recurrence/frontend.h": "cc84f37ba78962cbfb36abd6ecea07bbabd6fbd5ee2f8dd3755f998f07df804e",
+    "court4/transfer4_confirm_core.c": "d80016369607ef2c202f28b10470e039b452cf177cf746b24320a7df0a1f4629",
+    "portable_recurrence/recurrence.c": "1c14a567b30d376d515c22f6280872e98811956a691958057cfc7ef4b48739d3",
+    "portable_recurrence/recurrence.h": "282f79c3a90680a2bf6fa0b86624995d83a292c4edf5d33393c95d3d1b56b958",
+    "turns/turn13/episode.c": "8509ce692c394eaeea55bc1ce99596e246449a519f32bf0576de4e74dd6d5ad9",
+    "turns/turn13/experiment.py": "003146d6e18d56dbb88b303489b801c688d20f475a9ab74bafb3a4d53a42c475",
+    "turns/turn22/experiment.py": "86f1040cbe536632d22404a2e08955fc280e813a46f5cb826b5077fc5593f303",
+    "turns/turn28/bank": "21b0dc1157338a565426ab3ec9948b6f2bb9c7d66323662849a550ba8dc07ed8",
+    "turns/turn28/bank.c": "82fe7a161b885f7ca0de12b96b58bec51e5949b8069aa90c8e23b55394871e8f",
+    "turns/turn28/experiment.py": "65d0238a853ae75fd53fd39d3a722e6f74545dd5615935dc43bf7f04bc0ab20d",
+    "turns/turn28/source_check.py": "4fe90bad14f11b29b57caf1887543c62b0ffaaa21d01f5f8184b5bd739973d41",
+    "turns/turn28/verify.py": "037c604d07ea7da328ada0859f7a869b6e4e0e5065c30e35c09efb7a3c9d7693",
+    "turns/turn29/calibrate": "b970060ef87e4968bfe1615c5ba731b71a69501c5d246dc83b040aa4143bc8f1",
+    "turns/turn29/calibrate.c": "9a64800440d06e70bb7f29772517ff2af443db32d9603c91c00715c1c3d36a2e",
+    "turns/turn29/experiment.py": "022dc324402d6abfe4226dcef1ad9d7efa7578de563784d92b21e05ea40020dd",
+    "turns/turn29/verify.py": "a1697c6452689458f5aa2266105e423d3db6c5db9a8b594310a39a8c46e74ceb",
+    "turns/turn30/INTERFACE.md": "0225cb57296dfba28dda314c7c1b9977bd1da1a3268be5f9bdecd953cb3e472a",
+    "turns/turn30/Makefile": "8f9645bb9a91d6b0982cf80e8e0a5bdf970c0b7ed8b291cdc007bd0b72ef2279",
+    "turns/turn30/PROTOCOL.md": "fab5c1dc717c4ecbe76fab06d934852f999f187758b77a31a7e5f068edc2a47c",
+    "turns/turn30/episode": "395e639fa129fb5480dc86a661adb3d82b09442949e77d5f8ec95d743972774a",
+    "turns/turn30/experiment.py": "434d4f59d61ebe84f613e962541120a45ebde6d21e164dbc970a70ca4f00ed75",
+    "turns/turn30/probes.py": "f52e465683b6b06190b91a63d2274a328d04d08e3d65415d83188ee48f20df19",
+    "turns/turn30/router3": "395e639fa129fb5480dc86a661adb3d82b09442949e77d5f8ec95d743972774a",
+    "turns/turn30/router3.c": "ba1d181f8ee9b2a68b9efd66f33690072f0df9cc22fea47e7c251df54be40020",
+    "turns/turn30/source_check.py": "13670913e385a84d0ce022f8c9edfb168b66f2ef47041dad75c081907719031d",
+    "turns/turn30/turn29-calibrate": "b970060ef87e4968bfe1615c5ba731b71a69501c5d246dc83b040aa4143bc8f1",
+    "turns/turn30/verify.py": "3d345a3ac2a44a47ae039aeb4a2a280b5c5650a93345f6a6947b5cb06a276734"
+  },
+  "namespace": "netta-distinct-histories-v1",
+  "regimes": [
+    "recombined",
+    "partial",
+    "switched",
+    "moved_mid",
+    "unrelated"
+  ],
+  "worlds": [
+    280,
+    281,
+    282,
+    283,
+    284,
+    285,
+    286,
+    287
+  ]
+}
