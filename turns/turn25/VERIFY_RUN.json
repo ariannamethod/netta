@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "turns/turn25/verify.py"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 35.974522708915174
+}

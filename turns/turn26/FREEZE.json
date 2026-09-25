@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-25",
+  "parent_commit": "71389502e514a39bd1a643fb2e5992de9677253c",
+  "protocol_sha256": "83eaef43b0eeb76db40ac8d66584ea3d3f4e3aa7a1de92889845f8413b0ee0c5",
+  "baseline_mouth_sha256": "9cc831657e6bdb3984b55d7f17dcac7040ad877c540d3d579393c642106d6dd6",
+  "candidate_mouth_sha256": "4494ca59864d992c5b5697fb92443f42953fe54f9b861593c051151527d01225",
+  "reader_sha256": "fc477bfcf4961e658fdae86741dd8c7e0b150670388a71c7fc710284024b7097",
+  "python_receipt_sha256": "f3ef71d3164d895653c4bc9f521ab89557870d1d039b98574b218f0e95fb0278",
+  "world_sha256": "02c08152e281d28e48e17a2b6813bb693dfa255c94f30e033137409d0e8b5cfb",
+  "primary_speedup_gate": 0.20,
+  "small_island_max_slowdown": 0.10,
+  "measured_pairs": 7,
+  "semantic_guards": [
+    "full island, corridor 1",
+    "first 89509 bytes, corridor 1",
+    "full island, corridor 1, 1024 merges, order 3"
+  ],
+  "reader_and_previous_turns_frozen": true
+}

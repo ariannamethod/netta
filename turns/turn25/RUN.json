@@ -1,0 +1,61 @@
+{
+  "started_scope": "One frozen fresh batch",
+  "finished_utc": "2026-09-21T23:45:04.225604+00:00",
+  "stages": [
+    {
+      "stage": "freeze",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "turns/turn25/experiment.py",
+        "freeze"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06958791613578796
+    },
+    {
+      "stage": "generate",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "turns/turn25/experiment.py",
+        "generate"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 8.92509795865044
+    },
+    {
+      "stage": "extract",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "turns/turn25/experiment.py",
+        "extract"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 6.335239375010133
+    },
+    {
+      "stage": "learn",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "turns/turn25/experiment.py",
+        "learn"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 10.249717166181654
+    },
+    {
+      "stage": "evaluate",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "turns/turn25/experiment.py",
+        "evaluate"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 45.513201124966145
+    }
+  ]
+}
