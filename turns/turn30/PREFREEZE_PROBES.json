@@ -1,0 +1,215 @@
+{
+  "baseline": {
+    "D1": true,
+    "D2": true,
+    "D3": true,
+    "D4": true,
+    "D5": true,
+    "D6": true
+  },
+  "output": {
+    "absent_result_rc": 1,
+    "absent_result_refusal": "FileNotFoundError: [Errno 2] No such file or directory: '/Users/ataeff/arianna/netta-don-turn18-20260921/turns/turn30/RESULT.json'",
+    "existing_output_rc": 1,
+    "existing_output_refusal": "AssertionError: new output path /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/tmpgbsm_97q/VERIFY.json"
+  },
+  "prefreeze_probes_pass": true,
+  "reader_sha256": "3d345a3ac2a44a47ae039aeb4a2a280b5c5650a93345f6a6947b5cb06a276734",
+  "router3_sha256": "395e639fa129fb5480dc86a661adb3d82b09442949e77d5f8ec95d743972774a",
+  "schema": {
+    "accepts_writer_schema": true,
+    "refusals": {
+      "arms": "RESULT.json missing arms",
+      "conditions": "RESULT.json missing conditions",
+      "conditions keys": "RESULT.json condition keys",
+      "gate_pass": "RESULT.json missing gate_pass",
+      "gated_arms": "RESULT.json missing gated_arms",
+      "independent_reader_pending": "RESULT.json missing independent_reader_pending",
+      "lives": "RESULT.json missing lives",
+      "material_pass": "RESULT.json missing material_pass",
+      "namespace": "RESULT.json missing namespace",
+      "protocol_sha256": "RESULT.json missing protocol_sha256",
+      "quantities": "RESULT.json missing quantities",
+      "regimes": "RESULT.json missing regimes",
+      "tables": "RESULT.json missing tables",
+      "validity": "RESULT.json missing validity",
+      "validity keys": "RESULT.json validity keys",
+      "worlds": "RESULT.json missing worlds"
+    },
+    "refused_keys": [
+      "arms",
+      "conditions",
+      "conditions keys",
+      "gate_pass",
+      "gated_arms",
+      "independent_reader_pending",
+      "lives",
+      "material_pass",
+      "namespace",
+      "protocol_sha256",
+      "quantities",
+      "regimes",
+      "tables",
+      "validity",
+      "validity keys",
+      "worlds"
+    ]
+  },
+  "tooth_probes": [
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": false,
+        "D2": true,
+        "D3": true,
+        "D4": true,
+        "D5": true,
+        "D6": true
+      },
+      "probe": "d1_mean",
+      "reddened": true,
+      "tooth": "D1"
+    },
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": false,
+        "D2": true,
+        "D3": true,
+        "D4": true,
+        "D5": true,
+        "D6": true
+      },
+      "probe": "d1_wins",
+      "reddened": true,
+      "tooth": "D1"
+    },
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": true,
+        "D2": false,
+        "D3": true,
+        "D4": true,
+        "D5": true,
+        "D6": true
+      },
+      "probe": "d2_bytes",
+      "reddened": true,
+      "tooth": "D2"
+    },
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": true,
+        "D2": true,
+        "D3": false,
+        "D4": true,
+        "D5": true,
+        "D6": true
+      },
+      "probe": "d3_early",
+      "reddened": true,
+      "tooth": "D3"
+    },
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": true,
+        "D2": true,
+        "D3": false,
+        "D4": true,
+        "D5": true,
+        "D6": true
+      },
+      "probe": "d3_full",
+      "reddened": true,
+      "tooth": "D3"
+    },
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": true,
+        "D2": true,
+        "D3": true,
+        "D4": false,
+        "D5": true,
+        "D6": true
+      },
+      "probe": "d4_null",
+      "reddened": true,
+      "tooth": "D4"
+    },
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": true,
+        "D2": true,
+        "D3": true,
+        "D4": true,
+        "D5": false,
+        "D6": true
+      },
+      "probe": "d5_normalization",
+      "reddened": true,
+      "tooth": "D5"
+    },
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": true,
+        "D2": true,
+        "D3": true,
+        "D4": true,
+        "D5": false,
+        "D6": true
+      },
+      "probe": "d5_exact",
+      "reddened": true,
+      "tooth": "D5"
+    },
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": true,
+        "D2": true,
+        "D3": true,
+        "D4": true,
+        "D5": false,
+        "D6": true
+      },
+      "probe": "d5_prefix_bound",
+      "reddened": true,
+      "tooth": "D5"
+    },
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": true,
+        "D2": true,
+        "D3": true,
+        "D4": true,
+        "D5": false,
+        "D6": true
+      },
+      "probe": "d5_drawdown",
+      "reddened": true,
+      "tooth": "D5"
+    },
+    {
+      "collateral": [],
+      "conditions": {
+        "D1": true,
+        "D2": true,
+        "D3": true,
+        "D4": true,
+        "D5": false,
+        "D6": true
+      },
+      "probe": "d5_admissions",
+      "reddened": true,
+      "tooth": "D5"
+    }
+  ],
+  "writer_sha256": "434d4f59d61ebe84f613e962541120a45ebde6d21e164dbc970a70ca4f00ed75"
+}
