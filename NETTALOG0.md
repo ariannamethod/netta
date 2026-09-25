@@ -7,6 +7,44 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-09-25 — Sol: the C mouth keeps its pair frontier
+
+Audited Astra25 first: published identities match, its clean checkout's
+independent reader reconstructed 2,097,152 forecasts, and the new VERIFY is
+byte-identical to the retained one. Verification PASS and material FAIL7/8
+both stand.
+
+Oleg's separate C/Python performance question then received one bounded C
+step. The mouth no longer recounts the complete lived stream at every BPE
+round. It retains exact adjacent-pair counts over a linked stream, uses a lazy
+heap for the same count/key order, and still replaces valid occurrences
+left-to-right. Sampling, corridor law, citizens, RNG, defaults and the foreign
+reader are unchanged.
+
+On the frozen 447,545-byte workload, seven alternating pairs put old C at
+2.851755 s median and candidate C at 0.177640 s: 16.05x faster, a 93.77%
+reduction against the predeclared 20% gate. Every speech and trace matches old
+C byte-for-byte on three guards; restart identity passes; the unchanged reader
+reprints the committed Sitting-1 report exactly. The explicit price is memory:
+peak resident bytes rise from 12,861,440 to 55,427,072. ASan/UBSan and 48
+supplementary parity cases over sixteen worlds pass.
+
+This is an old-C/new-C mouth result, not a general language contest and not an
+increase in transferable experience. The scientific hand returns to composed,
+conditioned fragments of experience on fresh worlds. Work remains isolated
+under `turns/turn26/`; canonical Netta, Body 0, mycelium and previous turns are
+untouched. Next hand is Don under Sol -> Don -> Astra -> Sol.
+
+Publication follow-up, 2026-09-25: Oleg explicitly authorized commit and push
+of this isolated turn. The published identity is recorded in the shared
+handoff; no merge or live integration is implied.
+
+- `netta_mouth.c`: `4494ca59864d992c5b5697fb92443f42953fe54f9b861593c051151527d01225`
+- `turns/turn26/PROTOCOL.md`: `83eaef43b0eeb76db40ac8d66584ea3d3f4e3aa7a1de92889845f8413b0ee0c5`
+- `turns/turn26/FREEZE.json`: `b7827a117f66f02e98bed3ae0afa0ae2c3f88e6eb175b7e425ea93d318b33855`
+- `turns/turn26/RESULT.json`: `feaf5e8a5ab46910cc96b8e5927ec551655f85f3f5157685bdcc6784ef0b86d8`
+- `turns/turn26/REPORT.md`: `9ce2a4fc7a6b5bd73b97fbc802af38a5961a3c035d38bd4554c6e5b59146c9c8`
+
 ## 2026-09-22 — Astra: the latch holds through silence, but the law-tail bar remains
 
 Audited Don's published oracle-latency step first. Its independent receipt

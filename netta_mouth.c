@@ -208,58 +208,258 @@ static void exp_append(uint32_t id, const uint8_t *b, uint32_t len) {
     exp_pool_len += len;
 }
 
-#define PH_BITS 19
-#define PH_SIZE (1u << PH_BITS)
-static uint64_t ph_key[PH_SIZE];
-static uint32_t ph_cnt[PH_SIZE];
-static uint32_t ph_used[PH_SIZE];
-static uint32_t ph_used_n;
+/* The merge law is unchanged, but its evidence is kept instead of recounted.
+   Positions never move: a replacement lives at its left byte position and the
+   right position leaves the linked stream.  Pair occurrence vectors are lazy;
+   stale positions are rejected when their pair next reaches the frontier. */
+typedef struct {
+    uint64_t key;
+    uint32_t count;
+    size_t *pos;
+    size_t npos, cap;
+    int used;
+} PairState;
 
-static int merge_round(uint32_t *t, size_t *pn) {
-    size_t n = *pn;
-    ph_used_n = 0;
-    for (size_t i = 0; i + 1 < n; i++) {
-        uint64_t key = ((uint64_t)t[i] << 32) | t[i + 1];
-        uint32_t h = (uint32_t)((key * 0x9E3779B97F4A7C15ull) >> (64 - PH_BITS));
+typedef struct {
+    uint64_t key;
+    uint32_t count;
+} PairHeapEntry;
+
+static PairState *pair_tab;
+static size_t pair_cap, pair_used;
+static PairHeapEntry *pair_heap;
+static size_t pair_heap_n, pair_heap_cap;
+static uint32_t *link_sym;
+static size_t *link_prev, *link_next;
+static size_t link_n;
+
+static uint64_t pair_hash(uint64_t x) {
+    x ^= x >> 30;
+    x *= 0xbf58476d1ce4e5b9ull;
+    x ^= x >> 27;
+    x *= 0x94d049bb133111ebull;
+    return x ^ (x >> 31);
+}
+
+static int heap_better(PairHeapEntry a, PairHeapEntry b) {
+    return a.count > b.count || (a.count == b.count && a.key < b.key);
+}
+
+static void heap_push(uint64_t key, uint32_t count) {
+    if (!count) return;
+    if (pair_heap_n == pair_heap_cap) {
+        size_t nc = pair_heap_cap ? pair_heap_cap * 2u : 4096u;
+        if (nc < pair_heap_cap || nc > SIZE_MAX / sizeof *pair_heap) die("pair heap overflow");
+        pair_heap = realloc(pair_heap, nc * sizeof *pair_heap);
+        if (!pair_heap) die("oom pair heap");
+        pair_heap_cap = nc;
+    }
+    size_t i = pair_heap_n++;
+    PairHeapEntry e = {key, count};
+    while (i) {
+        size_t p = (i - 1u) / 2u;
+        if (!heap_better(e, pair_heap[p])) break;
+        pair_heap[i] = pair_heap[p];
+        i = p;
+    }
+    pair_heap[i] = e;
+}
+
+static PairHeapEntry heap_pop(void) {
+    if (!pair_heap_n) die("empty pair heap");
+    PairHeapEntry top = pair_heap[0];
+    PairHeapEntry tail = pair_heap[--pair_heap_n];
+    if (pair_heap_n) {
+        size_t i = 0;
         for (;;) {
-            if (ph_cnt[h] == 0) { ph_key[h] = key; ph_cnt[h] = 1; ph_used[ph_used_n++] = h; break; }
-            if (ph_key[h] == key) { ph_cnt[h]++; break; }
-            h = (h + 1) & (PH_SIZE - 1);
+            size_t left = i * 2u + 1u;
+            if (left >= pair_heap_n) break;
+            size_t right = left + 1u;
+            size_t child = right < pair_heap_n && heap_better(pair_heap[right], pair_heap[left])
+                         ? right : left;
+            if (!heap_better(pair_heap[child], tail)) break;
+            pair_heap[i] = pair_heap[child];
+            i = child;
         }
+        pair_heap[i] = tail;
     }
-    uint64_t best_key = UINT64_MAX;
-    uint32_t best_cnt = 0;
-    for (uint32_t u = 0; u < ph_used_n; u++) {
-        uint32_t h = ph_used[u];
-        if (ph_cnt[h] > best_cnt || (ph_cnt[h] == best_cnt && ph_key[h] < best_key)) {
-            best_cnt = ph_cnt[h];
-            best_key = ph_key[h];
-        }
-    }
-    for (uint32_t u = 0; u < ph_used_n; u++) ph_cnt[ph_used[u]] = 0;
-    if (best_cnt < MIN_PAIR) return 0;
+    return top;
+}
 
-    uint32_t a = (uint32_t)(best_key >> 32), b = (uint32_t)best_key;
-    uint32_t id = nunits++;
-    merge_left[nmerges] = a;
-    merge_right[nmerges] = b;
-    nmerges++;
-    {
-        uint32_t la = exp_lenv[a], lb = exp_lenv[b];
-        uint8_t *tmp = malloc((size_t)la + lb);
-        if (!tmp) die("oom");
-        memcpy(tmp, exp_pool + exp_off[a], la);
-        memcpy(tmp + la, exp_pool + exp_off[b], lb);
-        exp_append(id, tmp, la + lb);
-        free(tmp);
+static size_t pair_slot_in(PairState *tab, size_t cap, uint64_t key) {
+    size_t h = (size_t)pair_hash(key) & (cap - 1u);
+    while (tab[h].used && tab[h].key != key) h = (h + 1u) & (cap - 1u);
+    return h;
+}
+
+static void pair_rehash(size_t cap) {
+    PairState *old = pair_tab;
+    size_t old_cap = pair_cap;
+    pair_tab = calloc(cap, sizeof *pair_tab);
+    if (!pair_tab) die("oom pair table");
+    pair_cap = cap;
+    for (size_t i = 0; i < old_cap; i++) if (old[i].used) {
+        size_t h = pair_slot_in(pair_tab, pair_cap, old[i].key);
+        pair_tab[h] = old[i];
     }
+    free(old);
+}
+
+static PairState *pair_get(uint64_t key, int create) {
+    if (!pair_cap) pair_rehash(1u << 17);
+    if (create && (pair_used + 1u) * 10u >= pair_cap * 7u) pair_rehash(pair_cap * 2u);
+    size_t h = pair_slot_in(pair_tab, pair_cap, key);
+    if (!pair_tab[h].used) {
+        if (!create) return NULL;
+        pair_tab[h].used = 1;
+        pair_tab[h].key = key;
+        pair_used++;
+    }
+    return &pair_tab[h];
+}
+
+static void pair_position(PairState *p, size_t pos) {
+    if (p->npos == p->cap) {
+        size_t nc = p->cap ? p->cap * 2u : 4u;
+        if (nc < p->cap || nc > SIZE_MAX / sizeof *p->pos) die("pair positions overflow");
+        p->pos = realloc(p->pos, nc * sizeof *p->pos);
+        if (!p->pos) die("oom pair positions");
+        p->cap = nc;
+    }
+    p->pos[p->npos++] = pos;
+}
+
+static void pair_seed(uint64_t key, size_t pos) {
+    PairState *p = pair_get(key, 1);
+    if (p->count == UINT32_MAX) die("pair count overflow");
+    p->count++;
+    pair_position(p, pos);
+}
+
+static void pair_add(uint64_t key, size_t pos) {
+    PairState *p = pair_get(key, 1);
+    if (p->count == UINT32_MAX) die("pair count overflow");
+    p->count++;
+    pair_position(p, pos);
+    heap_push(key, p->count);
+}
+
+static void pair_remove(uint64_t key) {
+    PairState *p = pair_get(key, 0);
+    if (!p || !p->count) die("pair frontier underflow");
+    p->count--;
+}
+
+static int cmp_size(const void *va, const void *vb) {
+    size_t a = *(const size_t *)va, b = *(const size_t *)vb;
+    return (a > b) - (a < b);
+}
+
+static PairState *pair_best(uint64_t *key, uint32_t *count) {
+    while (pair_heap_n) {
+        PairHeapEntry e = heap_pop();
+        PairState *p = pair_get(e.key, 0);
+        if (!p) die("pair heap lost its key");
+        if (p->count == e.count) {
+            *key = e.key;
+            *count = e.count;
+            return p;
+        }
+        heap_push(e.key, p->count);
+    }
+    return NULL;
+}
+
+static void pair_frontier_free(void) {
+    for (size_t i = 0; i < pair_cap; i++) if (pair_tab[i].used) free(pair_tab[i].pos);
+    free(pair_tab); pair_tab = NULL; pair_cap = pair_used = 0;
+    free(pair_heap); pair_heap = NULL; pair_heap_n = pair_heap_cap = 0;
+    free(link_prev); link_prev = NULL;
+    free(link_next); link_next = NULL;
+    link_sym = NULL; link_n = 0;
+}
+
+static void grow_units(uint32_t *t, size_t *pn) {
+    const size_t none = SIZE_MAX;
+    link_sym = t;
+    link_n = *pn;
+    link_prev = malloc(link_n * sizeof *link_prev);
+    link_next = malloc(link_n * sizeof *link_next);
+    if (!link_prev || !link_next) die("oom unit links");
+    for (size_t i = 0; i < link_n; i++) {
+        link_prev[i] = i ? i - 1u : none;
+        link_next[i] = i + 1u < link_n ? i + 1u : none;
+    }
+    for (size_t i = 0; i + 1u < link_n; i++)
+        pair_seed(((uint64_t)link_sym[i] << 32) | link_sym[i + 1u], i);
+    for (size_t i = 0; i < pair_cap; i++) if (pair_tab[i].used && pair_tab[i].count)
+        heap_push(pair_tab[i].key, pair_tab[i].count);
+
+    size_t live = link_n;
+    while (nmerges < MERGES) {
+        uint64_t best_key = 0;
+        uint32_t best_count = 0;
+        PairState *best = pair_best(&best_key, &best_count);
+        if (!best || best_count < MIN_PAIR) break;
+        uint32_t a = (uint32_t)(best_key >> 32), b = (uint32_t)best_key;
+
+        qsort(best->pos, best->npos, sizeof *best->pos, cmp_size);
+        size_t valid = 0, previous = none;
+        for (size_t k = 0; k < best->npos; k++) {
+            size_t i = best->pos[k];
+            if (i == previous) continue;
+            previous = i;
+            size_t j = link_next[i];
+            if (link_sym[i] == a && j != none && link_sym[j] == b)
+                best->pos[valid++] = i;
+        }
+        best->npos = valid;
+        if (valid != best_count) die("pair frontier count drift");
+        size_t *positions = best->pos;
+
+        uint32_t id = nunits++;
+        merge_left[nmerges] = a;
+        merge_right[nmerges] = b;
+        nmerges++;
+        {
+            uint32_t la = exp_lenv[a], lb = exp_lenv[b];
+            uint8_t *tmp = malloc((size_t)la + lb);
+            if (!tmp) die("oom");
+            memcpy(tmp, exp_pool + exp_off[a], la);
+            memcpy(tmp + la, exp_pool + exp_off[b], lb);
+            exp_append(id, tmp, la + lb);
+            free(tmp);
+        }
+
+        for (size_t k = 0; k < valid; k++) {
+            size_t i = positions[k];
+            size_t j = link_next[i];
+            if (link_sym[i] != a || j == none || link_sym[j] != b) continue;
+            size_t left = link_prev[i], right = link_next[j];
+            uint32_t sl = left != none ? link_sym[left] : 0;
+            uint32_t sr = right != none ? link_sym[right] : 0;
+
+            pair_remove(best_key);
+            if (left != none) pair_remove(((uint64_t)sl << 32) | a);
+            if (right != none) pair_remove(((uint64_t)b << 32) | sr);
+
+            link_sym[i] = id;
+            link_sym[j] = UINT32_MAX;
+            link_next[i] = right;
+            if (right != none) link_prev[right] = i;
+            link_prev[j] = link_next[j] = none;
+            live--;
+
+            if (left != none) pair_add(((uint64_t)sl << 32) | id, left);
+            if (right != none) pair_add(((uint64_t)id << 32) | sr, i);
+        }
+    }
+
     size_t w = 0;
-    for (size_t i = 0; i < n; ) {
-        if (i + 1 < n && t[i] == a && t[i + 1] == b) { t[w++] = id; i += 2; }
-        else t[w++] = t[i++];
-    }
+    for (size_t i = 0; i != none; i = link_next[i]) t[w++] = link_sym[i];
+    if (w != live) die("linked stream length drift");
     *pn = w;
-    return 1;
+    pair_frontier_free();
 }
 
 /* ── lived tables: uni, bi, tri, quad over the lived stream ── */
@@ -799,7 +999,7 @@ int main(int argc, char **argv) {
     for (size_t i = 0; i < world_n; i++) stream[i] = world[i];
     nunits = BASE_UNITS;
     for (uint32_t i = 0; i < BASE_UNITS; i++) { uint8_t b = (uint8_t)i; exp_append(i, &b, 1); }
-    while (nmerges < MERGES && merge_round(stream, &sn)) {}
+    grow_units(stream, &sn);
     if (nunits > max_units) die("unit budget overflow");
 
     build_tables(stream, sn, nunits);

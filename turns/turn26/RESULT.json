@@ -1,0 +1,478 @@
+{
+  "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102)",
+  "deterministic": true,
+  "frozen_identities": {
+    "PROTOCOL.md": "83eaef43b0eeb76db40ac8d66584ea3d3f4e3aa7a1de92889845f8413b0ee0c5",
+    "netta.py": "f3ef71d3164d895653c4bc9f521ab89557870d1d039b98574b218f0e95fb0278",
+    "netta.txt": "02c08152e281d28e48e17a2b6813bb693dfa255c94f30e033137409d0e8b5cfb",
+    "netta_mouth.c": "4494ca59864d992c5b5697fb92443f42953fe54f9b861593c051151527d01225",
+    "netta_mouth_check.c": "fc477bfcf4961e658fdae86741dd8c7e0b150670388a71c7fc710284024b7097"
+  },
+  "gates": {
+    "all_semantic_guards": true,
+    "deterministic": true,
+    "primary_speedup_at_least_20_percent": true,
+    "reader_report_byte_identical": true,
+    "small_island_no_more_than_10_percent_slower": true,
+    "strict_builds": true
+  },
+  "parent_commit": "71389502e514a39bd1a643fb2e5992de9677253c",
+  "platform": {
+    "machine": "arm64",
+    "nodename": "neo",
+    "release": "25.4.0",
+    "sysname": "Darwin",
+    "version": "Darwin Kernel Version 25.4.0: Thu Mar 19 19:33:33 PDT 2026; root:xnu-12377.101.15~1/RELEASE_ARM64_T8140"
+  },
+  "primary_benchmark": {
+    "median_speedup_fraction": 0.9377085523773235,
+    "new_median_seconds": 0.1776399160735309,
+    "new_peak_resident_bytes": 55427072,
+    "old_median_seconds": 2.851754500064999,
+    "old_peak_resident_bytes": 12861440,
+    "rows": [
+      {
+        "new": {
+          "maximum_resident_bytes": 55328768,
+          "seconds": 0.16159758297726512,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_1_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 12795904,
+          "seconds": 2.6236382089555264,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_1_old\n"
+        },
+        "order": [
+          "old",
+          "new"
+        ],
+        "pair": 1
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 55001088,
+          "seconds": 0.15437666699290276,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_2_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 12795904,
+          "seconds": 2.570155625231564,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_2_old\n"
+        },
+        "order": [
+          "new",
+          "old"
+        ],
+        "pair": 2
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 55427072,
+          "seconds": 0.26656058290973306,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_3_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 11124736,
+          "seconds": 2.851754500064999,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_3_old\n"
+        },
+        "order": [
+          "old",
+          "new"
+        ],
+        "pair": 3
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 55427072,
+          "seconds": 0.2546800831332803,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_4_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 12861440,
+          "seconds": 3.844619874842465,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_4_old\n"
+        },
+        "order": [
+          "new",
+          "old"
+        ],
+        "pair": 4
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 55377920,
+          "seconds": 0.1776399160735309,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_5_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 12795904,
+          "seconds": 3.175952000077814,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_5_old\n"
+        },
+        "order": [
+          "old",
+          "new"
+        ],
+        "pair": 5
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 55394304,
+          "seconds": 0.19798395782709122,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_6_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 12795904,
+          "seconds": 2.9533618753775954,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_6_old\n"
+        },
+        "order": [
+          "new",
+          "old"
+        ],
+        "pair": 6
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 55377920,
+          "seconds": 0.16951958322897553,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_7_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 12795904,
+          "seconds": 2.6491138339042664,
+          "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/primary_7_old\n"
+        },
+        "order": [
+          "old",
+          "new"
+        ],
+        "pair": 7
+      }
+    ]
+  },
+  "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "reader": {
+    "byte_identical": true,
+    "committed_report_sha256": "3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079",
+    "report_sha256": "3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079",
+    "returncode": 0,
+    "stderr": "seed 7: tokens=199 model=0.347922 ignorance=2.497247 longest=37 coverage>=32=0.088912 PASS\nseed 19: tokens=198 model=0.267959 ignorance=2.484698 longest=32 coverage>=32=0.033473 PASS\nseed 42: tokens=183 model=0.253293 ignorance=2.296464 longest=40 coverage>=32=0.230126 PASS\nseed 101: tokens=199 model=0.288779 ignorance=2.497247 longest=50 coverage>=32=0.086820 PASS\nseed 271: tokens=184 model=0.269717 ignorance=2.296999 longest=46 coverage>=32=0.301769 PASS\nSPEECH PASS: the mouth speaks below ignorance and above copying\n"
+  },
+  "semantic_guards": {
+    "law": {
+      "artifacts": {
+        "speech_101.bin": {
+          "bytes": 908,
+          "sha256": "69445e89fa99fdf15ff7c7cf5bf1b9f4950bb723c8f21bc33175f418892a0f7f"
+        },
+        "speech_19.bin": {
+          "bytes": 957,
+          "sha256": "2d187ab2a266c39ac245cce242b8f59077e993264b0f8273b35e4470ec33481d"
+        },
+        "speech_271.bin": {
+          "bytes": 958,
+          "sha256": "358dbf86d0deb56717302492edb29c44930f13b6ad2f58742525c9fddd9a7630"
+        },
+        "speech_42.bin": {
+          "bytes": 803,
+          "sha256": "b51bb4d01952ba45926ea9663ea5140e7c2c77dc83aea823a08fac34e5a49e17"
+        },
+        "speech_7.bin": {
+          "bytes": 959,
+          "sha256": "f0cdb3ee290a695b430f8a559e8196a69e73e953bf4384c8d925894d8542b967"
+        },
+        "trace_101.tsv": {
+          "bytes": 8001,
+          "sha256": "74a6f016f3eb20c00d3192d07cd4887d142e0e872ab44a6d7b6bd60244556292"
+        },
+        "trace_19.tsv": {
+          "bytes": 8728,
+          "sha256": "d64f469c017e6b17d44fe3213b1fb8392dca60a40d023889f3ee1948c8bcabda"
+        },
+        "trace_271.tsv": {
+          "bytes": 8692,
+          "sha256": "b5ee33622eb294db57b0bfd119be5e8307b66d11accda56c7ad6d69fc66084e5"
+        },
+        "trace_42.tsv": {
+          "bytes": 7289,
+          "sha256": "a99d545b265e5f7f2a8f73b48f9c4cbfd4f2d4ba0d9aee693308f0358b373d05"
+        },
+        "trace_7.tsv": {
+          "bytes": 8787,
+          "sha256": "55d24b0c646b489ce68567d8b9fa868850e86eacec873553289378864af1d5ea"
+        }
+      },
+      "artifacts_identical": true,
+      "flags": [
+        "--corridor",
+        "1",
+        "--merges",
+        "1024",
+        "--order",
+        "3"
+      ],
+      "new": {
+        "maximum_resident_bytes": 40157184,
+        "seconds": 0.11002195812761784,
+        "stderr": "netta_mouth: world 447545 B | lived stream 137497 units | merges 1024 | V 1280 (avg 3.25 B/unit) | order 3 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/semantic/law_new\n"
+      },
+      "old": {
+        "maximum_resident_bytes": 12566528,
+        "seconds": 0.6123618753626943,
+        "stderr": "netta_mouth: world 447545 B | lived stream 137497 units | merges 1024 | V 1280 (avg 3.25 B/unit) | order 3 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/semantic/law_old\n"
+      },
+      "world_bytes": 447545
+    },
+    "primary": {
+      "artifacts": {
+        "speech_101.bin": {
+          "bytes": 956,
+          "sha256": "ce7ce2ad6c15aebe7bb5ae926d2e058077cfb4b3d4bca710e63f2e325af5637e"
+        },
+        "speech_19.bin": {
+          "bytes": 956,
+          "sha256": "8218e7318f5186dc084fdc9bd03cae0dd1820f0f9c1078d534b6a4f04df0932c"
+        },
+        "speech_271.bin": {
+          "bytes": 961,
+          "sha256": "58c2cf93fd3a73be270a49cd3878e392c56f22d89fd94f9bb1c0d0e94fbe9542"
+        },
+        "speech_42.bin": {
+          "bytes": 956,
+          "sha256": "98728747db5395140c525f66cecf7a0c4b7deb9335360b06a5fcc25466ddfc00"
+        },
+        "speech_7.bin": {
+          "bytes": 956,
+          "sha256": "07ec0c0a9f224adabf428e4845398bfde1c45f9b3537ffe3f815f499f60e0259"
+        },
+        "trace_101.tsv": {
+          "bytes": 6019,
+          "sha256": "eaedd002becc6706b15c9b6e38545c3577fa57b0e6b3f260fc7352ae09f13dc1"
+        },
+        "trace_19.tsv": {
+          "bytes": 5958,
+          "sha256": "577df524bbef0480e60dc9272b06ab520f2d3cb60956d4c1a934f9270a1c10dd"
+        },
+        "trace_271.tsv": {
+          "bytes": 5559,
+          "sha256": "86b895712208be35fa26213f26d08a6813a1ba4c287083f3479dd991843deb7a"
+        },
+        "trace_42.tsv": {
+          "bytes": 5543,
+          "sha256": "88dbd4239195d2120736ebe494d747fc3b516ea6a26a5d03483a50587495dffe"
+        },
+        "trace_7.tsv": {
+          "bytes": 6020,
+          "sha256": "09f6eb5c8bb7749bb737dac58d61a22efc120b2e78b7995f4af5488edb00da3f"
+        }
+      },
+      "artifacts_identical": true,
+      "flags": [
+        "--corridor",
+        "1"
+      ],
+      "new": {
+        "maximum_resident_bytes": 55017472,
+        "seconds": 0.40457587502896786,
+        "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/semantic/primary_new\n"
+      },
+      "old": {
+        "maximum_resident_bytes": 12828672,
+        "seconds": 2.921932749915868,
+        "stderr": "netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/semantic/primary_old\n"
+      },
+      "world_bytes": 447545
+    },
+    "small": {
+      "artifacts": {
+        "speech_101.bin": {
+          "bytes": 785,
+          "sha256": "dcbed9edcbde6d81d846c8e333fac245dada1bcf30c6244e9b48e277a1fdd7f9"
+        },
+        "speech_19.bin": {
+          "bytes": 700,
+          "sha256": "44fe85c6b3e64641bbe82d35a51453839af6f39f24eaaf17c3e8627707eac82b"
+        },
+        "speech_271.bin": {
+          "bytes": 958,
+          "sha256": "4a1464af7a5b83b4c19095272c889535bf29308c592922e93f6c4f3695bb4e45"
+        },
+        "speech_42.bin": {
+          "bytes": 961,
+          "sha256": "dc773df9c697cc1fdc5d38071a80dda4787aadc911c3042cfb7f8d48afa1a6ee"
+        },
+        "speech_7.bin": {
+          "bytes": 958,
+          "sha256": "b741fe1f3b541267a3e2c1f8cdf46682bbe3a15b71689ba7056d9d9d3a3118e5"
+        },
+        "trace_101.tsv": {
+          "bytes": 5780,
+          "sha256": "d00f4f6a76dd6732c06e6a27ed0c01f04b45d8491fdcf5095ca1c9e1885a2510"
+        },
+        "trace_19.tsv": {
+          "bytes": 4724,
+          "sha256": "17049a6a05f8cb71379870647d2b811f074576e69e1aaa5a6cb5aa86e07db949"
+        },
+        "trace_271.tsv": {
+          "bytes": 7372,
+          "sha256": "0987f48f69669f18b3ee5870c541f3380e5650103849db3983257c1de54d3573"
+        },
+        "trace_42.tsv": {
+          "bytes": 6872,
+          "sha256": "037d1a4b6ae5ee41d284f2281e0bee396e394632be6f30ec12f698bff99c997e"
+        },
+        "trace_7.tsv": {
+          "bytes": 7181,
+          "sha256": "7d56dd1b6d2cccda7f5caf894a90231d21163e9bfd7071e9ee1e9ac9f6603b81"
+        }
+      },
+      "artifacts_identical": true,
+      "flags": [
+        "--corridor",
+        "1"
+      ],
+      "new": {
+        "maximum_resident_bytes": 15761408,
+        "seconds": 0.028656124603003263,
+        "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/semantic/small_new\n"
+      },
+      "old": {
+        "maximum_resident_bytes": 9060352,
+        "seconds": 0.1888363752514124,
+        "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/semantic/small_old\n"
+      },
+      "world_bytes": 89509
+    }
+  },
+  "small_island_benchmark": {
+    "median_speedup_fraction": 0.8543384887649176,
+    "new_median_seconds": 0.03315466595813632,
+    "new_peak_resident_bytes": 16351232,
+    "old_median_seconds": 0.22761445818468928,
+    "old_peak_resident_bytes": 9060352,
+    "rows": [
+      {
+        "new": {
+          "maximum_resident_bytes": 15728640,
+          "seconds": 0.031104332767426968,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_1_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 9060352,
+          "seconds": 0.21291674999520183,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_1_old\n"
+        },
+        "order": [
+          "old",
+          "new"
+        ],
+        "pair": 1
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 15745024,
+          "seconds": 0.03873329097405076,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_2_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 9060352,
+          "seconds": 0.22761445818468928,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_2_old\n"
+        },
+        "order": [
+          "new",
+          "old"
+        ],
+        "pair": 2
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 15745024,
+          "seconds": 0.036527374759316444,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_3_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 9060352,
+          "seconds": 0.23000979190692306,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_3_old\n"
+        },
+        "order": [
+          "old",
+          "new"
+        ],
+        "pair": 3
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 15745024,
+          "seconds": 0.031404083129018545,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_4_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 9060352,
+          "seconds": 0.23862054198980331,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_4_old\n"
+        },
+        "order": [
+          "new",
+          "old"
+        ],
+        "pair": 4
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 15728640,
+          "seconds": 0.03626004233956337,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_5_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 9060352,
+          "seconds": 0.21159333270043135,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_5_old\n"
+        },
+        "order": [
+          "old",
+          "new"
+        ],
+        "pair": 5
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 16351232,
+          "seconds": 0.031087624840438366,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_6_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 9060352,
+          "seconds": 0.2282676249742508,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_6_old\n"
+        },
+        "order": [
+          "new",
+          "old"
+        ],
+        "pair": 6
+      },
+      {
+        "new": {
+          "maximum_resident_bytes": 15663104,
+          "seconds": 0.03315466595813632,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_7_new\n"
+        },
+        "old": {
+          "maximum_resident_bytes": 9060352,
+          "seconds": 0.22483420884236693,
+          "stderr": "netta_mouth: world 89509 B | lived stream 21309 units | merges 2089 | V 2345 (avg 4.20 B/unit) | order 4 | citizens 0 (mode 0)\nnetta_mouth: 5 speech streams and token traces written to /var/folders/mt/q269wl056373sc5x90jrw77h0000gn/T/netta-turn26-1r8p7_jq/benchmark/small_7_old\n"
+        },
+        "order": [
+          "old",
+          "new"
+        ],
+        "pair": 7
+      }
+    ]
+  },
+  "verdict": "PASS"
+}
