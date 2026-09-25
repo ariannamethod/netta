@@ -1,0 +1,24 @@
+{
+  "archive_bytes": {
+    "bank.bin": 152,
+    "permuted.bin": 152,
+    "permuted_full.bin": 104,
+    "pooled_full.bin": 104,
+    "pooled_small.bin": 104
+  },
+  "archive_sha256": {
+    "bank.bin": "c024615e8411771302b752b1f7f0394d749632d8b868103e3cf76584eaf05694",
+    "permuted.bin": "990097322ba195105f55cb63632d4c7961060a71ac057f71d9ce10ca23d0c077",
+    "permuted_full.bin": "c2197c4125ea0494434406fee51261bf94a273dde58c5f382fe5276f50320afc",
+    "pooled_full.bin": "f3e025962dbc7a82a605ed263658e264fcc0352a70782ee5b0cc642767183bd2",
+    "pooled_small.bin": "f3e025962dbc7a82a605ed263658e264fcc0352a70782ee5b0cc642767183bd2"
+  },
+  "fixture_rows": 6,
+  "full_records": 3,
+  "max_router_error": 3.552713678800501e-15,
+  "recipient_predictions": 0,
+  "rules": 10,
+  "source_fixture_pass": true,
+  "worlds_generated": 0,
+  "writer_sha256": "022dc324402d6abfe4226dcef1ad9d7efa7578de563784d92b21e05ea40020dd"
+}
