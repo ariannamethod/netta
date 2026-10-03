@@ -3,7 +3,7 @@
    This file shares no implementation with netta_mouth.c.  It rebuilds the
    BPE inventory with a separately written pair counter, reconstructs every
    spoken byte from the mouth's token trace, scans the lived stream afresh at
-   every choice to enforce highest-support quad/tri/bi/uni backoff, prices the
+   every choice to check highest-support quad/tri/bi/uni backoff, prices the
    observed tokens, and repeats Body 0's published >=32-byte anti-copy census.
 
    usage: netta_mouth_check <world> --dir <run-dir> --report <file>
@@ -262,13 +262,13 @@ static Support support_at(const WorldModel *m, const uint32_t *past, size_t npas
     return s;
 }
 
-/* The corridor law of A2 and the real-exit invariant of A3, replayed
+/* The corridor rule of A2 and the real-exit invariant of A3, replayed
    independently.  Returns the admitted support, updates *corr, and names
-   the one closed corridor token through *veto_token (UINT32_MAX = none). */
-static Support lawful_support(const WorldModel *m, const uint32_t *past, size_t npast,
-                              int order, uint32_t corridor_k, uint32_t *corr,
-                              uint32_t *counts, uint32_t *veto_token) {
-    *veto_token = UINT32_MAX;
+   the one closed corridor token through *closed_token (UINT32_MAX = none). */
+static Support corridor_support(const WorldModel *m, const uint32_t *past, size_t npast,
+                                int order, uint32_t corridor_k, uint32_t *corr,
+                                uint32_t *counts, uint32_t *closed_token) {
+    *closed_token = UINT32_MAX;
     int highest = order >= 4 && npast >= 3 ? 4 : npast >= 2 ? 3 : npast >= 1 ? 2 : 1;
     Support h; memset(&h, 0, sizeof h);
     for (int level = highest; level >= 1; level--) {
@@ -294,7 +294,7 @@ static Support lawful_support(const WorldModel *m, const uint32_t *past, size_t 
                     alt.types--;
                     alt.occurrences -= removed;
                     if (!alt.types || !alt.occurrences) die("corridor exit has no admitted alternative");
-                    *veto_token = corridor_token;
+                    *closed_token = corridor_token;
                     *corr = 0;
                     return alt;
                 }
@@ -323,8 +323,8 @@ typedef struct {
     unsigned advice_row;
     double advice_factor;
     uint32_t corridor;
-    int has_corridor_veto;
-    uint32_t corridor_veto;
+    int has_corridor_closed;
+    uint32_t corridor_closed;
 } TraceRow;
 
 typedef struct {
@@ -376,10 +376,10 @@ static Trace read_trace(const char *path) {
         r->advice_factor = parse_real(v[9], "bad trace advice factor");
         r->corridor = parse_u32(v[10], "bad trace corridor");
         if (strcmp(v[11], "-")) {
-            r->has_corridor_veto = 1;
-            r->corridor_veto = parse_u32(v[11], "bad trace corridor veto");
+            r->has_corridor_closed = 1;
+            r->corridor_closed = parse_u32(v[11], "bad trace closed corridor token");
         }
-        if (r->advice_factor < 1.0 || r->advice_factor > 1.5) die("trace advice factor outside law");
+        if (r->advice_factor < 1.0 || r->advice_factor > 1.5) die("trace advice factor outside contract");
         if ((!r->advice_row && r->advice_factor != 1.0) || (r->advice_row && r->advice_factor == 1.0))
             die("trace advice row/factor disagree");
     }
@@ -472,12 +472,12 @@ static void make_path(char out[1200], const char *dir, const char *kind, uint64_
     if (n < 0 || n >= 1200) die("artifact path too long");
 }
 
-typedef struct { int ear_ok, copy_ok; } StreamVerdict;
+typedef struct { int ear_ok, copy_ok; } StreamResult;
 
-static StreamVerdict read_one(FILE *report, const WorldModel *m, const uint8_t *world,
-                              size_t world_n, PosList *copy_index, const char *dir,
-                              uint64_t seed, int order, int citizen_mode,
-                              uint32_t corridor_k) {
+static StreamResult read_one(FILE *report, const WorldModel *m, const uint8_t *world,
+                             size_t world_n, PosList *copy_index, const char *dir,
+                             uint64_t seed, int order, int citizen_mode,
+                             uint32_t corridor_k) {
     char path[1200];
     make_path(path, dir, "trace", seed, "tsv");
     Trace t = read_trace(path);
@@ -517,10 +517,10 @@ static StreamVerdict read_one(FILE *report, const WorldModel *m, const uint8_t *
     for (size_t i = 0; i < t.n; i++) {
         tokens[i] = t.row[i].token;
         uint32_t corr_before = corr;
-        uint32_t expected_veto = UINT32_MAX;
+        uint32_t expected_closed = UINT32_MAX;
         Support s;
         if (i < 3u) {
-            /* the lived opening is priced but stands outside the corridor law */
+            /* the lived opening is priced but stands outside the corridor rule */
             int highest = i >= 2u ? 3 : i >= 1u ? 2 : 1;
             memset(&s, 0, sizeof s);
             for (int level = highest; level >= 1; level--) {
@@ -530,23 +530,23 @@ static StreamVerdict read_one(FILE *report, const WorldModel *m, const uint8_t *
             if (!s.occurrences) die("no lived support");
             if (t.row[i].corridor) die("initial run carries a corridor count");
         } else {
-            s = lawful_support(m, tokens, i, order, corridor_k, &corr, counts,
-                               &expected_veto);
+            s = corridor_support(m, tokens, i, order, corridor_k, &corr, counts,
+                                 &expected_closed);
         }
         uint32_t chosen = counts[tokens[i]];
-        if (!chosen) die("emitted token is outside lawful lived support");
+        if (!chosen) die("emitted token is outside the admitted lived support");
         if (i >= 3u && (t.row[i].has_start || t.row[i].backoff != s.level ||
             t.row[i].support_types != s.types ||
             t.row[i].support_occurrences != s.occurrences ||
             t.row[i].chosen_occurrences != chosen ||
             t.row[i].corridor != corr_before ||
-            t.row[i].has_corridor_veto != (expected_veto != UINT32_MAX) ||
-            (t.row[i].has_corridor_veto && t.row[i].corridor_veto != expected_veto)))
-            die("mouth trace disagrees with independent corridor-law replay");
+            t.row[i].has_corridor_closed != (expected_closed != UINT32_MAX) ||
+            (t.row[i].has_corridor_closed && t.row[i].corridor_closed != expected_closed)))
+            die("mouth trace disagrees with independent corridor-rule replay");
         if (i < 3u) {
             if (t.row[i].advice_row || t.row[i].advice_factor != 1.0 ||
-                t.row[i].has_corridor_veto)
-                die("initial run carries unlawful advice");
+                t.row[i].has_corridor_closed)
+                die("initial run carries non-neutral advice");
         } else {
             Unit before = m->unit[tokens[i - 1u]], current = m->unit[tokens[i]];
             uint8_t prev = m->pool[before.off + before.len - 1u];
@@ -564,8 +564,8 @@ static StreamVerdict read_one(FILE *report, const WorldModel *m, const uint8_t *
     CopyResult c = copy_census(speech, speech_n, world, world_n, copy_index);
     double model_bpb = model_bits / (double)speech_n;
     double ignorance_bpb = ignorance_bits / (double)speech_n;
-    StreamVerdict verdict = {model_bpb < ignorance_bpb, c.fraction < 0.50};
-    int pass = verdict.ear_ok && verdict.copy_ok;
+    StreamResult result = {model_bpb < ignorance_bpb, c.fraction < 0.50};
+    int pass = result.ear_ok && result.copy_ok;
     fprintf(report, "\nBEGIN RAW SPEECH seed=%llu bytes=%zu\n",
             (unsigned long long)seed, speech_n);
     if (fwrite(speech, 1, speech_n, report) != speech_n) die("cannot write report");
@@ -576,13 +576,13 @@ static StreamVerdict read_one(FILE *report, const WorldModel *m, const uint8_t *
                     "coverage_ge32=%.9f\tear=%s\tanti_copy=%s\t"
                     "support=PASS\tstream=%s\n",
             (unsigned long long)seed, t.n, model_bpb, ignorance_bpb,
-            c.longest, c.fraction, verdict.ear_ok ? "PASS" : "FAIL",
-            verdict.copy_ok ? "PASS" : "FAIL", pass ? "PASS" : "FAIL");
+            c.longest, c.fraction, result.ear_ok ? "PASS" : "FAIL",
+            result.copy_ok ? "PASS" : "FAIL", pass ? "PASS" : "FAIL");
     fprintf(stderr, "seed %llu: tokens=%zu model=%.6f ignorance=%.6f longest=%u coverage>=32=%.6f %s\n",
             (unsigned long long)seed, t.n, model_bpb, ignorance_bpb,
             c.longest, c.fraction, pass ? "PASS" : "FAIL");
     free(speech); free(t.row);
-    return verdict;
+    return result;
 }
 
 int main(int argc, char **argv) {
@@ -628,8 +628,8 @@ int main(int argc, char **argv) {
             mode_name[citizen_mode], corridor_k);
     int all_ear = 1, all_copy = 1;
     for (size_t i = 0; i < nseeds; i++) {
-        StreamVerdict v = read_one(report, &m, world, world_n, copy_index, dir,
-                                   seeds[i], order, citizen_mode, corridor_k);
+        StreamResult v = read_one(report, &m, world, world_n, copy_index, dir,
+                                  seeds[i], order, citizen_mode, corridor_k);
         if (!v.ear_ok) all_ear = 0;
         if (!v.copy_ok) all_copy = 0;
     }

@@ -1,0 +1,114 @@
+H1 terminology neutralization map (sitting2 working set)
+
+Scope: netta_mouth.c, netta.py, netta_mouth_check.c (root-level sources of
+the two binaries built in A1/A2 and the py hand of B1).  g1_confirm.c and
+g1_property.py exist only under speech_court/sitting2_work/ (frozen) and are
+not edited.  Other root sources (netta.c, netta_check.c, transfer*.c,
+mapdiag.c) are not part of the sitting2 working set and are not touched.
+
+Decision rule: emitted artifact bytes must not change.  Identifiers,
+comments, stderr and usage/help text are renamed.  Report files, trace TSV
+files, speech files, stdout, and input-format strings (strcmp'd headers)
+are not.  Every replacement is in-line: line counts of all three files are
+unchanged, because frozen files cite netta_mouth.c:902 and :722-728
+(SITTING2_PREREG.md:12,29; g1_property.py:57).
+
+Line numbers below are valid before and after the edit.
+
+== netta_mouth.c ==
+L4    comment   Body 0's frozen merge law          -> Body 0's pinned merge rule
+L6    comment   Body 0's verdict deleted           -> Body 0's result deleted
+L7    comment   does not resurrect it              -> does not restore it
+L11   comment   single-winner law                  -> single-winner rule
+L16   comment   Iteration is the law               -> Iteration is the rule
+L156  comment   disables the corridor law          -> disables the corridor rule
+L158  comment   frozen xorshift64, Body 0's law    -> pinned xorshift64, Body 0's rule
+L185  comment   Body 0's frozen BPE law            -> Body 0's pinned BPE rule
+L211  comment   The merge law is unchanged         -> The merge rule is unchanged
+L687  stderr    citizen outside the sealed law     -> citizen outside the sealed bounds
+L845  comment   the corridor law and its ...       -> the corridor rule and its ...
+L847,865,942,943  identifier  corridor_veto (local) -> corridor_closed
+
+== netta.py ==
+L9-11 docstring  A court preregistered before the first judged byte ...
+                 honest ignorance                  -> A measurement preregistered
+                 before the first scored byte ... uniform ignorance
+L15   docstring  --report court.txt                -> --report report.txt
+L17   docstring  the merge law                     -> the merge rule
+L18   docstring  judged by netta_mouth_check.c     -> checked by netta_mouth_check.c
+L22   docstring  byte-identical court reports      -> byte-identical reader reports
+L27   docstring  court's first sitting pinned      -> first speech sitting pinned
+L29   docstring  named rather than hidden          -> named rather than omitted
+L31   docstring  passed the court's first sitting  -> passed the first speech sitting
+L58,195,258,269,392,518,523,587  identifier  class Refusal -> class Stop
+L86   docstring  Body 0's merge law                -> Body 0's merge rule
+                 (missed in the first inventory; caught by the post-edit grep, H2 G7)
+L59   docstring  The organism will not speak, or the court will not sign.
+                                                   -> The organism cannot speak, or the reader cannot finish.
+L238,308,385  identifier  lawful_support           -> corridor_support
+L240  docstring  under the corridor law            -> under the corridor rule
+L249  docstring  vetoed token or None              -> closed token or None
+L308,355  identifier  veto (local)                 -> closed
+L363  docstring  The court's ear                   -> The independent ear
+L364  docstring  the law actually selected         -> the rule actually selected
+L364  docstring  against honest ignorance          -> against uniform ignorance
+L367  docstring  The court re-derives              -> The ear re-derives
+L368  docstring  it refuses a stream               -> it stops on a stream
+L378  comment    outside the corridor law          -> outside the corridor rule
+L392  stderr     outside lawful lived support      -> outside the admitted lived support
+L401  docstring  void line frozen in body0/verdict.md -> void line pinned in body0/verdict.md
+L452,469,564,566,568,570,572,580  identifier  verdict (param/local) -> outcome
+L453-454 docstring  every judged stream ... A speech verdict ... is unlawful
+                 -> every scored stream ... A speech result ... is invalid
+L478  help       the seed set to judge             -> the seed set to measure
+L479  help       judge only the first N seeds      -> measure only the first N seeds
+L489  help       1 is the court's pinned dial      -> 1 is the first sitting's pinned dial
+L491  help       write the court report            -> write the reader report
+L493  help       from cold start to verdict        -> from cold start to result
+
+== netta_mouth_check.c ==
+L5    comment    to enforce highest-support ...    -> to check highest-support ...
+L265  comment    The corridor law of A2            -> The corridor rule of A2
+L267  comment    *veto_token                       -> *closed_token
+L268,533  identifier  lawful_support               -> corridor_support
+L270,271,297  identifier  veto_token               -> closed_token
+L326,379,543,544,548  field  has_corridor_veto     -> has_corridor_closed
+L327,380,544  field  corridor_veto                 -> corridor_closed
+L380  stderr     bad trace corridor veto           -> bad trace closed corridor token
+L382  stderr     trace advice factor outside law   -> trace advice factor outside contract
+L475,477,631  type  StreamVerdict                  -> StreamResult
+L520,534,543,544  identifier  expected_veto        -> expected_closed
+L523  comment    outside the corridor law          -> outside the corridor rule
+L537  stderr     outside lawful lived support      -> outside the admitted lived support
+L545  stderr     independent corridor-law replay   -> independent corridor-rule replay
+L549  stderr     initial run carries unlawful advice -> initial run carries non-neutral advice
+L567,568,579,580,585  identifier  verdict (local)  -> result
+
+== kept, standard engineering idiom (not in the loaded class) ==
+die()            netta_mouth.c (74), netta_mouth_check.c (70): conventional C
+                 fatal-exit name; stderr-only.  RESOLVED-KEEP by coordinator.
+REP_PENALTY      repetition-penalty sampler constant; also named in frozen
+                 SITTING2_PREREG.md:24 and g1_property.py, renaming would
+                 decouple source from the preregistration.  RESOLVED-KEEP.
+target_*, mask, oracle, sentence, reject, seal/sealed, winner, citizens,
+Sitting/--sittings: neutral or format/CLI-bound (citizens book header is
+strcmp'd at netta_mouth.c:637-650; --sittings is a CLI flag).
+
+== forks: loaded terms that are artifact-emitted or path-bound ==
+All six (1-5 below, plus die()/REP_PENALTY above) RESOLVED-KEEP by the
+coordinator: only non-emitted identifiers, comments and non-hashed strings
+change.  Post-edit grep (H2 G7, final) returns exactly these lines.
+1. corridor_veto  trace TSV column header, emitted by netta_mouth.c:810 and
+   netta.py:558, strcmp'd by netta_mouth_check.c:351, documented in
+   MOUTH_PROTOCOL_A3.md:38.  Artifact bytes; unchanged.
+2. "SPEECH FAIL: ignorance and frozen anti-copy gates failed",
+   "... did not beat honest ignorance", "... reached frozen anti-copy
+   coverage 0.50"  report final lines, netta.py:566,568,570 and
+   netta_mouth_check.c:639,641,642.  Artifact bytes; unchanged.
+3. "netta: cold start to verdict in ..."  netta.py:574, stdout under --time.
+   Treated as emitted output; unchanged.
+4. Court-4 / Court 4 proper noun  netta_mouth.c:9,11,531,707;
+   netta_mouth_check.c:394; netta.py:29.  Names the court4/ subsystem
+   (tracked directory); changes only with that directory.
+5. SPEECH_COURT.md (netta.py:19), body0/verdict.md (netta.py:52,401)
+   file paths; change only with the files.

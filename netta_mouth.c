@@ -1,19 +1,19 @@
 /* netta_mouth.c -- NETTA Body 1: the mouth, under MOUTH_PROTOCOL.md.
 
    The organism speaks without the mycelium.  Life on a world grows
-   earned units (Body 0's frozen merge law); speech is sampled ONLY over
+   earned units (Body 0's pinned merge rule); speech is sampled ONLY over
    lived continuations, quad -> tri -> bi -> lived unigrams.  There is
-   no smoothing hand in the voice and no field: Body 0's verdict deleted
-   the field organ, and the mouth does not resurrect it.
+   no smoothing hand in the voice and no field: Body 0's result deleted
+   the field organ, and the mouth does not restore it.
 
    Court-4 citizens (live earned relations from the sealed book) advise
    sampling only through the destination-byte projection declared in the
-   contract.  Court 4's single-winner law is preserved: greatest ledger,
+   contract.  Court 4's single-winner rule is preserved: greatest ledger,
    full RelationKey tie-break; citizens are never multiplied.  Controls:
    --citizens-mode none (plain mouth) and shuffled (deterministic rotation
    of target identities) run beside the advised mouth.
 
-   Iteration is the law: --merges, --order, --temp, --topk, --bytes are
+   Iteration is the rule: --merges, --order, --temp, --topk, --bytes are
    open dials; the same flags and seed speak the same bytes.
 
    usage: netta_mouth <world> --out <dir>
@@ -153,9 +153,9 @@ static int ORDER = 4;
 static size_t SPEAK_BYTES = 700;
 static double TEMP = 0.8;
 static size_t TOP_K = 15;
-static uint32_t CORRIDOR = 3; /* Amendment 2: 0 disables the corridor law */
+static uint32_t CORRIDOR = 3; /* Amendment 2: 0 disables the corridor rule */
 
-/* ── rng (frozen xorshift64, Body 0's law) ── */
+/* ── rng (pinned xorshift64, Body 0's rule) ── */
 static uint64_t rng_state;
 static uint64_t rng_next(void) {
     uint64_t x = rng_state;
@@ -182,7 +182,7 @@ static void read_world(const char *path) {
     fclose(f);
 }
 
-/* ── units: Body 0's frozen BPE law, budget is a dial ── */
+/* ── units: Body 0's pinned BPE rule, budget is a dial ── */
 static uint32_t *merge_left, *merge_right;
 static uint32_t nmerges, max_units;
 static uint8_t *exp_pool;
@@ -208,7 +208,7 @@ static void exp_append(uint32_t id, const uint8_t *b, uint32_t len) {
     exp_pool_len += len;
 }
 
-/* The merge law is unchanged, but its evidence is kept instead of recounted.
+/* The merge rule is unchanged, but its evidence is kept instead of recounted.
    Positions never move: a replacement lives at its left byte position and the
    right position leaves the linked stream.  Pair occurrence vectors are lazy;
    stale positions are rejected when their pair next reaches the frontier. */
@@ -684,7 +684,7 @@ static void load_citizens(const char *path) {
             c->state != 1 || c->ever_earned != 1 || c->seen == 0 ||
             c->positive > c->seen || c->negative != c->seen - c->positive ||
             c->L <= 0.0 || c->L > 0.5)
-            die("citizen outside the sealed law");
+            die("citizen outside the sealed bounds");
         ncit++;
     }
     if (ferror(f)) die("cannot read citizens book");
@@ -842,9 +842,9 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
         }
         if (nc == 0) die("empty lived support");
 
-        /* the corridor law and its real-exit invariant (A2 + A3) */
+        /* the corridor rule and its real-exit invariant (A2 + A3) */
         uint32_t corridor_before = corr;
-        uint32_t corridor_veto = UINT32_MAX;
+        uint32_t corridor_closed = UINT32_MAX;
         if (nc >= 2) {
             corr = 0;
         } else if (CORRIDOR != 0) {
@@ -862,7 +862,7 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
                         if (admitted) {
                             nc = admitted;
                             backoff = lvl;
-                            corridor_veto = corridor_token;
+                            corridor_closed = corridor_token;
                             found = 1;
                             break;
                         }
@@ -886,7 +886,7 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
         uint8_t prev_byte = exp_pool[exp_off[last] + exp_lenv[last] - 1];
         const Citizen *winner = citizen_winner(prev_byte);
 
-        typedef struct { uint32_t tok, cnt; unsigned advice_row; double factor, s; } SC;
+        typedef struct { uint32_t tok, cnt; unsigned advice_row; int freq; double factor, w, s; } SC;
         static SC sc[MAX_CAND];
         for (size_t k = 0; k < nc; k++) {
             unsigned advice_row = 0;
@@ -898,15 +898,26 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
             sc[k].tok = ccbuf[k].tok;
             sc[k].cnt = ccbuf[k].cnt;
             sc[k].advice_row = advice_row;
+            sc[k].freq = freq;
             sc[k].factor = factor;
+            sc[k].w = w;
             sc[k].s = log(w + 1e-300) - log(1.0 + REP_PENALTY * (double)freq);
         }
+        /* Order with no libm in it.  REP_PENALTY = 1/2 makes the score monotone
+           in 2w/(2 + freq), so rank by the cross product: a above b iff
+           w_a*(2 + freq_b) > w_b*(2 + freq_a).  freq <= REP_WINDOW, so (2+freq)
+           is an exact small integer and each side is one IEEE-754 multiply --
+           correctly rounded, bit-identical on any conforming platform.  The
+           lower-id tie-break now settles exact mathematical ties instead of the
+           last bit of somebody's log().  s survives only to weight the dice. */
         size_t limit = nc < TOP_K ? nc : TOP_K;
         for (size_t i = 0; i < limit; i++) {
             size_t best = i;
-            for (size_t j = i + 1; j < nc; j++)
-                if (sc[j].s > sc[best].s ||
-                    (sc[j].s == sc[best].s && sc[j].tok < sc[best].tok)) best = j;
+            for (size_t j = i + 1; j < nc; j++) {
+                double pj = sc[j].w * (double)(2 + sc[best].freq);
+                double pb = sc[best].w * (double)(2 + sc[j].freq);
+                if (pj > pb || (pj == pb && sc[j].tok < sc[best].tok)) best = j;
+            }
             if (best != i) { SC tmp = sc[i]; sc[i] = sc[best]; sc[best] = tmp; }
         }
         double ls[256], mx = -1e300, tot = 0;
@@ -928,8 +939,8 @@ static void speak(const uint32_t *t, size_t n, uint64_t seed) {
                 nem - 1, chosen, backoff, nc, (unsigned long long)support_occ,
                 sc[chosen_at].cnt, exp_lenv[chosen], sc[chosen_at].advice_row,
                 sc[chosen_at].factor, corridor_before);
-        if (corridor_veto == UINT32_MAX) fputs("-\n", tf);
-        else fprintf(tf, "%u\n", corridor_veto);
+        if (corridor_closed == UINT32_MAX) fputs("-\n", tf);
+        else fprintf(tf, "%u\n", corridor_closed);
         if (ebytes >= want && !ends_sentence(chosen) && ebytes < hard) want = ebytes + 1;
     }
     close_out(f);
