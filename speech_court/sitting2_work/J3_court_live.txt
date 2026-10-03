@@ -1,0 +1,42 @@
+# J3 sitting run, live, 2026-10-03T20:45:37Z, cwd=repo root, binaries from J1
+20a218c8cd9a7e5b56371325820cc7ae9511d4fce91dbbb6385e33628ae30368  court_bin/netta_mouth
+cd2c3767215c4f238ff5bd6058c8c9400344763668d0b6cccfbb0458d904465a  court_bin/netta_mouth_check
+$ mkdir -p court_live
+MKDIR_RC=0
+$ court_bin/netta_mouth netta.txt --out court_live --corridor 1 --citizens speech_court/court4_relations.tsv --citizens-mode live
+MOUTH_RC=0
+netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 5 (mode 1)
+netta_mouth: 5 speech streams and token traces written to court_live
+b2cc0346013b9d9f71923e12d90f56840ceae5e6b78965f74093f129f3a5fa9c  court_live/speech_101.bin
+26b1279d6308333e8fc638960656717f59b5f36706802a82c66f12aa821e17af  court_live/speech_19.bin
+7c390bebaf8f8053ab9756f17b076fe8a33eff9b5200782590a4942d00feaf7c  court_live/speech_271.bin
+4b6a92e99ce6d006a34876eb772d4eed284fcb0ba42503f2acf785f68ca522fe  court_live/speech_42.bin
+a5adc7b4fd09771ae3750a9cf83b4baf19fd698aeae96645da5223cab80ca5ef  court_live/speech_7.bin
+91c98608fd7afc8f80816c56e10c9781ba8ed7cc26a76da111a434d0f5960bc8  court_live/trace_101.tsv
+cd095528e0641819e796b1854207d68abfb39f0a2ef563885c97ffd9b9f0d73e  court_live/trace_19.tsv
+a232d7ce82255725728942582a42c5cf3fee7e7209b9ae720d6ef541b3625e7c  court_live/trace_271.tsv
+d6b57174f8d60173e65b09224c82b5a26215e8e7771527c260ade505262a49c7  court_live/trace_42.tsv
+f6a31c8410df280e2908292ae9a60b6614ec086af4139ceb341d18ad87d42d8d  court_live/trace_7.tsv
+$ court_bin/netta_mouth_check netta.txt --dir court_live --report court_reports/report_live.txt --corridor 1 --citizens-mode live
+READER_RC=0 (0 = SPEECH PASS, 2 = SPEECH FAIL, 1 = reader stop)
+seed 7: tokens=201 model=0.268075 ignorance=2.519710 longest=39 coverage>=32=0.114943 PASS
+seed 19: tokens=211 model=0.321519 ignorance=2.639552 longest=39 coverage>=32=0.136601 PASS
+seed 42: tokens=193 model=0.250412 ignorance=2.421953 longest=38 coverage>=32=0.121339 PASS
+seed 101: tokens=215 model=0.324030 ignorance=2.695212 longest=35 coverage>=32=0.141066 PASS
+seed 271: tokens=200 model=0.277563 ignorance=2.509796 longest=37 coverage>=32=0.145397 PASS
+SPEECH PASS: the mouth speaks below ignorance and above copying
+cb3bd8cd783141d97a66a01f895f674c995b799b4d9d95dc1c67aa9b1abbda5c  court_reports/report_live.txt
+## result line (last line of report)
+SPEECH PASS: the mouth speaks below ignorance and above copying
+## against the sealed sitting1 record of the same mode
+court_reports/report_live.txt speech_court/sitting1/report_live.txt differ: char 3539, line 39
+CMP_VS_SITTING1_live_RC=1
+## advised choices per seed (trace rows with advice_book_row != 0)
+seed 7 advised_rows=12
+seed 19 advised_rows=10
+seed 42 advised_rows=9
+seed 101 advised_rows=10
+seed 271 advised_rows=8
+## reject case: same run dir read under the wrong citizens mode (none)
+netta_mouth_check: mouth trace disagrees with independent single-winner replay
+READER_WRONG_MODE_RC=1 (expect 1, named single-winner stop)

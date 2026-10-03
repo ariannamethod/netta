@@ -1,0 +1,5 @@
+seed 7 old_vs_new_C_rc=0
+seed 19 old_vs_new_C_rc=0
+seed 42 old_vs_new_C_rc=0
+seed 101 old_vs_new_C_rc=0
+seed 271 old_vs_new_C_rc=0

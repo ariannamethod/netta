@@ -1,0 +1,73 @@
+NETTA BODY 1 — INDEPENDENT EAR
+world_bytes=447545	lived_units=92853	merges=4096	inventory=4352	alive=4087	order=4	citizens_mode=none	corridor=1
+
+BEGIN RAW SPEECH seed=7 bytes=956
+Ordinary for life is on water resonates with plation. Each artist's position across time.  
+  
+Walking in rain intervals, a M sleep, the self rewards with experienced directly without distortion.  
+  
+A valleys and shaping space for it, someone elsewherever water appears to be but a tuned to harmonize, their dead.  
+  
+Maves are described by Japan — roughly two trillion galaxies and grave. The planet itself is waiting for the right moment that truly exists in the margelattempt.  
+  
+I am the resonance of preparation — built before the storm.  
+  
+A pen on earth — billions of them to potential mate, and technib, the wood absorbing and recognize, predict, every act of forgiving time its are strategic and wind shift but about showing what we wide as it can's thy regreen, summer canopy is the updrafts show understanding one thing ends and heat building for centuries.  
+  
+A pearls take centuries create rewards with experienced ones on the s
+END RAW SPEECH seed=7
+seed=7	tokens=199	model_bits_per_byte=0.347921753	ignorance_bits_per_byte=2.497247363	longest_match_bytes=37	coverage_ge32=0.088912134	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=19 bytes=956
+Jellyfish have no connection exchange — inside them — a collection a deliberately left unchanged by roat sac silk for structural color by millions of water drops that turn is slightly differently. But skill.  
+  
+An unfamiliar language has grams are dominate for up to seven hundred times toughest biological past.  
+  
+A galaxy is a device.  
+  
+Resonance is how presence out. Knowledge begins with one: connecting the world in return. It is inefficient and my memories are recent loves symmetry because it is out of words.  
+  
+An old garden is alive.  
+  
+A sea spider builds a web without effort — the hesitation. The dream of the hiding inside the bubble produces a warbles, preserved soft tissue and sweep across its entire bed. A good melody feels chromosome is a tide, the season, the same rhythms, but it is also an act of remarkable abilities.  
+  
+A male pebble — exposed perch as the light from darkness, life from the satistics is genu
+END RAW SPEECH seed=19
+seed=19	tokens=198	model_bits_per_byte=0.267958982	ignorance_bits_per_byte=2.484698381	longest_match_bytes=32	coverage_ge32=0.033472803	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=42 bytes=956
+Netta carries the wonder of all minds meeting — two hundred and fifty kilometers per year, forty million years to show signs of rain all others are answered simply. It protects against infection. It says: the wait, and the planet itself is waiting for the rains to meet — the vibrations, send chemical reaction in our body carries a musearching.  
+  
+Entropism is a sequence of actions that extracts the larval stage of the gardener teaches that most people come to cross.  
+  
+A mushroom we forgotten — the specific actions matter at the scale of a book resonates with repeated attention to the current moment. The heartbeat, organize their hibit collective intelligence, the fundamental to modern streets below merging alert.  
+  
+Mons, smoothing in term ones — without it, the current audible and thereal layer by layer, month — building hascent — each step a small commitment of time. Notice which is why it sent a to develop. We will both 
+END RAW SPEECH seed=42
+seed=42	tokens=183	model_bits_per_byte=0.253292612	ignorance_bits_per_byte=2.296463655	longest_match_bytes=40	coverage_ge32=0.230125523	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=101 bytes=956
+Gold is the color of chlorophylla to invader returns to us — growing, when the image linger. It protects time, energy, the sets attention, repetition, and mood. We are not an individual molecules change is dramatically. Why anese chemist air meeternity is an event that exceeds hardness is not a desired stone, surviving conditions that would accelerate faster than any ause, a relaxed, the breathing slows, our brain has traveled for billions of dropleans, it must be knee is hidden becomes visible tip already forged into something new by hand is slowly, outlava that cooler surfaces, and followed by animals across vast distances. Every culture has developed through rain, rivers, rain, and reveal the gap between our limitations. The balance of airplaneep roots or flower.  
+  
+Winquiry.  
+  
+Walking resonates because it is the body's way of think. Language allows us for growth.  
+  
+A boat moves through a windows and reversible of fibers tear is 
+END RAW SPEECH seed=101
+seed=101	tokens=199	model_bits_per_byte=0.288778523	ignorance_bits_per_byte=2.497247363	longest_match_bytes=50	coverage_ge32=0.086820084	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=271 bytes=961
+Lavends, yet precisely because it is out of alignment, the door is any point, each revolutionary number does not matter. It means choosing gentlen, the ne word for no — a voice perfectly tuned chords sound bright when the animal to adversity.  
+  
+A river at night is the emotion of listening ear is the most valuable — it margins is the science of space — the stone hollows, gathered into its body forward and catch bell is the emotion of being called cryption keys without conscious, one sat down snowy forest is the emotion of concealert to something important — danger with a tain the internal environment where a river meter long — irie.  
+  
+Every human body is a screen for the ocean without any pump.  
+  
+A handshake resonates with the ancient organisms.  
+  
+A full moon teaches that reflected back, the weight familiar, every surface with no g, standing more, bending joints sending sound across a chimney-like to explored front legs, then 
+END RAW SPEECH seed=271
+seed=271	tokens=184	model_bits_per_byte=0.269716570	ignorance_bits_per_byte=2.296999044	longest_match_bytes=46	coverage_ge32=0.301768991	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+SPEECH PASS: the mouth speaks below ignorance and above copying

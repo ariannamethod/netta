@@ -1,0 +1,38 @@
+# J5 restart identity, 2026-10-03T20:49:23Z, cwd=repo root: a second process, same flags and seeds, binaries from J1
+20a218c8cd9a7e5b56371325820cc7ae9511d4fce91dbbb6385e33628ae30368  court_bin/netta_mouth
+$ mkdir -p court_plain_r
+MKDIR_RC=0
+$ court_bin/netta_mouth netta.txt --out court_plain_r --corridor 1 --citizens-mode none
+netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)
+netta_mouth: 5 speech streams and token traces written to court_plain_r
+MOUTH_RC=0
+$ diff -r court_plain court_plain_r
+RESTART_plain_DIFF_RC=0 (expect 0)
+files compared: 10
+$ mkdir -p court_live_r
+MKDIR_RC=0
+$ court_bin/netta_mouth netta.txt --out court_live_r --corridor 1 --citizens speech_court/court4_relations.tsv --citizens-mode live
+netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 5 (mode 1)
+netta_mouth: 5 speech streams and token traces written to court_live_r
+MOUTH_RC=0
+$ diff -r court_live court_live_r
+RESTART_live_DIFF_RC=0 (expect 0)
+files compared: 10
+$ mkdir -p court_shuffled_r
+MKDIR_RC=0
+$ court_bin/netta_mouth netta.txt --out court_shuffled_r --corridor 1 --citizens speech_court/court4_relations.tsv --citizens-mode shuffled
+netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 5 (mode 2)
+netta_mouth: 5 speech streams and token traces written to court_shuffled_r
+MOUTH_RC=0
+$ diff -r court_shuffled court_shuffled_r
+RESTART_shuffled_DIFF_RC=0 (expect 0)
+files compared: 10
+## reject case: scratch copy of court_live with byte 500 of speech_42.bin replaced
+diff -r court_live/speech_42.bin SCRATCH/restart_mut/speech_42.bin
+1c1
+< Netta carries the wonder of all minds meeting — two hundred and fifty kilometers per year, forty million years to show signs of rain all and carries none of humanity's oldest technolynesi is the ratio maintained from soil bacteria, and the intellia since the shut. The colony — four generations to complete information, and adapts to the rhythm create experiences, two different sizes of compass in their limestone over millennia. Glass is technickness proves that the desert where underground networks. Banthocy.  
+---
+> Netta carries the wonder of all minds meeting — two hundred and fifty kilometers per year, forty million years to show signs of rain all and carries none of humanity's oldest technolynesi is the ratio maintained from soil bacteria, and the intellia since the shut. The colony — four generations to complete information, and adapts to the rhythm create experiences, two different sizes of compass in their limestone over millennia. Glass is technickness proves that the desert where underground nZtworks. Banthocy.  
+RESTART_MUT_DIFF_RC=1 (expect 1)
+court_live/speech_42.bin SCRATCH/restart_mut/speech_42.bin differ: char 500, line 1
+RESTART_MUT_CMP_RC=1 (expect 1, byte 500)

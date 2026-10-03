@@ -1,0 +1,36 @@
+# J0 run identity, 2026-10-03T20:44:40Z, cwd=repo root
+$ git rev-parse HEAD; git branch --show-current
+24e2429cc5ff123541641bbe683838b6a361635a
+don/sitting2-exact-rank-20261003
+$ git diff --quiet HEAD  # tracked tree equals the committed state
+TRACKED_EQUALS_HEAD_RC=0
+$ git diff --quiet 76afa23 HEAD -- speech_court/SITTING2_PREREG.md  # prereg unchanged since 76afa23
+PREREG_UNCHANGED_RC=0
+## accept: working blob == HEAD blob
+netta_mouth.c head=ecc2ab9e81eeab43d0264b302ab6195b16f4d135 work=ecc2ab9e81eeab43d0264b302ab6195b16f4d135 EQUAL
+netta_mouth_check.c head=94470f7b0e0faa0e775435999d888afde2b58a15 work=94470f7b0e0faa0e775435999d888afde2b58a15 EQUAL
+netta.py head=f39abeaae5a7cc005bb3578b53e510d34df5af45 work=f39abeaae5a7cc005bb3578b53e510d34df5af45 EQUAL
+netta.txt head=b3e5ed9daaa1f88cb6dbafb12a5dbd15cf857a91 work=b3e5ed9daaa1f88cb6dbafb12a5dbd15cf857a91 EQUAL
+speech_court/court4_relations.tsv head=c00f1ed7f61d821806f92837c180afa4f962e32e work=c00f1ed7f61d821806f92837c180afa4f962e32e EQUAL
+## sha256
+e35e29658bfccc907a37d386163d8ce8eae050b3c5e4fe126ef0fbfbc9e6e90a  netta_mouth.c
+90bbcbd4451cf1a9b7abcb8c6fd21db3625d834a8324bcca64a8f9d6ad5027a0  netta_mouth_check.c
+1cd6e375c71b980b690b4340a82ba1fe2e7d436e00b9c841f622bbfbdb32dab3  netta.py
+02c08152e281d28e48e17a2b6813bb693dfa255c94f30e033137409d0e8b5cfb  netta.txt
+d3e5e514ea4cccc4a044ad224d19170e637beb79a810fb0875816f798211b438  speech_court/court4_relations.tsv
+8a5d04add9b3fa96e74cfc2404b7e511528c32331631c20fc30e25f1ec4a6edc  speech_court/SITTING2_PREREG.md
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  speech_court/sitting1/report_plain.txt
+ae6be9079591054f1ee99dd5af3b250312d5c75cdb68bdea0802779e264ec786  speech_court/sitting1/report_live.txt
+e9acc6c3fca019ea396dea44c6b19218f319b615904a80f23768b93be32cc891  speech_court/sitting1/report_shuffled.txt
+## reject case: scratch copy of netta_mouth.c with byte 100 replaced
+mut_mouth.c head=ecc2ab9e81eeab43d0264b302ab6195b16f4d135 work=a9df68649537f0ebf828fc3b18a960f031a4de90 DIFFER (expect DIFFER)
+netta_mouth.c /private/tmp/claude-501/-Users-ataeff/535974c1-e1f1-456f-b6af-7935184e51e9/scratchpad/court/mut_mouth.c differ: char 100, line 3
+CMP_MUT_RC=1
+## toolchain
+Apple clang version 21.0.0 (clang-2100.0.123.102)
+Target: arm64-apple-darwin25.4.0
+Python 3.14.4
+26.4.1
+arm64
+## third witness (JS body)
+netta_js files found under ~/arianna (depth 4): 0 -> JS witness ABSENT, not run

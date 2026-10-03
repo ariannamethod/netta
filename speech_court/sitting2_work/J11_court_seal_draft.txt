@@ -1,0 +1,53 @@
+# J11 draft record check, 2026-10-03T20:57:35Z, cwd=repo root
+## generator (scratch) and outputs
+54d5d4221210ccd33bd157dcd7533d2373984e572505d8aff8a132282727e511  SCRATCH/gen_seal.py
+be3c12ecd2d65ecc6065e702fa389ca95045828039c6cd6aa9db77275252f05b  SCRATCH/extract_check.py
+f61725b821ffe48d32776870abf1b3e8ac81ec0d2eff1f6678dbe0dae9fa8650  speech_court/sitting2/SITTING2.md
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  speech_court/sitting2/report_plain.txt
+cb3bd8cd783141d97a66a01f895f674c995b799b4d9d95dc1c67aa9b1abbda5c  speech_court/sitting2/report_live.txt
+e9acc6c3fca019ea396dea44c6b19218f319b615904a80f23768b93be32cc891  speech_court/sitting2/report_shuffled.txt
+REPORT_COPY_plain_CMP_RC=0
+REPORT_COPY_live_CMP_RC=0
+REPORT_COPY_shuffled_CMP_RC=0
+line 1: > **DRAFT. Not sealed.** Prepared by the
+## accept: every speech block extracted from SITTING2.md equals its file
+plain seed 7: block == court_plain/speech_7.bin (956 bytes)
+plain seed 19: block == court_plain/speech_19.bin (956 bytes)
+plain seed 42: block == court_plain/speech_42.bin (956 bytes)
+plain seed 101: block == court_plain/speech_101.bin (956 bytes)
+plain seed 271: block == court_plain/speech_271.bin (961 bytes)
+live seed 7: block == court_live/speech_7.bin (957 bytes)
+live seed 19: block == court_live/speech_19.bin (959 bytes)
+live seed 42: block == court_live/speech_42.bin (956 bytes)
+live seed 101: block == court_live/speech_101.bin (957 bytes)
+live seed 271: block == court_live/speech_271.bin (956 bytes)
+shuffled seed 7: block == court_shuffled/speech_7.bin (957 bytes)
+shuffled seed 19: block == court_shuffled/speech_19.bin (958 bytes)
+shuffled seed 42: block == court_shuffled/speech_42.bin (958 bytes)
+shuffled seed 101: block == court_shuffled/speech_101.bin (956 bytes)
+shuffled seed 271: block == court_shuffled/speech_271.bin (957 bytes)
+BLOCKS_MATCHING=15/15
+EXTRACT_RC=0
+## reject case: scratch copy of SITTING2.md with one byte replaced inside the live seed 42 block
+replaced byte at file offset 14848 (byte 501 of the block)
+live seed 42: block DIFFERS from court_live/speech_42.bin at byte 501 (block 956 bytes, file 956 bytes)
+BLOCKS_MATCHING=14/15
+EXTRACT_MUT_RC=1 (expect 1)
+## residual vocabulary in the draft (H1 spirit), artifact lines and paths excluded
+27:15/15 streams: model price 0.250–0.348 bits/byte against uniform ignorance 2.28–2.70; anti-copy coverage 0.033–0.350 
+231:Lavends, yet precisely because it is incompleted journey — the act of walk, it strikes in fifty millimeters per dece
+VOCAB_GREP_RC=0 (1 = none)
+## the two hits above, matched word and location class
+line 27 matched: verdict 
+line 231 matched: laws 
+line 27 occurrence is the path body0/verdict.md
+line 231 lies between: 230 (BEGIN RAW SPEECH mode=shuffled seed=271 bytes=957 sha256=a590714e663fc837724539e846ec1786ff715c129d3e081c5a522dfb79e5c951) and 234 (END RAW SPEECH mode=shuffled seed=271) -> speech bytes
+
+## environment note, 2026-10-03T20:58:58Z: root entries h_base*, h_post* (left untouched by this run) are absent now
+  ls: h_base: No such file or directory
+  ls: h_base_py.stdout: No such file or directory
+  ls: h_post: No such file or directory
+  repo root dir mtime: 2026-10-03T23:51:32+0300
+  J6 read h_base_py.stdout at its own timestamp (hash abb5b98b printed there; the same value is committed in H0:41 and H2:133)
+  this run issued no rm and no mv on them; its only mv moved its own superseded J8 file into scratch
+  sibling created in the same minute: 2026-10-03T23:51:53+0300 /Users/ataeff/arianna/netta-don-turn34-20261003 (no h_* inside)

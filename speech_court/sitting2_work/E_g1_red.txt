@@ -1,0 +1,105 @@
+factors (6): 1, 1.0646499937612384, 1.1826823368535448, 1.3595600002446644, 1.4968581071185121, 1.5
+grid states: 4992 (cnt 1..64 x freq 0..12 x 6 factors)
+GRID exhaustive: 24915072 ordered pairs
+  log exact truth        count
+  -1   -1    -1         12451165
+  -1    0    -1              506
+  -1    0     0             2473
+  -1    0    +1              214
+  -1   +1    +1               96
+   0   -1    -1              338
+   0    0    -1              604
+   0    0     0             4280
+   0    0    +1              604
+   0   +1    +1              338
+  +1   -1    -1               96
+  +1    0    -1              214
+  +1    0     0             2473
+  +1    0    +1              506
+  +1   +1    +1         12451165
+  E_exact_ties_log_splits              6386
+  R_log_ties_exact_splits              676
+  X_opposite_strict                    192
+  collapse_exact_ties_truth_strict     2648
+  exact_disagrees_with_truth           2648
+  inversion_exact_vs_truth             0
+  log_disagrees_with_exact             7254
+  log_inverts_true_order               620
+  log_merges_true_order                1884
+  log_splits_true_tie                  4946
+  phantom_exact_strict_truth_ties      0
+  example E_exact_ties_log_splits:
+    a[w=1 freq=1]  b[w=2 freq=4]
+    a[w=1 freq=2]  b[w=3 freq=10]
+    a[w=1 freq=2]  b[w=1.5 freq=4]
+    a[w=1 freq=2]  b[w=3 freq=10]
+    a[w=1 freq=3]  b[w=2 freq=8]
+    a[w=1 freq=4]  b[w=2 freq=10]
+  example R_log_ties_exact_splits:
+    a[w=3.1939499812837151 freq=1]  b[w=7.452549956328669 freq=5]
+    a[w=3.1939499812837151 freq=1]  b[w=9.5818499438511449 freq=7]
+    a[w=3.1939499812837151 freq=4]  b[w=5.3232499688061914 freq=8]
+    a[w=5.3232499688061914 freq=0]  b[w=15.969749906418576 freq=4]
+    a[w=5.3232499688061914 freq=8]  b[w=3.1939499812837151 freq=4]
+    a[w=6.3878999625674302 freq=1]  b[w=10.646499937612383 freq=3]
+  example X_opposite_strict:
+    a[w=3.1939499812837151 freq=1]  b[w=10.646499937612383 freq=8]
+    a[w=6.3878999625674302 freq=4]  b[w=10.646499937612383 freq=8]
+    a[w=7.452549956328669 freq=5]  b[w=10.646499937612383 freq=8]
+    a[w=9.5818499438511449 freq=0]  b[w=57.491099663106873 freq=10]
+    a[w=9.5818499438511449 freq=1]  b[w=28.745549831553436 freq=7]
+    a[w=10.646499937612383 freq=0]  b[w=15.969749906418576 freq=1]
+  example collapse_exact_ties_truth_strict:
+    a[w=1.0646499937612384 freq=0]  b[w=5.3232499688061914 freq=8]
+    a[w=1.0646499937612384 freq=0]  b[w=7.452549956328669 freq=12]
+    a[w=2.1292999875224767 freq=0]  b[w=5.3232499688061914 freq=3]
+    a[w=2.1292999875224767 freq=0]  b[w=7.452549956328669 freq=5]
+    a[w=2.1292999875224767 freq=0]  b[w=9.5818499438511449 freq=7]
+    a[w=2.1292999875224767 freq=0]  b[w=10.646499937612383 freq=8]
+  example log_inverts_true_order:
+    a[w=2.1292999875224767 freq=0]  b[w=10.646499937612383 freq=8]
+    a[w=3.1939499812837151 freq=1]  b[w=10.646499937612383 freq=8]
+    a[w=3.1939499812837151 freq=2]  b[w=9.5818499438511449 freq=10]
+    a[w=4.2585999750449535 freq=2]  b[w=7.452549956328669 freq=5]
+    a[w=4.2585999750449535 freq=2]  b[w=10.646499937612383 freq=8]
+    a[w=4.2585999750449535 freq=2]  b[w=11.711149931373622 freq=9]
+  example log_merges_true_order:
+    a[w=2.1292999875224767 freq=0]  b[w=7.452549956328669 freq=5]
+    a[w=2.1292999875224767 freq=0]  b[w=9.5818499438511449 freq=7]
+    a[w=2.1292999875224767 freq=0]  b[w=11.711149931373622 freq=9]
+    a[w=2.1292999875224767 freq=0]  b[w=13.840449918896098 freq=11]
+    a[w=3.1939499812837151 freq=0]  b[w=9.5818499438511449 freq=4]
+    a[w=3.1939499812837151 freq=0]  b[w=15.969749906418576 freq=8]
+  example log_splits_true_tie:
+    a[w=1 freq=1]  b[w=2 freq=4]
+    a[w=1 freq=2]  b[w=3 freq=10]
+    a[w=1 freq=2]  b[w=1.5 freq=4]
+    a[w=1 freq=2]  b[w=3 freq=10]
+    a[w=1 freq=3]  b[w=2 freq=8]
+    a[w=1 freq=4]  b[w=2 freq=10]
+CLASSES law=log: 3271 equality classes, 944 with >=2 members, 646 split
+  split: a[w=1.0646499937612384 freq=5] s=-1.1901168677050156  b[w=2.1292999875224767 freq=12] s=-1.1901168677050153
+  split: a[w=1 freq=4] s=-1.0986122886681098  b[w=2 freq=10] s=-1.0986122886681096
+  split: a[w=1.1826823368535448 freq=5] s=-1.0849779429277582  b[w=2.3653646737070897 freq=12] s=-1.084977942927758
+  split: a[w=1.0646499937612384 freq=4] s=-1.0359661878777573  b[w=2.1292999875224767 freq=10] s=-1.0359661878777571
+  split: a[w=1.1826823368535448 freq=4] s=-0.9308272631004999  b[w=2.3653646737070897 freq=10] s=-0.93082726310049979
+  split: a[w=1 freq=3] s=-0.91629073187415511  b[w=2 freq=8] s=-0.916290731874155
+RANDOM cnt 1..65536: 200000 ordered pairs
+  log exact truth        count
+  -1   -1    -1           100082
+  +1   +1    +1            99918
+  E_exact_ties_log_splits              0
+  R_log_ties_exact_splits              0
+  X_opposite_strict                    0
+  collapse_exact_ties_truth_strict     0
+  exact_disagrees_with_truth           0
+  inversion_exact_vs_truth             0
+  log_disagrees_with_exact             0
+  log_inverts_true_order               0
+  log_merges_true_order                0
+  log_splits_true_tie                  0
+  phantom_exact_strict_truth_ties      0
+VERDICT law=log: order-inverting or phantom divergences = 192
+VERDICT law=log (red polarity): the detector must find splits; found 646
+G1_RESULT=PASS
+python3 $W/g1_property.py --law log --random-pairs 200000  1.33s user 0.13s system 80% cpu 1.824 total

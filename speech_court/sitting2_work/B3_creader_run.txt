@@ -1,0 +1,8 @@
+seed 7: tokens=199 model=0.347922 ignorance=2.497247 longest=37 coverage>=32=0.088912 PASS
+seed 19: tokens=198 model=0.267959 ignorance=2.484698 longest=32 coverage>=32=0.033473 PASS
+seed 42: tokens=183 model=0.253293 ignorance=2.296464 longest=40 coverage>=32=0.230126 PASS
+seed 101: tokens=199 model=0.288779 ignorance=2.497247 longest=50 coverage>=32=0.086820 PASS
+seed 271: tokens=184 model=0.269717 ignorance=2.296999 longest=46 coverage>=32=0.301769 PASS
+SPEECH PASS: the mouth speaks below ignorance and above copying
+./netta_mouth_check netta.txt --dir s2_py --report s2_creader.txt --corridor   7.00s user 0.23s system 56% cpu 12.721 total
+B3_CREADER_RC=0
