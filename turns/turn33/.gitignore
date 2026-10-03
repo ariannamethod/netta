@@ -1,0 +1,7 @@
+.build/
+earned_router
+episode
+data/
+memory/
+results/
+__pycache__/

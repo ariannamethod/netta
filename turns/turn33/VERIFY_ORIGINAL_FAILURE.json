@@ -1,0 +1,10 @@
+{
+  "output_written": false,
+  "reader_sha256": "ffe21d585736f91f7ff2ff37d74ef29ec1d8828db32557631055d0ef9d6c60e5",
+  "result_sha256": "898aa35a89628e685b757eaa06336d0c40c165bb7b714de35730d53c04181a2b",
+  "status": "REFUSED",
+  "where": "RESULT/296/recombined/residual/silent",
+  "writer_value": 5850,
+  "reader_value": 6870,
+  "scope": "Descriptive strict-sign classification at zero after independent numeric state replay; no forecast or gate mismatch observed before refusal."
+}

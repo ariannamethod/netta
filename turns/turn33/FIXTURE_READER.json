@@ -1,0 +1,25 @@
+{
+  "binary_sha256": "7ff0656936c0ab83b887e07c8a0dcbfc6a31670f1c0ebe2c6d893317e4bb6159",
+  "events": 24,
+  "fixture_sha256": "4d67e152969d07bcd28b1f86abf3a804ff6dd6fe9b8d73af2fe0b82a55149c0d",
+  "max_error": 3.552713678800501e-15,
+  "numeric_checks": 384,
+  "passed": true,
+  "reader_sha256": "ffe21d585736f91f7ff2ff37d74ef29ec1d8828db32557631055d0ef9d6c60e5",
+  "records": [
+    0,
+    1
+  ],
+  "scope": "One handcrafted full-byte fixture: independent Decimal case wealth, pooled permission and flat3 quotes/states; first, silent, positive, negative, recovery, locality, NEW, no-match and exact common events. No generated worlds.",
+  "witnessed": {
+    "common": true,
+    "first": true,
+    "locality": true,
+    "negative": true,
+    "new": true,
+    "no_match": true,
+    "positive": true,
+    "recovery": true,
+    "silent": true
+  }
+}
