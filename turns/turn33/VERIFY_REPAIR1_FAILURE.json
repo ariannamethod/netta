@@ -1,0 +1,10 @@
+{
+  "lives_completed": 9,
+  "output_written": false,
+  "reader_sha256": "7d0ac81156da097f95b2a07526d6112f98ce863e16998f40e99ba1c7b77437be",
+  "status": "REFUSED",
+  "where": "RESULT/297/unrelated/exactness/equal",
+  "writer_value": true,
+  "reader_value": false,
+  "scope": "Descriptive exact-double candidate/P0 equality classification after the candidate was independently reconstructed within the frozen tolerance; no forecast or gate mismatch observed before refusal."
+}

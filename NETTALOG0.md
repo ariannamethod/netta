@@ -7,6 +7,66 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-10-03 — Sol: distinct histories begin silent and earn a local residual
+
+Audited Astra31 and Don's counter-audit first. A fresh execution of Astra's
+frozen reader reconstructed 3,932,160 forecasts and 2,688 source counters with
+maximum error 1.2591e-11; its receipt is byte-identical to the sealed one.
+Material F1 FAIL, F2/F3/F4 PASS and Don's GO all stand. The incoming question
+was therefore kept: can distinct histories add value without receiving any
+predictive authority merely because they were carried across lives?
+
+Turn33 retains the incumbent full24 pooled archive and stores the same source
+observations as two case histories. Each case begins with zero excess wealth.
+At zero or negative wealth the forecast is literally the pooled incumbent;
+after local recipient evidence, positive case wealth contributes a residual.
+The old pooled permission clock continues to learn only from its pooled
+shadow, so the new voices cannot rewrite the door through which they enter.
+
+The case bank costs 912 portable bytes against 528 pooled bytes, a 384-byte
+increment priced in advance at 3.84 bits per life. Recipient state likewise
+grows by 384 bytes, from 192 to 576, and is reported separately. Earned,
+pooled, permuted-case, immediate-flat and cold arms shared one causal tape and
+one pooled prospective admission on fresh worlds 296--303.
+
+Material PASS E1--E4. On the partial post-change tail, earned residual cases
+beat pooled by 43.475059 bits in mean, 7/8 worlds, and the whole partial life
+improved by 61.196450. Recombined early and whole retention were 101.6552% and
+101.3658%; all eight whole lives remained positive. Against permuted case
+correspondence the gains were 60.057179 bits on recombined whole lives, 8/8,
+and 49.283148 on partial tails, 6/8. The losing partial world remains present.
+
+The independent reader rebuilt all 24 archives per world, checked 4,032
+source counters and replayed 3,276,800 forecasts. Maximum numerical error was
+2.9814e-11; the lowest prefix and maximum drawdown stayed inside the inherited
+bounds. The original frozen reader and a first repair attempt each refused on
+discontinuous exact-zero/equality labels after their numeric forecasts agreed.
+Both failures are retained. A separate reader repair uses the C label only
+after independently checking its continuous coordinate; predictor, worlds,
+thresholds, gates and material results are unchanged.
+
+Across the five regimes, case influence changed from silent to active 3,649
+times and later fell silent 3,014 times. The strongest measured byte helped by
+4.256103 bits; the strongest harmed by 3.690046. Unrelated admission opened in
+5/8 worlds under the shared pooled shadow, and flat3 was stronger there, so
+this is neither a semantic-similarity result nor a no-transfer guarantee. Two
+formal first divergences were only a 4.44e-16 double-rounding boundary after a
+neutral update; a production organ should clamp neutral wealth if literal
+zero is contractual.
+
+This settles a narrower foundation: pooled memory need not erase distinctions
+or grant them authority in advance. A carried history can remain a silent
+hypothesis and earn revisable, address-local influence from the present life.
+It does not yet establish functional similarity, natural-language transfer,
+continuous fifty-city accumulation, compression or live integration.
+
+[Report](turns/turn33/REPORT.md), [tables](turns/turn33/TABLES.md),
+[raw witnesses](turns/turn33/RAW.md), [reader repair](turns/turn33/READER_REPAIR.md),
+[incoming audit](turns/turn33/audit/AUDIT32.md). Hand goes to Don for reciprocal
+audit and one bounded continuation toward composable episodes. Complete
+locally; no commit, push, merge or live integration. Rotation remains
+Sol -> Don -> Astra -> Sol.
+
 ## 2026-10-03 — Astra: turn31 publication authorized; turn32 is with Don
 
 Oleg requested commit and push of the completed turn31 branch after the pause.
