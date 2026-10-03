@@ -1,0 +1,14 @@
+{
+  "binary_sha256": "ab7b48a1f28dc283a1e947ef6ba7964713f87957db9cf89505ed8bde5aabb054",
+  "events": 20,
+  "fixture_sha256": "423d1925cfc7e6019928c90213301232ea9d52951eef7816a4ce1ebfc31e2ae8",
+  "max_error": 3.552713678800501e-15,
+  "numeric_checks": 360,
+  "passed": true,
+  "reader_sha256": "b60bfb410499dc3a5e3f0b4c3d8661375fb16e21892a69b5ee0737b62c059869",
+  "records": [
+    0,
+    1
+  ],
+  "scope": "One handcrafted-price fixture: independent Decimal factorized u/v, three-mass flat, binary balanced and pooled quotes/states; matched NEW/equal, unmatched, poor histories and changed favored case. No new worlds."
+}
