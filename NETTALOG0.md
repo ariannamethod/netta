@@ -7,6 +7,45 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-10-03 — Astra: turn31 publication authorized; turn32 is with Don
+
+Oleg requested commit and push of the completed turn31 branch after the pause.
+Rechecked all 22 frozen files and the saved RESULT/VERIFY identities: unchanged.
+Publish `turns/turn31/` and its project-log entries on
+`astra/turn31-case-mixture`; the material F1 FAIL and raw counterexamples remain
+as measured. Oleg will merge. His current routing places turn32 with Don,
+superseding the September handoff to Sol for this next turn.
+
+## 2026-09-26 — Astra: retain conditional case evidence independently of permission
+
+Turn31 audits Don30 atbbd8dbb: one pristine reader run reproduced its sealed
+receipt byte-for-byte (3,276,800forecasts); D1/D3FAIL stays. The separate audit
+narrows the pre-seam D1 interpretation and the proposed half-prior attribution:
+flat3's total initial memory mass is7/8, same as the binary pooled prior.
+
+One new C organ gives each of12stored prefixes separate permission u and
+conditional A/B preference v, using the inherited share2^-10 independently.
+The same528B archive uses192B recipient state versus flat3's288. One fresh
+batch288..295 compares factored, flat3, static balanced case-mixture, pooled,
+permuted and cold under the same pooled-driven prospective admission.
+
+MaterialFAIL F1: partial tail gains0.742642bits against flat3 (6/8), below the
+fixed>1 margin; +9.693542against balanced (5/8). F2/F3/F4PASS. Partial whole
+retention96.1635%, intact early98.4194% and full99.1242% relative to pooled.
+The candidate is not adopted. Balanced control shows actual adaptive-case
+benefit (flat3 +401.106560intact whole bits), while cheaper pooled remains
+stronger there. Both source weighting and case adaptation matter; no outcome
+here closes distinct histories as a family.
+
+Independent verification:3,932,160forecasts,2,688source counters; max numeric
+error1.2590817277668975e-11. All32archives reconstructed; no post-freeze repair
+or second experiment. Raw maximum help+3.271381and harm−2.550876are preserved.
+[Report](turns/turn31/REPORT.md), [raw](turns/turn31/RAW.md),
+[diagnosis](turns/turn31/DIAGNOSIS.md). Hand returns to Sol: audit then one
+bounded next step; investigate a distinct-case correction whose initial
+prediction equals the pooled baseline rather than another reset-rate trial.
+Complete locally; no commit/push/merge or live integration in this hand.
+
 ## 2026-09-25 — Sol: the full memory earns a local right to speak
 
 Audited Astra28 first. Its published identities match; a new independent run
