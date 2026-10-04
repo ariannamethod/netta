@@ -1,0 +1,154 @@
+# J8 old rank rule (log comparator) vs exact rank rule over the sitting's own 15 streams, 2026-10-03T20:55:17Z, cwd=repo root
+# old rule = netta_mouth.c at 76afa23, the prereg commit (log comparator at netta_mouth.c@76afa23:902-911); built in scratch, never in the repo
+$ git show 76afa23:netta_mouth.c > SCRATCH/old_mouth.c
+SHOW_RC=0
+BUILD_OLD_RC=0
+4494ca59864d992c5b5697fb92443f42953fe54f9b861593c051151527d01225  SCRATCH/old_mouth.c
+cc66edd8ae4092fc1f2baa3bcf985f25ac5b20a2f274ce0bc07cff240229f6d1  SCRATCH/old_mouth
+## 15 streams, old rule vs court_* runs (exact rule), speech and trace
+OLD_MOUTH_plain_RC=0
+plain seed 7 old_vs_exact speech_rc=0 trace_rc=0
+plain seed 19 old_vs_exact speech_rc=0 trace_rc=0
+plain seed 42 old_vs_exact speech_rc=0 trace_rc=0
+plain seed 101 old_vs_exact speech_rc=0 trace_rc=0
+plain seed 271 old_vs_exact speech_rc=0 trace_rc=0
+OLD_MOUTH_live_RC=0
+live seed 7 old_vs_exact speech_rc=0 trace_rc=0
+live seed 19 old_vs_exact speech_rc=0 trace_rc=0
+live seed 42 old_vs_exact speech_rc=1 trace_rc=1
+live seed 101 old_vs_exact speech_rc=0 trace_rc=0
+live seed 271 old_vs_exact speech_rc=0 trace_rc=0
+OLD_MOUTH_shuffled_RC=0
+shuffled seed 7 old_vs_exact speech_rc=0 trace_rc=0
+shuffled seed 19 old_vs_exact speech_rc=0 trace_rc=0
+shuffled seed 42 old_vs_exact speech_rc=0 trace_rc=0
+shuffled seed 101 old_vs_exact speech_rc=0 trace_rc=0
+shuffled seed 271 old_vs_exact speech_rc=0 trace_rc=0
+## platform check: the old rule on this machine reproduces the sealed sitting1 live record
+READER_ON_OLD_LIVE_RC=0
+ae6be9079591054f1ee99dd5af3b250312d5c75cdb68bdea0802779e264ec786  SCRATCH/old_live_report.txt
+CMP_OLD_LIVE_VS_SITTING1_RC=0
+## the one divergent stream: live seed 42, first differing trace row
+193c193,194
+< 191	331	-	2	28	68	2	3	0	1	1	1698
+---
+> 191	375	-	2	28	68	2	2	0	1	1	1698
+> 192	100	-	3	1	2	2	1	0	1	0	-
+DIFF_TRACE42_RC=1
+## the divergent word, last 40 bytes of each speech
+old  : es even in removed the stone more prover
+exact: es even in removed the stone more proced
+## instrument (scratch only): inserted after "uint32_t chosen = sc[chosen_at].tok;" (old :919, exact :930)
+        { const char *di = getenv("COURT_DUMP_IDX"), *ds = getenv("COURT_DUMP_SEED");
+          if (di && ds && strtoull(di, NULL, 10) == (unsigned long long)nem &&
+              strtoull(ds, NULL, 10) == (unsigned long long)seed) {
+            fprintf(stderr, "step\t%zu\tnc\t%zu\tlimit\t%zu\tr\t%.17g\ttot\t%.17g\tchosen_at\t%zu\tchosen\t%u\n",
+                    nem, nc, limit, r, tot, chosen_at, chosen);
+            for (size_t q = 0; q < nc; q++)
+                fprintf(stderr, "rank\t%zu\ttok\t%u\tcnt\t%u\tfactor\t%.17g\ts\t%.17g\tls\t%.17g\n",
+                        q, sc[q].tok, sc[q].cnt, sc[q].factor, sc[q].s, q < limit ? ls[q] : -1.0);
+          } }
+BUILD_old_DUMP_RC=0
+DUMP_old_RC=0
+BUILD_new_DUMP_RC=0
+DUMP_new_RC=0
+INSTRUMENTED_OLD_SPEECH_UNCHANGED_RC=0
+INSTRUMENTED_EXACT_SPEECH_UNCHANGED_RC=0
+INSTRUMENTED_EXACT_TRACE_UNCHANGED_RC=0
+old   step	191	nc	28	limit	15	r	6.6075736137091026	tot	7.54159529191746	chosen_at	11	chosen	331
+exact step	191	nc	28	limit	15	r	6.6075736137091026	tot	7.54159529191746	chosen_at	11	chosen	375
+## class check (accept): exact rationals, freq recomputed from the trace window (REP_WINDOW 12, netta_mouth.c:38)
+candidates=28 limit=15 r=6.6075736137091026 tot=7.54159529191746 chosen_at old=11 new=11 chosen old=331 new=375
+A new top-15 == exact rational order with lower-id tie-break: True
+  slot  0 old tok  928 (cnt 6 freq 0) value 3    | new tok  928 (cnt 6 freq 0) value 3    
+  slot  1 old tok   98 (cnt 5 freq 0) value 5/2  | new tok   98 (cnt 5 freq 0) value 5/2  
+  slot  2 old tok  503 (cnt 5 freq 0) value 5/2  | new tok  503 (cnt 5 freq 0) value 5/2  
+  slot  3 old tok 3118 (cnt 5 freq 0) value 5/2  | new tok 3118 (cnt 5 freq 0) value 5/2  
+  slot  4 old tok  106 (cnt 4 freq 0) value 2    | new tok  106 (cnt 4 freq 0) value 2    
+  slot  5 old tok  474 (cnt 4 freq 0) value 2    | new tok  474 (cnt 4 freq 0) value 2    
+  slot  6 old tok  103 (cnt 3 freq 0) value 3/2  | new tok  103 (cnt 3 freq 0) value 3/2  
+  slot  7 old tok  366 (cnt 3 freq 0) value 3/2  | new tok  366 (cnt 3 freq 0) value 3/2  
+  slot  8 old tok  534 (cnt 3 freq 0) value 3/2  | new tok  534 (cnt 3 freq 0) value 3/2  
+  slot  9 old tok 2229 (cnt 3 freq 0) value 3/2  | new tok 2229 (cnt 3 freq 0) value 3/2  
+  slot 10 old tok  856 (cnt 3 freq 1) value 1    | new tok  331 (cnt 2 freq 0) value 1    same class
+  slot 11 old tok  331 (cnt 2 freq 0) value 1    | new tok  375 (cnt 2 freq 0) value 1    same class
+  slot 12 old tok  375 (cnt 2 freq 0) value 1    | new tok  450 (cnt 2 freq 0) value 1    same class
+  slot 13 old tok  450 (cnt 2 freq 0) value 1    | new tok  500 (cnt 2 freq 0) value 1    same class
+  slot 14 old tok  500 (cnt 2 freq 0) value 1    | new tok  511 (cnt 2 freq 0) value 1    same class
+B slots holding a different token: 5; of them with a different exact value: 0
+left the top-15: [856] values ['1'] | entered: [511] values ['1']
+G1_STEP_RESULT=PASS: the two comparators differ only inside one mathematically equal class
+CLASS_CHECK_RC=0
+## class check (reject case): same data, exact ranks 0 and 1 swapped across classes
+PERTURBED: swapped new ranks 0 and 1 (tok 98, tok 928)
+candidates=28 limit=15 r=6.6075736137091026 tot=7.54159529191746 chosen_at old=11 new=11 chosen old=331 new=375
+A new top-15 == exact rational order with lower-id tie-break: False
+  slot  0 old tok  928 (cnt 6 freq 0) value 3    | new tok   98 (cnt 5 freq 0) value 5/2  DIFFERENT VALUE
+  slot  1 old tok   98 (cnt 5 freq 0) value 5/2  | new tok  928 (cnt 6 freq 0) value 3    DIFFERENT VALUE
+  slot  2 old tok  503 (cnt 5 freq 0) value 5/2  | new tok  503 (cnt 5 freq 0) value 5/2  
+  slot  3 old tok 3118 (cnt 5 freq 0) value 5/2  | new tok 3118 (cnt 5 freq 0) value 5/2  
+  slot  4 old tok  106 (cnt 4 freq 0) value 2    | new tok  106 (cnt 4 freq 0) value 2    
+  slot  5 old tok  474 (cnt 4 freq 0) value 2    | new tok  474 (cnt 4 freq 0) value 2    
+  slot  6 old tok  103 (cnt 3 freq 0) value 3/2  | new tok  103 (cnt 3 freq 0) value 3/2  
+  slot  7 old tok  366 (cnt 3 freq 0) value 3/2  | new tok  366 (cnt 3 freq 0) value 3/2  
+  slot  8 old tok  534 (cnt 3 freq 0) value 3/2  | new tok  534 (cnt 3 freq 0) value 3/2  
+  slot  9 old tok 2229 (cnt 3 freq 0) value 3/2  | new tok 2229 (cnt 3 freq 0) value 3/2  
+  slot 10 old tok  856 (cnt 3 freq 1) value 1    | new tok  331 (cnt 2 freq 0) value 1    same class
+  slot 11 old tok  331 (cnt 2 freq 0) value 1    | new tok  375 (cnt 2 freq 0) value 1    same class
+  slot 12 old tok  375 (cnt 2 freq 0) value 1    | new tok  450 (cnt 2 freq 0) value 1    same class
+  slot 13 old tok  450 (cnt 2 freq 0) value 1    | new tok  500 (cnt 2 freq 0) value 1    same class
+  slot 14 old tok  500 (cnt 2 freq 0) value 1    | new tok  511 (cnt 2 freq 0) value 1    same class
+B slots holding a different token: 7; of them with a different exact value: 2
+left the top-15: [856] values ['1'] | entered: [511] values ['1']
+G1_STEP_RESULT=FAIL: a slot changed exact value, or the new prefix is not the exact order
+CLASS_CHECK_PERTURB_RC=1 (expect 1)
+## class_check.py (scratch, verbatim)
+632d592380b1d42160e392183f27fee652a0fe2f67254b80488a396bf83c70c9  SCRATCH/class_check.py
+import sys
+from fractions import Fraction
+dump_old, dump_new, trace, step = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4])
+perturb = len(sys.argv) > 5 and sys.argv[5] == "--perturb"
+
+def read(p):
+    head, out = None, []
+    for line in open(p):
+        f = line.rstrip("\n").split("\t")
+        if f[0] == "step": head = dict(zip(f[0::2], f[1::2]))
+        if f[0] == "rank": out.append((int(f[3]), int(f[5]), float(f[7])))  # tok, cnt, factor
+    return head, out
+
+rows = [l.rstrip("\n").split("\t") for l in open(trace)][1:]
+win = [int(r[1]) for r in rows[:step]][-12:]   # REP_WINDOW = 12, netta_mouth.c:38
+ho, old = read(dump_old)
+hn, new = read(dump_new)
+limit = int(hn["limit"])
+assert int(ho["limit"]) == limit and sorted(old) == sorted(new), "candidate multisets or limit differ"
+if perturb:
+    new[0], new[1] = new[1], new[0]
+    print("PERTURBED: swapped new ranks 0 and 1 (tok %d, tok %d)" % (new[0][0], new[1][0]))
+def val(c):  # exact rational w/(2+freq); w = cnt*factor read back exactly from the double
+    n, d = (c[1] * c[2]).as_integer_ratio()
+    return Fraction(n, d * (2 + win.count(c[0])))
+truth = sorted(new, key=lambda c: (-val(c), c[0]))[:limit]
+print("candidates=%d limit=%d r=%s tot=%s chosen_at old=%s new=%s chosen old=%s new=%s" % (
+    len(new), limit, hn["r"], hn["tot"], ho["chosen_at"], hn["chosen_at"], ho["chosen"], hn["chosen"]))
+okA = new[:limit] == truth
+print("A new top-%d == exact rational order with lower-id tie-break: %s" % (limit, okA))
+diff_slots, bad = 0, []
+for i in range(limit):
+    a, b = old[i], new[i]
+    if a[0] != b[0]:
+        diff_slots += 1
+        if val(a) != val(b): bad.append((i, a, b))
+    print("  slot %2d old tok %4d (cnt %d freq %d) value %-4s | new tok %4d (cnt %d freq %d) value %-4s %s" % (
+        i, a[0], a[1], win.count(a[0]), val(a), b[0], b[1], win.count(b[0]), val(b),
+        "" if a[0] == b[0] else ("same class" if val(a) == val(b) else "DIFFERENT VALUE")))
+print("B slots holding a different token: %d; of them with a different exact value: %d" % (diff_slots, len(bad)))
+out_old = sorted(set(c[0] for c in old[:limit]) - set(c[0] for c in new[:limit]))
+in_new = sorted(set(c[0] for c in new[:limit]) - set(c[0] for c in old[:limit]))
+print("left the top-%d: %s values %s | entered: %s values %s" % (limit,
+      out_old, [str(val(c)) for c in old if c[0] in out_old], in_new, [str(val(c)) for c in new if c[0] in in_new]))
+ok = okA and not bad
+print("G1_STEP_RESULT=%s" % ("PASS: the two comparators differ only inside one mathematically equal class" if ok else
+      "FAIL: a slot changed exact value, or the new prefix is not the exact order"))
+sys.exit(0 if ok else 1)

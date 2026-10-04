@@ -1,0 +1,5 @@
+F1 seed 7 speech_rc=0 trace_rc=0
+F1 seed 19 speech_rc=0 trace_rc=0
+F1 seed 42 speech_rc=0 trace_rc=0
+F1 seed 101 speech_rc=0 trace_rc=0
+F1 seed 271 speech_rc=0 trace_rc=0

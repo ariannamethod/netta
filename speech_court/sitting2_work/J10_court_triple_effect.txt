@@ -1,0 +1,47 @@
+# J10 the triple from identical seeds: what the citizens move, 2026-10-03T20:53:15Z, cwd=repo root
+## speech, pairwise per seed (cmp rc 0 = identical; otherwise first differing byte)
+seed 7 plain vs live rc=1 -> char 10, line 1
+seed 7 plain vs shuffled rc=1 -> char 10, line 1
+seed 7 live vs shuffled rc=1 -> char 14, line 1
+seed 19 plain vs live rc=1 -> char 143, line 1
+seed 19 plain vs shuffled rc=1 -> char 50, line 1
+seed 19 live vs shuffled rc=1 -> char 50, line 1
+seed 42 plain vs live rc=1 -> char 140, line 1
+seed 42 plain vs shuffled rc=1 -> char 141, line 1
+seed 42 live vs shuffled rc=1 -> char 140, line 1
+seed 101 plain vs live rc=1 -> char 73, line 1
+seed 101 plain vs shuffled rc=1 -> char 64, line 1
+seed 101 live vs shuffled rc=1 -> char 64, line 1
+seed 271 plain vs live rc=1 -> char 45, line 1
+seed 271 plain vs shuffled rc=1 -> char 38, line 1
+seed 271 live vs shuffled rc=1 -> char 38, line 1
+## advised choices (trace rows with advice_book_row != 0), all seeds
+plain advised_rows_total=0
+live advised_rows_total=49
+shuffled advised_rows_total=45
+## advised rows by book row and factor
+live:
+  49   row 7 factor 1.5
+shuffled:
+  45   row 7 factor 1.5
+## per-stream reader lines
+plain seed=7	tokens=199	model_bits_per_byte=0.347921753	ignorance_bits_per_byte=2.497247363	longest_match_bytes=37	coverage_ge32=0.088912134	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+plain seed=19	tokens=198	model_bits_per_byte=0.267958982	ignorance_bits_per_byte=2.484698381	longest_match_bytes=32	coverage_ge32=0.033472803	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+plain seed=42	tokens=183	model_bits_per_byte=0.253292612	ignorance_bits_per_byte=2.296463655	longest_match_bytes=40	coverage_ge32=0.230125523	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+plain seed=101	tokens=199	model_bits_per_byte=0.288778523	ignorance_bits_per_byte=2.497247363	longest_match_bytes=50	coverage_ge32=0.086820084	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+plain seed=271	tokens=184	model_bits_per_byte=0.269716570	ignorance_bits_per_byte=2.296999044	longest_match_bytes=46	coverage_ge32=0.301768991	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+plain result: SPEECH PASS: the mouth speaks below ignorance and above copying
+live seed=7	tokens=201	model_bits_per_byte=0.268075347	ignorance_bits_per_byte=2.519709647	longest_match_bytes=39	coverage_ge32=0.114942529	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+live seed=19	tokens=211	model_bits_per_byte=0.321519335	ignorance_bits_per_byte=2.639552031	longest_match_bytes=39	coverage_ge32=0.136600626	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+live seed=42	tokens=193	model_bits_per_byte=0.250412363	ignorance_bits_per_byte=2.421953473	longest_match_bytes=38	coverage_ge32=0.121338912	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+live seed=101	tokens=215	model_bits_per_byte=0.324029926	ignorance_bits_per_byte=2.695211811	longest_match_bytes=35	coverage_ge32=0.141065831	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+live seed=271	tokens=200	model_bits_per_byte=0.277563144	ignorance_bits_per_byte=2.509796345	longest_match_bytes=37	coverage_ge32=0.145397490	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+live result: SPEECH PASS: the mouth speaks below ignorance and above copying
+shuffled seed=7	tokens=182	model_bits_per_byte=0.257362065	ignorance_bits_per_byte=2.281528138	longest_match_bytes=47	coverage_ge32=0.350052247	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+shuffled seed=19	tokens=210	model_bits_per_byte=0.323878808	ignorance_bits_per_byte=2.629784521	longest_match_bytes=42	coverage_ge32=0.147181628	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+shuffled seed=42	tokens=187	model_bits_per_byte=0.257193954	ignorance_bits_per_byte=2.341760502	longest_match_bytes=45	coverage_ge32=0.184759916	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+shuffled seed=101	tokens=195	model_bits_per_byte=0.267768393	ignorance_bits_per_byte=2.447051436	longest_match_bytes=45	coverage_ge32=0.149581590	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+shuffled seed=271	tokens=214	model_bits_per_byte=0.318632197	ignorance_bits_per_byte=2.682675943	longest_match_bytes=45	coverage_ge32=0.199582027	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+shuffled result: SPEECH PASS: the mouth speaks below ignorance and above copying
+## reject case: a null citizen effect would read rc=0 on every live/shuffled pair above; same-mode restart pair for contrast
+SAME_MODE_RESTART_CMP_RC=0 (0: the pairwise probe reports identity when bytes are identical)

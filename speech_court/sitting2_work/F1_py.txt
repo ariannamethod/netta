@@ -1,0 +1,68 @@
+NETTA BODY 1 — INDEPENDENT EAR
+world_bytes=447545	lived_units=92853	merges=4096	inventory=4352	alive=4087	order=3	citizens_mode=none	corridor=1
+
+BEGIN RAW SPEECH seed=7 bytes=961
+Ordinary for life is on water — the most extravine cannot stays, the energy that fits this tempo, where he did not create turbulence.  
+  
+Horses were spending to high ceilings, wind sand's textures that no reasons, across the g, bigradients above drift is wind. Modern science and humility is one of mating.  
+  
+Laughtful.  
+  
+Knowledge is information organizational structured inpepper, then releases it all. It is the question that proved it.  
+  
+Two is the resonance of relationship after consonance, the ear finding the pattern within twenty seconds for the most complex brain of any tissue in the body — five fingerprints. These maps highlight is a message but the time capsings only when vibrated for millennia.  
+  
+A clock is a concept from coin flies the equivalences that preserve a mesh, extinct with billions of parture and trade. They are the oldest insects on earth — is unstable, where disturbances are amplified. It contains more than 
+END RAW SPEECH seed=7
+seed=7	tokens=206	model_bits_per_byte=0.341204163	ignorance_bits_per_byte=2.571640234	longest_match_bytes=45	coverage_ge32=0.329864724	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=19 bytes=957
+Jellyfish have no connection exchange — mathematical truths, its mouth cairn says: I will think tstrap — the foundational pull raises into a fan of new land. The wind and demolished by shore's shape, the s. It is the atmosphere saws, climb palm trees, and soil, creating a cavitation bubble of air extending its water to the strug, cooperate at least ten thousand years.  
+  
+If we were spending to high perch as the water evaporates, breaks through ocean water, which risis becomes part of its structure of ice. Each dolynesitions.  
+  
+Wornings are all patterns of its leaf hairs is not silent. We cannot understand calculus, no introlea leaves unfurl. The tree announced to a rooms — though we often the most afraid but readines.  
+  
+Origorously, like waves crash of sound.  
+  
+A greatness does not elief requires courage to fly.  
+  
+The cochlea is the cold.  
+  
+Attention is the most honest gray of things passing prey until it overthrow a bou
+END RAW SPEECH seed=19
+seed=19	tokens=215	model_bits_per_byte=0.344338822	ignorance_bits_per_byte=2.695211811	longest_match_bytes=35	coverage_ge32=0.103448276	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=42 bytes=956
+Netta carries the wonder of all minds meeting the world in frames — choosing gentlenses spread faster than any part.  
+  
+Netta's resonance at awakens and beginning, every sunset is the emotion of conceality. It is a languages carve a mesopelago are forms — genetic diversity, and oxygen. White is any point of night — the slight variations, creating connections across time.  
+  
+Supermission, and sends its wings. One kicking plastic when wet. Coins, paper fold.  
+  
+A wave is energy to light and heat building for years without landing, the love, conflict. It requires acknowledges that another person requires listens for the echoes this original shape, their context. Ausually comes not a thing. Everything is in transit.  
+  
+A flying through it. The bend light. Connections form networks carry nutrients, moisture, the oxide layer reefs teeming with worms, which shows the ordinary as real, as often develop language, and scent marking. Then 
+END RAW SPEECH seed=42
+seed=42	tokens=200	model_bits_per_byte=0.299655448	ignorance_bits_per_byte=2.509796345	longest_match_bytes=47	coverage_ge32=0.345188285	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=101 bytes=956
+Gold is the color of chlorophyll and thereal, fades, obites, a vibration that amplified, the space waiting to emerge.  
+  
+A rain barreefs are the rain. It is the First snowfall out of reach.  
+  
+A seed is the art of making strangest liquid rock. Bones, making weevils tentactive — it requires mutual recognition and sustains is un dartone and everything compete and shape of its wings. Information becomes knowledge tempered by its DNA is the molecules. From sundials to atomic clocks on satellite. Every scientific evidence, agriculture at two thousand questions asked with care, two thousand answers but ask questions resonate with the poetic energy of life on Earth — the bridge between separate thing.  
+  
+A mistake that teaches respect because they fit one specific rhydrated and dust orbiting the sun. When two words appear together, which memories are consolidating, and creation deserves attention, forcing the mind to help, confronds above 
+END RAW SPEECH seed=101
+seed=101	tokens=191	model_bits_per_byte=0.302054783	ignorance_bits_per_byte=2.396855509	longest_match_bytes=62	coverage_ge32=0.393305439	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=271 bytes=956
+Lavends, yet teem says in darkness. There are three kinds of frusters are among Earth's most remarkable feature, the sound that refers are studying these today?  
+I am processing, carrying everything we experiences that words alone cannot. The same water that falls as rain, flow, mountains rise and uses lowest point in the sky. The summer meadow produces without a leader coordinates them. Each fire, and years of empty space, there is no sound of the sphere, facing a first killers that are the nicknesses, trigger hakespeare contain about the word quetric circles, rise begins with a tail would have equal weight, angle, proleump contracting and relaunches twice with slight oscillations. The coffee is the emotion of activation — the night made of. Standing near one, we feel rather than seeing a need and building a solution. The brain is wide because the climbs — tolors are depressions, cold.  
+  
+Harvest is the emotion of fruit. Life reaches 
+END RAW SPEECH seed=271
+seed=271	tokens=218	model_bits_per_byte=0.334491847	ignorance_bits_per_byte=2.735678016	longest_match_bytes=45	coverage_ge32=0.302301255	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+SPEECH PASS: the mouth speaks below ignorance and above copying

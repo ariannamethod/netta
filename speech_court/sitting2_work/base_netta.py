@@ -6,29 +6,29 @@ no pretrained anything. Ordinary text in, earned speech out.
 
 One file, stdlib only, deterministic. It eats a world of ordinary text, grows
 units out of whatever that world repeats often enough to deserve a name, and
-then speaks -- sampling only over continuations it has actually lived. A measurement
-preregistered before the first scored byte prices the result against uniform
+then speaks -- sampling only over continuations it has actually lived. A court
+preregistered before the first judged byte prices the result against honest
 ignorance and against copying, and prints the speech beside the numbers.
 
     python3 netta.py island.txt
     python3 netta.py island.txt --seed 42 --time
-    python3 netta.py island.txt --out run --report report.txt
+    python3 netta.py island.txt --out run --report court.txt
 
-Mirror of the C organism: netta.c (Body 0, the merge rule) and netta_mouth.c
-(Body 1, the mouth) under MOUTH_PROTOCOL.md with amendments 2 and 3, checked by
+Mirror of the C organism: netta.c (Body 0, the merge law) and netta_mouth.c
+(Body 1, the mouth) under MOUTH_PROTOCOL.md with amendments 2 and 3, judged by
 netta_mouth_check.c under SPEECH_COURT.md. The PRNG, the tie-breaks and the
 sampling order are ported from that C step for step, and PARITY.md beside this
 file carries what was measured: byte-identical speech, byte-identical traces and
-byte-identical reader reports, over 25 streams, two islands and nine dial
+byte-identical court reports, over 25 streams, two islands and nine dial
 settings, with the C's own independent reader accepting this file's output.
 
 One default differs from the C on purpose: --corridor is 1 here and 3 there.
 K=3 fails the anti-copy census on the canonical island; K=1 is the dial the
-first speech sitting pinned. Pass --corridor 3 for the C's compiled default.
+court's first sitting pinned. Pass --corridor 3 for the C's compiled default.
 
-Out of scope here, and named rather than omitted: the Court-4 citizens adapter
+Out of scope here, and named rather than hidden: the Court-4 citizens adapter
 (MOUTH_PROTOCOL §4), which needs a 36101-byte sealed capsule this file cannot
-carry. The plain mouth is the one that passed the first speech sitting.
+carry. The plain mouth is the one that passed the court's first sitting.
 """
 
 import argparse
@@ -37,7 +37,6 @@ import os
 import sys
 import time
 from bisect import bisect_left
-from functools import cmp_to_key
 from heapq import heapify, heappop, heappush
 
 START = time.perf_counter()
@@ -55,8 +54,8 @@ MIN_MATCH = 32                  # the census counts verbatim tape runs from here
 PASS_LINE = "SPEECH PASS: the mouth speaks below ignorance and above copying"
 
 
-class Stop(Exception):
-    """The organism cannot speak, or the reader cannot finish."""
+class Refusal(Exception):
+    """The organism will not speak, or the court will not sign."""
 
 
 class Rng:
@@ -83,7 +82,7 @@ class Rng:
 
 
 def grow_units(world, merges, min_pair):
-    """Body 0's merge rule. The most frequent adjacent pair becomes one unit,
+    """Body 0's merge law. The most frequent adjacent pair becomes one unit,
     ties broken by the smaller packed key, until the budget runs out or nothing
     repeats MIN_PAIR times any more.
 
@@ -192,7 +191,7 @@ class Tape:
                        if starts_upper(exp[stream[i]])
                        and (i == 0 or ends_sentence(exp[stream[i - 1]]))]
         if not self.starts:
-            raise Stop("no sentence starts")
+            raise Refusal("no sentence starts")
 
 
 def support(tape, em, level, order):
@@ -235,9 +234,9 @@ def support(tape, em, level, order):
     return out
 
 
-def corridor_support(tape, em, order, corridor_k, corr):
+def lawful_support(tape, em, order, corridor_k, corr):
     """The highest non-empty lived support, quad -> tri -> bi -> lived unigram,
-    under the corridor rule.
+    under the corridor law.
 
     Amendment 2: a support holding exactly one continuation is not a choice, it
     is a rail, and a chain of rails is a quotation in progress. After K of them
@@ -246,7 +245,7 @@ def corridor_support(tape, em, order, corridor_k, corr):
     Amendment 3: an exit must exit. The rail's own token is closed for that one
     choice, because changing level is not by itself changing path.
 
-    Returns (candidates, level, closed token or None, new corridor counter).
+    Returns (candidates, level, vetoed token or None, new corridor counter).
     """
     cand, level = [], 0
     for lvl in (4, 3, 2, 1):
@@ -255,7 +254,7 @@ def corridor_support(tape, em, order, corridor_k, corr):
             level = lvl
             break
     if not cand:
-        raise Stop("empty lived support")
+        raise Refusal("empty lived support")
 
     if len(cand) >= 2:
         return cand, level, None, 0
@@ -266,20 +265,9 @@ def corridor_support(tape, em, order, corridor_k, corr):
             if len(alt) >= 2:
                 admitted = [c for c in alt if c[0] != rail]
                 if len(admitted) == len(alt):
-                    raise Stop("lower support lost the corridor continuation")
+                    raise Refusal("lower support lost the corridor continuation")
                 return admitted, lvl, rail, 0
     return cand, level, None, corr + 1 if corridor_k else corr
-
-
-def rank_cmp(a, b):
-    """Exact candidate order: cross-multiply instead of comparing logarithms."""
-    pa = a[3] * (2 + b[4])
-    pb = b[3] * (2 + a[4])
-    if pa > pb:
-        return -1
-    if pa < pb:
-        return 1
-    return (a[0] > b[0]) - (a[0] < b[0])
 
 
 def speak(tape, seed, args):
@@ -305,7 +293,7 @@ def speak(tape, seed, args):
     want, hard = args.bytes, args.bytes + SPEAK_HARD
     while len(out) < want and len(em) + 1 < MAX_EM:
         before = corr
-        cand, level, closed, corr = corridor_support(tape, em, args.order, args.corridor, corr)
+        cand, level, veto, corr = lawful_support(tape, em, args.order, args.corridor, corr)
 
         window = em[-REP_WINDOW:]
         occ = 0
@@ -313,17 +301,11 @@ def speak(tape, seed, args):
         for tok, cnt in cand:
             occ += cnt
             weight = float(cnt)
-            freq = window.count(tok)
             score = (math.log(weight + 1e-300)
-                     - math.log(1.0 + REP_PENALTY * freq))
-            scored.append((tok, cnt, score, weight, freq))
-        # The C runs a partial selection sort over the same order, and that order
-        # has no logarithm in it: REP_PENALTY = 1/2 makes the score monotone in
-        # 2w/(2 + freq), so a outranks b iff w_a*(2 + freq_b) > w_b*(2 + freq_a).
-        # freq <= REP_WINDOW keeps (2 + freq) an exact small integer, so each
-        # side is one IEEE-754 multiply of the same doubles the C multiplies.
-        # Ties are now exact ties and fall to the lower unit id, as there.
-        scored.sort(key=cmp_to_key(rank_cmp))
+                     - math.log(1.0 + REP_PENALTY * window.count(tok)))
+            scored.append((tok, cnt, score))
+        # the C runs a partial selection sort; score down, unit id up
+        scored.sort(key=lambda c: (-c[2], c[0]))
 
         limit = min(len(scored), args.topk)
         weights = []
@@ -346,13 +328,13 @@ def speak(tape, seed, args):
                 at = i
                 break
 
-        tok, cnt = scored[at][0], scored[at][1]
+        tok, cnt, _ = scored[at]
         e = tape.exp[tok]
         em.append(tok)
         out += e
         trace.append("%d\t%d\t-\t%d\t%d\t%d\t%d\t%d\t0\t1\t%d\t%s"
                      % (len(em) - 1, tok, level, len(cand), occ, cnt, len(e), before,
-                        "-" if closed is None else closed))
+                        "-" if veto is None else veto))
         if len(out) >= want and not ends_sentence(e) and len(out) < hard:
             want = len(out) + 1
 
@@ -360,12 +342,12 @@ def speak(tape, seed, args):
 
 
 def ear(tape, tokens, order, corridor_k):
-    """The independent ear. Every emitted token priced inside the lived support the
-    rule actually selected, against uniform ignorance -- uniform over every unit
+    """The court's ear. Every emitted token priced inside the lived support the
+    law actually selected, against honest ignorance -- uniform over every unit
     the organism has ever lived.
 
-    The ear re-derives that support from the token sequence alone. It does not
-    take the mouth's word for the mouth's own paperwork, and it stops on a stream
+    The court re-derives that support from the token sequence alone. It does not
+    take the mouth's word for the mouth's own paperwork, and it refuses a stream
     whose token was never a lived continuation of its own context.
     """
     model = 0.0
@@ -375,21 +357,21 @@ def ear(tape, tokens, order, corridor_k):
     corr = 0
     for i, tok in enumerate(tokens):
         if i < 3:
-            # the lived opening is priced, but it stands outside the corridor rule
+            # the lived opening is priced, but it stands outside the corridor law
             cand = []
             for lvl in range(3 if i >= 2 else i + 1, 0, -1):
                 cand = support(tape, past, lvl, order)
                 if cand:
                     break
         else:
-            cand, _, _, corr = corridor_support(tape, past, order, corridor_k, corr)
+            cand, _, _, corr = lawful_support(tape, past, order, corridor_k, corr)
         occ = chosen = 0
         for t, c in cand:
             occ += c
             if t == tok:
                 chosen = c
         if not chosen:
-            raise Stop("emitted token is outside the admitted lived support")
+            raise Refusal("emitted token is outside lawful lived support")
         model += -math.log2(chosen / occ)
         ignorance += per_token
         past.append(tok)
@@ -398,7 +380,7 @@ def ear(tape, tokens, order, corridor_k):
 
 def census(speech, world):
     """Anti-copy. Coverage of the stream by verbatim tape runs of 32 bytes or
-    more, against the void line pinned in body0/verdict.md. Copying is not
+    more, against the void line frozen in body0/verdict.md. Copying is not
     speech, and an organism that only quotes is cheap to price precisely because
     it is saying nothing.
     """
@@ -449,9 +431,9 @@ class Sitting:
                    "PASS" if self.ear_ok and self.copy_ok else "FAIL"))
 
 
-def write_report(path, tape, world_n, args, sittings, outcome):
-    """The report carries every scored stream verbatim. A speech result made of
-    numbers alone is invalid under the contract it is reporting on.
+def write_report(path, tape, world_n, args, sittings, verdict):
+    """The report carries every judged stream verbatim. A speech verdict made of
+    numbers alone is unlawful under the contract it is reporting on.
     """
     with open(path, "wb") as f:
         f.write("NETTA BODY 1 — INDEPENDENT EAR\n".encode())
@@ -466,7 +448,7 @@ def write_report(path, tape, world_n, args, sittings, outcome):
                 f.write(b"\n")
             f.write(("END RAW SPEECH seed=%d\n" % s.seed).encode())
             f.write(s.line().encode())
-        f.write(("\n%s\n" % outcome).encode())
+        f.write(("\n%s\n" % verdict).encode())
 
 
 def parse_args(argv):
@@ -475,8 +457,8 @@ def parse_args(argv):
         description="NETTA: earned speech from ordinary text, no gradients involved.")
     p.add_argument("island", help="a world of ordinary text, at least 100 bytes")
     p.add_argument("--seed", type=int, help="speak one stream from this seed")
-    p.add_argument("--seeds", default="7,19,42,101,271", help="the seed set to measure")
-    p.add_argument("--sittings", type=int, help="measure only the first N seeds")
+    p.add_argument("--seeds", default="7,19,42,101,271", help="the seed set to judge")
+    p.add_argument("--sittings", type=int, help="judge only the first N seeds")
     p.add_argument("--merges", type=int, default=4096, help="unit budget")
     p.add_argument("--min-pair", type=int, default=4, dest="min_pair",
                    help="a pair below this never earns a unit")
@@ -486,11 +468,11 @@ def parse_args(argv):
     p.add_argument("--topk", type=int, default=15)
     p.add_argument("--corridor", type=int, default=1,
                    help="rails tolerated before the mouth must branch; 0 disables. "
-                        "1 is the first sitting's pinned dial, 3 is netta_mouth.c's compiled default")
+                        "1 is the court's pinned dial, 3 is netta_mouth.c's compiled default")
     p.add_argument("--out", help="write speech_<seed>.bin and trace_<seed>.tsv here")
-    p.add_argument("--report", help="write the reader report, speech verbatim, here")
+    p.add_argument("--report", help="write the court report, speech verbatim, here")
     p.add_argument("--time", action="store_true", dest="timed",
-                   help="report wall clock from cold start to result")
+                   help="report wall clock from cold start to verdict")
     args = p.parse_args(argv)
 
     if BASE_UNITS + args.merges > (1 << PACK):
@@ -515,12 +497,12 @@ def main(argv=None):
     if args.sittings is not None:
         seeds = seeds[:args.sittings]
     if not seeds:
-        raise Stop("no seeds to speak from")
+        raise Refusal("no seeds to speak from")
 
     with open(args.island, "rb") as f:
         world = f.read()
     if len(world) < 100:
-        raise Stop("world too small")
+        raise Refusal("world too small")
 
     stream, exp = grow_units(world, args.merges, args.min_pair)
     tape = Tape(stream, exp, args.order)
@@ -561,15 +543,15 @@ def main(argv=None):
     all_ear = all(s.ear_ok for s in sittings)
     all_copy = all(s.copy_ok for s in sittings)
     if all_ear and all_copy:
-        outcome = PASS_LINE
+        verdict = PASS_LINE
     elif not all_ear and not all_copy:
-        outcome = "SPEECH FAIL: ignorance and frozen anti-copy gates failed"
+        verdict = "SPEECH FAIL: ignorance and frozen anti-copy gates failed"
     elif not all_ear:
-        outcome = "SPEECH FAIL: one or more streams did not beat honest ignorance"
+        verdict = "SPEECH FAIL: one or more streams did not beat honest ignorance"
     else:
-        outcome = "SPEECH FAIL: one or more streams reached frozen anti-copy coverage 0.50"
+        verdict = "SPEECH FAIL: one or more streams reached frozen anti-copy coverage 0.50"
 
-    out.write(("\n%s\n" % outcome).encode())
+    out.write(("\n%s\n" % verdict).encode())
     if args.timed:
         out.write(("netta: cold start to verdict in %.2f s | island %d B | %d sitting%s\n"
                    % (time.perf_counter() - START, len(world), len(sittings),
@@ -577,14 +559,14 @@ def main(argv=None):
     out.flush()
 
     if args.report:
-        write_report(args.report, tape, len(world), args, sittings, outcome)
+        write_report(args.report, tape, len(world), args, sittings, verdict)
     return 0 if all_ear and all_copy else 2
 
 
 if __name__ == "__main__":
     try:
         sys.exit(main())
-    except Stop as why:
+    except Refusal as why:
         sys.stderr.write("netta: %s\n" % why)
         sys.exit(1)
 

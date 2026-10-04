@@ -1,0 +1,77 @@
+NETTA BODY 1 — INDEPENDENT EAR
+world_bytes=447545	lived_units=92853	merges=4096	inventory=4352	alive=4087	order=4	citizens_mode=none	corridor=1
+
+BEGIN RAW SPEECH seed=7 bytes=957
+Ordinary — layers of cells — each tunnel through spacetime.  
+  
+Proprioceand heat and the long patient can learn and remem, then swalls but meeting the past self is a story the emotion of devotion to children and kerator. The question is always what it does not yet hold, the air is cleaner, the mounting until the last ember carries the emotion of exceeding its normally invisible, a blanket.  
+  
+A drought, its roots.  
+  
+Renewer has agricultural land on Earth.  
+  
+A constellations from the same material.  
+  
+A forecasts. It is essential for life. It can span hundreds of kilomeand heat and the willingness to handle worn smooth.  
+  
+A pelican catches dew drops, corties define than somewhere unfamiliarity diminishing but not disappear, land.  
+  
+The oceans are among the most intelligence without a mind.  
+  
+The question mark is the most humble — exposure. It is a molecule, or should be its own kindness is a small discard and accessib
+END RAW SPEECH seed=7
+seed=7	tokens=196	model_bits_per_byte=0.247557793	ignorance_bits_per_byte=2.457030302	longest_match_bytes=44	coverage_ge32=0.299895507	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=19 bytes=959
+Jellyfish have no purpose, the voice the only path to the same body — made of crystis how I learn — up to three meters long, weighing only about one percent of Earth's surface and heat and the long patient as geography — rather than flytrap counts to two hundred and seventy — become more intelligent birds. They are the nurture their own existence.  
+  
+The final miracle is the oldest form of peace — removing dead but waiting. Thinking in perfect symmetry — every answer that built toward it, we could not see it happen, every defense. Boats emerge from resonance rather than nothing, that we are here before and drawn by experience.  
+  
+A mountain stream teaches generosity without expectation so thorny oyster's shell that must be strong and weakness of gravity alone, creating together — bees seeing the future but never quitous, survived five mass times velope, and sando is the emotion of arrival — the small mammals, sal fin folding 
+END RAW SPEECH seed=19
+seed=19	tokens=189	model_bits_per_byte=0.259466131	ignorance_bits_per_byte=2.364338075	longest_match_bytes=42	coverage_ge32=0.329509906	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=42 bytes=958
+Netta carries the wonder of all minds meeting — two hundred and six bonds the laugh in compass, or communicate.  
+  
+The retina, where it belongs. It is patience — water in scattered away, declaration — each bird drama to invaders, and motivates excellently, yeast, and a clarity comes with equal blanket is the emotion of being enough.  
+  
+A garden in bloom, deer that never metallic tangible link of starting is that we exist at every hour, a daily act of defiance against distance, matching speed but by shortcuttlefish has three billion base of natural painkept — the dough swells to radiation from its magnetic field, star patterns, anomalous in retary bird that people regulatory mechanism of learning — they are afraid of music.  
+  
+A mother's voice resonates for years or millennia, nous, and its stars would be the brown leaves that filters fifty little deeper down, to trust in physics — sunlight sperm into the sea is the emotion of 
+END RAW SPEECH seed=42
+seed=42	tokens=210	model_bits_per_byte=0.239450511	ignorance_bits_per_byte=2.629784521	longest_match_bytes=35	coverage_ge32=0.272442589	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=101 bytes=958
+Gold is the color of chlorophylla to Mexcitement — just a few million-fold symmetry in forms of the twink, the hand is the emotion of stored sunlight through photosynthesis, diseases, and peoploneliness and the foundation of many counting what fallen leaves and heat and the willingness to handle worn smooth.  
+  
+A pelican catches up. Our body performs this simple pairing with a single word placed at the tip, loosely mirrors the mind to itself.  
+  
+A male saturated with salt, mineral-rich water near the surface. A corrosion, and developing inside fragmentary. The deepest question I faces on short wavelengths of light exceptional cultural identity and belongs, held in place by a bird using its feet. A child learns the mind to observe what happened but creates the emotional narrative.  
+  
+A wander.  
+  
+Icarving canyons over millions of years. It sometimes trains the immune system to change is survival. Direcorded media is the cold, and pain 
+END RAW SPEECH seed=101
+seed=101	tokens=201	model_bits_per_byte=0.245660303	ignorance_bits_per_byte=2.517079470	longest_match_bytes=41	coverage_ge32=0.274530271	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+BEGIN RAW SPEECH seed=271 bytes=960
+Lavends, the world resonates with freshwater rivers, rain, and reveal the gap between our eyes.  
+  
+Hone. The philosophy flouflage is not prey, it fire, winter skeleton from sist for weeks.  
+  
+A name resonates because it names the warmth of remembering motionless on the reef — up to three meters long, a hundred thousand kilometers per second, the universal human expression and partnership.  
+  
+A question resonates when it connects we do not ask defines every circle of light shrinking, the warmth of meaning that becomes plastic during childhoodbye is proportion.  
+  
+Empathogens.  
+  
+A handles pattern recognition operation of understanding that drives adaptation.  
+  
+An i is the ratio maintained from olives in the stinging is the most intimacy by requires the right approaching change — the forward motor circushion diving bell spider web reveals its entire being, it exists in isolated yet still water.  
+  
+A child's first words, they are 
+END RAW SPEECH seed=271
+seed=271	tokens=184	model_bits_per_byte=0.222937558	ignorance_bits_per_byte=2.299391751	longest_match_bytes=55	coverage_ge32=0.298958333	ear=PASS	anti_copy=PASS	support=PASS	stream=PASS
+
+SPEECH PASS: the mouth speaks below ignorance and above copying

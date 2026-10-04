@@ -1,0 +1,22 @@
+# J1 build, 2026-10-03T20:45:07Z, cwd=repo root, sources == HEAD 24e2429 blobs (J0)
+# first attempt of this record passed the flags as one unsplit zsh word (rc 1, 'invalid integral value'); overwritten by this run
+$ mkdir -p court_bin
+MKDIR_RC=0
+court_bin entries before build: 0
+$ cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Werror -o court_bin/netta_mouth netta_mouth.c -lm
+BUILD_MOUTH_RC=0
+$ cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Werror -o court_bin/netta_mouth_check netta_mouth_check.c -lm
+BUILD_CHECK_RC=0
+20a218c8cd9a7e5b56371325820cc7ae9511d4fce91dbbb6385e33628ae30368  court_bin/netta_mouth
+cd2c3767215c4f238ff5bd6058c8c9400344763668d0b6cccfbb0458d904465a  court_bin/netta_mouth_check
+## stale root binaries (not used by this sitting)
+7b64c7b0b67b436ec03ef8abf4b176aceb0fa39cd3f77a9b6c125b351f980692  netta_mouth
+2bc1c51b62eaa298a26a6d1f21a6e070f2c5c27767dac849fa578d853c315355  netta_mouth_check
+## freshness: court_bin binaries newer than their sources
+court_bin/netta_mouth newer than netta_mouth.c: yes
+court_bin/netta_mouth_check newer than netta_mouth_check.c: yes
+## reject case: scratch copy with one unused file-scope variable under the same strict flags
+lines in probe source (expect 1026): 1026
+unused_mouth.c:34:12: error: unused variable 'court_unused_probe' [-Werror,-Wunused-variable]
+BUILD_PROBE_RC=1 (expect 1, named unused-variable error)
+probe binary exists: no

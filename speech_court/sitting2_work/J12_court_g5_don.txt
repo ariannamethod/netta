@@ -1,0 +1,44 @@
+# J12 — G5 red runs, Don's hand, 2026-10-04, cwd=repo root, tree 24e2429
+# SITTING2_PREREG.md:67-69. Instruments and inputs as committed; outputs quoted
+# verbatim below; scratch copies in the session scratchpad, nothing in-repo touched.
+
+## (a) the log comparator as the rule under test — the split detector must fire
+
+$ python3 speech_court/sitting2_work/g1_property.py --law log
+rc=0 (red polarity encoded in the instrument: the detector MUST find splits)
+  VERDICT law=log: order-inverting or phantom divergences = 192
+  VERDICT law=log (red polarity): the detector must find splits; found 646
+  G1_RESULT=PASS
+
+## (a') the exact law on the synthetic 6-factor grid — the frozen prior record reproduced
+
+$ python3 speech_court/sitting2_work/g1_property.py --law exact
+rc=1
+  VERDICT law=exact: order-inverting or phantom divergences = 192
+  VERDICT law=exact: equality classes split by the law under test = 0
+  G1_RESULT=FAIL
+
+This reproduces D_g1_exact.txt's frozen FAIL=192 digit for digit by a second
+hand, and the same printout carries the measure's named defect in its own
+derived counters: inversion_exact_vs_truth = 0 and
+phantom_exact_strict_truth_ties = 0 on the identical pair table — the 192 are
+divergences from the OLD float order, none from mathematical truth. Both
+records stand: the synthetic-grid FAIL by letter (prior arc, defect named),
+and J9's PASS on the grid the prereg governs for this sitting
+(SITTING2_PREREG.md:45-46, "observed in the sitting's own traces": 0 classes
+split by exact).
+
+## (b) one corrupted trace price — the reader must refuse by name
+
+$ cp -r court_plain <scratch>/g5b_corrupt
+$ (support_occurrences of trace_7.tsv row 0: 0 -> 1.0)
+$ ./court_bin/netta_mouth_check netta.txt --dir <scratch>/g5b_corrupt \
+    --report <scratch>/g5b_report.txt --corridor 1
+rc=1
+  netta_mouth_check: bad trace support occurrences
+No report file written.
+
+G5 verdict, Don's hand: both polarities hold — the detector fires on the old
+law, the reader refuses a corrupted price by name, and the accepting runs of
+the same instruments are J9 (observed grid, exact: PASS) and J2-J4 (court
+reports, rc 0).

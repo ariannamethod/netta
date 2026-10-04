@@ -1,0 +1,5 @@
+fresh seed 7 speech_rc=0 trace_rc=0
+fresh seed 19 speech_rc=0 trace_rc=0
+fresh seed 42 speech_rc=0 trace_rc=0
+fresh seed 101 speech_rc=0 trace_rc=0
+fresh seed 271 speech_rc=0 trace_rc=0

@@ -1,0 +1,237 @@
+# H2 rename probes -- PARTIAL, pass halted at step 5 (edit gate), 2026-10-03T19:54:13Z
+# state: netta_mouth.c carries 2 comment-only edits; netta.py, netta_mouth_check.c untouched
+$ diff snapshot/netta_mouth.c netta_mouth.c
+4c4
+<    earned units (Body 0's frozen merge law); speech is sampled ONLY over
+---
+>    earned units (Body 0's pinned merge rule); speech is sampled ONLY over
+6,7c6,7
+<    no smoothing hand in the voice and no field: Body 0's verdict deleted
+<    the field organ, and the mouth does not resurrect it.
+---
+>    no smoothing hand in the voice and no field: Body 0's result deleted
+>    the field organ, and the mouth does not restore it.
+11c11
+<    contract.  Court 4's single-winner law is preserved: greatest ledger,
+---
+>    contract.  Court 4's single-winner rule is preserved: greatest ledger,
+DIFF_MOUTH_RC=1 (1 = differs, expected)
+$ cmp snapshot/netta.py netta.py
+CMP_PY_RC=0
+$ git diff --quiet HEAD -- netta_mouth_check.c
+CHECK_C_UNCHANGED_RC=0
+$ wc -l
+    1025 netta_mouth.c
+     591 netta.py
+     647 netta_mouth_check.c
+    2263 total
+$ cc (A1 flags) -o scratchpad/mid_mouth netta_mouth.c
+MID_BUILD_RC=0
+694cd37dd57ec08da15a6c3efe22b38d41138c7f71365f3cb89f1cf1da78e3ef  mid_mouth
+419fd283e59c5366b4c55a80b582cdca374fe336730929d8553382386cd23ea9  netta_mouth
+MID_RUN_RC=0
+MID_VS_BASE_DIFF_RC=0
+$ git rev-parse HEAD; git status --short
+76afa2393670afb20d75d7bf113c717c019a1eb5
+ M netta.py
+ M netta_mouth.c
+?? h_base/
+?? h_base_creader.stdout
+?? h_base_creader.txt
+?? h_base_py.stdout
+?? h_base_py.txt
+?? h_base_py/
+?? netta_mouth
+?? netta_mouth_check
+?? s2_c/
+?? s2_creader.txt
+?? s2_py.txt
+?? s2_py/
+?? speech_court/sitting2_work/
+$ cc (A1 flags) -o scratchpad/samename/netta_mouth netta_mouth.c  # same basename as the builder's binary
+SAMENAME_BUILD_RC=0
+f562c648fd8d65d16a1e2e1157130a182b4d31c8664cd8a99ddd5c72a8e25c32  samename/netta_mouth
+419fd283e59c5366b4c55a80b582cdca374fe336730929d8553382386cd23ea9  netta_mouth
+Identifier=mid_mouth
+$ cc (A1 flags) -o scratchpad/snap/netta_mouth snapshot/netta_mouth.c  # control: unedited source, same out-of-tree build
+SNAP_BUILD_RC=0
+f562c648fd8d65d16a1e2e1157130a182b4d31c8664cd8a99ddd5c72a8e25c32  snap/netta_mouth
+__TEXT,__text root=5736b46717c9e731 partial=5736b46717c9e731 EQUAL
+__TEXT,__cstring root=5ab8a83d13b495fe partial=5ab8a83d13b495fe EQUAL
+__TEXT,__const root=ecd8c9fb64f5b6d6 partial=ecd8c9fb64f5b6d6 EQUAL
+# verdicts (partial state)
+# - partial netta_mouth.c (2 comment hunks, L4-7 and L11) builds rc 0; out-of-tree binary f562c6..
+#   is byte-identical to the out-of-tree build of the unedited snapshot (control), so the
+#   419fd2.. vs f562c6.. gap is build location, not the edit. __text/__cstring/__const EQUAL.
+# - run of partial binary vs h_base: diff -r rc 0 (artifact byte-parity holds for the partial state).
+# - line counts unchanged 1025/591/647; HEAD 76afa23; no commit.
+# - NOT DONE: remaining renames (H1 map), h_post run, sitting1 hash re-check on h_post, py hand on
+#   edited netta.py. Halted: PreToolUse agent hook (~/.claude/settings.json:137) blocked 27 Edit calls
+#   on .c over three rounds (9+9+9); checklist text in this single subagent turn was not visible to it.
+#   h_base*, kept in repo root for the resumed pass.
+
+################ FULL PASS (resumed), 2026-10-03T20:27:33Z ################
+## G2 line counts (expect 1025 / 591 / 647)
+    1025 netta_mouth.c
+     591 netta.py
+     647 netta_mouth_check.c
+    2263 total
+## G3a diff shape: count of add/delete hunks (expect 0 each)
+diff: /private/tmp/claude-501/-Users-ataeff/535974c1-e1f1-456f-b6af-7935184e51e9/scratchpad/pre_rename_snapshot/netta_mouth.c netta_mouth.c: No such file or directory
+diff: /private/tmp/claude-501/-Users-ataeff/535974c1-e1f1-456f-b6af-7935184e51e9/scratchpad/pre_rename_snapshot/netta_mouth.c netta_mouth.c: No such file or directory
+ add_or_delete_hunks=0 change_hunks=0
+diff: /private/tmp/claude-501/-Users-ataeff/535974c1-e1f1-456f-b6af-7935184e51e9/scratchpad/pre_rename_snapshot/netta.py netta.py: No such file or directory
+diff: /private/tmp/claude-501/-Users-ataeff/535974c1-e1f1-456f-b6af-7935184e51e9/scratchpad/pre_rename_snapshot/netta.py netta.py: No such file or directory
+ add_or_delete_hunks=0 change_hunks=0
+diff: /private/tmp/claude-501/-Users-ataeff/535974c1-e1f1-456f-b6af-7935184e51e9/scratchpad/head_check.c netta_mouth_check.c: No such file or directory
+diff: /private/tmp/claude-501/-Users-ataeff/535974c1-e1f1-456f-b6af-7935184e51e9/scratchpad/head_check.c netta_mouth_check.c: No such file or directory
+ add_or_delete_hunks=0 change_hunks=0
+## G3b comparator '+' lines from comparator.diff present verbatim (expect found==total per file)
+netta.py comparator_lines total=21 found=21
+netta_mouth.c comparator_lines total=15 found=15
+## G1 builds (A1/A2 flags)
+BUILD_MOUTH_RC=0
+BUILD_CHECK_RC=0
+7b64c7b0b67b436ec03ef8abf4b176aceb0fa39cd3f77a9b6c125b351f980692  netta_mouth
+2bc1c51b62eaa298a26a6d1f21a6e070f2c5c27767dac849fa578d853c315355  netta_mouth_check
+## G4 C run into h_post, byte-parity vs h_base
+MKDIR_RC=0
+netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)
+netta_mouth: 5 speech streams and token traces written to h_post
+C_RUN_RC=0
+DIFF_R_BASE_POST_RC=0
+ce7ce2ad6c15aebe7bb5ae926d2e058077cfb4b3d4bca710e63f2e325af5637e  h_post/speech_101.bin
+8218e7318f5186dc084fdc9bd03cae0dd1820f0f9c1078d534b6a4f04df0932c  h_post/speech_19.bin
+58c2cf93fd3a73be270a49cd3878e392c56f22d89fd94f9bb1c0d0e94fbe9542  h_post/speech_271.bin
+98728747db5395140c525f66cecf7a0c4b7deb9335360b06a5fcc25466ddfc00  h_post/speech_42.bin
+07ec0c0a9f224adabf428e4845398bfde1c45f9b3537ffe3f815f499f60e0259  h_post/speech_7.bin
+eaedd002becc6706b15c9b6e38545c3577fa57b0e6b3f260fc7352ae09f13dc1  h_post/trace_101.tsv
+577df524bbef0480e60dc9272b06ab520f2d3cb60956d4c1a934f9270a1c10dd  h_post/trace_19.tsv
+86b895712208be35fa26213f26d08a6813a1ba4c287083f3479dd991843deb7a  h_post/trace_271.tsv
+88dbd4239195d2120736ebe494d747fc3b516ea6a26a5d03483a50587495dffe  h_post/trace_42.tsv
+09f6eb5c8bb7749bb737dac58d61a22efc120b2e78b7995f4af5488edb00da3f  h_post/trace_7.tsv
+SHA_LIST_BASE_VS_POST_RC=0
+## G5 checker on h_post (sitting1 reproduction, C1 value 3d06d1a1...)
+CREADER_POST_RC=0
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  h_post_creader.txt
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  h_base_creader.txt
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  speech_court/sitting1/report_plain.txt
+54528156a5ccf8c31049bc23996047fc51f7764324b041462e6a895d8657c1fb  h_post_creader.stdout
+54528156a5ccf8c31049bc23996047fc51f7764324b041462e6a895d8657c1fb  h_base_creader.stdout
+CMP_POST_CREADER_VS_SITTING1_RC=0
+CMP_CREADER_STDERR_BASE_VS_POST_RC=0
+## G6 py hand (B1_py_run form) + parity vs C
+PY_RUN_RC=0
+DIFF_R_POST_VS_POST_PY_RC=0
+seed 7 speech_rc=0 trace_rc=0
+seed 19 speech_rc=0 trace_rc=0
+seed 42 speech_rc=0 trace_rc=0
+seed 101 speech_rc=0 trace_rc=0
+seed 271 speech_rc=0 trace_rc=0
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  h_post_py.txt
+abb5b98bb1683c964cddc0e792a29b83db3a1e1a07c5578d2470a8e835cbdad1  h_post_py.stdout
+abb5b98bb1683c964cddc0e792a29b83db3a1e1a07c5578d2470a8e835cbdad1  h_base_py.stdout
+CMP_PY_REPORT_VS_SITTING1_RC=0
+CMP_PY_STDOUT_BASE_VS_POST_RC=0
+CREADER_ON_PY_RC=0
+CMP_CREADER_ON_PY_VS_SITTING1_RC=0
+## G3a NOTE: the G3a block above is INVALID (zsh does not word-split $p; diff got one bad arg). Re-run:
+netta_mouth.c add_or_delete_hunks=0 change_hunks=13
+netta.py add_or_delete_hunks=0 change_hunks=37
+netta_mouth_check.c add_or_delete_hunks=0 change_hunks=19
+red control (snapshot vs snapshot+1 line): add_or_delete_hunks=1  (expect 1)
+## G7 residual loaded-class grep (die/REP_PENALTY resolved-keep, excluded from pattern)
+netta_mouth_check.c:351:        "advice_book_row\tadvice_factor\tcorridor\tcorridor_veto";
+netta_mouth_check.c:394:   Court-4 capsule.  Distinct ledgers make row 7 the only eligible winner in
+netta_mouth_check.c:639:        "SPEECH FAIL: ignorance and frozen anti-copy gates failed" :
+netta_mouth_check.c:641:        "SPEECH FAIL: one or more streams did not beat honest ignorance" :
+netta_mouth_check.c:642:        "SPEECH FAIL: one or more streams reached frozen anti-copy coverage 0.50";
+netta_mouth.c:9:   Court-4 citizens (live earned relations from the sealed book) advise
+netta_mouth.c:11:   contract.  Court 4's single-winner rule is preserved: greatest ledger,
+netta_mouth.c:531:/* ── Court-4 citizens: authenticated book, projected context, one winner ── */
+netta_mouth.c:707:/* Court 4 chooses one eligible citizen before pricing a truth.  Here the
+netta_mouth.c:810:                "advice_book_row\tadvice_factor\tcorridor\tcorridor_veto\n");
+netta.py:29:Out of scope here, and named rather than omitted: the Court-4 citizens adapter
+netta.py:52:VOID_LINE = 0.50                # body0/verdict.md: at or above this it is a quote
+netta.py:86:    """Body 0's merge law. The most frequent adjacent pair becomes one unit,
+netta.py:401:    more, against the void line pinned in body0/verdict.md. Copying is not
+netta.py:558:                        b"advice_book_row\tadvice_factor\tcorridor\tcorridor_veto\n")
+netta.py:566:        outcome = "SPEECH FAIL: ignorance and frozen anti-copy gates failed"
+netta.py:568:        outcome = "SPEECH FAIL: one or more streams did not beat honest ignorance"
+netta.py:570:        outcome = "SPEECH FAIL: one or more streams reached frozen anti-copy coverage 0.50"
+netta.py:574:        out.write(("netta: cold start to verdict in %.2f s | island %d B | %d sitting%s\n"
+## G8 git state
+76afa2393670afb20d75d7bf113c717c019a1eb5
+ M netta.py
+ M netta_mouth.c
+ M netta_mouth_check.c
+ netta.py            | 118 ++++++++++++++++++++++++++++++----------------------
+ netta_mouth.c       |  49 +++++++++++++---------
+ netta_mouth_check.c |  70 +++++++++++++++----------------
+ 3 files changed, 133 insertions(+), 104 deletions(-)
+## G7 found netta.py:86 'merge law' (missed in H1 inventory); fixed in-line -> 'merge rule'. py-side re-run into *2 names (recursive rm blocked by bash gate):
+     591 netta.py
+netta.py add_or_delete_hunks=0 change_hunks=38
+netta.py comparator_lines total=21 found=21
+PY_RUN2_RC=0
+DIFF_R_POST_VS_POST_PY2_RC=0
+DIFF_R_BASE_PY_VS_POST_PY2_RC=0
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  h_post_py2.txt
+abb5b98bb1683c964cddc0e792a29b83db3a1e1a07c5578d2470a8e835cbdad1  h_post_py2.stdout
+CMP_PY2_REPORT_VS_SITTING1_RC=0
+CMP_PY2_STDOUT_BASE_VS_POST_RC=0
+CREADER_ON_PY2_RC=0
+CMP_CREADER_ON_PY2_VS_SITTING1_RC=0
+## N1 renamed exception path (Stop): --sittings 0, expect rc 1 + stderr line
+STOP_PATH_RC=1 stderr: netta: no seeds to speak from
+## N2 renamed corridor_closed comparison in checker: corridor exits present in h_post traces, then one exit value altered in a scratch copy
+seed 7 corridor_exit_rows=76
+seed 19 corridor_exit_rows=74
+seed 42 corridor_exit_rows=73
+seed 101 corridor_exit_rows=80
+seed 271 corridor_exit_rows=70
+altered rows: 1
+NEG_CHECK_RC=1 (expect 1) stderr_tail: netta_mouth_check: mouth trace disagrees with independent corridor-rule replay
+## G7 residual grep, final
+netta.py:29:Out of scope here, and named rather than omitted: the Court-4 citizens adapter
+netta.py:52:VOID_LINE = 0.50                # body0/verdict.md: at or above this it is a quote
+netta.py:401:    more, against the void line pinned in body0/verdict.md. Copying is not
+netta.py:558:                        b"advice_book_row\tadvice_factor\tcorridor\tcorridor_veto\n")
+netta.py:566:        outcome = "SPEECH FAIL: ignorance and frozen anti-copy gates failed"
+netta.py:568:        outcome = "SPEECH FAIL: one or more streams did not beat honest ignorance"
+netta.py:570:        outcome = "SPEECH FAIL: one or more streams reached frozen anti-copy coverage 0.50"
+netta.py:574:        out.write(("netta: cold start to verdict in %.2f s | island %d B | %d sitting%s\n"
+netta_mouth.c:9:   Court-4 citizens (live earned relations from the sealed book) advise
+netta_mouth.c:11:   contract.  Court 4's single-winner rule is preserved: greatest ledger,
+netta_mouth.c:531:/* ── Court-4 citizens: authenticated book, projected context, one winner ── */
+netta_mouth.c:707:/* Court 4 chooses one eligible citizen before pricing a truth.  Here the
+netta_mouth.c:810:                "advice_book_row\tadvice_factor\tcorridor\tcorridor_veto\n");
+netta_mouth_check.c:351:        "advice_book_row\tadvice_factor\tcorridor\tcorridor_veto";
+netta_mouth_check.c:394:   Court-4 capsule.  Distinct ledgers make row 7 the only eligible winner in
+netta_mouth_check.c:639:        "SPEECH FAIL: ignorance and frozen anti-copy gates failed" :
+netta_mouth_check.c:641:        "SPEECH FAIL: one or more streams did not beat honest ignorance" :
+netta_mouth_check.c:642:        "SPEECH FAIL: one or more streams reached frozen anti-copy coverage 0.50";
+## G8 final
+76afa2393670afb20d75d7bf113c717c019a1eb5
+ M netta.py
+ M netta_mouth.c
+ M netta_mouth_check.c
+
+################ SUMMARY (full pass) ################
+gate                                             result
+G1 build netta_mouth / netta_mouth_check         rc 0 / rc 0
+G2 wc -l 1025 / 591 / 647                        unchanged
+G3a in-line only (re-run; first block invalid)   add/delete hunks 0/0/0; red control 1
+G3b comparator '+' lines verbatim                netta.py 21/21, netta_mouth.c 15/15
+G4 C run h_post; diff -r h_base h_post           rc 0 / rc 0; 10/10 sha equal to H0
+G5 checker on h_post vs sitting1 report_plain    rc 0; 3d06d1a1.. == C1_hashes.txt; stderr == H0
+G6 py hand (after L86 fix) into h_post_py2       rc 0; diff -r vs h_post rc 0; 5/5 seeds speech+trace
+   py report / stdout                            3d06d1a1.. / abb5b98b.. (== H0)
+   checker on py output vs sitting1              rc 0, cmp rc 0
+N1 renamed Stop exception path                   rc 1, "netta: no seeds to speak from"
+N2 altered corridor exit value (scratch copy)    checker rc 1, corridor-rule replay message
+G7 residual grep                                 only the RESOLVED-KEEP lines of H1
+G8 HEAD 76afa23, modified: 3 sources only        yes; no commit
+replaced occurrences (case-insens. class grep)   netta_mouth.c 18, netta.py 52, netta_mouth_check.c 36 = 106
+cleanup: recursive rm of h_base/h_post blocked by pretool-bash-gate.sh (destructive class);
+         run outputs left in repo root (untracked): h_base* h_post*

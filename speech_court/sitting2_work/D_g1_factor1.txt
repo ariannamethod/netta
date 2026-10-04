@@ -1,0 +1,59 @@
+factors (1): 1
+grid states: 832 (cnt 1..64 x freq 0..12 x 1 factors)
+GRID exhaustive: 691392 ordered pairs
+  log exact truth        count
+  -1   -1    -1           344863
+  -1    0     0              475
+   0    0     0              716
+  +1    0     0              475
+  +1   +1    +1           344863
+  E_exact_ties_log_splits              950
+  R_log_ties_exact_splits              0
+  X_opposite_strict                    0
+  collapse_exact_ties_truth_strict     0
+  exact_disagrees_with_truth           0
+  inversion_exact_vs_truth             0
+  log_disagrees_with_exact             950
+  log_inverts_true_order               0
+  log_merges_true_order                0
+  log_splits_true_tie                  950
+  phantom_exact_strict_truth_ties      0
+  example E_exact_ties_log_splits:
+    a[w=1 freq=1]  b[w=2 freq=4]
+    a[w=1 freq=2]  b[w=3 freq=10]
+    a[w=1 freq=3]  b[w=2 freq=8]
+    a[w=1 freq=4]  b[w=2 freq=10]
+    a[w=2 freq=0]  b[w=3 freq=1]
+    a[w=2 freq=0]  b[w=5 freq=3]
+  example log_splits_true_tie:
+    a[w=1 freq=1]  b[w=2 freq=4]
+    a[w=1 freq=2]  b[w=3 freq=10]
+    a[w=1 freq=3]  b[w=2 freq=8]
+    a[w=1 freq=4]  b[w=2 freq=10]
+    a[w=2 freq=0]  b[w=3 freq=1]
+    a[w=2 freq=0]  b[w=5 freq=3]
+CLASSES law=exact: 535 equality classes, 140 with >=2 members, 0 split
+RANDOM cnt 1..65536: 2000000 ordered pairs
+  log exact truth        count
+  -1   -1    -1          1000009
+   0    0     0                5
+  +1    0     0                1
+  +1   +1    +1           999985
+  E_exact_ties_log_splits              1
+  R_log_ties_exact_splits              0
+  X_opposite_strict                    0
+  collapse_exact_ties_truth_strict     0
+  exact_disagrees_with_truth           0
+  inversion_exact_vs_truth             0
+  log_disagrees_with_exact             1
+  log_inverts_true_order               0
+  log_merges_true_order                0
+  log_splits_true_tie                  1
+  phantom_exact_strict_truth_ties      0
+  example E_exact_ties_log_splits:
+    a[w=27750 freq=8]  b[w=11100 freq=2]
+  example log_splits_true_tie:
+    a[w=27750 freq=8]  b[w=11100 freq=2]
+VERDICT law=exact: order-inverting or phantom divergences = 0
+VERDICT law=exact: equality classes split by the law under test = 0
+G1_RESULT=PASS

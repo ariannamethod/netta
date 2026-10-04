@@ -1,0 +1,2 @@
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Werror -o netta_mouth_check  -lm  0.24s user 0.03s system 107% cpu 0.256 total
+A2_BUILD_RC=0

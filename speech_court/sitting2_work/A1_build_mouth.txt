@@ -1,0 +1,2 @@
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Werror -o netta_mouth netta_mouth.c  0.32s user 0.35s system 77% cpu 0.868 total
+A1_BUILD_RC=0

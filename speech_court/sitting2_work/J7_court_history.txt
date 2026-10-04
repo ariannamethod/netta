@@ -1,0 +1,48 @@
+# J7 sealed history (G3), 2026-10-03T20:50:38Z, cwd=repo root
+$ git log --format="%h %s" --diff-filter=A -- speech_court/sitting1/report_plain.txt  # the sealing commit
+916cfce the Method seats the first speech court and NETTA passes it speaking her own words
+$ git diff --stat 916cfce 76afa23 -- speech_court/SITTING1.md speech_court/sitting1
+
+lines=0 (expect 0)
+$ git diff --stat 76afa23 HEAD -- speech_court/SITTING1.md speech_court/sitting1
+
+lines=0 (expect 0)
+$ git diff --stat HEAD -- speech_court/SITTING1.md speech_court/sitting1  # working tree
+
+lines=0 (expect 0)
+$ git status --porcelain -- speech_court/SITTING1.md speech_court/sitting1
+
+lines=0 (expect 0)
+$ git diff --stat 76afa23 HEAD -- body0 court4 netta.c
+
+lines=0 (expect 0)
+$ git diff --stat HEAD -- body0 court4 netta.c
+
+lines=0 (expect 0)
+## sealed sitting1 hashes
+ae6be9079591054f1ee99dd5af3b250312d5c75cdb68bdea0802779e264ec786  speech_court/sitting1/report_live.txt
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  speech_court/sitting1/report_plain.txt
+e9acc6c3fca019ea396dea44c6b19218f319b615904a80f23768b93be32cc891  speech_court/sitting1/report_shuffled.txt
+bf6da2e5cf9e62c9137137ea6b78c0c513f01b2ba8ea567b233f511d3e068992  speech_court/SITTING1.md
+## reject case: the same diff machinery against a scratch copy of report_plain.txt with byte 300 replaced
+ .../scratchpad/court/sealed_mut.txt                                     | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+NOINDEX_DIFF_RC=1 (expect 1)
+
+## pathspec liveness: the same pathspecs over a range where those paths did change (must be non-empty)
+$ git diff --stat 916cfce^ 916cfce -- speech_court/SITTING1.md speech_court/sitting1
+ speech_court/SITTING1.md                  | 49 +++++++++++++++++++++
+ speech_court/sitting1/report_live.txt     | 71 ++++++++++++++++++++++++++++++
+ speech_court/sitting1/report_plain.txt    | 73 +++++++++++++++++++++++++++++++
+ speech_court/sitting1/report_shuffled.txt | 57 ++++++++++++++++++++++++
+ 4 files changed, 250 insertions(+)
+lines=5 (expect >0)
+$ git diff --stat beb0ef4^ beb0ef4 -- body0 court4 netta.c   # last commit touching body0
+ 3 files changed, 202 insertions(+)
+lines=4 (expect >0)
+$ git diff --stat e02c645^ e02c645 -- body0 court4 netta.c   # last commit touching court4
+ 7 files changed, 12789 insertions(+)
+lines=8 (expect >0)
+$ git diff --stat 4d50716^ 4d50716 -- body0 court4 netta.c   # last commit touching netta.c
+ 5 files changed, 710 insertions(+)
+lines=6 (expect >0)

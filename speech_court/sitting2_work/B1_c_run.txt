@@ -1,0 +1,4 @@
+netta_mouth: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4 | citizens 0 (mode 0)
+netta_mouth: 5 speech streams and token traces written to s2_c
+./netta_mouth netta.txt --out s2_c --corridor 1  0.19s user 0.01s system 25% cpu 0.788 total
+B1_C_RC=0

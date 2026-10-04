@@ -1,0 +1,53 @@
+# J6 second hand (G2), 2026-10-03T20:49:48Z, cwd=repo root
+# witnesses that ran: C mouth (court_bin/netta_mouth), py mouth (netta.py, plain only: netta.py:29), C reader (court_bin/netta_mouth_check). JS third body: ABSENT on disk (J0), not run.
+1cd6e375c71b980b690b4340a82ba1fe2e7d436e00b9c841f622bbfbdb32dab3  netta.py
+20a218c8cd9a7e5b56371325820cc7ae9511d4fce91dbbb6385e33628ae30368  court_bin/netta_mouth
+cd2c3767215c4f238ff5bd6058c8c9400344763668d0b6cccfbb0458d904465a  court_bin/netta_mouth_check
+$ mkdir -p court_py
+MKDIR_RC=0
+$ PYTHONDONTWRITEBYTECODE=1 python3 netta.py netta.txt --out court_py --report court_reports/report_py.txt --corridor 1 > court_reports/py.stdout 2> court_reports/py.stderr
+PY_RC=0
+netta: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4
+## py vs C mouth, speech and trace, 5 seeds
+seed 7 speech_rc=0 trace_rc=0
+seed 19 speech_rc=0 trace_rc=0
+seed 42 speech_rc=0 trace_rc=0
+seed 101 speech_rc=0 trace_rc=0
+seed 271 speech_rc=0 trace_rc=0
+G2_SPEECH_TRACE_IDENTICAL=5/5
+## py report vs C reader report vs sealed sitting1 plain
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  court_reports/report_py.txt
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  court_reports/report_plain.txt
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  speech_court/sitting1/report_plain.txt
+CMP_PY_REPORT_VS_C_READER_RC=0
+## py stdout vs the H2 baseline abb5b98b
+9f7cb615be1a2dbf7159925eb47aa051d06cd8ec1e0f76c3108585ca7d2794cf  court_reports/py.stdout
+abb5b98bb1683c964cddc0e792a29b83db3a1e1a07c5578d2470a8e835cbdad1  h_base_py.stdout
+court_reports/py.stdout h_base_py.stdout differ: char 1, line 1
+CMP_PY_STDOUT_VS_BASELINE_RC=1
+## C reader over the py output
+$ court_bin/netta_mouth_check netta.txt --dir court_py --report court_reports/report_creader_on_py.txt --corridor 1 --citizens-mode none
+SPEECH PASS: the mouth speaks below ignorance and above copying
+READER_ON_PY_RC=0
+3d06d1a13779553aa11e1cbba785ba5c254a4db4ba54219db2ccde3a49861079  court_reports/report_creader_on_py.txt
+CMP_READER_ON_PY_VS_C_READER_RC=0
+## reject case: scratch copy of court_py, trace_7.tsv row index 10 chosen_occurrences + 1
+row 10 chosen_occurrences 1 -> 2
+court_py/trace_7.tsv SCRATCH/py_mut/trace_7.tsv differ: char 461, line 12
+PARITY_MUT_CMP_RC=1 (expect 1)
+netta_mouth_check: mouth trace disagrees with independent corridor-rule replay
+READER_ON_MUT_RC=1 (expect 1, named stop)
+
+## correction: CMP_PY_STDOUT_VS_BASELINE_RC=1 above compares unlike forms. h_base_py.stdout line 1 is the stderr line:
+netta: world 447545 B | lived stream 92853 units | merges 4096 | V 4352 (avg 4.82 B/unit) | order 4
+## py re-run in the baseline form (stderr merged into the same file), new out dir (also py restart identity)
+$ mkdir -p court_py_r
+MKDIR_RC=0
+$ PYTHONDONTWRITEBYTECODE=1 python3 netta.py netta.txt --out court_py_r --report court_reports/report_py_r.txt --corridor 1 > court_reports/py_merged.out 2>&1
+PY_R_RC=0
+abb5b98bb1683c964cddc0e792a29b83db3a1e1a07c5578d2470a8e835cbdad1  court_reports/py_merged.out
+abb5b98bb1683c964cddc0e792a29b83db3a1e1a07c5578d2470a8e835cbdad1  h_base_py.stdout
+CMP_PY_MERGED_VS_BASELINE_abb5b98b_RC=0
+PY_RESTART_DIFF_RC=0
+PY_RESTART_REPORT_CMP_RC=0
+## reject case: the unlike-form comparison above (rc 1, char 1) is the recorded rejecting case; the one-byte form is in J5
