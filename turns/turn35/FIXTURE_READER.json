@@ -1,0 +1,45 @@
+{
+  "binary_sha256": "3912048d471646b25cc315f548a17db3dedbaf05f60a65fd4118769530e5c6ff",
+  "coarse_negative": [
+    true,
+    true
+  ],
+  "coarse_positive": [
+    true,
+    false
+  ],
+  "events": 40,
+  "fine_negative": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "fine_positive": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "fixture_sha256": "6bfa6d11f496c9dae86b06490f8b5b8ecac9f0d0067624a7b8905fed1eb94cbb",
+  "max_error": 7.105427357601002e-15,
+  "numeric_checks": 520,
+  "passed": true,
+  "reader_sha256": "3c27c6573e5f5688bf8443f3d8871f1b03ebe476ada71afe1bb806c49a977c79",
+  "records": [
+    0,
+    1
+  ],
+  "scope": "One handcrafted no-world fixture: independent Decimal hybrid wealth at one fine and one coarse relation, pooled permission, first/silent, positive/negative, recovery, locality, NEW, no-match and exact common events.",
+  "witnessed": {
+    "coarse": true,
+    "common": true,
+    "fine": true,
+    "first": true,
+    "locality": true,
+    "new": true,
+    "no_match": true,
+    "recovery": true,
+    "silent": true
+  }
+}
