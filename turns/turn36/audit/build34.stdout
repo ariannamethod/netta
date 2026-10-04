@@ -1,0 +1,10 @@
+mkdir -p .build/turn13
+ln -sfn ../../../turn13/episode.c .build/turn13/episode.c
+ln -sfn ../../../byte_recurrence .build/byte_recurrence
+ln -sfn ../../../portable_recurrence .build/portable_recurrence
+ln -sfn ../../../court4 .build/court4
+touch .build/layout
+sed 's/^int main(int argc, char \*\*argv) {$/int turn33_router_main(int argc, char **argv) {/' ../turn33/earned_router.c > .build/turn33_core.c
+test "$(diff ../turn33/earned_router.c .build/turn33_core.c | grep -c '^[<>]')" = 4
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Werror -I. sel4_router.c .build/byte_recurrence/frontend.c .build/portable_recurrence/recurrence.c -lm -o sel4_router
+ln -sfn sel4_router episode

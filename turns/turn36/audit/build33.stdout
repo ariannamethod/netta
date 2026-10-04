@@ -1,0 +1,8 @@
+mkdir -p .build/turn13
+ln -sfn ../../../turn13/episode.c .build/turn13/episode.c
+ln -sfn ../../../byte_recurrence .build/byte_recurrence
+ln -sfn ../../../portable_recurrence .build/portable_recurrence
+ln -sfn ../../../court4 .build/court4
+touch .build/layout
+cc -O2 -std=c11 -Wall -Wextra -Wpedantic -Werror earned_router.c .build/byte_recurrence/frontend.c .build/portable_recurrence/recurrence.c -lm -o earned_router
+ln -sfn earned_router episode

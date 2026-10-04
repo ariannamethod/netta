@@ -1,0 +1,92 @@
+{
+  "base": "4c90cf36e50a8dfc5ae2f0ed59e34267667c4543",
+  "first_defective_batch": "not located; equality is not certified",
+  "fixture33_sha256": "4d67e152969d07bcd28b1f86abf3a804ff6dd6fe9b8d73af2fe0b82a55149c0d",
+  "g4_mean": 4.842001395211258,
+  "g4_pass": false,
+  "g4_wins": 6,
+  "incoming": "3c780af57b11e716d8d7c127917f52302618a959",
+  "raw_g4": [
+    {
+      "gain": 6.305015085166471,
+      "margin": 6.72,
+      "sizes": {
+        "bank2_full.bin": 912,
+        "bank4_full.bin": 1584,
+        "pooled_full.bin": 528
+      },
+      "world": 304
+    },
+    {
+      "gain": -0.5941703823716392,
+      "margin": 6.72,
+      "sizes": {
+        "bank2_full.bin": 912,
+        "bank4_full.bin": 1584,
+        "pooled_full.bin": 528
+      },
+      "world": 305
+    },
+    {
+      "gain": 9.631746211057335,
+      "margin": 6.72,
+      "sizes": {
+        "bank2_full.bin": 912,
+        "bank4_full.bin": 1584,
+        "pooled_full.bin": 528
+      },
+      "world": 306
+    },
+    {
+      "gain": 1.8136321829232385,
+      "margin": 6.72,
+      "sizes": {
+        "bank2_full.bin": 912,
+        "bank4_full.bin": 1584,
+        "pooled_full.bin": 528
+      },
+      "world": 307
+    },
+    {
+      "gain": 3.06292938499923,
+      "margin": 6.72,
+      "sizes": {
+        "bank2_full.bin": 912,
+        "bank4_full.bin": 1584,
+        "pooled_full.bin": 528
+      },
+      "world": 308
+    },
+    {
+      "gain": -0.005896803614653362,
+      "margin": 6.72,
+      "sizes": {
+        "bank2_full.bin": 912,
+        "bank4_full.bin": 1584,
+        "pooled_full.bin": 528
+      },
+      "world": 309
+    },
+    {
+      "gain": 10.702308618236781,
+      "margin": 6.72,
+      "sizes": {
+        "bank2_full.bin": 912,
+        "bank4_full.bin": 1584,
+        "pooled_full.bin": 528
+      },
+      "world": 310
+    },
+    {
+      "gain": 7.8204468652933015,
+      "margin": 6.72,
+      "sizes": {
+        "bank2_full.bin": 912,
+        "bank4_full.bin": 1584,
+        "pooled_full.bin": 528
+      },
+      "world": 311
+    }
+  ],
+  "reader34_sha256": "1e6c7758de8a1a83c83930b44f60c131ee75d0d1143c8d1abd13f888dba88cec"
+}
