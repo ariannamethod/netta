@@ -1,0 +1,55 @@
+{
+  "arms": [
+    "sel4",
+    "earned2",
+    "pooled",
+    "permuted4",
+    "cold"
+  ],
+  "files": {
+    "byte_recurrence/frontend.c": "598b5aa2301e48029b7d5c2ca89c9d67372b33df9497d8b14d0b0de646ee3d08",
+    "byte_recurrence/frontend.h": "cc84f37ba78962cbfb36abd6ecea07bbabd6fbd5ee2f8dd3755f998f07df804e",
+    "court4/transfer4_confirm_core.c": "d80016369607ef2c202f28b10470e039b452cf177cf746b24320a7df0a1f4629",
+    "portable_recurrence/recurrence.c": "1c14a567b30d376d515c22f6280872e98811956a691958057cfc7ef4b48739d3",
+    "portable_recurrence/recurrence.h": "282f79c3a90680a2bf6fa0b86624995d83a292c4edf5d33393c95d3d1b56b958",
+    "turns/turn13/episode.c": "8509ce692c394eaeea55bc1ce99596e246449a519f32bf0576de4e74dd6d5ad9",
+    "turns/turn13/experiment.py": "003146d6e18d56dbb88b303489b801c688d20f475a9ab74bafb3a4d53a42c475",
+    "turns/turn22/experiment.py": "86f1040cbe536632d22404a2e08955fc280e813a46f5cb826b5077fc5593f303",
+    "turns/turn28/experiment.py": "65d0238a853ae75fd53fd39d3a722e6f74545dd5615935dc43bf7f04bc0ab20d",
+    "turns/turn28/verify.py": "037c604d07ea7da328ada0859f7a869b6e4e0e5065c30e35c09efb7a3c9d7693",
+    "turns/turn30/router3.c": "ba1d181f8ee9b2a68b9efd66f33690072f0df9cc22fea47e7c251df54be40020",
+    "turns/turn30/verify.py": "3d345a3ac2a44a47ae039aeb4a2a280b5c5650a93345f6a6947b5cb06a276734",
+    "turns/turn31/case_router.c": "e94d42455f653e46b6ef206fcc6dea22b4df66fc27a63d9db61cdce6450b354e",
+    "turns/turn33/PROTOCOL.md": "aacfe4680944a967a3a2b54b7e3a2e11702a97809337f5cef6ba653008579d68",
+    "turns/turn33/earned_router.c": "92b9a19ab588a75ede0d876a9debdcc943c5fa72c2b52c61e505e269849d2fc8",
+    "turns/turn33/experiment.py": "626e64da81469c8fd85d1a79e22ab848993bf9ca1801df8b71420ab6fe75cb6b",
+    "turns/turn33/verify.py": "ffe21d585736f91f7ff2ff37d74ef29ec1d8828db32557631055d0ef9d6c60e5",
+    "turns/turn34/INTERFACE.md": "078ecdea7d651a58df6b0f997bda9a32adc091bcef9a5c4c461be7e13cdf0f93",
+    "turns/turn34/Makefile": "fd6faff71a14702803a364e890aae9ddc1077a9d207a61d0765eca457529b41d",
+    "turns/turn34/PROTOCOL.md": "74fac529d58eaa4a47b3a400c8e783b4e9d490cc0b340e3c64e871b967dc054b",
+    "turns/turn34/episode": "0dd69fff40e6ab514de6d7094250af8c6786c41546ce01ca66b814a71862a6cf",
+    "turns/turn34/experiment.py": "2442b1bc3a8fa13354a9a867374eea69738acc5734c8b1b289034a24ce85ab81",
+    "turns/turn34/fixture_check.py": "2ba96a29a687ed5b4cf03e67edffb8fb33485c83b84857ee554059ea2b0b2646",
+    "turns/turn34/sel4_router": "0dd69fff40e6ab514de6d7094250af8c6786c41546ce01ca66b814a71862a6cf",
+    "turns/turn34/sel4_router.c": "ecc17ba01308db4379dc5851be741f14af8020b7cabbd3aaa8b8b80d649db6a8",
+    "turns/turn34/verify.py": "146a3d75f749e718442a7e5f0c1920721d8c003f005bfd36d2135fa736efbf75"
+  },
+  "namespace": "netta-earned-selection-v1",
+  "regimes": [
+    "recombined",
+    "partial",
+    "switched",
+    "moved_mid",
+    "unrelated"
+  ],
+  "worlds": [
+    304,
+    305,
+    306,
+    307,
+    308,
+    309,
+    310,
+    311
+  ]
+}
