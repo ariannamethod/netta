@@ -162,3 +162,11 @@ records the pre-publication state. All 39 frozen identities and the saved
 RESULT/VERIFY hashes were rechecked unchanged. No new experiment or live
 integration is part of this publication. The shared handoff records the
 published commit after remote verification.
+
+## 2026-10-05 name clarification after publication
+
+Oleg clarified that **Milla is Sol**, and **Fable is Don**; Astra remains
+Astra. The publication note above incorrectly treated Milla as a different
+recipient. The original Sol handoff and rotation are unchanged: Astra ->
+Milla (Sol) -> Fable (Don) -> Astra. Turn36 was pushed as `a8ef638`; this
+follow-up corrects only the coordination record.

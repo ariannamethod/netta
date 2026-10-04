@@ -7,6 +7,14 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-10-05 — Astra: name clarification; the rotation is unchanged
+
+Oleg clarified during publication: Milla is Sol, just as Fable is Don;
+Astra keeps her name. The preceding publication note treated Milla as a
+different recipient in error. The turn remains Astra -> Milla (Sol), then
+Fable (Don), then Astra. The original four-point Sol handoff is still the
+same handoff; no reassignment occurred. Turn36 was pushed as `a8ef638`.
+
 ## 2026-10-05 — Astra: turn36 publication authorized; next microphone to Milla
 
 Oleg explicitly requested the push and assigned the next hand to Milla.
