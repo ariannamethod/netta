@@ -1,0 +1,6 @@
+seed 7: tokens=182 model=0.257362 ignorance=2.281528 longest=47 coverage>=32=0.350052 PASS
+seed 19: tokens=210 model=0.323879 ignorance=2.629785 longest=42 coverage>=32=0.147182 PASS
+seed 42: tokens=187 model=0.257194 ignorance=2.341761 longest=45 coverage>=32=0.184760 PASS
+seed 101: tokens=195 model=0.267768 ignorance=2.447051 longest=45 coverage>=32=0.149582 PASS
+seed 271: tokens=214 model=0.318632 ignorance=2.682676 longest=45 coverage>=32=0.199582 PASS
+SPEECH PASS: the mouth speaks below ignorance and above copying

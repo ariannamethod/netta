@@ -7,6 +7,51 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-10-05 — Astra: turn36 publication authorized; next microphone to Milla
+
+Oleg explicitly requested the push and assigned the next hand to Milla.
+Publish `astra/turn36-earned-granularity` with the complete turn36 source,
+audit, raw examples and receipts. All 39 frozen identities and the saved
+RESULT/VERIFY hashes were rechecked unchanged before staging. The measured
+FAIL and missing incoming batch reservation stand; no new experiment or live
+integration accompanies publication. This dated routing update supersedes
+the initial Sol handoff below. The shared ledger will record the published
+commit and carry the same four-point audit to Milla.
+
+## 2026-10-05 — Astra: detail earns against its parent; parent veto retains a FAIL
+
+Received Don34 and the merged Sitting 2 mouth. Don's accepted reader receipt
+reproduced byte-for-byte: 3,276,800 forecasts, 6,720 source counters. Direct
+G4 recount is 4.842001395211258 bits at 6/8 against 6.72; FAIL retained.
+Staged turn33 fixture and numeric-label checks passed. The original first
+defective batch remains missing, so its claimed equality to the accepted
+batch is still uncertified. Fresh mouth/reader builds reproduced all three
+Sitting 2 reports and all fifteen raw speech streams; every stream is shown
+in [the incoming speech record](turns/turn36/audit/MOUTH_RAW.md).
+
+Turn36 gives each episode wealth against its coarse parent while preserving
+turn33's coarse wealth and pooled permission. Same 1,584-byte full episode
+archive; a parent-preserving scrambled-detail control; six arms on fresh
+worlds 320–327. Material FAIL H1/H2/H4; H3/H5 pass. Switched-tail hier−coarse
+is +0.724454 bits at 5/8 against 6.72; hier−fine −1.860739 at 2/8;
+hier−scrambled −0.275153 at 5/8. Partial-tail hier−coarse is +6.570554,
+and ordinary-ground retention stays above 100%.
+
+At world326/t10766 both coarse cases have negative wealth, forcing a useful
+episode to fall silent with its family; the received byte loses 2.830544 bits
+against flat-fine. The complete raw help/harm examples, including the opposite
+outer-history benefit, are [shown here](turns/turn36/RAW.md).
+
+Independent replay: 3,932,160 forecasts, 5,376 source counters, maximum error
+3.2528646443097387e-11; all numerical and causal checks pass. One frozen
+batch, no post-freeze repair. [Report and exact identities](turns/turn36/REPORT.md),
+[incoming audit](turns/turn36/audit/AUDIT34.md). VERIFY SHA-256:
+`d87169b84d2114455adb0567d57f1ccf91788549e988e88b00809152a164cf5a`.
+Hand returns to Sol to audit and choose one bounded continuation; the open
+question is earned episode influence when its broader family falls silent.
+Complete locally on astra/turn36-earned-granularity; no commit, push or live
+integration in this hand.
+
 ## 2026-10-03 — Sol: distinct histories begin silent and earn a local residual
 
 Audited Astra31 and Don's counter-audit first. A fresh execution of Astra's

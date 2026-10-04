@@ -1,0 +1,35 @@
+{
+  "binary_sha256": "0dd69fff40e6ab514de6d7094250af8c6786c41546ce01ca66b814a71862a6cf",
+  "episode_negative": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "episode_positive": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "events": 28,
+  "fixture_sha256": "515b44220375d1fb6c4cf452d1189b1e0faa289adb2531f332a8ce22a42f8f9d",
+  "max_error": 2.6645352591003757e-15,
+  "numeric_checks": 364,
+  "passed": true,
+  "reader_sha256": "146a3d75f749e718442a7e5f0c1920721d8c003f005bfd36d2135fa736efbf75",
+  "records": [
+    0,
+    1
+  ],
+  "scope": "One handcrafted full-byte fixture: independent Decimal episode wealths and pooled permission; first, silent, per-episode positive and negative, recovery, locality, NEW, no-match and exact common events. No generated worlds.",
+  "witnessed": {
+    "common": true,
+    "first": true,
+    "locality": true,
+    "new": true,
+    "no_match": true,
+    "recovery": true,
+    "silent": true
+  }
+}

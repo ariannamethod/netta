@@ -1,0 +1,19 @@
+{
+  "checks": 3680,
+  "detail_negative": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "detail_positive": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "events": 80,
+  "exact_silence": true,
+  "max_error": 1.4210854715202004e-13,
+  "trace_sha256": "55980f8680927d381b201142b86f58259de48083483f93649b3df8509efd1323"
+}
