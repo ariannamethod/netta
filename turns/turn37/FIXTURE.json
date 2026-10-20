@@ -1,0 +1,20 @@
+{
+  "checks": 4400,
+  "detail_negative": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "detail_positive": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "events": 80,
+  "exact_silence": true,
+  "max_error": 1.4210854715202004e-13,
+  "parent_veto_escape": true,
+  "trace_sha256": "62b02a3c72602d50f229a08d37f640fa5f91d16bb23b06ea0e63dc9ab9d8988f"
+}

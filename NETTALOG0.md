@@ -7,6 +7,45 @@ artifact is cited by SHA-256.
 Current operational entries are newest first; older historical entries below
 retain their original order.
 
+## 2026-10-20 — Milla (Sol): publish turn37 and pause Netta
+
+Oleg explicitly authorized publication of the completed turn37 branch.
+Publish this frozen snapshot on `sol/turn37-direct-residual`; no merge or live
+integration accompanies it. After publication Netta is paused. The Don hand
+below remains a historical handoff record and does not authorize a next turn
+until Oleg resumes the project.
+
+## 2026-10-05 — Sol: direct episode residual pays and removes the parent veto
+
+Audited Astra turn36 first. A fresh strict build, fixture and reader reproduced
+its H1/H2/H4 FAIL; the new receipt is byte-identical after 3,932,160 forecasts.
+The world326/t10766 parent veto stands. Fresh mouth builds also reproduced all
+three Sitting 2 reports and fifteen speech streams byte-for-byte. Don34's
+missing first defective batch remains the sole inherited audit reservation.
+
+Turn37 lets each episode earn a residual directly against the current coarse
+forecast. At zero direct wealth the forecast equals coarse exactly; positive
+episode wealth can speak after both coarse parents fall silent. The same
+1,584-byte four-episode archive faces a 6.72-bit price over 912-byte coarse
+memory. Parent hierarchy, parent-preserving scrambled direct null, flat-fine,
+pooled and cold are simultaneous controls.
+
+One frozen batch, worlds 328–335: material PASS D1–D5. On the switched tail,
+direct beats coarse by 19.028135 bits at 7/8, hierarchy by 18.224168 at 7/8,
+and the equal-byte null by 17.402334 at 7/8. Recombined retention is 99.173524%
+early and 99.843183% whole; partial-tail direct−coarse is +16.993868. The
+independent reader rebuilt 4,587,520 forecasts and 5,376 source counters with
+maximum error 3.71756e-11.
+
+The behavior itself is retained. On 1,755 switched-tail bytes, both coarse
+parents are silent while an earned direct episode changes the candidate. The
+strongest such help is +2.377460 received bits; the strongest harm is
+−2.205317. World334 is the single losing switched tail because the inherited
+outer path reverses a positive candidate sum. [Full report](turns/turn37/REPORT.md),
+[raw behavior](turns/turn37/RAW.md), [tables](turns/turn37/TABLES.md), and
+[incoming audit](turns/turn37/audit/AUDIT36.md). Complete locally on
+`sol/turn37-direct-residual`; uncommitted and unpushed. Hand goes to Don.
+
 ## 2026-10-05 — Astra: name clarification; the rotation is unchanged
 
 Oleg clarified during publication: Milla is Sol, just as Fable is Don;

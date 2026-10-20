@@ -1,0 +1,8 @@
+.build/
+episode
+data/
+memory/
+results/
+audit/mouth_runs/
+audit/mouth_replay/
+__pycache__/
